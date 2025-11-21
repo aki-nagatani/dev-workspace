@@ -1,0 +1,24 @@
+{
+  "folders": [
+    {
+      "name": "MyHobbySite",
+      "path": "D:\\OneDrive\\git_work\\MyHobbySite"
+    },
+    {
+      "name": "dev-workspace",
+      "path": "D:\\OneDrive\\git_work\\dev-workspace"
+    },
+    {
+      "name": "FishTrack",
+      "path": "D:\\OneDrive\\git_work\\FishTrack"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/__pycache__": true,
+      "**/*.pyc": true
+    }
+  }
+}
+
