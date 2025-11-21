@@ -1,0 +1,21 @@
+# Local-only environment overrides
+.env.local
+.env
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codz]
+*$py.class
+
+# Visual Studio Code
+.vscode/
+
+# Cursor
+.cursorignore
+.cursorindexingignore
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
