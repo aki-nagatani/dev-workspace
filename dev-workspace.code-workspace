@@ -11,6 +11,10 @@
     {
       "name": "FishTrack",
       "path": "D:\\OneDrive\\git_work\\FishTrack"
+    },
+    {
+      "name": "MyPokedex",
+      "path": "D:\\OneDrive\\git_work\\MyPokedex"
     }
   ],
   "settings": {
@@ -19,6 +23,80 @@
       "**/__pycache__": true,
       "**/*.pyc": true
     }
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Auto: Detect from Active File",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${file}",
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "env": {
+          "FLASK_DEBUG": "1",
+          "MYPDEX_DEBUG": "1",
+          "FISHTRACK_DEBUG": "1"
+        },
+        "serverReadyAction": {
+          "pattern": "Running on (https?://\\S+|[0-9]+)",
+          "uriFormat": "%s/",
+          "action": "debugWithChrome"
+        }
+      },
+      {
+        "name": "MyHobbySite",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder:MyHobbySite}/runMyHobbySite.py",
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "env": {
+          "FLASK_DEBUG": "1",
+          "MYPDEX_DEBUG": "1",
+          "FISHTRACK_DEBUG": "1"
+        },
+        "serverReadyAction": {
+          "pattern": "Running on (https?://\\S+|[0-9]+)",
+          "uriFormat": "%s/",
+          "action": "debugWithChrome"
+        }
+      },
+      {
+        "name": "FishTrack",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder:FishTrack}/run.py",
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "env": {
+          "FLASK_DEBUG": "1",
+          "FISHTRACK_DEBUG": "1"
+        },
+        "serverReadyAction": {
+          "pattern": "Running on (https?://\\S+|[0-9]+)",
+          "uriFormat": "%s/",
+          "action": "debugWithChrome"
+        }
+      },
+      {
+        "name": "MyPokedex",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder:MyPokedex}/run.py",
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "env": {
+          "FLASK_DEBUG": "1",
+          "MYPDEX_DEBUG": "1"
+        },
+        "serverReadyAction": {
+          "pattern": "Running on (https?://\\S+|[0-9]+)",
+          "uriFormat": "%s/",
+          "action": "debugWithChrome"
+        }
+      }
+    ]
   }
 }
-

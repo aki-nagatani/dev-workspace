@@ -26,16 +26,16 @@
 ```
 dev-workspace/
 ├── README.md                    # このファイル
+├── dev-workspace.code-workspace # マルチルートワークスペースファイル
 ├── guidelines/                  # 共通開発ガイドライン
 │   ├── コーディング規約.md
 │   ├── テストカバレッジ方針.md
 │   └── MCP_SERVERS.md
-├── .cursor/                     # Cursor設定テンプレート
-│   ├── rules/
-│   │   └── myrules.mdc
-│   ├── mcp.json
-│   └── commands/
-└── MyHobbySite.code-workspace   # マルチルートワークスペースファイル
+└── .cursor/                     # Cursor設定テンプレート（将来追加予定）
+    ├── rules/
+    │   └── myrules.mdc
+    ├── mcp.json
+    └── commands/
 ```
 
 ## 使用方法
@@ -45,6 +45,14 @@ dev-workspace/
 各プロジェクトの `README.md` に以下のような参照リンクを記載してください：
 
 ```markdown
+## 共通開発ガイドライン
+
+本プロジェクトは、以下の共通開発ガイドラインに従います：
+
+- [コーディング規約](https://github.com/aki-nagatani/dev-workspace/blob/main/guidelines/コーディング規約.md)
+- [テストカバレッジ方針](https://github.com/aki-nagatani/dev-workspace/blob/main/guidelines/テストカバレッジ方針.md)
+- [MCPサーバー設定ガイド](https://github.com/aki-nagatani/dev-workspace/blob/main/guidelines/MCP_SERVERS.md)
+
 詳細は [共通開発ガイドライン](https://github.com/aki-nagatani/dev-workspace) を参照してください。
 ```
 
