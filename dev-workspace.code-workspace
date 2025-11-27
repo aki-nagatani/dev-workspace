@@ -22,7 +22,8 @@
       "**/.git": true,
       "**/__pycache__": true,
       "**/*.pyc": true
-    }
+    },
+    "powershell.cwd": "dev-workspace"
   },
   "launch": {
     "version": "0.2.0",
