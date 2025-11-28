@@ -1,10 +1,6 @@
 {
   "folders": [
     {
-      "name": "MyHobbySite",
-      "path": "D:\\OneDrive\\git_work\\MyHobbySite"
-    },
-    {
       "name": "dev-workspace",
       "path": "D:\\OneDrive\\git_work\\dev-workspace"
     },
@@ -33,24 +29,6 @@
         "type": "debugpy",
         "request": "launch",
         "program": "${file}",
-        "console": "integratedTerminal",
-        "justMyCode": true,
-        "env": {
-          "FLASK_DEBUG": "1",
-          "MYPDEX_DEBUG": "1",
-          "FISHTRACK_DEBUG": "1"
-        },
-        "serverReadyAction": {
-          "pattern": "Running on (https?://\\S+|[0-9]+)",
-          "uriFormat": "%s/",
-          "action": "debugWithChrome"
-        }
-      },
-      {
-        "name": "MyHobbySite",
-        "type": "debugpy",
-        "request": "launch",
-        "program": "${workspaceFolder:MyHobbySite}/runMyHobbySite.py",
         "console": "integratedTerminal",
         "justMyCode": true,
         "env": {
