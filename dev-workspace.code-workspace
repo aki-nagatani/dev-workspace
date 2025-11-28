@@ -75,6 +75,7 @@
           "FLASK_DEBUG": "1",
           "FISHTRACK_DEBUG": "1"
         },
+        "envFile": "${workspaceFolder:FishTrack}/.env.local",
         "serverReadyAction": {
           "pattern": "Running on (https?://\\S+|[0-9]+)",
           "uriFormat": "%s/",
@@ -92,6 +93,7 @@
           "FLASK_DEBUG": "1",
           "MYPDEX_DEBUG": "1"
         },
+        "envFile": "${workspaceFolder:MyPokedex}/.env.local",
         "serverReadyAction": {
           "pattern": "Running on (https?://\\S+|[0-9]+)",
           "uriFormat": "%s/",
