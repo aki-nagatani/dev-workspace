@@ -19,3 +19,6 @@ __pycache__/
 *.temp
 *.log
 temp/
+
+# Secrets
+docs/guidelines/AWS_IAM_KEY.txt
