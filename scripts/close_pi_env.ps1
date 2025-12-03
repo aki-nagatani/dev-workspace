@@ -18,7 +18,8 @@ Write-Host "Backup Dir: $BackupDir"
 Write-Host "`n[1/4] Checking Service Status..." -ForegroundColor Yellow
 try {
     ssh "${PiUser}@${PiHost}" "systemctl status myhobbysite.service"
-} catch {
+}
+catch {
     Write-Warning "Could not check status or service already stopped/does not exist."
 }
 
@@ -29,7 +30,8 @@ try {
     ssh "${PiUser}@${PiHost}" "sudo systemctl stop myhobbysite.service"
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Service stopped." -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Warning "Failed to stop service (might be already stopped)."
     }
 
@@ -37,10 +39,12 @@ try {
     ssh "${PiUser}@${PiHost}" "sudo systemctl disable myhobbysite.service"
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Service disabled." -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Warning "Failed to disable service."
     }
-} catch {
+}
+catch {
     Write-Error "Failed to execute stop commands. Please check connectivity and permissions."
     exit 1
 }
@@ -54,10 +58,12 @@ try {
     scp "${PiUser}@${PiHost}:/home/pi/FishTrack/data/fishtrack.db" "$BackupDir\fishtrack.db"
     if ($LASTEXITCODE -eq 0) {
         Write-Host "  FishTrack DB downloaded." -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Warning "SCP failed for FishTrack DB."
     }
-} catch {
+}
+catch {
     Write-Warning "Failed to download FishTrack DB or file not found."
 }
 
@@ -67,10 +73,12 @@ try {
     scp "${PiUser}@${PiHost}:/home/pi/MyPokedex/data/mypokedex.db" "$BackupDir\mypokedex.db"
     if ($LASTEXITCODE -eq 0) {
         Write-Host "  MyPokedex DB downloaded." -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Warning "SCP failed for MyPokedex DB."
     }
-} catch {
+}
+catch {
     Write-Warning "Failed to download MyPokedex DB or file not found."
 }
 
@@ -80,11 +88,13 @@ Write-Host "Checking if service is inactive..."
 try {
     $status = ssh "${PiUser}@${PiHost}" "systemctl is-active myhobbysite.service"
     if ($status -eq "inactive" -or $status -eq "failed" -or $status -eq "unknown") {
-         Write-Host "Service is inactive ($status) - OK." -ForegroundColor Green
-    } else {
-         Write-Warning "Service status is '$status'. Please check manually."
+        Write-Host "Service is inactive ($status) - OK." -ForegroundColor Green
     }
-} catch {
+    else {
+        Write-Warning "Service status is '$status'. Please check manually."
+    }
+}
+catch {
     # ssh command failing might mean it returns non-zero exit code for 'inactive' or connection error
     # systemctl is-active returns 0 if active, non-zero otherwise.
     # So if it fails (catch block), it likely means it is NOT active (which is good).
