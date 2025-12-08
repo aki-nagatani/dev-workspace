@@ -34,6 +34,7 @@ def resolve_targets(dev_workspace: Path) -> Dict[str, Path]:
     return {
         "FishTrack": workspace_root / "FishTrack/.cursor/rules/myrules.mdc",
         "MyPokedex": workspace_root / "MyPokedex/.cursor/rules/myrules.mdc",
+        "personal-tools": workspace_root / "personal-tools/.cursor/rules/myrules.mdc",
     }
 
 
