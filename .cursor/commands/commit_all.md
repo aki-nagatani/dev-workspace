@@ -5,6 +5,9 @@ FishTrack/MyPokedex/personal-toolsのコミット前に必ず、.githooks/pre-co
 （pre-commitは、git commitで自動実行されます）
 テストでエラーとなった場合は、原因究明を行ってください
 
+ただし、pre-commit内で設定している、"mdの修正のみの場合はテストスキップ"などの条件に当てはまる場合は、
+pre-commitの記述に沿ってテストをスキップしても構いません
+
 テストエラーやカバレッジ不足などで、pre-commitが失敗した場合は、
 コミットせずに対応を行ってください
 --no-verify によるコミットは禁止とします
