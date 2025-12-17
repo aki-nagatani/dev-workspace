@@ -8,6 +8,10 @@
 
 1. **Git MCPサーバー** (`@cyanheads/git-mcp-server`): Gitリポジトリの操作を自然言語で実行
 2. **Slack Webhook MCPサーバー** (`text2slack-mcp`): Slack Incoming Webhook経由でメッセージを送信
+3. **AWS Billing and Cost Management MCPサーバー** (`awslabs.billing-cost-management-mcp-server`): AWSのコスト分析と最適化提案を自然言語で実行
+4. **AWS API MCPサーバー** (`awslabs.aws-api-mcp-server`): AWS APIの直接呼び出しとリソース管理を自然言語で実行
+5. **AWS Knowledge MCPサーバー** (`https://knowledge-mcp.global.api.aws`): AWS公式ドキュメント検索
+6. **Brave Search MCPサーバー** (`@modelcontextprotocol/server-brave-search`): Web検索機能
 
 MCPサーバーを使用することで、AIエージェントが外部ツールやサービスと連携し、開発ワークフローが効率化されます。
 
@@ -25,6 +29,14 @@ MCPサーバーを使用することで、AIエージェントが外部ツール
 
 - **Git MCPサーバー**: Git 2.51.0 以降（推奨）
 - **Slack Webhook MCPサーバー**: Slackアカウント（Incoming Webhook URLの取得に必要、無料プランで利用可能）
+- **AWS Billing and Cost Management MCPサーバー**: 
+  - `uv`パッケージマネージャー（`uvx`コマンドを含む）
+  - AWSアカウントと認証情報（IAMロールまたはアクセスキー）
+  - Cost Explorer APIへのアクセス権限
+- **AWS API MCPサーバー**:
+  - `uv`パッケージマネージャー（`uvx`コマンドを含む）
+  - AWSアカウントと認証情報（IAMロールまたはアクセスキー）
+  - 使用するAWSサービスに応じた適切なIAM権限
 
 ## Cursor設定ファイル
 
@@ -58,6 +70,30 @@ C:\Users\<ユーザー名>\AppData\Roaming\Cursor\User\mcp.json
       "env": {
         "SLACK_WEBHOOK_URL": "your-webhook-url-here"
       }
+    },
+    "aws-billing": {
+      "command": "uvx",
+      "args": [
+        "awslabs.billing-cost-management-mcp-server@latest"
+      ],
+      "enabled": true,
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_PROFILE": "default",
+        "AWS_REGION": "ap-northeast-1"
+      }
+    },
+    "aws-api": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-api-mcp-server@latest"
+      ],
+      "enabled": true,
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_PROFILE": "default",
+        "AWS_REGION": "ap-northeast-1"
+      }
     }
   }
 }
@@ -66,6 +102,8 @@ C:\Users\<ユーザー名>\AppData\Roaming\Cursor\User\mcp.json
 **注意**: 
 - `SLACK_WEBHOOK_URL`は実際のWebhook URLに置き換えてください
 - Webhook URLは機密情報のため、Gitリポジトリにコミットしないでください
+- `AWS_PROFILE`は使用するAWSプロファイル名に置き換えてください（デフォルトは`default`）
+- `AWS_REGION`は使用するAWSリージョンに置き換えてください（MyPokedexプロジェクトでは`ap-northeast-1`）
 
 ### 設定後の再起動
 
@@ -780,6 +818,500 @@ echo 'export SLACK_WEBHOOK_URL="your-webhook-url-here"' >> ~/.bashrc
 
 ---
 
+## AWS Billing and Cost Management MCPサーバー
+
+### 概要
+
+AWS Billing and Cost Management MCPサーバーは、AWS公式が提供するMCPサーバーで、AIアシスタントがAWSのコストデータにアクセスし、以下の機能を実行できるようにします：
+
+- **過去の支出分析**: 指定期間のコストデータを取得・分析
+- **コスト最適化の機会特定**: 未使用リソースやサイズ適正化が必要なリソースを特定
+- **コスト見積もり**: 新しいワークロードの予想コストを見積もり
+- **Cost Explorerデータへのアクセス**: AWS Cost Explorer APIを経由してリアルタイムのコストデータを取得
+
+### 導入方法
+
+#### 前提条件
+
+1. **uvパッケージマネージャーのインストール**
+
+   AWS MCPサーバーは`uvx`コマンド（`uv`パッケージマネージャーの一部）を使用します。
+
+   **Windows**:
+   ```powershell
+   # PowerShell経由でインストール（推奨）
+   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   
+   # または、Wingetを使用
+   winget install --id=astral-sh.uv
+   ```
+
+   **Linux/macOS**:
+   ```bash
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   ```
+
+   インストール後、新しいシェルを開くか、環境変数を再読み込みしてください。
+
+   **動作確認**:
+   ```bash
+   uvx --version
+   ```
+
+2. **AWS認証情報の設定**
+
+   AWS CLIまたは環境変数で認証情報を設定します。
+
+   **方法1: AWS CLI設定ファイル（推奨）**
+   ```bash
+   aws configure
+   ```
+   または
+   ```bash
+   aws configure --profile <プロファイル名>
+   ```
+
+   **方法2: 環境変数**
+   ```bash
+   export AWS_ACCESS_KEY_ID=your-access-key
+   export AWS_SECRET_ACCESS_KEY=your-secret-key
+   export AWS_REGION=ap-northeast-1
+   ```
+
+3. **IAM権限の設定**
+
+   MCPサーバーがCost Explorer APIにアクセスするために、以下のIAM権限が必要です：
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": [
+           "ce:GetCostAndUsage",
+           "ce:GetCostAndUsageWithResources",
+           "ce:GetDimensionValues",
+           "ce:GetReservationCoverage",
+           "ce:GetReservationPurchaseRecommendation",
+           "ce:GetReservationUtilization",
+           "ce:GetRightsizingRecommendation",
+           "ce:GetSavingsPlansUtilization",
+           "ce:GetSavingsPlansUtilizationDetails",
+           "ce:GetUsageReport",
+           "ce:ListCostCategoryDefinitions"
+         ],
+         "Resource": "*"
+       }
+     ]
+   }
+   ```
+
+   **注意**: Cost Explorer APIへのアクセスには、アカウントでCost Explorerが有効になっている必要があります。Cost Explorerは有効化後、最大24時間でデータが利用可能になります。
+
+#### インストール手順
+
+1. **uvパッケージマネージャーのインストール確認**
+   ```bash
+   uvx --version
+   ```
+   インストールされていない場合は、上記の前提条件を参照してください。
+
+2. **Cursor設定ファイルの設定**
+
+   `mcp.json`にAWS MCPサーバーの設定を追加します。
+
+   ```json
+   {
+     "mcpServers": {
+       "aws-billing": {
+         "command": "uvx",
+         "args": [
+           "awslabs.billing-cost-management-mcp-server@latest"
+         ],
+         "enabled": true,
+         "env": {
+           "FASTMCP_LOG_LEVEL": "ERROR",
+           "AWS_PROFILE": "default",
+           "AWS_REGION": "ap-northeast-1"
+         }
+       }
+     }
+   }
+   ```
+
+   **設定パラメータ**:
+   - `AWS_PROFILE`: 使用するAWSプロファイル名（デフォルトは`default`）
+   - `AWS_REGION`: 使用するAWSリージョン（MyPokedexプロジェクトでは`ap-northeast-1`）
+   - `FASTMCP_LOG_LEVEL`: ログレベル（`ERROR`、`WARNING`、`INFO`、`DEBUG`）
+
+3. **動作確認**
+
+   Cursorを完全に再起動した後、AIアシスタントに以下のような質問をして動作確認してください：
+   ```
+   今月のAWSコストを分析してください
+   ```
+   または
+   ```
+   過去30日間のEC2のコストを教えてください
+   ```
+
+### 使用方法
+
+#### 基本的なコスト分析
+
+AIアシスタントに以下のような質問をすることで、コスト分析を実行できます：
+
+##### 月次コストの確認
+```
+今月のAWSコストを分析してください
+```
+
+##### サービス別コストの確認
+```
+EC2とRDSのコストを比較してください
+```
+
+##### 期間指定のコスト分析
+```
+過去30日間のコストデータを分析してください
+```
+
+##### コスト最適化の提案
+```
+コスト削減の機会を特定してください
+```
+
+##### 未使用リソースの特定
+```
+未使用のリソースを特定してください
+```
+
+#### よく使う分析の例
+
+##### 1. 月次コストサマリー
+```
+今月のAWSコストをサービス別に分析し、主要なコスト要因を教えてください
+```
+
+##### 2. コストトレンド分析
+```
+過去3ヶ月間のコスト推移を分析してください
+```
+
+##### 3. リソース別コスト分析
+```
+MyPokedexプロジェクトに関連するリソース（EC2、RDS、S3）のコストを分析してください
+```
+
+##### 4. 最適化提案
+```
+現在のリソース構成から、コスト削減の機会を特定してください。特にEC2とRDSのインスタンスサイズについて確認してください
+```
+
+### セキュリティ設定
+
+#### AWS認証情報の管理
+
+**問題**: AWS認証情報（アクセスキー、シークレットキー）は機密情報として扱う必要があります。
+
+**対策**:
+
+##### 方法1: AWS CLI設定ファイル（推奨）
+
+認証情報を`~/.aws/credentials`ファイルに保存します：
+
+```ini
+[default]
+aws_access_key_id = YOUR_ACCESS_KEY
+aws_secret_access_key = YOUR_SECRET_KEY
+region = ap-northeast-1
+```
+
+**ファイルの権限設定**:
+- Windows: ファイルのプロパティ → セキュリティ → アクセス許可を制限
+- Linux/macOS: `chmod 600 ~/.aws/credentials`
+
+##### 方法2: 環境変数
+
+```bash
+export AWS_ACCESS_KEY_ID=your-access-key
+export AWS_SECRET_ACCESS_KEY=your-secret-key
+export AWS_REGION=ap-northeast-1
+```
+
+**注意**: 環境変数は現在のセッションのみ有効です。永続化する場合は、システム環境変数に設定するか、シェル設定ファイル（`.bashrc`、`.zshrc`など）に追加してください。
+
+##### 方法3: IAMロール（EC2インスタンスから実行する場合）
+
+EC2インスタンスから実行する場合は、IAMインスタンスプロファイルを使用します。現在のMyPokedexプロジェクトでは、EC2インスタンス用のIAMロールが設定されていますが、Cost Explorer APIへのアクセス権限は含まれていません。必要に応じて追加してください。
+
+#### IAM権限の最小権限原則
+
+最小権限の原則に従い、必要な権限のみを付与してください。上記のIAMポリシーは、Cost Explorer APIに必要な権限を含んでいますが、実際の使用状況に応じて調整してください。
+
+#### コストデータの機密性
+
+コストデータは機密情報として扱う必要があります。AIアシスタントとの会話ログにコストデータが含まれる可能性があるため、適切なログ管理を実施してください。
+
+### トラブルシューティング
+
+#### uvxコマンドが見つからない
+
+**症状**: `uvx`コマンドが実行できない、または「コマンドが見つかりません」というエラーが表示される
+
+**対処法**:
+
+1. **uvのインストール確認**
+   ```bash
+   uv --version
+   ```
+   インストールされていない場合は、前提条件の「uvパッケージマネージャーのインストール」を参照してください。
+
+2. **パスの確認**
+   - Windows: `%USERPROFILE%\.cargo\bin`がPATHに含まれているか確認
+   - Linux/macOS: `$HOME/.cargo/bin`がPATHに含まれているか確認
+
+3. **シェルの再起動**
+   - 新しいシェルセッションを開く
+   - Cursorを完全に再起動
+
+#### AWS認証エラー
+
+**症状**: `AccessDenied`や`InvalidAccessKeyId`などのエラーが表示される
+
+**対処法**:
+
+1. **認証情報の確認**
+   ```bash
+   aws sts get-caller-identity
+   ```
+   正常に実行できれば、認証情報は正しく設定されています。
+
+2. **プロファイル名の確認**
+   - `mcp.json`の`AWS_PROFILE`が正しいプロファイル名を指定しているか確認
+   - デフォルトプロファイルを使用する場合は`default`を指定
+
+3. **リージョンの確認**
+   - `mcp.json`の`AWS_REGION`が正しいリージョンを指定しているか確認
+
+#### Cost Explorer APIエラー
+
+**症状**: `ce:GetCostAndUsage`などのAPIエラーが表示される
+
+**対処法**:
+
+1. **Cost Explorerの有効化確認**
+   - AWSコンソール → Billing and Cost Management → Cost Explorer
+   - Cost Explorerが有効になっているか確認
+   - 有効化後、最大24時間でデータが利用可能になります
+
+2. **IAM権限の確認**
+   - 使用しているIAMユーザー/ロールにCost Explorer APIへのアクセス権限があるか確認
+   - 上記のIAMポリシーを参照してください
+
+3. **アカウントの権限確認**
+   - ルートアカウントまたは適切な権限を持つIAMユーザーでログインしているか確認
+
+#### MCPサーバーが接続されない
+
+**症状**: AIアシスタントがAWSコスト分析を実行できない
+
+**対処法**:
+
+1. **設定ファイルの確認**
+   - `mcp.json`のJSON構文が正しいか確認
+   - カンマ、引用符などが正しいか確認
+
+2. **Cursorの再起動**
+   - Cursorを完全に終了
+   - タスクマネージャーでCursorプロセスが残っていないか確認
+   - Cursorを起動し直す
+
+3. **Developer Toolsでログ確認**
+   - `Help > Toggle Developer Tools` → `Console`タブ
+   - MCPサーバー関連のエラーメッセージを確認
+
+### 注意事項
+
+#### Cost Explorerの有効化
+
+Cost Explorerは、アカウントで有効化する必要があります。有効化後、最大24時間でデータが利用可能になります。初回使用時は、データが利用可能になるまで待つ必要があります。
+
+#### コストデータの遅延
+
+Cost Explorerのコストデータには、通常24-48時間の遅延があります。最新のコストデータを取得する場合は、この遅延を考慮してください。
+
+#### リージョンの指定
+
+Cost Explorer APIは、リージョンに依存しないサービスです。ただし、`AWS_REGION`環境変数は、他のAWSサービスとの統合のために設定することを推奨します。MyPokedexプロジェクトでは`ap-northeast-1`（東京リージョン）を使用しています。
+
+---
+
+## AWS API MCPサーバー
+
+### 概要
+
+AWS API MCPサーバーは、AWS公式が提供するMCPサーバーで、AIアシスタントがAWSの各種APIを直接呼び出し、リソース管理や操作を自然言語で実行できるようにします。
+
+**主な機能**:
+- AWS APIの自然言語インターフェース
+- リソース管理と操作（EC2、RDS、S3、VPCなど）
+- ワークロードのトラブルシューティング
+- アプリケーションデプロイの管理
+- 複数のAWSサービスへの統合アクセス
+
+### 導入方法
+
+#### 前提条件
+
+1. **uvパッケージマネージャーのインストール**
+
+   AWS API MCPサーバーは`uvx`コマンド（`uv`パッケージマネージャーの一部）を使用します。
+
+   **動作確認**:
+   ```bash
+   uvx --version
+   ```
+   インストールされていない場合は、AWS Billing MCPサーバーのセクションを参照してください。
+
+2. **AWS認証情報の設定**
+
+   AWS CLIまたは環境変数で認証情報を設定します。詳細はAWS Billing MCPサーバーのセクションを参照してください。
+
+3. **IAM権限の設定**
+
+   AWS API MCPサーバーがアクセスするAWSサービスに応じて、適切なIAM権限が必要です。最小権限の原則に従い、必要な権限のみを付与してください。
+
+   **注意**: 本番環境での使用時は、特に注意が必要です。意図しない操作によるリソース変更やコスト発生を防ぐため、慎重に権限を設定してください。
+
+#### インストール手順
+
+1. **uvパッケージマネージャーのインストール確認**
+   ```bash
+   uvx --version
+   ```
+
+2. **Cursor設定ファイルの設定**
+
+   `mcp.json`にAWS API MCPサーバーの設定を追加します。
+
+   ```json
+   {
+     "mcpServers": {
+       "aws-api": {
+         "command": "uvx",
+         "args": [
+           "awslabs.aws-api-mcp-server@latest"
+         ],
+         "enabled": true,
+         "env": {
+           "FASTMCP_LOG_LEVEL": "ERROR",
+           "AWS_PROFILE": "default",
+           "AWS_REGION": "ap-northeast-1"
+         }
+       }
+     }
+   }
+   ```
+
+3. **動作確認**
+
+   Cursorを完全に再起動した後、AIアシスタントに以下のような質問をして動作確認してください：
+   ```
+   EC2インスタンスの一覧を表示してください
+   ```
+   または
+   ```
+   RDSデータベースの状態を確認してください
+   ```
+
+### 使用方法
+
+#### 基本的なリソース操作
+
+AIアシスタントに以下のような質問をすることで、AWSリソースの操作を実行できます：
+
+##### EC2インスタンスの確認
+```
+EC2インスタンスの一覧を表示してください
+```
+
+##### RDSデータベースの確認
+```
+RDSデータベースの状態を確認してください
+```
+
+##### S3バケットの確認
+```
+S3バケットの一覧を表示してください
+```
+
+##### リソースの詳細情報取得
+```
+mypokedex-dbというRDSインスタンスの詳細を教えてください
+```
+
+### セキュリティ設定
+
+#### IAM権限の最小権限原則
+
+AWS API MCPサーバーは、設定されたIAM権限に基づいてAWS APIを呼び出します。以下の点に注意してください：
+
+1. **必要な権限のみを付与**: 使用するAWSサービスに応じた最小限の権限を設定
+2. **読み取り専用権限の検討**: リソースの確認のみを行う場合は、読み取り専用権限を設定
+3. **リソースレベルの権限**: 可能な限り、特定のリソースへのアクセスに制限
+
+#### 本番環境での注意事項
+
+- 本番環境での使用時は、特に注意が必要です
+- リソースの作成・変更・削除を行う操作は、慎重に確認してから実行してください
+- テスト環境で動作確認を行ってから、本番環境で使用することを推奨します
+
+### トラブルシューティング
+
+#### AWS APIエラー
+
+**症状**: `AccessDenied`や`UnauthorizedOperation`などのエラーが表示される
+
+**対処法**:
+
+1. **IAM権限の確認**
+   - 使用しているIAMユーザー/ロールに適切な権限があるか確認
+   - 必要な権限が不足している場合は、適切なIAMポリシーを追加
+
+2. **認証情報の確認**
+   ```bash
+   aws sts get-caller-identity
+   ```
+   正常に実行できれば、認証情報は正しく設定されています。
+
+#### リソースが見つからない
+
+**症状**: リソースの取得時にエラーが発生する
+
+**対処法**:
+
+1. **リージョンの確認**
+   - `mcp.json`の`AWS_REGION`が正しいリージョンを指定しているか確認
+   - リソースが異なるリージョンに存在する場合は、正しいリージョンを指定
+
+2. **リソース名の確認**
+   - リソース名が正しいか確認
+   - 大文字・小文字の区別に注意
+
+### 注意事項
+
+#### コストへの影響
+
+AWS API MCPサーバーを通じた操作により、リソースが作成・変更される可能性があります。これにより、予期しないコストが発生する可能性があるため、注意が必要です。
+
+#### リソースの変更操作
+
+リソースの作成・変更・削除を行う操作は、本番環境での使用時は特に注意が必要です。可能な限り、テスト環境で動作確認を行ってから、本番環境で使用することを推奨します。
+
+---
+
 ## 参考資料
 
 ### Git MCPサーバー
@@ -795,6 +1327,23 @@ echo 'export SLACK_WEBHOOK_URL="your-webhook-url-here"' >> ~/.bashrc
 - [Slack App Directory](https://slack.com/apps)
 - [Slack Webhook MCPサーバー導入計画](../../dev-workspace/docs/plans/completed/Slack_Webhook_MCPサーバー導入計画.md)
 
+### AWS Billing and Cost Management MCPサーバー
+
+- [AWS Billing and Cost Management MCPサーバー公式ページ](https://awslabs.github.io/mcp/servers/billing-cost-management-mcp-server)
+- [AWS公式ブログ: AWS Billing and Cost Management MCPサーバー](https://aws.amazon.com/jp/blogs/news/aws-announces-billing-and-cost-management-mcp-server/)
+- [AWS Cost Explorer API リファレンス](https://docs.aws.amazon.com/ja_jp/cost-management/latest/APIReference/API_Operations_AWS_Cost_Explorer_Service.html)
+
+### AWS API MCPサーバー
+
+- [AWS公式ブログ: AWS API MCPサーバー](https://aws.amazon.com/jp/about-aws/whats-new/2025/07/aws-api-mcp-server-available/)
+- [AWS公式ブログ: AWS API MCPサーバー（AWS Marketplace）](https://aws.amazon.com/jp/about-aws/whats-new/2025/11/the-aws-api-mcp-server-aws-marketplace/)
+- [AWS API リファレンス](https://docs.aws.amazon.com/ja_jp/apigateway/latest/developerguide/welcome.html)
+
+### 共通
+
+- [uvパッケージマネージャー公式サイト](https://github.com/astral-sh/uv)
+- [AWS_MCP_SERVERS_OVERVIEW.md](./AWS_MCP_SERVERS_OVERVIEW.md) - AWS MCPサーバー概要
+
 ### 共通
 
 - [Model Context Protocol (MCP) 公式ドキュメント](https://modelcontextprotocol.io/)
@@ -803,6 +1352,8 @@ echo 'export SLACK_WEBHOOK_URL="your-webhook-url-here"' >> ~/.bashrc
 
 ## 更新履歴
 
+- 2025-12-17: AWS API MCPサーバーの導入情報を追加
+- 2025-01-XX: AWS Billing and Cost Management MCPサーバーの導入情報を追加
 - 2025-01-XX: 初版作成（3つのドキュメントを統合）
   - Git MCPサーバー 導入・使用ガイド
   - Git MCPサーバー セキュリティ設定ガイド
