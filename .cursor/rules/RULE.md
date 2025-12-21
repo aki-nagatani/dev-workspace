@@ -275,6 +275,6 @@ Remove-Item commit_msg.txt  # 必須：削除
 - **既存の一時ファイル**: プロジェクト直下に一時ファイルが残っている場合は削除すること
 - **カバレッジファイル**: `coverage.json`、`coverage.xml` なども一時ファイルとして扱い、必要に応じて `temp/` 配下に作成すること
 - **Cursor設定同期ルール**:
-  - `dev-workspace/.cursor/rules/myrules.mdc` を唯一の正本として編集し、各アプリ側で直接書き換えない
-  - 変更後は `cd dev-workspace && python scripts/sync_myrules.py --dry-run` で差分を確認し、問題なければ `python scripts/sync_myrules.py` を実行して FishTrack / MyPokedex の `.cursor/rules/myrules.mdc` を同期（MyHobbySiteは廃止予定のため対象外）
+  - `dev-workspace/.cursor/rules/RULE.md` を唯一の正本として編集し、各アプリ側で直接書き換えない
+  - 変更後は `cd dev-workspace && python scripts/sync_myrules.py --dry-run` で差分を確認し、問題なければ `python scripts/sync_myrules.py` を実行して FishTrack / MyPokedex / personal-tools の `.cursor/rules/RULE.md` を同期
   - `.cursor/commands/` は dev-workspace のみで管理し、各リポジトリへ複製しない

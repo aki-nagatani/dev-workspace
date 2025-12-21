@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Synchronize .cursor/rules/myrules.mdc across project repositories."""
+"""Synchronize .cursor/rules/RULE.md across project repositories."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from typing import Dict, Iterable, Tuple
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Copy dev-workspace/.cursor/rules/myrules.mdc to each project."
+        description="Copy dev-workspace/.cursor/rules/RULE.md to each project."
     )
     parser.add_argument(
         "--dry-run",
@@ -32,9 +32,9 @@ def parse_args() -> argparse.Namespace:
 def resolve_targets(dev_workspace: Path) -> Dict[str, Path]:
     workspace_root = dev_workspace.parent
     return {
-        "FishTrack": workspace_root / "FishTrack/.cursor/rules/myrules.mdc",
-        "MyPokedex": workspace_root / "MyPokedex/.cursor/rules/myrules.mdc",
-        "personal-tools": workspace_root / "personal-tools/.cursor/rules/myrules.mdc",
+        "FishTrack": workspace_root / "FishTrack/.cursor/rules/RULE.md",
+        "MyPokedex": workspace_root / "MyPokedex/.cursor/rules/RULE.md",
+        "personal-tools": workspace_root / "personal-tools/.cursor/rules/RULE.md",
     }
 
 
@@ -62,7 +62,7 @@ def main() -> int:
     args = parse_args()
     script_path = Path(__file__).resolve()
     dev_workspace = script_path.parents[1]
-    canonical = dev_workspace / ".cursor/rules/myrules.mdc"
+    canonical = dev_workspace / ".cursor/rules/RULE.md"
 
     if not canonical.exists():
         print(f"[error] canonical file not found: {canonical}", file=sys.stderr)
