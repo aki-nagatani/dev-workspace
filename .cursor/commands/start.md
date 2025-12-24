@@ -1,1 +1,0 @@
-このチャットでは、 .cursor/rules/RULE.md の内容を厳守してください
