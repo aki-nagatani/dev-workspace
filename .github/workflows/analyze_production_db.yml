@@ -10,18 +10,6 @@ jobs:
   analyze-production-db:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout dev-workspace
-        uses: actions/checkout@v4
-        with:
-          repository: aki-nagatani/dev-workspace
-          path: dev-workspace
-
-      - name: Checkout FishTrack
-        uses: actions/checkout@v4
-        with:
-          repository: aki-nagatani/FishTrack
-          path: FishTrack
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
