@@ -30,28 +30,9 @@ def upgrade() -> None:
     bind = op.get_bind()
     inspector = sa.inspect(bind)
     
-    # Drop tables only if they exist and have no dependencies
-    # If tables already exist with correct structure, skip creation
-    if _table_exists(inspector, "reel_model"):
-        # Check if reel_model has dependencies (foreign keys from other tables)
-        try:
-            op.execute("DROP TABLE IF EXISTS reel_model CASCADE")
-        except Exception:
-            # If drop fails, table might be in use, skip
-            pass
+    # Don't drop existing tables as they may have dependencies
+    # Just create tables if they don't exist
     
-    if _table_exists(inspector, "reel_series"):
-        try:
-            op.execute("DROP TABLE IF EXISTS reel_series CASCADE")
-        except Exception:
-            pass
-    
-    if _table_exists(inspector, "rod_series"):
-        try:
-            op.execute("DROP TABLE IF EXISTS rod_series CASCADE")
-        except Exception:
-            pass
-
     # Create tables only if they don't exist
     if not _table_exists(inspector, "rod_series"):
         op.create_table(
@@ -134,8 +115,8 @@ def upgrade() -> None:
             if not _has_column(inspector, "rod_model", "display_name"):
                 batch_op.add_column(sa.Column("display_name", sa.String(length=128), nullable=True))
             
-            # Create foreign key only if series_id column exists and constraint doesn't exist
-            if _has_column(inspector, "rod_model", "series_id"):
+            # Create foreign key only if series_id column exists, rod_series table exists, and constraint doesn't exist
+            if _has_column(inspector, "rod_model", "series_id") and _table_exists(inspector, "rod_series"):
                 existing_fks = {fk["name"] for fk in inspector.get_foreign_keys("rod_model")}
                 if "fk_rod_model_series_id" not in existing_fks:
                     batch_op.create_foreign_key(
