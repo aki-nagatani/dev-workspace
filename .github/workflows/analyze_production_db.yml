@@ -1,0 +1,142 @@
+name: Analyze Production Database Schema
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze-production-db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dev-workspace
+        uses: actions/checkout@v4
+        with:
+          repository: aki-nagatani/dev-workspace
+          path: dev-workspace
+
+      - name: Checkout FishTrack
+        uses: actions/checkout@v4
+        with:
+          repository: aki-nagatani/FishTrack
+          path: FishTrack
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+
+      - name: Analyze Production Database Schema
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.FISHTRACK_EC2_HOST }}
+          username: ${{ secrets.FISHTRACK_EC2_USER }}
+          key: ${{ secrets.FISHTRACK_EC2_SSH_KEY }}
+          envs: SHARED_DATABASE_URL
+          script: |
+            set -euo pipefail
+            echo "=== Analyzing Production Database Schema ==="
+            
+            # dev-workspaceのパスを確認
+            if [ -d /home/ec2-user/dev-workspace ]; then
+              cd /home/ec2-user/dev-workspace
+            elif [ -d /home/ec2-user/FishTrack/../dev-workspace ]; then
+              cd /home/ec2-user/FishTrack/../dev-workspace
+            else
+              echo "Error: dev-workspace directory not found"
+              echo "Attempting to clone dev-workspace..."
+              cd /home/ec2-user
+              if [ -d FishTrack ]; then
+                cd FishTrack/..
+              fi
+              git clone https://github.com/aki-nagatani/dev-workspace.git || {
+                echo "Error: Failed to clone dev-workspace"
+                exit 1
+              }
+              cd dev-workspace
+            fi
+            
+            # 最新のコードを取得
+            echo "=== Fetching latest code ==="
+            git fetch origin main || git fetch origin develop || true
+            git reset --hard origin/main || git reset --hard origin/develop || true
+            
+            # Python環境を確認
+            echo "=== Checking Python environment ==="
+            if command -v python3 &> /dev/null; then
+              PYTHON_CMD=python3
+            elif command -v python &> /dev/null; then
+              PYTHON_CMD=python
+            else
+              echo "Error: Python not found"
+              exit 1
+            fi
+            $PYTHON_CMD --version
+            
+            # 必要なパッケージをインストール
+            echo "=== Installing dependencies ==="
+            $PYTHON_CMD -m pip install --quiet --upgrade pip || true
+            $PYTHON_CMD -m pip install --quiet sqlalchemy psycopg2-binary || {
+              echo "Error: Failed to install dependencies"
+              exit 1
+            }
+            
+            # データベースURLを設定
+            if [ -z "${SHARED_DATABASE_URL:-}" ]; then
+              export SHARED_DATABASE_URL="postgresql://shared_user:LwbxNlVBw7loKk-oQBB2tdD1XO_ZZf8B05uwSQTtF9A@shared-db.cty4osc6gw6k.ap-northeast-1.rds.amazonaws.com:5432/shared_db"
+            fi
+            
+            echo "Database URL: ${SHARED_DATABASE_URL%@*}@***"
+            
+            # 出力ディレクトリを作成
+            mkdir -p docs
+            
+            # スキーマ分析を実行
+            echo "=== Running schema analysis ==="
+            $PYTHON_CMD scripts/analyze_db_schema.py \
+              --environment "Production (shared-db)" \
+              --output docs/db_schema_production.md || {
+              echo "Error: Failed to run schema analysis"
+              exit 1
+            }
+            
+            echo "=== Analysis completed ==="
+            if [ -f docs/db_schema_production.md ]; then
+              echo "Output file: docs/db_schema_production.md"
+              echo "File size: $(du -h docs/db_schema_production.md | cut -f1)"
+              echo "First 50 lines:"
+              head -n 50 docs/db_schema_production.md
+            else
+              echo "Error: Output file not found"
+              exit 1
+            fi
+
+      - name: Download Analysis Result
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.FISHTRACK_EC2_HOST }}
+          username: ${{ secrets.FISHTRACK_EC2_USER }}
+          key: ${{ secrets.FISHTRACK_EC2_SSH_KEY }}
+          source: "dev-workspace/docs/db_schema_production.md"
+          target: "temp/"
+          strip_components: 2
+
+      - name: Upload Analysis Result
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-db-schema-analysis
+          path: temp/db_schema_production.md
+          retention-days: 30
+          
+      - name: Display Analysis Summary
+        run: |
+          if [ -f temp/db_schema_production.md ]; then
+            echo "=== Analysis Summary ==="
+            head -n 30 temp/db_schema_production.md
+          else
+            echo "Warning: Analysis result file not found"
+          fi
+
