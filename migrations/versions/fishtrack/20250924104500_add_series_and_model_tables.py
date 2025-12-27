@@ -118,19 +118,19 @@ def upgrade() -> None:
     # Only alter rod_model if it exists
     if _table_exists(inspector, "rod_model"):
         with op.batch_alter_table("rod_model") as batch_op:
-        batch_op.add_column(sa.Column("series_id", sa.Integer(), nullable=True))
-        batch_op.add_column(sa.Column("model_code", sa.String(length=64), nullable=True))
-        batch_op.add_column(sa.Column("display_name", sa.String(length=128), nullable=True))
-        batch_op.create_foreign_key(
-            "fk_rod_model_series_id",
-            "rod_series",
-            ["series_id"],
-            ["id"],
-            ondelete="RESTRICT",
-        )
-        batch_op.create_unique_constraint(
-            "uq_rod_model_series_code",
-            ["series_id", "model_code"],
+            batch_op.add_column(sa.Column("series_id", sa.Integer(), nullable=True))
+            batch_op.add_column(sa.Column("model_code", sa.String(length=64), nullable=True))
+            batch_op.add_column(sa.Column("display_name", sa.String(length=128), nullable=True))
+            batch_op.create_foreign_key(
+                "fk_rod_model_series_id",
+                "rod_series",
+                ["series_id"],
+                ["id"],
+                ondelete="RESTRICT",
+            )
+            batch_op.create_unique_constraint(
+                "uq_rod_model_series_code",
+                ["series_id", "model_code"],
             )
         
         op.execute("UPDATE rod_model SET display_name = model_name WHERE display_name IS NULL")
@@ -141,16 +141,16 @@ def upgrade() -> None:
     # Only alter rod_inventory if it exists
     if _table_exists(inspector, "rod_inventory"):
         with op.batch_alter_table("rod_inventory") as batch_op:
-        batch_op.alter_column("rod_id", existing_type=sa.Integer(), nullable=True)
-        batch_op.add_column(sa.Column("model_id", sa.Integer(), nullable=True))
-        batch_op.create_foreign_key(
-            "fk_rod_inventory_model_id",
-            "rod_model",
-            ["model_id"],
-            ["id"],
-            ondelete="SET NULL",
-        )
-        batch_op.create_index("ix_rod_inventory_model_id", ["model_id"], unique=False)
+            batch_op.alter_column("rod_id", existing_type=sa.Integer(), nullable=True)
+            batch_op.add_column(sa.Column("model_id", sa.Integer(), nullable=True))
+            batch_op.create_foreign_key(
+                "fk_rod_inventory_model_id",
+                "rod_model",
+                ["model_id"],
+                ["id"],
+                ondelete="SET NULL",
+            )
+            batch_op.create_index("ix_rod_inventory_model_id", ["model_id"], unique=False)
         
         op.execute("UPDATE rod_inventory SET model_id = rod_id WHERE model_id IS NULL")
 
