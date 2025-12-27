@@ -18,6 +18,14 @@ def _table_exists(inspector: sa.Inspector, table_name: str) -> bool:
     return table_name in inspector.get_table_names()
 
 
+def _has_column(inspector: sa.Inspector, table_name: str, column_name: str) -> bool:
+    """Check if a column exists in a table."""
+    try:
+        return any(col["name"] == column_name for col in inspector.get_columns(table_name))
+    except Exception:
+        return False
+
+
 def upgrade() -> None:
     bind = op.get_bind()
     inspector = sa.inspect(bind)
@@ -118,22 +126,39 @@ def upgrade() -> None:
     # Only alter rod_model if it exists
     if _table_exists(inspector, "rod_model"):
         with op.batch_alter_table("rod_model") as batch_op:
-            batch_op.add_column(sa.Column("series_id", sa.Integer(), nullable=True))
-            batch_op.add_column(sa.Column("model_code", sa.String(length=64), nullable=True))
-            batch_op.add_column(sa.Column("display_name", sa.String(length=128), nullable=True))
-            batch_op.create_foreign_key(
-                "fk_rod_model_series_id",
-                "rod_series",
-                ["series_id"],
-                ["id"],
-                ondelete="RESTRICT",
-            )
-            batch_op.create_unique_constraint(
-                "uq_rod_model_series_code",
-                ["series_id", "model_code"],
-            )
+            # Add columns only if they don't exist
+            if not _has_column(inspector, "rod_model", "series_id"):
+                batch_op.add_column(sa.Column("series_id", sa.Integer(), nullable=True))
+            if not _has_column(inspector, "rod_model", "model_code"):
+                batch_op.add_column(sa.Column("model_code", sa.String(length=64), nullable=True))
+            if not _has_column(inspector, "rod_model", "display_name"):
+                batch_op.add_column(sa.Column("display_name", sa.String(length=128), nullable=True))
+            
+            # Create foreign key only if series_id column exists and constraint doesn't exist
+            if _has_column(inspector, "rod_model", "series_id"):
+                existing_fks = {fk["name"] for fk in inspector.get_foreign_keys("rod_model")}
+                if "fk_rod_model_series_id" not in existing_fks:
+                    batch_op.create_foreign_key(
+                        "fk_rod_model_series_id",
+                        "rod_series",
+                        ["series_id"],
+                        ["id"],
+                        ondelete="RESTRICT",
+                    )
+            
+            # Create unique constraint only if both columns exist and constraint doesn't exist
+            if _has_column(inspector, "rod_model", "series_id") and _has_column(inspector, "rod_model", "model_code"):
+                existing_constraints = {uc["name"] for uc in inspector.get_unique_constraints("rod_model")}
+                if "uq_rod_model_series_code" not in existing_constraints:
+                    batch_op.create_unique_constraint(
+                        "uq_rod_model_series_code",
+                        ["series_id", "model_code"],
+                    )
         
-        op.execute("UPDATE rod_model SET display_name = model_name WHERE display_name IS NULL")
+        # Refresh inspector after potential column additions
+        inspector = sa.inspect(bind)
+        if _has_column(inspector, "rod_model", "display_name") and _has_column(inspector, "rod_model", "model_name"):
+            op.execute("UPDATE rod_model SET display_name = model_name WHERE display_name IS NULL")
     
     # Refresh inspector
     inspector = sa.inspect(bind)
@@ -141,18 +166,37 @@ def upgrade() -> None:
     # Only alter rod_inventory if it exists
     if _table_exists(inspector, "rod_inventory"):
         with op.batch_alter_table("rod_inventory") as batch_op:
-            batch_op.alter_column("rod_id", existing_type=sa.Integer(), nullable=True)
-            batch_op.add_column(sa.Column("model_id", sa.Integer(), nullable=True))
-            batch_op.create_foreign_key(
-                "fk_rod_inventory_model_id",
-                "rod_model",
-                ["model_id"],
-                ["id"],
-                ondelete="SET NULL",
-            )
-            batch_op.create_index("ix_rod_inventory_model_id", ["model_id"], unique=False)
+            # Alter rod_id column only if it's not nullable
+            rod_id_col = next((col for col in inspector.get_columns("rod_inventory") if col["name"] == "rod_id"), None)
+            if rod_id_col and rod_id_col.get("nullable") is False:
+                batch_op.alter_column("rod_id", existing_type=sa.Integer(), nullable=True)
+            
+            # Add model_id column only if it doesn't exist
+            if not _has_column(inspector, "rod_inventory", "model_id"):
+                batch_op.add_column(sa.Column("model_id", sa.Integer(), nullable=True))
+            
+            # Create foreign key only if model_id column exists and constraint doesn't exist
+            if _has_column(inspector, "rod_inventory", "model_id"):
+                existing_fks = {fk["name"] for fk in inspector.get_foreign_keys("rod_inventory")}
+                if "fk_rod_inventory_model_id" not in existing_fks:
+                    batch_op.create_foreign_key(
+                        "fk_rod_inventory_model_id",
+                        "rod_model",
+                        ["model_id"],
+                        ["id"],
+                        ondelete="SET NULL",
+                    )
+            
+            # Create index only if model_id column exists and index doesn't exist
+            if _has_column(inspector, "rod_inventory", "model_id"):
+                existing_indexes = {idx["name"] for idx in inspector.get_indexes("rod_inventory")}
+                if "ix_rod_inventory_model_id" not in existing_indexes:
+                    batch_op.create_index("ix_rod_inventory_model_id", ["model_id"], unique=False)
         
-        op.execute("UPDATE rod_inventory SET model_id = rod_id WHERE model_id IS NULL")
+        # Refresh inspector after potential column additions
+        inspector = sa.inspect(bind)
+        if _has_column(inspector, "rod_inventory", "model_id") and _has_column(inspector, "rod_inventory", "rod_id"):
+            op.execute("UPDATE rod_inventory SET model_id = rod_id WHERE model_id IS NULL")
 
 
 def downgrade() -> None:
