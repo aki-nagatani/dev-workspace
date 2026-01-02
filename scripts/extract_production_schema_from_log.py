@@ -55,6 +55,8 @@ def get_log_from_github(run_id: str, repo: str = "aki-nagatani/FishTrack") -> st
             ["gh", "run", "view", run_id, "--log", "--repo", repo],
             capture_output=True,
             text=True,
+            encoding='utf-8',
+            errors='replace',
             check=True
         )
         return result.stdout

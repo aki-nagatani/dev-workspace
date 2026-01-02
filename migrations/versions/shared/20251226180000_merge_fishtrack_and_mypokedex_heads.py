@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "merge_fishtrack_mypokedex_heads"
-down_revision = ("add_user_id_to_holdings", "20251225_change_boxmember_to_composite_primary_key")
+down_revision = ("make_rod_model_series_id_not_null", "20251225_change_boxmember_to_composite_primary_key")
 branch_labels = None
 depends_on = None
 

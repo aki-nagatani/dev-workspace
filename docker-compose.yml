@@ -1,0 +1,32 @@
+services:
+  shared-db:
+    # 統合データベース（FishTrackとMyPokedexの両方のテーブルを含む）
+    # 本番環境（shared-db）と同じ構成
+    profiles: [ "local" ]
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=shared_user
+      - POSTGRES_PASSWORD=shared_password
+      - POSTGRES_DB=shared_db
+    volumes:
+      - shared_db_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432" # Host:Container (Using 5434 to avoid conflict with FishTrack's 5432 and MyPokedex's 5433)
+    networks:
+      - shared-db-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U shared_user -d shared_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  shared_db_data:
+
+
+networks:
+  shared-db-network:
+    driver: bridge
+    name: shared-db-network
+    external: false

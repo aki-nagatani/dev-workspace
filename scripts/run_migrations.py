@@ -54,8 +54,31 @@ def get_database_url() -> str:
     return url
 
 
-def run_migrations():
-    """統合マイグレーションを実行"""
+def check_alembic_version_table(db_url: str) -> bool:
+    """alembic_versionテーブルが存在するか確認"""
+    try:
+        from sqlalchemy import create_engine, text
+        engine = create_engine(db_url)
+        with engine.connect() as conn:
+            result = conn.execute(text("""
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_schema = 'public' 
+                    AND table_name = 'alembic_version'
+                );
+            """))
+            return result.scalar()
+    except Exception:
+        return False
+
+
+def run_migrations(target_revision: str = "head"):
+    """統合マイグレーションを実行
+    
+    Args:
+        target_revision: 適用するマイグレーションのリビジョン（デフォルト: "head"）
+                        マイグレーションリセット後の再適用の場合は "merge_fishtrack_mypokedex_heads" を指定
+    """
     # Alembic設定ファイルのパス
     alembic_ini = workspace_root / "migrations" / "alembic.ini"
     
@@ -77,13 +100,24 @@ def run_migrations():
     
     print(f"=== Running unified migrations ===")
     print(f"Database URL: {db_url.split('@')[1] if '@' in db_url else '***'}")
+    print(f"Target revision: {target_revision}")
     print(f"Alembic config: {alembic_ini}")
     print()
     
+    # alembic_versionテーブルの存在確認
+    has_version_table = check_alembic_version_table(db_url)
+    if not has_version_table:
+        print("⚠️  Warning: alembic_version table does not exist")
+        print("   This may be a fresh database or after migration reset.")
+        if target_revision == "head":
+            print("   Automatically switching to 'merge_fishtrack_mypokedex_heads' for migration reset recovery.")
+            target_revision = "merge_fishtrack_mypokedex_heads"
+        print()
+    
     try:
         # マイグレーションを実行
-        command.upgrade(alembic_cfg, "head")
-        print("\n=== Migration completed successfully ===")
+        command.upgrade(alembic_cfg, target_revision)
+        print(f"\n=== Migration to {target_revision} completed successfully ===")
     except Exception as e:
         print(f"\n=== Migration failed ===")
         print(f"Error: {e}")
@@ -93,5 +127,16 @@ def run_migrations():
 
 
 if __name__ == "__main__":
-    run_migrations()
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="Run unified database migrations")
+    parser.add_argument(
+        "--target",
+        type=str,
+        default="head",
+        help="Target revision to upgrade to (default: head). Use 'merge_fishtrack_mypokedex_heads' for migration reset recovery."
+    )
+    
+    args = parser.parse_args()
+    run_migrations(target_revision=args.target)
 
