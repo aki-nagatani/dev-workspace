@@ -37,9 +37,12 @@ $PYTHON_CMD -c "import sqlalchemy" 2>/dev/null || {
   exit 1
 }
 
-# データベースURLを設定
+# データベースURLの確認
 if [ -z "${SHARED_DATABASE_URL:-}" ]; then
-  export SHARED_DATABASE_URL="postgresql://shared_user:LwbxNlVBw7loKk-oQBB2tdD1XO_ZZf8B05uwSQTtF9A@shared-db.cty4osc6gw6k.ap-northeast-1.rds.amazonaws.com:5432/shared_db"
+  echo "Error: SHARED_DATABASE_URL environment variable is not set"
+  echo "Please set it before running this script:"
+  echo "  export SHARED_DATABASE_URL='postgresql://user:password@host:port/database'"
+  exit 1
 fi
 
 echo "Database URL: ${SHARED_DATABASE_URL%@*}@***"

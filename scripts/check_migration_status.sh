@@ -9,9 +9,12 @@ echo "マイグレーション状態確認"
 echo "=========================================="
 echo ""
 
-# 環境変数の設定
+# 環境変数の確認
 if [ -z "${SHARED_DATABASE_URL:-}" ]; then
-  export SHARED_DATABASE_URL="postgresql://shared_user:LwbxNlVBw7loKk-oQBB2tdD1XO_ZZf8B05uwSQTtF9A@shared-db.cty4osc6gw6k.ap-northeast-1.rds.amazonaws.com:5432/shared_db"
+  echo "Error: SHARED_DATABASE_URL environment variable is not set"
+  echo "Please set it before running this script:"
+  echo "  export SHARED_DATABASE_URL='postgresql://user:password@host:port/database'"
+  exit 1
 fi
 
 # dev-workspaceの統合マイグレーション
