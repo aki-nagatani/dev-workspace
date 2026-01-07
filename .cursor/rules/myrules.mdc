@@ -261,10 +261,12 @@ Remove-Item commit_msg.txt  # 必須：削除
 
 - **形式**: `YYYY-MM-DD`（例：`2025-11-20`）または `YYYY-MM-DD HH:MM:SS`
 - **日付不明時**: 現在の日付を使用、または日付を省略（プレースホルダーは使用不可）
+- **タイムゾーン**: 特別な指示がない場合は日本標準時（JST、UTC+9）を使用する
+- **ドキュメントやソースコードのコメントに日付を記載する場合**: 必ず現在日時を取得して記載すること（固定値や仮の日付は使用禁止）
 
 **AIエージェントでの取得方法**:
-- PowerShell: `Get-Date -Format 'yyyy-MM-dd'`
-- Python: `datetime.now().strftime('%Y-%m-%d')`
+- PowerShell: `Get-Date -Format 'yyyy-MM-dd'`（タイムゾーン指定: `[TimeZoneInfo]::FindSystemTimeZoneById('Tokyo Standard Time')`）
+- Python: `datetime.now(timezone(timedelta(hours=9))).strftime('%Y-%m-%d')` または `datetime.now(JST).strftime('%Y-%m-%d')`（`from datetime import datetime, timezone, timedelta`、`JST = timezone(timedelta(hours=9))`）
 
 ## 一時ファイル管理ルール（重要）
 
