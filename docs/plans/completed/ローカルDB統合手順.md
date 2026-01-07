@@ -7,7 +7,7 @@
 ## 前提条件
 
 - DockerとDocker Composeがインストールされていること
-- 既存のFishTrackとMyPokedexのDockerコンテナが起動していること（データ移行のため）
+- **注意**: 個別のローカルDB（fishtrack-db、mypokedex-db）は既に削除され、統合DB（shared-db）のみを使用しています
 
 ## 手順
 
@@ -24,101 +24,13 @@ docker compose --profile local up -d shared-db
 - **ユーザー名**: `shared_user`
 - **パスワード**: `shared_password`
 
-### 2. 既存データのバックアップ（推奨）
+### 2. ネットワークの統合
 
-統合前に、既存のデータをバックアップしておくことを推奨します。
-
-```bash
-# FishTrackのデータをバックアップ
-docker exec -t fishtrack-db-1 pg_dump -U fishtrack fishtrack_db > backups/fishtrack_backup_$(Get-Date -Format 'yyyyMMdd_HHmmss').sql
-
-# MyPokedexのデータをバックアップ
-docker exec -t mypokedex-db-1 pg_dump -U mypokedex mypokedex_db > backups/mypokedex_backup_$(Get-Date -Format 'yyyyMMdd_HHmmss').sql
-```
-
-### 3. データ移行の実行
-
-統合データベースに既存データを移行します。
-
-```powershell
-# PowerShellの場合
-cd dev-workspace
-
-# 環境変数を設定
-$env:MYPDEX_SOURCE_DATABASE_URL="postgresql://mypokedex:mypokedex_password@localhost:5433/mypokedex_db"
-$env:FISHTRACK_SOURCE_DATABASE_URL="postgresql://fishtrack:fishtrack_pass@localhost:5432/fishtrack_db"
-$env:SHARED_DATABASE_URL="postgresql://shared_user:shared_password@localhost:5434/shared_db"
-
-# 移行スクリプトを実行
-python scripts/migrate_local_to_shared_db.py
-```
-
-```bash
-# Bashの場合
-cd dev-workspace
-
-# 環境変数を設定
-export MYPDEX_SOURCE_DATABASE_URL="postgresql://mypokedex:mypokedex_password@localhost:5433/mypokedex_db"
-export FISHTRACK_SOURCE_DATABASE_URL="postgresql://fishtrack:fishtrack_pass@localhost:5432/fishtrack_db"
-export SHARED_DATABASE_URL="postgresql://shared_user:shared_password@localhost:5434/shared_db"
-
-# 移行スクリプトを実行
-python scripts/migrate_local_to_shared_db.py
-```
-
-### 4. ネットワークの統合
+**注意**: 個別のローカルDBは既に削除され、統合DBのみを使用しています。以下の手順は既に完了しています。
 
 統合DBコンテナを起動すると、`shared-db-network`が作成されます。FishTrackとMyPokedexのアプリコンテナを、このネットワーク経由で統合DBにアクセスできるように設定します。
 
-#### 4.1 docker-compose.ymlの更新
-
-各アプリの`docker-compose.yml`の`app`サービスの`networks`セクションに`shared-db-network`を追加します。
-
-**FishTrack/docker-compose.yml**:
-```yaml
-services:
-  app:
-    # ... 他の設定 ...
-    networks:
-      - fishtrack-net
-      - shared-db-network  # 追加
-```
-
-**MyPokedex/docker-compose.yml**:
-```yaml
-services:
-  app:
-    # ... 他の設定 ...
-    networks:
-      - mypokedex-network
-      - shared-db-network  # 追加
-```
-
-**networksセクション**（既に定義されている場合）:
-```yaml
-networks:
-  fishtrack-net:  # または mypokedex-network
-    driver: bridge
-  shared-db-network:
-    name: shared-db-network
-    external: true
-```
-
-#### 4.2 アプリコンテナの再起動
-
-設定を反映するため、アプリコンテナを再起動します：
-
-```bash
-# FishTrackの場合
-cd FishTrack
-docker compose up -d app
-
-# MyPokedexの場合
-cd MyPokedex
-docker compose up -d app
-```
-
-#### 4.3 ネットワーク接続の確認
+#### 2.1 ネットワーク接続の確認
 
 以下のコマンドで、アプリコンテナが`shared-db-network`に接続されているか確認します：
 
@@ -128,7 +40,7 @@ docker network inspect shared-db-network --format '{{range .Containers}}{{.Name}
 
 出力に`dev-workspace-shared-db-1`、`fishtrack-app-1`、`mypokedex-app-1`が含まれていれば正常です。
 
-### 5. 環境変数の設定
+### 3. 環境変数の設定
 
 統合データベースを使用するように、各アプリの環境変数を設定します。
 
@@ -179,11 +91,11 @@ export MYPDEX_DATABASE_URL="postgresql://shared_user:shared_password@shared-db:5
 
 **注意**: 現在のdocker-compose.ymlは本番環境のshared-dbをデフォルトで使用しています。ローカル環境で統合DBを使用する場合は、環境変数で上書きしてください。
 
-### 6. 動作確認
+### 4. 動作確認
 
 統合後、以下のコマンドでデータが正しく移行されたか、アプリが正常に接続できているか確認します。
 
-#### 6.1 データベースの確認
+#### 4.1 データベースの確認
 
 ```bash
 # 統合DBに接続
@@ -196,7 +108,7 @@ docker exec dev-workspace-shared-db-1 psql -U shared_user -d shared_db
 docker exec dev-workspace-shared-db-1 psql -U shared_user -d shared_db -c 'SELECT ''MyPokedex'' as app, COUNT(*) as count FROM "User" UNION ALL SELECT ''FishTrack'' as app, COUNT(*) FROM fishtrack_user;'
 ```
 
-#### 6.2 アプリコンテナの接続確認
+#### 4.2 アプリコンテナの接続確認
 
 ```bash
 # ネットワーク接続の確認
@@ -210,7 +122,7 @@ docker exec fishtrack-app-1 python -c "from sqlalchemy import create_engine; eng
 docker exec mypokedex-app-1 python -c "from sqlalchemy import create_engine; engine = create_engine('postgresql://shared_user:shared_password@shared-db:5432/shared_db'); conn = engine.connect(); print('Connection successful!'); conn.close()"
 ```
 
-#### 6.3 アプリケーションの動作確認
+#### 4.3 アプリケーションの動作確認
 
 ブラウザで以下のURLにアクセスして、アプリが正常に動作しているか確認します：
 
@@ -221,14 +133,12 @@ docker exec mypokedex-app-1 python -c "from sqlalchemy import create_engine; eng
 
 ## 注意事項
 
-1. **既存データの保持**: 統合後も、元のFishTrackとMyPokedexのデータベースコンテナは停止せずに保持しておくことを推奨します（バックアップとして）。
+1. **個別DBの削除**: 個別のローカルDB（fishtrack-db、mypokedex-db）は既に削除され、統合DB（shared-db）のみを使用しています。
 
 2. **ポート番号**: 
-   - FishTrack DB: 5432
-   - MyPokedex DB: 5433
-   - 統合DB: 5434
+   - 統合DB: 5434（ホスト側）
 
-3. **マイグレーション**: 統合後は、`dev-workspace`のマイグレーションを使用してスキーマを管理します。
+3. **マイグレーション**: `dev-workspace`のマイグレーションを使用してスキーマを管理します。
 
 4. **環境変数**: 各アプリの環境変数で統合DBのURLを指定するか、docker-compose.ymlのデフォルト値を更新してください。
 
@@ -302,9 +212,8 @@ docker exec mypokedex-app-1 python -c "from sqlalchemy import create_engine; eng
 
 ## ロールバック
 
-統合に問題が発生した場合、元の構成に戻すことができます：
+**注意**: 個別のローカルDBは既に削除されているため、ロールバックはバックアップからの復元が必要です。
 
-1. FishTrackとMyPokedexのdocker-compose.ymlを元に戻す
-2. 各アプリの環境変数を元のDB URLに設定
-3. 元のDBコンテナを起動
+1. バックアップファイル（`backups/`配下）からデータを復元
+2. 必要に応じて個別DBコンテナを再作成（docker-compose.ymlにdbサービスを追加）
 
