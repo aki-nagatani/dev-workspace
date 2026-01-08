@@ -2,6 +2,7 @@
 コミットメッセージが文字化けしないよう注意してください
 
 FishTrack/MyPokedex/personal-toolsのコミット前に必ず、.githooks/pre-commitを実行し、テストをスキップしないでください
+また、カバレッジ要件の無断での緩和も禁止とします
 （pre-commitは、git commitで自動実行されます）
 テストでエラーとなった場合は、原因究明を行ってください
 
