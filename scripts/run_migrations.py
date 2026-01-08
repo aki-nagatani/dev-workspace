@@ -29,6 +29,9 @@ for src_dir in [fishtrack_src, mypokedex_src]:
 try:
     from alembic import command
     from alembic.config import Config
+    from alembic.runtime.migration import MigrationContext
+    from alembic.script import ScriptDirectory
+    from sqlalchemy import create_engine
 except ImportError:
     print("Error: alembic is not installed. Please install it with: pip install alembic")
     sys.exit(1)
@@ -114,10 +117,74 @@ def run_migrations(target_revision: str = "head"):
             target_revision = "merge_fishtrack_mypokedex_heads"
         print()
     
+    # マイグレーション実行前の現在のリビジョンを取得
+    current_revision_before = None
+    if has_version_table:
+        try:
+            engine = create_engine(db_url)
+            with engine.connect() as conn:
+                context = MigrationContext.configure(conn)
+                current_revision_before = context.get_current_revision()
+        except Exception as e:
+            print(f"⚠️  Warning: Could not get current revision before migration: {e}")
+    
+    if current_revision_before:
+        print(f"📋 Current revision (before): {current_revision_before}")
+    else:
+        print("📋 Current revision (before): None (fresh database or no migrations applied)")
+    print()
+    
     try:
         # マイグレーションを実行
         command.upgrade(alembic_cfg, target_revision)
+        
+        # マイグレーション実行後の現在のリビジョンを取得
+        current_revision_after = None
+        try:
+            engine = create_engine(db_url)
+            with engine.connect() as conn:
+                context = MigrationContext.configure(conn)
+                current_revision_after = context.get_current_revision()
+        except Exception as e:
+            print(f"⚠️  Warning: Could not get current revision after migration: {e}")
+        
         print(f"\n=== Migration to {target_revision} completed successfully ===")
+        if current_revision_after:
+            print(f"📋 Current revision (after): {current_revision_after}")
+            if current_revision_before and current_revision_before != current_revision_after:
+                print(f"✅ Migration applied: {current_revision_before} → {current_revision_after}")
+                
+                # 適用されたマイグレーションの詳細を表示
+                try:
+                    script = ScriptDirectory.from_config(alembic_cfg)
+                    if current_revision_before:
+                        # 適用されたリビジョンのリストを取得
+                        applied_revisions = list(script.iterate_revisions(
+                            current_revision_before, current_revision_after
+                        ))
+                        if applied_revisions:
+                            print(f"\n📝 Applied migrations ({len(applied_revisions)} revision(s)):")
+                            for rev in applied_revisions[1:]:  # 最初は現在のリビジョンなのでスキップ
+                                doc = rev.doc or "(no description)"
+                                print(f"   - {rev.revision[:12]}: {doc}")
+                except Exception as e:
+                    print(f"⚠️  Warning: Could not get applied migration details: {e}")
+            elif current_revision_before == current_revision_after:
+                print(f"ℹ️  No new migrations to apply (already at {current_revision_after})")
+            else:
+                print(f"✅ Initial migration applied: → {current_revision_after}")
+                
+                # 初期マイグレーションの詳細を表示
+                try:
+                    script = ScriptDirectory.from_config(alembic_cfg)
+                    rev_obj = script.get_revision(current_revision_after)
+                    if rev_obj:
+                        doc = rev_obj.doc or "(no description)"
+                        print(f"   - {current_revision_after[:12]}: {doc}")
+                except Exception as e:
+                    print(f"⚠️  Warning: Could not get migration details: {e}")
+        else:
+            print("⚠️  Warning: Could not determine final revision")
     except Exception as e:
         print(f"\n=== Migration failed ===")
         print(f"Error: {e}")
