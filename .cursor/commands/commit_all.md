@@ -11,8 +11,8 @@ FishTrack/MyPokedex/personal-toolsのコミット前に必ず、.githooks/pre-co
 ただし、pre-commit内で設定している、"mdの修正のみの場合はテストスキップ"などの条件に当てはまる場合は、
 pre-commitの記述に沿ってテストをスキップしても構いません
 
-テストエラーやカバレッジ不足などで、pre-commitが失敗した場合は、
-コミットせずに対応を行ってください
+テストエラーやカバレッジ不足などで、pre-commitが失敗した場合は、コミットせずに対応を行ってください
+失敗の原因を確認し、その原因の解消を始めてください
 --no-verify によるコミットは禁止とします
 
 FishTrackとMyPokedexのコミット先は「develop」ブランチです
