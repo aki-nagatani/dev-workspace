@@ -134,6 +134,35 @@ def run_migrations(target_revision: str = "head"):
         print("📋 Current revision (before): None (fresh database or no migrations applied)")
     print()
     
+    # 現在のリビジョンがtarget_revisionと一致している場合、マイグレーションをスキップ
+    if current_revision_before and target_revision == "head":
+        try:
+            script = ScriptDirectory.from_config(alembic_cfg)
+            head_revisions = script.get_revisions("heads")
+            if head_revisions:
+                head_revision = head_revisions[0].revision
+                if current_revision_before == head_revision:
+                    print(f"✅ Migration already at head: {current_revision_before}")
+                    print("   Skipping migration execution (no changes needed)")
+                    return
+        except Exception as e:
+            print(f"⚠️  Warning: Could not check head revision: {e}")
+            print("   Proceeding with migration execution")
+            print()
+    elif current_revision_before and target_revision != "head":
+        # target_revisionが指定されている場合、現在のリビジョンと比較
+        try:
+            script = ScriptDirectory.from_config(alembic_cfg)
+            target_rev_obj = script.get_revision(target_revision)
+            if target_rev_obj and current_revision_before == target_rev_obj.revision:
+                print(f"✅ Migration already at target revision: {current_revision_before}")
+                print("   Skipping migration execution (no changes needed)")
+                return
+        except Exception as e:
+            print(f"⚠️  Warning: Could not check target revision: {e}")
+            print("   Proceeding with migration execution")
+            print()
+    
     try:
         # マイグレーションを実行
         command.upgrade(alembic_cfg, target_revision)
