@@ -27,46 +27,63 @@ if script_location:
             sys.path.insert(0, str(src_dir))
 
 # Import both FishTrack and MyPokedex models to build unified metadata
+# FishTrackモジュールはオプショナル（MyPokedexのみのデプロイ時には利用できない可能性がある）
+target_metadata = None
+fishtrack_db = None
+mypokedex_db = None
+
 try:
     # Create Flask app contexts to ensure models are properly registered
     from flask import Flask
+    from sqlalchemy import MetaData
     
-    # FishTrack app context
-    fishtrack_app = Flask(__name__)
-    fishtrack_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-    fishtrack_app.config['SQLALCHEMY_BINDS'] = {'fishtrack': 'sqlite:///:memory:'}
-    from fishtrack.extensions import db as fishtrack_db
-    fishtrack_db.init_app(fishtrack_app)
-    
-    with fishtrack_app.app_context():
-        # Import all models to ensure they are registered
-        from fishtrack.models import (  # noqa: F401
-            Manufacturer,
-            RodHolding,
-            RodModel,
-            RodSeries,
-            ReelHolding,
-            ReelModel,
-            ReelSeries,
-            FishTrackUser,
-            TackleSpecImportLog,
-            OpsMonitoring,
-        )
+    # Try to import FishTrack models (optional)
+    fishtrack_db = None
+    try:
+        # FishTrack app context
+        fishtrack_app = Flask(__name__)
+        fishtrack_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        fishtrack_app.config['SQLALCHEMY_BINDS'] = {'fishtrack': 'sqlite:///:memory:'}
+        from fishtrack.extensions import db as fishtrack_db
+        fishtrack_db.init_app(fishtrack_app)
         
-        # Flask-SQLAlchemy with __bind_key__ may register tables in separate metadata
-        # We need to ensure all tables are in fishtrack_db.metadata
-        # Force registration by accessing __table__ attribute
-        for model_class in [Manufacturer, RodHolding, RodModel, RodSeries,
-                           ReelHolding, ReelModel, ReelSeries, FishTrackUser,
-                           TackleSpecImportLog, OpsMonitoring]:
-            if hasattr(model_class, '__table__') and model_class.__table__ is not None:
-                table = model_class.__table__
-                # If table is not in metadata, add it
-                if table.name not in fishtrack_db.metadata.tables:
-                    # Copy table to fishtrack_db.metadata
-                    table.to_metadata(fishtrack_db.metadata, schema=table.schema)
+        with fishtrack_app.app_context():
+            # Import all models to ensure they are registered
+            from fishtrack.models import (  # noqa: F401
+                Manufacturer,
+                RodHolding,
+                RodModel,
+                RodSeries,
+                ReelHolding,
+                ReelModel,
+                ReelSeries,
+                FishTrackUser,
+                TackleSpecImportLog,
+                OpsMonitoring,
+            )
+            
+            # Flask-SQLAlchemy with __bind_key__ may register tables in separate metadata
+            # We need to ensure all tables are in fishtrack_db.metadata
+            # Force registration by accessing __table__ attribute
+            for model_class in [Manufacturer, RodHolding, RodModel, RodSeries,
+                               ReelHolding, ReelModel, ReelSeries, FishTrackUser,
+                               TackleSpecImportLog, OpsMonitoring]:
+                if hasattr(model_class, '__table__') and model_class.__table__ is not None:
+                    table = model_class.__table__
+                    # If table is not in metadata, add it
+                    if table.name not in fishtrack_db.metadata.tables:
+                        # Copy table to fishtrack_db.metadata
+                        table.to_metadata(fishtrack_db.metadata, schema=table.schema)
+    except (ImportError, ModuleNotFoundError) as e:
+        # FishTrackモジュールが利用できない場合（MyPokedexのみのデプロイ時など）
+        print(f"Info: FishTrack module not available: {e}")
+        print("   Continuing with MyPokedex models only...")
+        fishtrack_db = None
+    except Exception as e:
+        print(f"Warning: Could not import FishTrack models: {e}")
+        fishtrack_db = None
     
-    # MyPokedex app context
+    # MyPokedex app context (required)
     mypokedex_app = Flask(__name__)
     mypokedex_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
     from mypokedex.extensions import db as mypokedex_db
@@ -96,14 +113,14 @@ try:
     #
     # Instead, we'll create a new MetaData and use Table.tometadata() to copy
     # tables from both metadata objects to the new unified metadata.
-    from sqlalchemy import MetaData
     
     # Create a unified metadata object
     target_metadata = MetaData()
     
-    # Copy all tables from FishTrack metadata to the unified metadata
-    for table_name, table in fishtrack_db.metadata.tables.items():
-        table.to_metadata(target_metadata, schema=table.schema)
+    # Copy all tables from FishTrack metadata to the unified metadata (if available)
+    if fishtrack_db is not None:
+        for table_name, table in fishtrack_db.metadata.tables.items():
+            table.to_metadata(target_metadata, schema=table.schema)
     
     # Copy all tables from MyPokedex metadata to the unified metadata
     for table_name, table in mypokedex_db.metadata.tables.items():
