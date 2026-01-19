@@ -1,72 +1,154 @@
-# 本番DB操作スキル（MyPokedex / FishTrack 共通）
+# 本番EC2接続・DB操作スキル（MyPokedex / FishTrack 共通）
 
 ## 概要
-MyPokedexおよびFishTrackの本番環境（AWS RDS）のデータベースに、EC2インスタンス経由でアクセスする方法を提供します。
+MyPokedexおよびFishTrackの本番EC2インスタンスへの接続方法と、本番データベース（AWS RDS）へのアクセス方法を提供します。
 
-## 接続情報
+## 重要: 正しいEC2インスタンスの確認
 
-### MyPokedex
-| 項目 | 値 |
-|------|-----|
-| EC2インスタンスID | `i-0b816de830482d542` |
-| SSH鍵ファイル | `C:\Users\Akihide\.ssh\mypokedex_ec2_key` |
-| EC2ホスト | `ec2-user@18.179.162.82` |
-| EC2上のアプリパス | `/home/ec2-user/MyPokedex` |
-| Dockerコンテナ名 | `mypokedex-app-1` |
-| アプリモジュール | `mypokedex` |
-| ファクトリ関数 | `createApp` |
+**接続前に必ず正しいインスタンスを確認してください。**
 
-### FishTrack
-| 項目 | 値 |
-|------|-----|
-| EC2インスタンスID | `i-05e573f245ca9e2d1` |
-| SSH鍵ファイル | `C:\Users\Akihide\.ssh\fishtrack_ec2_key` |
-| EC2ホスト | `ec2-user@52.197.69.195` |
-| EC2上のアプリパス | `/home/ec2-user/FishTrack` |
-| Dockerコンテナ名 | `fishtrack-app-1` |
-| アプリモジュール | `fishtrack` |
-| ファクトリ関数 | `create_app` |
+各プロジェクトには複数のEC2インスタンスが存在する場合があります。停止中のインスタンスや古いインスタンスに接続しないよう注意が必要です。
+
+### 現在の本番インスタンス情報
+
+#### MyPokedex
+| 項目 | 値 | 備考 |
+|------|-----|------|
+| **本番インスタンスID** | `i-023a1623e48cabf1d` | **現在稼働中** |
+| **本番IPアドレス** | `54.249.50.253` | **デプロイ先** |
+| EC2上のアプリパス | `/home/ec2-user/MyPokedex` | |
+| Dockerコンテナ名 | `mypokedex-app-1` | |
+| アプリモジュール | `mypokedex` | |
+| ファクトリ関数 | `createApp` | |
+| ~~旧インスタンスID~~ | ~~`i-0b816de830482d542`~~ | **使用禁止（停止中）** |
+| ~~旧IPアドレス~~ | ~~`18.179.162.82`~~ | **使用禁止** |
+
+#### FishTrack
+| 項目 | 値 | 備考 |
+|------|-----|------|
+| **本番インスタンスID** | `i-05e573f245ca9e2d1` | **現在稼働中** |
+| **本番IPアドレス** | `52.197.69.195` | **デプロイ先** |
+| EC2上のアプリパス | `/home/ec2-user/FishTrack` | |
+| Dockerコンテナ名 | `fishtrack-app-1` | |
+| アプリモジュール | `fishtrack` | |
+| ファクトリ関数 | `create_app` | |
+
+### インスタンス情報の確認方法
+
+GitHub Secretsの`*_EC2_HOST`に設定されているIPアドレスが正しい本番インスタンスです。
+
+```powershell
+# MyPokedex
+gh secret list --repo aki-nagatani/MyPokedex | Select-String "EC2"
+
+# FishTrack
+gh secret list --repo aki-nagatani/FishTrack | Select-String "EC2"
+```
+
+または、deploy.ymlのコメントを確認：
+```yaml
+# deploy.yml内のコメント例
+# Current running instance: i-023a1623e48cabf1d (54.249.50.253)
+# Stopped instance: i-0b816de830482d542 (18.179.162.82) - DO NOT USE
+```
 
 ## 接続方法
 
 ### 方法1: AWS Systems Manager (Session Manager) 経由（推奨）
 
-SSH鍵なしでEC2に接続できます。AWS CLIが必要です。
+**Session Managerを使用する利点：**
+- SSH鍵の管理が不要
+- セキュリティグループでSSHポート（22）を開放する必要がない
+- 接続ログがCloudTrailに記録される
+- IAM権限で接続を制御可能
 
-#### コマンド実行（SSM Run Command）
+#### 前提条件
+- AWS CLIがインストール済み
+- Session Managerプラグインがインストール済み
+- 適切なIAM権限を持つプロファイルが設定済み
 
-```powershell
-# MyPokedex - コマンド送信
-aws ssm send-command --instance-ids i-0b816de830482d542 --document-name "AWS-RunShellScript" --parameters commands="cd /home/ec2-user/MyPokedex && docker exec mypokedex-app-1 python scripts/my_script.py" --output json
-
-# FishTrack - コマンド送信
-aws ssm send-command --instance-ids i-05e573f245ca9e2d1 --document-name "AWS-RunShellScript" --parameters commands="cd /home/ec2-user/FishTrack && docker exec fishtrack-app-1 python scripts/my_script.py" --output json
-
-# 結果取得（CommandIdを指定）
-aws ssm get-command-invocation --command-id <CommandId> --instance-id <InstanceId> --output json
-```
-
-#### 対話型セッション（Session Manager）
+#### 対話型セッション（推奨）
 
 ```powershell
 # MyPokedex
-aws ssm start-session --target i-0b816de830482d542
+aws ssm start-session --target i-023a1623e48cabf1d
 
 # FishTrack
 aws ssm start-session --target i-05e573f245ca9e2d1
 ```
 
-### 方法2: SSH接続
+セッション開始後：
+```bash
+# ec2-userに切り替え
+sudo su - ec2-user
 
-```powershell
-# MyPokedex
-ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@18.179.162.82 "cd /home/ec2-user/MyPokedex && docker exec mypokedex-app-1 python -c 'Pythonコード'"
+# アプリディレクトリに移動
+cd ~/MyPokedex  # または ~/FishTrack
 
-# FishTrack
-ssh -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@52.197.69.195 "cd /home/ec2-user/FishTrack && docker exec fishtrack-app-1 python -c 'Pythonコード'"
+# 環境変数確認
+grep -E 'VERSION|CAPTCHA' .env
+
+# Dockerコンテナ状態確認
+docker compose ps
+
+# コンテナ再起動
+docker compose --env-file .env down && docker compose --env-file .env up -d
 ```
 
-**注意**: PowerShellでは複雑なPythonコードのエスケープが困難なため、簡単なクエリのみ推奨。
+#### コマンド実行（SSM Run Command）
+
+単発のコマンド実行に便利です。
+
+```powershell
+# MyPokedex - コマンド送信
+aws ssm send-command `
+  --instance-ids i-023a1623e48cabf1d `
+  --document-name "AWS-RunShellScript" `
+  --parameters 'commands=["cd /home/ec2-user/MyPokedex && cat .env | grep VERSION"]' `
+  --output json
+
+# FishTrack - コマンド送信
+aws ssm send-command `
+  --instance-ids i-05e573f245ca9e2d1 `
+  --document-name "AWS-RunShellScript" `
+  --parameters 'commands=["cd /home/ec2-user/FishTrack && cat .env | grep VERSION"]' `
+  --output json
+
+# 結果取得（CommandIdを指定）
+aws ssm get-command-invocation --command-id <CommandId> --instance-id <InstanceId> --output json
+```
+
+### 方法2: SSH接続（Session Managerが使用できない場合）
+
+**注意**: SSH接続を使用する場合は、必ず正しいIPアドレスを確認してください。
+
+#### SSH鍵ファイル
+| プロジェクト | SSH鍵ファイル |
+|-------------|---------------|
+| MyPokedex | `C:\Users\Akihide\.ssh\mypokedex_ec2_key` |
+| FishTrack | `C:\Users\Akihide\.ssh\fishtrack_ec2_key` |
+
+#### 接続コマンド
+
+```powershell
+# MyPokedex（正しいインスタンス）
+ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@54.249.50.253
+
+# FishTrack
+ssh -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@52.197.69.195
+```
+
+#### 単発コマンド実行
+
+```powershell
+# MyPokedex - 環境変数確認
+ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@54.249.50.253 "grep -E 'VERSION|CAPTCHA' /home/ec2-user/MyPokedex/.env"
+
+# FishTrack - 環境変数確認
+ssh -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@52.197.69.195 "grep VERSION /home/ec2-user/FishTrack/.env"
+```
+
+**注意**: PowerShellでは複雑なコマンドのエスケープが困難なため、対話型セッションまたはSession Managerの使用を推奨。
 
 ### 方法3: スクリプトファイル経由（複雑な操作向け）
 
@@ -121,7 +203,7 @@ with app.app_context():
 2. **EC2にスクリプト転送**
    ```powershell
    # MyPokedex
-   scp -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no "D:\OneDrive\git_work\MyPokedex\scripts\my_script.py" ec2-user@18.179.162.82:/home/ec2-user/MyPokedex/scripts/
+   scp -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no "D:\OneDrive\git_work\MyPokedex\scripts\my_script.py" ec2-user@54.249.50.253:/home/ec2-user/MyPokedex/scripts/
    
    # FishTrack
    scp -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no "D:\OneDrive\git_work\FishTrack\scripts\my_script.py" ec2-user@52.197.69.195:/home/ec2-user/FishTrack/scripts/
@@ -130,7 +212,7 @@ with app.app_context():
 3. **EC2上でスクリプト実行**
    ```powershell
    # MyPokedex
-   ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@18.179.162.82 "cd /home/ec2-user/MyPokedex && docker exec mypokedex-app-1 python scripts/my_script.py"
+   ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@54.249.50.253 "cd /home/ec2-user/MyPokedex && docker exec mypokedex-app-1 python scripts/my_script.py"
    
    # FishTrack
    ssh -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@52.197.69.195 "cd /home/ec2-user/FishTrack && docker exec fishtrack-app-1 python scripts/my_script.py"
@@ -141,13 +223,64 @@ with app.app_context():
    # MyPokedex - ローカル
    Remove-Item "D:\OneDrive\git_work\MyPokedex\scripts\my_script.py"
    # MyPokedex - EC2
-   ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@18.179.162.82 "rm /home/ec2-user/MyPokedex/scripts/my_script.py"
+   ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@54.249.50.253 "rm /home/ec2-user/MyPokedex/scripts/my_script.py"
    
    # FishTrack - ローカル
    Remove-Item "D:\OneDrive\git_work\FishTrack\scripts\my_script.py"
    # FishTrack - EC2
    ssh -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@52.197.69.195 "rm /home/ec2-user/FishTrack/scripts/my_script.py"
    ```
+
+## よく使う操作
+
+### 環境変数の確認・更新
+
+```bash
+# Session Manager接続後
+cd ~/MyPokedex  # または ~/FishTrack
+
+# 環境変数確認
+cat .env
+
+# 環境変数追加
+echo "NEW_VAR=value" >> .env
+
+# 環境変数更新（既存の値を置換）
+sed -i 's|^OLD_VAR=.*|OLD_VAR=new_value|' .env
+
+# Dockerコンテナ再起動（環境変数反映）
+docker compose --env-file .env down && docker compose --env-file .env up -d
+```
+
+### Dockerコンテナ操作
+
+```bash
+# コンテナ状態確認
+docker compose ps
+
+# コンテナログ確認
+docker compose logs app --tail 100
+
+# コンテナ再起動
+docker compose --env-file .env restart app
+
+# コンテナ完全再起動（環境変数反映）
+docker compose --env-file .env down && docker compose --env-file .env up -d
+
+# コンテナ内でコマンド実行
+docker exec mypokedex-app-1 python -c "print('hello')"
+```
+
+### Git操作
+
+```bash
+# 現在のバージョン確認
+git log --oneline -1
+
+# リモートとの差分確認
+git fetch origin main
+git log --oneline HEAD..origin/main
+```
 
 ## 利用可能なモデル
 
@@ -169,11 +302,13 @@ with app.app_context():
 
 ## 注意事項
 
-1. **本番DBへの書き込みは慎重に** - 必ずバックアップを確認してから実行
-2. **タイムアウト** - 長時間かかる操作はタイムアウトする可能性あり
-3. **スクリプトの削除** - 一時的なスクリプトは実行後に削除すること
-4. **ローカルDBとの混同注意** - docker-compose.ymlの設定により、ローカル環境は共有DBに接続している場合がある
-5. **アプリ名の違い** - MyPokedexは`createApp`、FishTrackは`create_app`（スネークケース）
+1. **正しいインスタンスの確認** - 接続前に必ず本番インスタンスのIPアドレス/IDを確認すること。停止中や古いインスタンスに接続しないこと
+2. **Session Managerの使用を推奨** - セキュリティとログ記録の観点からSession Managerの使用を推奨
+3. **本番DBへの書き込みは慎重に** - 必ずバックアップを確認してから実行
+4. **タイムアウト** - 長時間かかる操作はタイムアウトする可能性あり
+5. **スクリプトの削除** - 一時的なスクリプトは実行後に削除すること
+6. **ローカルDBとの混同注意** - docker-compose.ymlの設定により、ローカル環境は共有DBに接続している場合がある
+7. **アプリ名の違い** - MyPokedexは`createApp`、FishTrackは`create_app`（スネークケース）
 
 ## 関連ドキュメント
 
