@@ -8,6 +8,7 @@ MyPokedexおよびFishTrackの本番環境（AWS RDS）のデータベースに�
 ### MyPokedex
 | 項目 | 値 |
 |------|-----|
+| EC2インスタンスID | `i-0b816de830482d542` |
 | SSH鍵ファイル | `C:\Users\Akihide\.ssh\mypokedex_ec2_key` |
 | EC2ホスト | `ec2-user@18.179.162.82` |
 | EC2上のアプリパス | `/home/ec2-user/MyPokedex` |
@@ -18,6 +19,7 @@ MyPokedexおよびFishTrackの本番環境（AWS RDS）のデータベースに�
 ### FishTrack
 | 項目 | 値 |
 |------|-----|
+| EC2インスタンスID | `i-05e573f245ca9e2d1` |
 | SSH鍵ファイル | `C:\Users\Akihide\.ssh\fishtrack_ec2_key` |
 | EC2ホスト | `ec2-user@52.197.69.195` |
 | EC2上のアプリパス | `/home/ec2-user/FishTrack` |
@@ -27,7 +29,34 @@ MyPokedexおよびFishTrackの本番環境（AWS RDS）のデータベースに�
 
 ## 接続方法
 
-### 方法1: 簡単なクエリ（SSHコマンド直接実行）
+### 方法1: AWS Systems Manager (Session Manager) 経由（推奨）
+
+SSH鍵なしでEC2に接続できます。AWS CLIが必要です。
+
+#### コマンド実行（SSM Run Command）
+
+```powershell
+# MyPokedex - コマンド送信
+aws ssm send-command --instance-ids i-0b816de830482d542 --document-name "AWS-RunShellScript" --parameters commands="cd /home/ec2-user/MyPokedex && docker exec mypokedex-app-1 python scripts/my_script.py" --output json
+
+# FishTrack - コマンド送信
+aws ssm send-command --instance-ids i-05e573f245ca9e2d1 --document-name "AWS-RunShellScript" --parameters commands="cd /home/ec2-user/FishTrack && docker exec fishtrack-app-1 python scripts/my_script.py" --output json
+
+# 結果取得（CommandIdを指定）
+aws ssm get-command-invocation --command-id <CommandId> --instance-id <InstanceId> --output json
+```
+
+#### 対話型セッション（Session Manager）
+
+```powershell
+# MyPokedex
+aws ssm start-session --target i-0b816de830482d542
+
+# FishTrack
+aws ssm start-session --target i-05e573f245ca9e2d1
+```
+
+### 方法2: SSH接続
 
 ```powershell
 # MyPokedex
@@ -39,7 +68,7 @@ ssh -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2
 
 **注意**: PowerShellでは複雑なPythonコードのエスケープが困難なため、簡単なクエリのみ推奨。
 
-### 方法2: スクリプトファイル経由（推奨）
+### 方法3: スクリプトファイル経由（複雑な操作向け）
 
 複雑な操作の場合は、スクリプトファイルを作成してEC2に転送・実行する方法を推奨。
 
