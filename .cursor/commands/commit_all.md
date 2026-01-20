@@ -10,7 +10,7 @@ myrulesを厳守して作業してください
 
 FishTrack/MyPokedex/personal-toolsのコミット前に必ず、.githooks/pre-commitを実行し、テストをスキップしないでください
 また、カバレッジ要件の無断での緩和も禁止とします
-（pre-commitは、git commitで自動実行されます）
+（pre-commitは「git commit」で自動実行されます、コマンドより個別で呼び出す必要はありません）
 テストでエラーとなった場合は、原因究明を行ってください
 
 ただし、pre-commit内で設定している、"mdの修正のみの場合はテストスキップ"などの条件に当てはまる場合は、
