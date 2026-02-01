@@ -25,3 +25,4 @@ backups/
 
 # Secrets
 docs/guidelines/AWS_IAM_KEY.txt
+config.local.json

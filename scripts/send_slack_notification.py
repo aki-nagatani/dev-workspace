@@ -28,6 +28,68 @@ class SlackNotificationError(RuntimeError):
     pass
 
 
+def get_slack_webhook_url_from_env_file() -> str | None:
+    """プロジェクトルートの.envファイルからSlack Webhook URLを取得する。
+
+    Returns:
+        Slack Webhook URL（見つからない場合はNone）
+    """
+    # スクリプトの場所からプロジェクトルートを推定
+    script_dir = Path(__file__).parent
+    project_root = script_dir.parent
+    env_file = project_root / ".env"
+
+    if not env_file.exists():
+        return None
+
+    try:
+        with open(env_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                # コメント行と空行をスキップ
+                if not line or line.startswith("#"):
+                    continue
+                # KEY=VALUE形式を解析
+                if "=" in line:
+                    key, value = line.split("=", 1)
+                    key = key.strip()
+                    value = value.strip().strip('"').strip("'")
+                    if key == "SLACK_WEBHOOK_URL" and value:
+                        return value
+    except OSError:
+        # ファイル読み取りエラーは無視
+        pass
+
+    return None
+
+
+def get_slack_webhook_url_from_local_config() -> str | None:
+    """プロジェクトルートのconfig.local.jsonファイルからSlack Webhook URLを取得する。
+
+    Returns:
+        Slack Webhook URL（見つからない場合はNone）
+    """
+    # スクリプトの場所からプロジェクトルートを推定
+    script_dir = Path(__file__).parent
+    project_root = script_dir.parent
+    config_file = project_root / "config.local.json"
+
+    if not config_file.exists():
+        return None
+
+    try:
+        with open(config_file, "r", encoding="utf-8") as f:
+            config = json.load(f)
+            webhook_url = config.get("SLACK_WEBHOOK_URL")
+            if webhook_url:
+                return webhook_url
+    except (json.JSONDecodeError, KeyError, OSError):
+        # 設定ファイルの読み取りエラーは無視
+        pass
+
+    return None
+
+
 def get_slack_webhook_url_from_mcp_config() -> str | None:
     """MCP設定ファイルからSlack Webhook URLを取得する。
 
@@ -149,12 +211,16 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    # Webhook URLの取得（優先順位: コマンドライン引数 > 環境変数 > MCP設定ファイル）
+    # Webhook URLの取得（優先順位: コマンドライン引数 > 環境変数 > .envファイル > MCP設定ファイル > config.local.json）
     webhook_url = args.webhook_url
     if not webhook_url:
         webhook_url = os.environ.get("SLACK_WEBHOOK_URL")
     if not webhook_url:
+        webhook_url = get_slack_webhook_url_from_env_file()
+    if not webhook_url:
         webhook_url = get_slack_webhook_url_from_mcp_config()
+    if not webhook_url:
+        webhook_url = get_slack_webhook_url_from_local_config()
 
     if not webhook_url:
         print(
@@ -162,9 +228,14 @@ def main() -> int:
             file=sys.stderr,
         )
         print(
-            "Please set SLACK_WEBHOOK_URL environment variable, configure it in MCP settings, or use --webhook-url option",
+            "Please set SLACK_WEBHOOK_URL using one of the following methods:",
             file=sys.stderr,
         )
+        print("  1. Command line: --webhook-url option", file=sys.stderr)
+        print("  2. Environment variable: SLACK_WEBHOOK_URL", file=sys.stderr)
+        print("  3. .env file: Create .env file in project root with SLACK_WEBHOOK_URL=...", file=sys.stderr)
+        print("  4. MCP settings: Configure in ~/.cursor/mcp.json", file=sys.stderr)
+        print("  5. Local config: Create config.local.json in project root with SLACK_WEBHOOK_URL", file=sys.stderr)
         return 1
 
     # メッセージ送信
