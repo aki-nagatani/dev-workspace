@@ -28,17 +28,13 @@ FishTrackとMyPokedexのコミット先は「develop」ブランチです
 「main」ブランチには適用しないでください
 その他のプロジェクトは、mainリポジトリにコミットしてください
 
-otayori-naviのプッシュ時はCI/CDが実行されます、GitHubActionsの状況を確認してください
-対象のGitHubActionsが実行中の場合は、実行が終了するまで待機し、結果を確認してください
+**🚨 otayori-naviのプッシュ後のGitHub Actions確認（必須・絶対にスキップ禁止）**:
 
-**GitHub Actionsの確認方法（必須）**:
-1. プッシュ完了後、GitHub Actionsのページ（https://github.com/aki-nagatani/otayori-navi/actions）を確認する
-2. 最新のワークフロー実行が開始されていることを確認する
-3. ワークフローが実行中の場合は、完了するまで待機する（最大20分程度）
-4. ワークフローが完了したら、結果を確認する：
-   - すべてのジョブ（lint、test、deploy）が成功（緑色のチェックマーク）であることを確認
-   - 失敗（赤色のX）がある場合は、エラー内容を確認して報告する
-5. ワークフローが失敗した場合は、エラー内容を確認し、必要に応じて修正を行う
-6. **重要**: GitHub Actionsの確認をスキップしてはならない。必ず完了まで待機し、結果を確認すること
+otayori-naviのプッシュ時はCI/CDが実行されます。**必ず完了を待って結果を確認してください。**
+
+**実行方法**: `github-actions-check` SKILLを参照して、GitHub Actionsの完了を待って結果を確認してください。
+- SKILLの場所: `dev-workspace/.cursor/skills/github-actions-check/SKILL.md`
+- リポジトリ: `aki-nagatani/otayori-navi`
+- 確認対象: lint、test、deployジョブ
 
 コミット時にコメント用の一時ファイルを作成した場合は削除してください
