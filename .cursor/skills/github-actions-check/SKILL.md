@@ -34,7 +34,77 @@ description: GitHub Actionsの完了を待って結果を確認するSKILL。ota
 
 最新のワークフロー実行を確認します：
 
-**方法1: GitHub APIを使用（推奨）**
+**方法1: GitHub CLIを使用（推奨・最優先）**
+
+GitHub CLI（`gh`）がインストールされている場合、最も簡単に確認できます：
+
+```powershell
+# リポジトリディレクトリに移動（例: otayori-navi）
+cd d:\OneDrive\git_work\otayori-navi
+
+# 最新のワークフロー実行一覧を確認
+gh run list --limit 1
+
+# 最新の実行の詳細を確認（自動的に最新のrun IDを取得）
+$runId = (gh run list --limit 1 --json databaseId -q '.[0].databaseId')
+gh run view $runId
+
+# ブラウザで開く
+gh run view $runId --web
+
+# 失敗した場合のログを確認
+gh run view $runId --log-failed
+```
+
+**待機スクリプト例（GitHub CLI使用）**:
+```powershell
+cd d:\OneDrive\git_work\otayori-navi  # 対象リポジトリに変更
+$maxWaitMinutes = 20
+$checkIntervalSeconds = 30
+$startTime = Get-Date
+
+Write-Host "GitHub Actionsの完了を待機中..."
+
+while ($true) {
+    try {
+        $run = gh run list --limit 1 --json status,conclusion,databaseId,htmlUrl | ConvertFrom-Json
+        $status = $run.status
+        $conclusion = $run.conclusion
+        
+        Write-Host "Status: $status, Conclusion: $conclusion"
+        
+        if ($status -eq "completed") {
+            if ($conclusion -eq "success") {
+                Write-Host "✅ GitHub Actions成功: $($run.htmlUrl)"
+                gh run view $run.databaseId
+                break
+            } else {
+                Write-Host "❌ GitHub Actions失敗: $($run.htmlUrl)"
+                gh run view $run.databaseId --log-failed
+                exit 1
+            }
+        }
+        
+        $elapsed = (Get-Date) - $startTime
+        if ($elapsed.TotalMinutes -gt $maxWaitMinutes) {
+            Write-Host "⚠️ タイムアウト: 最大待機時間を超過しました"
+            Write-Host "手動で確認してください: $($run.htmlUrl)"
+            exit 1
+        }
+        
+        Start-Sleep -Seconds $checkIntervalSeconds
+    } catch {
+        Write-Host "⚠️ GitHub CLIエラー: $_"
+        Write-Host "手動で確認してください: https://github.com/aki-nagatani/otayori-navi/actions"
+        exit 1
+    }
+}
+```
+
+**方法2: GitHub APIを使用**
+
+GitHub CLIが使用できない場合：
+
 ```powershell
 $repo = "aki-nagatani/otayori-navi"  # 対象リポジトリに変更
 $headers = @{'Accept'='application/vnd.github.v3+json'}
@@ -50,7 +120,7 @@ try {
 }
 ```
 
-**方法2: ブラウザで確認**
+**方法3: ブラウザで確認**
 - GitHub Actionsのページを開く: `https://github.com/{repo}/actions`
 - 最新のワークフロー実行を確認
 
@@ -62,49 +132,7 @@ try {
 - 定期的にステータスを確認する（30秒〜1分ごと）
 - `status: "completed"`になるまで待機を継続する
 
-**待機スクリプト例（PowerShell）**:
-```powershell
-$repo = "aki-nagatani/otayori-navi"  # 対象リポジトリに変更
-$maxWaitMinutes = 20
-$checkIntervalSeconds = 30
-$startTime = Get-Date
-
-Write-Host "GitHub Actionsの完了を待機中..."
-
-while ($true) {
-    try {
-        $headers = @{'Accept'='application/vnd.github.v3+json'}
-        $response = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/actions/runs?per_page=1" -Headers $headers
-        $latest = $response.workflow_runs[0]
-        
-        Write-Host "Status: $($latest.status), Conclusion: $($latest.conclusion)"
-        
-        if ($latest.status -eq "completed") {
-            if ($latest.conclusion -eq "success") {
-                Write-Host "✅ GitHub Actions成功: $($latest.html_url)"
-                break
-            } else {
-                Write-Host "❌ GitHub Actions失敗: $($latest.html_url)"
-                Write-Host "エラー内容を確認してください"
-                exit 1
-            }
-        }
-        
-        $elapsed = (Get-Date) - $startTime
-        if ($elapsed.TotalMinutes -gt $maxWaitMinutes) {
-            Write-Host "⚠️ タイムアウト: 最大待機時間を超過しました"
-            Write-Host "手動で確認してください: $($latest.html_url)"
-            exit 1
-        }
-        
-        Start-Sleep -Seconds $checkIntervalSeconds
-    } catch {
-        Write-Host "⚠️ GitHub APIエラー: $_"
-        Write-Host "手動で確認してください: https://github.com/$repo/actions"
-        exit 1
-    }
-}
-```
+**待機スクリプト例は「方法1: GitHub CLIを使用」セクションを参照してください。**
 
 ### 5. 結果の確認（完了後）
 
@@ -142,9 +170,18 @@ while ($true) {
 
 ## エラーハンドリング
 
+### GitHub CLIがインストールされていない場合
+- GitHub CLIをインストール: https://cli.github.com/
+- または、GitHub APIまたはブラウザでの確認方法を使用
+
+### GitHub CLIで認証エラーが発生する場合
+- `gh auth login` を実行して認証を設定
+- または、GitHub APIまたはブラウザでの確認方法を使用
+
 ### GitHub APIが404を返す場合
 - リポジトリ名が正しいか確認
-- ブラウザで手動確認を推奨
+- プライベートリポジトリの場合は認証が必要な可能性がある
+- GitHub CLIまたはブラウザで手動確認を推奨
 
 ### タイムアウトした場合
 - 最大待機時間（20分）を超過した場合は、手動で確認
@@ -158,5 +195,9 @@ while ($true) {
 ## 実行ルール
 
 - **このSKILLを呼び出すタイミング**: プッシュやマージ完了後、即座に呼び出す
+- **確認方法の優先順位**: 
+  1. GitHub CLI（`gh`コマンド）が使用可能な場合は最優先
+  2. GitHub API（公開リポジトリの場合）
+  3. ブラウザでの手動確認
 - **確認をスキップする場合**: なし（必ず確認する）
 - **作業完了の条件**: GitHub Actionsが成功（`conclusion: "success"`）するまで確認を継続する
