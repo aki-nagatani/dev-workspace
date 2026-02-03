@@ -24,17 +24,16 @@ pre-commitの記述に沿ってテストをスキップしても構いません
 - カバレッジ不足やテストエラーがある場合は、それらを解決してからコミットしてください
 - 一時的な回避策として `--no-verify` を使用することは許可されません
 
-FishTrackとMyPokedexのコミット先は「develop」ブランチです
+FishTrack、MyPokedex、otayori-naviのコミット先は「develop」ブランチです
 「main」ブランチには適用しないでください
 その他のプロジェクトは、mainリポジトリにコミットしてください
 
-**🚨 otayori-naviのプッシュ後のGitHub Actions確認（必須・絶対にスキップ禁止）**:
-
-otayori-naviのプッシュ時はCI/CDが実行されます。**必ず完了を待って結果を確認してください。**
-
-**実行方法**: `github-actions-check` SKILLを参照して、GitHub Actionsの完了を待って結果を確認してください。
-- SKILLの場所: `dev-workspace/.cursor/skills/github-actions-check/SKILL.md`
-- リポジトリ: `aki-nagatani/otayori-navi`
-- 確認対象: lint、test、deployジョブ
-
 コミット時にコメント用の一時ファイルを作成した場合は削除してください
+
+## Cursorログ更新（必須）
+
+**🚨 コミット完了後、必ずCursorログを更新してください。**
+
+- `obsidian-cursor-log` SKILLを使用して、当日のCursorLogに作業内容を記録する
+- 記録内容: 作業名（コミット作業）、プロジェクト名、変更ファイル、実施内容（コミットした内容の概要）、結果（コミット・プッシュ完了の確認）
+- タグは作業内容に応じて適宜追加（例: `#git`、`#commit`、プロジェクト名のタグなど）
