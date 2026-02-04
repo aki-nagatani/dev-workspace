@@ -9,7 +9,7 @@ description: Cursorの作業内容をObsidianのCursorLogに記録する。作�
 - 保存先は `D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM-DD.md`（JST）
 - 先頭にタグ行を置く（`#obsidian`は禁止）
 - **タグは作業内容に応じて適宜追加する**
-- タイムスタンプは `HH:mm:ss`（JST）
+- タイムスタンプは `HH:mm:ss`（JST）。**実際の時刻で記載する**（作業を行った時点の実時刻を取得して記録する。仮の時刻や固定値は使わない）
 - 粒度はSlack最終報告の項目に合わせる
 - **ファイルを変更しない場合は、ログの更新は不要**
 

@@ -7,17 +7,25 @@ permissions:
   contents: read
 
 jobs:
+  # 要: リポジトリの Secrets に FISHTRACK_EC2_* と SHARED_DATABASE_URL を設定すること
+  # （IDE の "Context access might be invalid" はカスタム Secret 名に対する誤検知。actionlint は .github/actionlint.yaml で無視）
   analyze-production-db:
     runs-on: ubuntu-latest
+    env:
+      EC2_HOST: ${{ secrets.FISHTRACK_EC2_HOST }}
+      EC2_USER: ${{ secrets.FISHTRACK_EC2_USER }}
+      EC2_SSH_KEY: ${{ secrets.FISHTRACK_EC2_SSH_KEY }}
+      SHARED_DATABASE_URL: ${{ secrets.SHARED_DATABASE_URL }}
     steps:
       - name: Analyze Production Database Schema
         uses: appleboy/ssh-action@master
+        env:
+          SHARED_DATABASE_URL: ${{ env.SHARED_DATABASE_URL }}
         with:
-          host: ${{ secrets.FISHTRACK_EC2_HOST }}
-          username: ${{ secrets.FISHTRACK_EC2_USER }}
-          key: ${{ secrets.FISHTRACK_EC2_SSH_KEY }}
+          host: ${{ env.EC2_HOST }}
+          username: ${{ env.EC2_USER }}
+          key: ${{ env.EC2_SSH_KEY }}
           envs: SHARED_DATABASE_URL
-          env: SHARED_DATABASE_URL=${{ secrets.SHARED_DATABASE_URL }}
           script: |
             set -euo pipefail
             echo "=== Analyzing Production Database Schema ==="
@@ -101,9 +109,9 @@ jobs:
       - name: Download Analysis Result
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.FISHTRACK_EC2_HOST }}
-          username: ${{ secrets.FISHTRACK_EC2_USER }}
-          key: ${{ secrets.FISHTRACK_EC2_SSH_KEY }}
+          host: ${{ env.EC2_HOST }}
+          username: ${{ env.EC2_USER }}
+          key: ${{ env.EC2_SSH_KEY }}
           source: "dev-workspace/docs/db_schema_production.md"
           target: "temp/"
           strip_components: 2

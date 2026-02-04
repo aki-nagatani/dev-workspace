@@ -1,0 +1,7 @@
+# actionlint 設定（https://github.com/rhysd/actionlint）
+# カスタム Secrets 参照による「Context access might be invalid」は
+# リポジトリに Secret を登録していれば実行上問題ないため無視する。
+paths:
+  .github/workflows/analyze_production_db.yml:
+    ignore:
+      - 'Context access might be invalid:.+'
