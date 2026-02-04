@@ -17,6 +17,7 @@ jobs:
           username: ${{ secrets.FISHTRACK_EC2_USER }}
           key: ${{ secrets.FISHTRACK_EC2_SSH_KEY }}
           envs: SHARED_DATABASE_URL
+          env: SHARED_DATABASE_URL=${{ secrets.SHARED_DATABASE_URL }}
           script: |
             set -euo pipefail
             echo "=== Analyzing Production Database Schema ==="
@@ -65,9 +66,11 @@ jobs:
               exit 1
             }
             
-            # データベースURLを設定
+            # データベースURLを確認
             if [ -z "${SHARED_DATABASE_URL:-}" ]; then
-              export SHARED_DATABASE_URL="postgresql://shared_user:LwbxNlVBw7loKk-oQBB2tdD1XO_ZZf8B05uwSQTtF9A@shared-db.cty4osc6gw6k.ap-northeast-1.rds.amazonaws.com:5432/shared_db"
+              echo "Error: SHARED_DATABASE_URL environment variable is not set"
+              echo "Please set SHARED_DATABASE_URL secret in GitHub repository settings"
+              exit 1
             fi
             
             echo "Database URL: ${SHARED_DATABASE_URL%@*}@***"
