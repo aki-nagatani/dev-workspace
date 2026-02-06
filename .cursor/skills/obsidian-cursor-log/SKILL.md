@@ -5,6 +5,9 @@ description: Cursorの作業内容をObsidianのCursorLogに記録する。作�
 
 # Obsidian作業ログ（Cursor）
 
+## 報告前の必須アクション（記録漏れ防止）
+**ファイルを変更した作業を完了した場合**は、**ユーザーに報告する前に必ず**本SKILLに従い CursorLog を更新すること。報告文の末尾に「CursorLogは更新しました」と明記する。これを省略すると記録漏れとなる。
+
 ## 基本ルール
 - 保存先は `D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM-DD.md`（JST）
 - 先頭にタグ行を置く（`#obsidian`は禁止）
