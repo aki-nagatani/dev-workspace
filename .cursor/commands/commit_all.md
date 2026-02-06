@@ -37,3 +37,6 @@ FishTrack、MyPokedex、otayori-naviのコミット先は「develop」ブラン�
 - `obsidian-cursor-log` SKILLを使用して、当日のCursorLogに作業内容を記録する
 - 記録内容: 作業名（コミット作業）、プロジェクト名、変更ファイル、実施内容（コミットした内容の概要）、結果（コミット・プッシュ完了の確認）
 - タグは作業内容に応じて適宜追加（例: `#git`、`#commit`、プロジェクト名のタグなど）
+- **🚨 タイムスタンプは必ず実時刻（JST）を記載すること**  
+  追記の**直前**に、ターミナルで現在時刻を取得してから記載する。`--:--:--` や仮の時刻は使用禁止。  
+  取得例（PowerShell）: `[TimeZoneInfo]::ConvertTimeFromUtc((Get-Date).ToUniversalTime(), [TimeZoneInfo]::FindSystemTimeZoneById('Tokyo Standard Time')).ToString('HH:mm:ss')`

@@ -56,7 +56,7 @@ alwaysApply: true
   - または、`D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM-DD.md`を直接編集
 - [ ] **更新内容の確認**
   - 作業名、プロジェクト名、変更ファイル、実施内容、結果が記録されているか？
-  - タイムスタンプ（HH:mm:ss）が正しく記載されているか？
+  - **タイムスタンプ（HH:mm:ss）が実時刻で記載されているか？**（`--:--:--` や仮の時刻は禁止。追記前にターミナルで JST 現在時刻を取得してから記載すること）
 
 ### 忘れないための習慣化
 
@@ -308,6 +308,8 @@ Remove-Item commit_msg.txt  # 必須：削除
 **AIエージェントでの取得方法**:
 - PowerShell: `Get-Date -Format 'yyyy-MM-dd'`（タイムゾーン指定: `[TimeZoneInfo]::FindSystemTimeZoneById('Tokyo Standard Time')`）
 - Python: `datetime.now(timezone(timedelta(hours=9))).strftime('%Y-%m-%d')` または `datetime.now(JST).strftime('%Y-%m-%d')`（`from datetime import datetime, timezone, timedelta`、`JST = timezone(timedelta(hours=9))`）
+
+**CursorLog の HH:mm:ss（重要）**: CursorLog に追記する際は、**必ず追記の直前に**ターミナルで現在時刻（JST）を取得し、その値を記載すること。プレースホルダー（`--:--:--`）や仮の時刻は使用禁止。取得例（PowerShell）: `[TimeZoneInfo]::ConvertTimeFromUtc((Get-Date).ToUniversalTime(), [TimeZoneInfo]::FindSystemTimeZoneById('Tokyo Standard Time')).ToString('HH:mm:ss')`
 
 ## 一時ファイル管理ルール（重要）
 
