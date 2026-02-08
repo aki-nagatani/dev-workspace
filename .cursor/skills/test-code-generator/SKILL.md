@@ -1,6 +1,7 @@
 ---
 name: test-code-generator
-description: Generate comprehensive test code for Python (pytest) and JavaScript (Jest) projects to achieve 99% test coverage. MANDATORY: Continuously generates tests until 99% coverage is achieved. After generating test code, MUST check coverage and continue generating additional tests if coverage is below 99%. This process MUST be repeated until all coverage metrics (branches, functions, lines, statements) reach 99% or higher. Use when users request test generation, test coverage improvement, or adding tests for specific functions, classes, or modules. Supports unit tests, integration tests, edge cases, error handling, and mocking patterns. NEVER modifies source code - only generates test code. If source code issues are found, proposes fixes but never modifies code without permission.
+description: |
+  Generate comprehensive test code for Python (pytest) and JavaScript (Jest) projects to achieve 99% test coverage. MANDATORY: Continuously generates tests until 99% coverage is achieved. After generating test code, MUST check coverage and continue generating additional tests if coverage is below 99%. This process MUST be repeated until all coverage metrics (branches, functions, lines, statements) reach 99% or higher. Use when users request test generation, test coverage improvement, or adding tests for specific functions, classes, or modules. Supports unit tests, integration tests, edge cases, error handling, and mocking patterns. NEVER modifies source code - only generates test code. If source code issues are found, proposes fixes but never modifies code without permission.
 ---
 
 # Test Code Generator

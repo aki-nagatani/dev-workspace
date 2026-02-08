@@ -15,10 +15,8 @@
 
 ## 目的
 
-1. **共通開発ガイドラインの管理**
-   - コーディング規約
-   - テストカバレッジ方針
-   - MCPサーバー設定ガイド
+1. **共通開発ガイドラインの参照**
+   - ガイドラインは Obsidian `DevProject/guidelines/` に集約（コーディング規約、テストカバレッジ方針、WEB指針、MCPサーバー設定ガイド等）
 
 2. **統合開発環境としての役割**
    - Cursorマルチルートワークスペースファイルの管理
@@ -34,16 +32,16 @@
 dev-workspace/
 ├── README.md                    # このファイル
 ├── dev-workspace.code-workspace # マルチルートワークスペースファイル
-├── guidelines/                  # 共通開発ガイドライン
-│   ├── コーディング規約.md
-│   ├── テストカバレッジ方針.md
-│   └── MCP_SERVERS.md
+├── migrations/                  # 共通DBマイグレーション
+├── scripts/                     # 共通スクリプト
 └── .cursor/                     # Cursor設定テンプレート
     ├── rules/
     │   └── myrules.mdc
     ├── mcp.json
     └── commands/
 ```
+
+共通開発ガイドラインは Obsidian `DevProject/guidelines/` に集約しています。
 
 ## 使用方法
 
@@ -54,13 +52,15 @@ dev-workspace/
 ```markdown
 ## 共通開発ガイドライン
 
-本プロジェクトは、以下の共通開発ガイドラインに従います：
+本プロジェクトは、以下の共通開発ガイドラインに従います（Obsidian `DevProject/guidelines/` に集約）：
 
-- [コーディング規約](https://github.com/aki-nagatani/dev-workspace/blob/main/guidelines/コーディング規約.md)
-- [テストカバレッジ方針](https://github.com/aki-nagatani/dev-workspace/blob/main/guidelines/テストカバレッジ方針.md)
-- [MCPサーバー設定ガイド](https://github.com/aki-nagatani/dev-workspace/blob/main/guidelines/MCP_SERVERS.md)
+- コーディング規約
+- テストカバレッジ方針
+- WEBログ指針
+- WEBセキュリティ指針
+- MCPサーバー設定ガイド
 
-詳細は [共通開発ガイドライン](https://github.com/aki-nagatani/dev-workspace) を参照してください。
+詳細は Obsidian の DevProject/guidelines を参照してください。
 ```
 
 ### ワークスペースファイルの使用
