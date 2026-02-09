@@ -18,12 +18,11 @@ if script_location:
     alembic_dir = Path(script_location).resolve().parent
     workspace_root = alembic_dir.parent
     
-    # Add FishTrack, MyPokedex, and otayori-navi src directories to path
+    # Add FishTrack and MyPokedex src directories to path
     fishtrack_src = workspace_root.parent / "FishTrack" / "src"
     mypokedex_src = workspace_root.parent / "MyPokedex" / "src"
-    otayori_src = workspace_root.parent / "otayori-navi" / "src"
     
-    for src_dir in [fishtrack_src, mypokedex_src, otayori_src]:
+    for src_dir in [fishtrack_src, mypokedex_src]:
         if src_dir.exists() and str(src_dir) not in sys.path:
             sys.path.insert(0, str(src_dir))
 
@@ -32,7 +31,6 @@ if script_location:
 target_metadata = None
 fishtrack_db = None
 mypokedex_db = None
-otayori_metadata = None
 
 try:
     # Create Flask app contexts to ensure models are properly registered
@@ -107,18 +105,6 @@ try:
         from mypokedex.models.dex_entry import DexEntry  # noqa: F401
         from mypokedex.models.placement import Placement  # noqa: F401
     
-    # Import otayori-navi models (DeclarativeBase)
-    try:
-        from otayori_navi.models import Base as otayori_base  # noqa: F401
-
-        otayori_metadata = otayori_base.metadata
-    except (ImportError, ModuleNotFoundError) as e:
-        print(f"Info: otayori-navi module not available: {e}")
-        otayori_metadata = None
-    except Exception as e:
-        print(f"Warning: Could not import otayori-navi models: {e}")
-        otayori_metadata = None
-
     # Combine metadata from projects
     # Since SQLAlchemy tables are bound to their metadata objects, we need to
     # create a unified metadata. The simplest approach is to use one metadata
@@ -145,16 +131,6 @@ try:
             # If there's a conflict, log a warning
             print(f"Warning: Table {table_name} exists in both projects. Using first definition.")
 
-    # Copy all tables from otayori-navi metadata (if available)
-    if otayori_metadata is not None:
-        for table_name, table in otayori_metadata.tables.items():
-            if table_name not in target_metadata.tables:
-                table.to_metadata(target_metadata, schema=table.schema)
-            else:
-                print(
-                    f"Warning: Table {table_name} exists in multiple projects. Using first definition."
-                )
-    
 except Exception as e:
     print(f"Warning: Could not import models: {e}")
     import traceback
