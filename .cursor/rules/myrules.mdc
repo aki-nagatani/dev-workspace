@@ -363,4 +363,3 @@ Remove-Item commit_msg.txt  # 必須：削除
 - **カバレッジファイル**: `coverage.json`、`coverage.xml` なども一時ファイルとして扱い、必要に応じて `temp/` 配下に作成すること
 - **Cursor設定ルール**:
   - myrules は `dev-workspace/.cursor/rules/myrules.mdc` の1箇所のみで管理する（他リポジトリには配置しない）
-  - `.cursor/commands/` は dev-workspace のみで管理し、各リポジトリへ複製しない
