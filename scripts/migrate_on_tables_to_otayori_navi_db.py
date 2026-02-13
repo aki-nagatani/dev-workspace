@@ -141,11 +141,11 @@ def main() -> int:
         print("Error during restore.", file=sys.stderr)
         return 1
 
-    # 4. alembic_version をスタンプ（shared の head = 20260209140000）
+    # 4. on_alembic_version をスタンプ（otayori-navi の alembic.ini は version_table=on_alembic_version）
     stamp_sql = """
-    CREATE TABLE IF NOT EXISTS alembic_version (version_num VARCHAR(32) NOT NULL PRIMARY KEY);
-    DELETE FROM alembic_version;
-    INSERT INTO alembic_version (version_num) VALUES ('20260209140000');
+    CREATE TABLE IF NOT EXISTS on_alembic_version (version_num VARCHAR(32) NOT NULL PRIMARY KEY);
+    DELETE FROM on_alembic_version;
+    INSERT INTO on_alembic_version (version_num) VALUES ('20260209140000');
     """
     run_cmd(
         ["psql", "-h", info["host"], "-p", info["port"], "-U", info["user"], "-d", target_db, "-c", stamp_sql],
