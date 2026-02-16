@@ -21,8 +21,9 @@ description: 本番AWSのEC2およびRDSへ、AI（Cursorエージェント）�
 
 ## 本番インスタンス（要確認）
 
+- **おたよりナビ EC2**: `i-001cd3b0db58d9f78`（IP: 18.178.163.222、プライベート: 10.0.2.151）。アプリパス `/home/ec2-user/otayori-navi`。Amazon Linux 2。
 - **FishTrack EC2**: `i-0cc5625e58feb39b8`（IP: 52.197.69.195）。※本番は `i-05e573f245ca9e2d1` の可能性あり。要確認。
-- **MyPokedex EC2**: `i-023a1623e48cabf1d`（IP: 18.179.162.82 または 54.249.50.253。デプロイ先により変動）
+- **MyPokedex EC2**: `i-0b2e6876c16609083`（IP: 13.158.196.131、プライベート: 10.1.1.230。※i-023a1623e48cabf1d は旧インスタンス）
 - **リージョン**: `ap-northeast-1`
 - 接続前に GitHub Secrets（`*_EC2_HOST`）または AWSコンソールで現行のインスタンスID・IPを確認すること。
 
