@@ -29,7 +29,7 @@ description: MarkdownファイルまたはPDFファイルからKnowledge（知�
   - ファイルが指定されていない場合: InBoxディレクトリ配下のMarkdownファイルおよびPDFファイルを確認し、1件を選択
 - 各ノートの内容を読み込む
   - **Markdownファイルの場合**: ファイルの内容を直接読み込む
-  - **PDFファイルの場合**: PDFからテキストを抽出して読み込む（Pythonの`pypdf`または`pdfplumber`ライブラリを使用）
+  - **PDFファイルの場合**: PDFからテキストを抽出して読み込む。`dev-workspace/scripts/extract_pdf_text.py` を使用する（pypdf 失敗時は おたよりナビ OCR API → Azure Document Intelligence の順でフォールバック）。または Pythonの`pypdf`または`pdfplumber`ライブラリを直接使用する。
 - **重要**: 1つのノートに複数の項目が含まれている場合、1つの項目だけを処理対象とする
 
 **入力形式**:
@@ -60,7 +60,10 @@ InBoxノートには以下の4種類の形式がある：
 3. **PDF形式**: PDFファイルが指定された場合
    - PDFファイルがInBoxディレクトリ配下に配置されている、またはユーザーが直接指定したPDFファイル
    - PDFからテキストを抽出して分析する
-   - **PDFの読み込み方法**: Pythonの`pypdf`または`pdfplumber`ライブラリを使用してPDFからテキストを抽出
+   - **PDFの読み込み方法**: `dev-workspace/scripts/extract_pdf_text.py` を使用する（推奨）。このスクリプトは (1) pypdf でテキスト抽出を試行し、(2) テキストが十分得られない場合におたよりナビ OCR API（`http://localhost:5003/` 固定）でフォールバック、(3) それでも失敗時は Azure Document Intelligence でフォールバックする。
+   - **代替**: Pythonの`pypdf`または`pdfplumber`ライブラリを直接使用してPDFからテキストを抽出することも可能。
+   - **おたよりナビ OCR API フォールバック**: ローカル Docker で otayori-navi が `http://localhost:5003` で稼働している場合、pypdf 失敗時に検索可能PDF API を呼び出して再抽出する。URLは固定のため環境変数不要。認証は不要（`OTAYORI_OCR_API_KEY` は任意）。
+   - **Azure Document Intelligence フォールバック**: 上記が失敗または未設定の場合に使用。環境変数 `AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT` と `AZURE_DOCUMENT_INTELLIGENCE_KEY` が設定されているとき、かつ `azure-ai-documentintelligence` がインストールされているときのみ有効。
    - **PDFの読み込みに失敗した場合（ファイル破損、暗号化、アクセス不可等）**: 処理を中断する
    - **複数PDFがある場合**: 1つのPDFだけを処理対象とする（先頭のPDF、または最初に見つかったPDF）
    - **PDFファイルの処理後**: テキスト抽出が完了したら、PDFファイルを参考資料としてObsidian内に保存する
@@ -91,9 +94,7 @@ InBoxノートには以下の4種類の形式がある：
   - **WEBクリップ形式の場合**: フロントマターからURLやタイトルを抽出し、本文内容を分析（本文が存在する場合は本文を分析）
   - **PDF形式の場合**: 
     - PDFファイルからテキストを抽出して分析
-    - **PDFの読み込み方法**: Pythonの`pypdf`または`pdfplumber`ライブラリを使用
-      - `pypdf`を使用する場合: `PyPDF2`または`pypdf`ライブラリでPDFを読み込み、各ページからテキストを抽出
-      - `pdfplumber`を使用する場合: より高度なレイアウト解析が可能で、表や図の処理にも対応
+    - **PDFの読み込み方法**: まず `dev-workspace/scripts/extract_pdf_text.py <PDFパス>` を実行してテキストを取得する。このスクリプトは pypdf → おたよりナビ OCR API（`http://localhost:5003` 固定、otayori-navi 稼働時）→ Azure Document Intelligence（テキスト不足時）の順で試行する。スクリプトが使えない場合は、Pythonの`pypdf`または`pdfplumber`を直接使用する。
     - **PDFの読み込みに失敗した場合（ファイル破損、暗号化、アクセス不可等）**: 処理を中断する
     - PDFファイルを削除せず、エラーメッセージと共に処理中断の旨を報告する
     - テキスト抽出が成功したら、抽出したテキストを分析してKnowledgeを抽出
@@ -234,7 +235,7 @@ source: InBox/YYYY-MM-DD.md
       - 1件のノートファイル（MarkdownまたはPDF）を読み込む
       - 直接指定された場合はそのファイル、指定されていない場合は先頭のノート、または日付が古い順など、1件に限定
       - **Markdownファイルの場合**: ファイルの内容を直接読み込む
-      - **PDFファイルの場合**: Pythonの`pypdf`または`pdfplumber`ライブラリを使用してPDFからテキストを抽出
+      - **PDFファイルの場合**: `python dev-workspace/scripts/extract_pdf_text.py <PDFパス>` を実行してテキストを抽出（pypdf 失敗時は おたよりナビ OCR API（localhost:5003 固定）→ Azure Document Intelligence でフォールバック。otayori-navi 稼働時は API を利用可）。または Pythonの`pypdf`または`pdfplumber`ライブラリを直接使用する。
       - ノート内に複数の項目があるか確認（Markdownファイルの場合）
       - 複数の項目がある場合、1つの項目だけを処理対象とする（先頭の項目、または最初に見つかった項目）
    
@@ -248,7 +249,7 @@ source: InBox/YYYY-MM-DD.md
         - 次のステップ（既存ノートの検索、ノートの作成または更新等）には進まない
       - **PDF形式の場合**: 
         - PDFファイルからテキストを抽出する
-        - Pythonの`pypdf`または`pdfplumber`ライブラリを使用してPDFを読み込み、テキストを抽出
+        - `extract_pdf_text.py` を実行するか、Pythonの`pypdf`または`pdfplumber`を使用してPDFを読み込み、テキストを抽出（推奨: extract_pdf_text.py は pypdf 失敗時に おたよりナビ OCR API（localhost:5003 固定）→ Azure Document Intelligence でフォールバック。otayori-navi 稼働時は API 利用可）
         - **PDFの読み込みに失敗した場合（ファイル破損、暗号化、アクセス不可等）**: 処理を中断する
         - PDFファイルを削除せず、エラーメッセージと共に処理中断の旨を報告する
         - 次のステップ（既存ノートの検索、ノートの作成または更新等）には進まない
@@ -365,6 +366,7 @@ source: InBox/YYYY-MM-DD.md
   - エラーメッセージと共に処理中断の旨を報告する
   - 次のステップ（既存ノートの検索、ノートの作成または更新等）には進まない
 - **PDFの読み込みに失敗した場合**: PDF形式のファイルでPDFの読み込みに失敗した場合（ファイル破損、暗号化、アクセス不可等）は、処理を中断する
+  - **extract_pdf_text.py 使用時**: pypdf でテキストが得られず、かつ おたよりナビ OCR API・Azure Document Intelligence のフォールバックも失敗または未設定の場合は処理を中断する
   - PDFファイルを削除しない
   - エラーメッセージと共に処理中断の旨を報告する
   - 次のステップ（既存ノートの検索、ノートの作成または更新等）には進まない

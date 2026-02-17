@@ -4,7 +4,6 @@ services:
     # 本番環境（shared-db）と同じ構成
     profiles: [ "local" ]
     image: pgvector/pgvector:pg16
-    restart: always
     environment:
       - POSTGRES_USER=shared_user
       - POSTGRES_PASSWORD=shared_password

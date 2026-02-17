@@ -99,16 +99,6 @@ def main():
                     print("    ⚠️  バケット名が正しくない可能性があります")
             print(f"  pdf_base_path: {storage_section.get('pdf_base_path', 'otayori/pdf')}")
             print(f"  md_base_path: {storage_section.get('md_base_path', 'otayori/md')}")
-        else:
-            # 後方互換性: s3セクション
-            s3_section = config_data.get("s3", {})
-            if s3_section:
-                print("S3設定（後方互換性）:")
-                print(f"  bucket: {s3_section.get('bucket', 'N/A')}")
-                if s3_section.get('bucket') == 'otayori-navi-bucket':
-                    print("    ✅ 正しいバケット名")
-                else:
-                    print("    ⚠️  バケット名が正しくない可能性があります")
         print()
         
         # AWS設定
@@ -155,7 +145,7 @@ def main():
         if not db_section.get("url") and not db_section.get("url_env"):
             issues.append("DB設定: urlまたはurl_envが設定されていません")
         
-        s3_bucket = storage_section.get("s3_bucket") if storage_section else config_data.get("s3", {}).get("bucket")
+        s3_bucket = storage_section.get("s3_bucket") if storage_section else None
         if s3_bucket != "otayori-navi-bucket":
             issues.append(f"ストレージ設定: S3バケット名が正しくありません（現在: {s3_bucket}）")
         
