@@ -24,13 +24,15 @@ TABLE_ARGS="$TABLE_ARGS -t user_statistics_daily -t user_statistics_weekly -t al
 
 echo "Creating database ${TARGET}..."
 EXISTS=$(psql "$POSTGRES_URL" -tAc "SELECT 1 FROM pg_database WHERE datname = '${TARGET}'" 2>/dev/null || true)
-if [ "$EXISTS" != "1" ]; then
-  psql "$POSTGRES_URL" -c "CREATE DATABASE ${TARGET}"
-else
+if [ "$EXISTS" = "1" ]; then
   echo "Database ${TARGET} already exists."
+else
+  psql "$POSTGRES_URL" -c "CREATE DATABASE ${TARGET}" || {
+    echo "Note: CREATE DATABASE failed (may already exist). Continuing with pg_dump..."
+  }
 fi
 
 echo "Dumping FishTrack tables from shared_db..."
-pg_dump "$SOURCE_DATABASE_URL" --no-owner --no-acl $TABLE_ARGS | psql "$TARGET_URL" -q
+pg_dump "$SOURCE_DATABASE_URL" --no-owner --no-acl --clean --if-exists $TABLE_ARGS | psql "$TARGET_URL" -q
 
 echo "Done. Tables migrated to ${TARGET}."
