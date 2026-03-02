@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""1RDS 3DB Phase 2a: shared_db の FishTrack テーブルを fishtrack_db へ移行するスクリプト
+"""1RDS 3DB Phase 2a: shared_db の FishTrack テーブルを fishtrack_db へ移行するスクリプト（アーカイブ）
 
 移行対象テーブル: manufacturer, reel_model, rod_model, rod_series, reel_series,
   fishtrack_user, rod_holding, field, rental_boat_shop,
@@ -10,12 +10,12 @@
   ローカルDocker:
     $env:SOURCE_DATABASE_URL = "postgresql://shared_user:shared_password@localhost:5434/shared_db"
     $env:TARGET_DB_NAME = "fishtrack_db"
-    python scripts/migrate_fishtrack_tables_to_fishtrack_db.py
+    python scripts/archive/1rds3db-phase2/migrate_fishtrack_tables_to_fishtrack_db.py
 
   本番RDS:
     $env:SOURCE_DATABASE_URL = "postgresql://user:pass@rds-endpoint:5432/shared_db"
     $env:TARGET_DB_NAME = "fishtrack_db"
-    python scripts/migrate_fishtrack_tables_to_fishtrack_db.py
+    python scripts/archive/1rds3db-phase2/migrate_fishtrack_tables_to_fishtrack_db.py
 
 環境変数:
   SOURCE_DATABASE_URL: 移行元（shared_db）の接続URL（必須）

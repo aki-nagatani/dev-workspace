@@ -1,5 +1,5 @@
 #!/bin/sh
-# 1RDS 3DB Phase 2b: Docker postgres コンテナ内で実行する移行ロジック
+# 1RDS 3DB Phase 2b: Docker postgres コンテナ内で実行する移行ロジック（アーカイブ）
 # run_migrate_mypokedex_rds_ec2.sh から呼ばれる。単体では実行しない。
 
 set -e

@@ -1,5 +1,5 @@
 #!/bin/sh
-# 1RDS 3DB Phase 2a: EC2 上で RDS の FishTrack テーブルを fishtrack_db へ移行
+# 1RDS 3DB Phase 2a: EC2 上で RDS の FishTrack テーブルを fishtrack_db へ移行（アーカイブ）
 # Docker postgres イメージ使用（EC2 に psql/pg_dump が無い場合）
 #
 # 実行例（FishTrack EC2 上）:

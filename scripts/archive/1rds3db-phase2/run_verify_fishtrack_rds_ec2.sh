@@ -1,5 +1,5 @@
 #!/bin/sh
-# 1RDS 3DB Phase 2a: shared_db vs fishtrack_db の件数比較（整合性確認）
+# 1RDS 3DB Phase 2a: shared_db vs fishtrack_db の件数比較（整合性確認）（アーカイブ）
 # 実行例（FishTrack EC2 上）:
 #   export SOURCE_DATABASE_URL="postgresql://user:pass@host:5432/shared_db"
 #   ./run_verify_fishtrack_rds_ec2.sh
@@ -13,6 +13,12 @@ fi
 
 SOURCE_BASE="${SOURCE_DATABASE_URL%/*}"
 TARGET_URL="${SOURCE_BASE}/fishtrack_db"
+export SOURCE_DATABASE_URL TARGET_URL
+
+if [ -z "$TARGET_URL" ]; then
+  echo "ERROR: TARGET_URL is empty. SOURCE_DATABASE_URL=$SOURCE_DATABASE_URL" >&2
+  exit 1
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 

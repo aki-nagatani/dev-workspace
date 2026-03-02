@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""1RDS 3DB Phase 2b: shared_db の MyPokedex テーブルを mypokedex_db へ移行するスクリプト
+"""1RDS 3DB Phase 2b: shared_db の MyPokedex テーブルを mypokedex_db へ移行するスクリプト（アーカイブ）
 
 移行対象テーブル: "User", "UserGameSetting", "Regist", "DexEntry", "Pokemon",
   "GameTitle", evolution, placement, box_members, party_members, "Contact",
@@ -11,12 +11,12 @@
   ローカルDocker:
     $env:SOURCE_DATABASE_URL = "postgresql://shared_user:shared_password@localhost:5434/shared_db"
     $env:TARGET_DB_NAME = "mypokedex_db"
-    python scripts/migrate_mypokedex_tables_to_mypokedex_db.py
+    python scripts/archive/1rds3db-phase2/migrate_mypokedex_tables_to_mypokedex_db.py
 
   本番RDS:
     $env:SOURCE_DATABASE_URL = "postgresql://user:pass@rds-endpoint:5432/shared_db"
     $env:TARGET_DB_NAME = "mypokedex_db"
-    python scripts/migrate_mypokedex_tables_to_mypokedex_db.py
+    python scripts/archive/1rds3db-phase2/migrate_mypokedex_tables_to_mypokedex_db.py
 
 環境変数:
   SOURCE_DATABASE_URL: 移行元（shared_db）の接続URL（必須）
