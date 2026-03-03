@@ -50,10 +50,7 @@ try:
         with fishtrack_app.app_context():
             # Import all models to ensure they are registered
             from fishtrack.models import (  # noqa: F401
-                Field,
                 Manufacturer,
-                OpsMonitoring,
-                RentalBoatShop,
                 RodHolding,
                 RodModel,
                 RodSeries,
@@ -62,16 +59,15 @@ try:
                 ReelSeries,
                 FishTrackUser,
                 TackleSpecImportLog,
-                WaterLevelHistory,
+                OpsMonitoring,
             )
             
             # Flask-SQLAlchemy with __bind_key__ may register tables in separate metadata
             # We need to ensure all tables are in fishtrack_db.metadata
             # Force registration by accessing __table__ attribute
-            for model_class in [Field, Manufacturer, OpsMonitoring, RentalBoatShop,
-                               RodHolding, RodModel, RodSeries, ReelHolding,
-                               ReelModel, ReelSeries, FishTrackUser,
-                               TackleSpecImportLog, WaterLevelHistory]:
+            for model_class in [Manufacturer, RodHolding, RodModel, RodSeries,
+                               ReelHolding, ReelModel, ReelSeries, FishTrackUser,
+                               TackleSpecImportLog, OpsMonitoring]:
                 if hasattr(model_class, '__table__') and model_class.__table__ is not None:
                     table = model_class.__table__
                     # If table is not in metadata, add it
