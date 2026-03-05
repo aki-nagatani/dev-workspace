@@ -28,16 +28,19 @@ Slack Webhook URLは以下の優先順位で取得されます：
 #### 方法1: 環境変数の設定
 
 **Windows (PowerShell)**:
+
 ```powershell
 $env:SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
 ```
 
 **Windows (コマンドプロンプト)**:
+
 ```cmd
 set SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
 ```
 
 **Linux/Mac**:
+
 ```bash
 export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
 ```
@@ -71,6 +74,7 @@ SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
 **注意**: `.env` ファイルは `.gitignore` に含まれているため、Gitリポジトリには含まれません。安全に機密情報を管理できます。
 
 **セットアップ手順**:
+
 1. `.env.example` を `.env` にコピー
 2. `.env` ファイル内の `YOUR/WEBHOOK/URL` を実際のWebhook URLに置き換え
 
@@ -97,6 +101,7 @@ cp .env.example .env
 **注意**: `config.local.json` ファイルは `.gitignore` に含まれているため、Gitリポジトリには含まれません。安全に機密情報を管理できます。
 
 **セットアップ手順**:
+
 1. `config.local.json.example` を `config.local.json` にコピー
 2. `config.local.json` ファイル内の `YOUR/WEBHOOK/URL` を実際のWebhook URLに置き換え
 
@@ -176,6 +181,7 @@ python scripts/send_slack_notification.py --help
 **原因**: Webhook URLが設定されていない
 
 **解決方法**: 上記の「Webhook URLの設定」を参照して、以下のいずれかの方法で設定してください：
+
 - 環境変数 `SLACK_WEBHOOK_URL` を設定
 - `.env` ファイルを作成して設定
 - `config.local.json` ファイルを作成して設定
@@ -186,7 +192,8 @@ python scripts/send_slack_notification.py --help
 
 **原因**: ネットワーク接続の問題またはタイムアウト
 
-**解決方法**: 
+**解決方法**:
+
 - ネットワーク接続を確認
 - ファイアウォール設定を確認
 - Webhook URLが正しいか確認
@@ -196,6 +203,7 @@ python scripts/send_slack_notification.py --help
 **原因**: Slack APIからの予期しないレスポンス
 
 **解決方法**:
+
 - Webhook URLが有効か確認
 - Slackワークスペースの設定を確認
 - Webhookが無効化されていないか確認

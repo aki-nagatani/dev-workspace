@@ -22,6 +22,7 @@ description: GitHub Actionsの完了を待って結果を確認するSKILL。ota
 ### 1. リポジトリとブランチの確認
 
 確認対象のリポジトリとブランチを特定します：
+
 - **otayori-navi**: `aki-nagatani/otayori-navi`、通常は`main`ブランチ
 - **FishTrack**: `aki-nagatani/FishTrack`、通常は`main`ブランチ
 - **MyPokedex**: `aki-nagatani/MyPokedex`、通常は`main`ブランチ
@@ -57,6 +58,7 @@ gh run view $runId --log-failed
 ```
 
 **待機スクリプト例（GitHub CLI使用）**:
+
 ```powershell
 cd d:\OneDrive\git_work\otayori-navi  # 対象リポジトリに変更
 $maxWaitMinutes = 20
@@ -121,6 +123,7 @@ try {
 ```
 
 **方法3: ブラウザで確認**
+
 - GitHub Actionsのページを開く: `https://github.com/{repo}/actions`
 - 最新のワークフロー実行を確認
 
@@ -145,7 +148,8 @@ try {
 
 ### 6. 確認完了まで作業を終了しない
 
-**重要**: 
+**重要**:
+
 - **GitHub Actionsの確認をスキップしてはならない**
 - **完了まで待機し、結果を確認することは必須**
 - **失敗した場合は、エラー内容を確認して報告すること**
@@ -154,40 +158,48 @@ try {
 ## リポジトリ別の確認ポイント
 
 ### otayori-navi
+
 - **確認対象**: lint、test、deployジョブ
 - **通常の実行時間**: 5-10分
-- **確認URL**: https://github.com/aki-nagatani/otayori-navi/actions
+- **確認URL**: <https://github.com/aki-nagatani/otayori-navi/actions>
 
 ### FishTrack
+
 - **確認対象**: lint、testジョブ
 - **通常の実行時間**: 3-8分
-- **確認URL**: https://github.com/aki-nagatani/FishTrack/actions
+- **確認URL**: <https://github.com/aki-nagatani/FishTrack/actions>
 
 ### MyPokedex
+
 - **確認対象**: lint、testジョブ
 - **通常の実行時間**: 3-8分
-- **確認URL**: https://github.com/aki-nagatani/MyPokedex/actions
+- **確認URL**: <https://github.com/aki-nagatani/MyPokedex/actions>
 
 ## エラーハンドリング
 
 ### GitHub CLIがインストールされていない場合
-- GitHub CLIをインストール: https://cli.github.com/
+
+- GitHub CLIをインストール: <https://cli.github.com/>
 - または、GitHub APIまたはブラウザでの確認方法を使用
 
 ### GitHub CLIで認証エラーが発生する場合
+
 - `gh auth login` を実行して認証を設定
 - または、GitHub APIまたはブラウザでの確認方法を使用
 
 ### GitHub APIが404を返す場合
+
 - リポジトリ名が正しいか確認
 - プライベートリポジトリの場合は認証が必要な可能性がある
 - GitHub CLIまたはブラウザで手動確認を推奨
 
 ### タイムアウトした場合
+
 - 最大待機時間（20分）を超過した場合は、手動で確認
 - 長時間実行中の場合は、GitHub Actionsのページで直接確認
 
 ### ワークフローが失敗した場合
+
 - エラーログを確認
 - 失敗したジョブの詳細を確認
 - 必要に応じて修正を実施
@@ -195,7 +207,7 @@ try {
 ## 実行ルール
 
 - **このSKILLを呼び出すタイミング**: プッシュやマージ完了後、即座に呼び出す
-- **確認方法の優先順位**: 
+- **確認方法の優先順位**:
   1. GitHub CLI（`gh`コマンド）が使用可能な場合は最優先
   2. GitHub API（公開リポジトリの場合）
   3. ブラウザでの手動確認

@@ -104,7 +104,7 @@ join orders o on o.customer_id = c.id;
 
 For JOIN columns, always index the foreign key side:
 
-Reference: https://supabase.com/docs/guides/database/query-optimization
+Reference: <https://supabase.com/docs/guides/database/query-optimization>
 
 ---
 
@@ -144,7 +144,7 @@ create index sessions_token_idx on sessions using hash (token);
 
 Index type guide:
 
-Reference: https://www.postgresql.org/docs/current/indexes-types.html
+Reference: <https://www.postgresql.org/docs/current/indexes-types.html>
 
 ---
 
@@ -183,7 +183,7 @@ create index idx on orders (status, created_at);
 
 **Column order matters** - place equality columns first, range columns last:
 
-Reference: https://www.postgresql.org/docs/current/indexes-multicolumn.html
+Reference: <https://www.postgresql.org/docs/current/indexes-multicolumn.html>
 
 ---
 
@@ -218,7 +218,7 @@ select status, customer_id, total from orders where status = 'shipped';
 
 Use INCLUDE for columns you SELECT but don't filter on:
 
-Reference: https://www.postgresql.org/docs/current/indexes-index-only-scans.html
+Reference: <https://www.postgresql.org/docs/current/indexes-index-only-scans.html>
 
 ---
 
@@ -258,7 +258,7 @@ where sku is not null;
 
 Common use cases for partial indexes:
 
-Reference: https://www.postgresql.org/docs/current/indexes-partial.html
+Reference: <https://www.postgresql.org/docs/current/indexes-partial.html>
 
 ---
 
@@ -305,7 +305,7 @@ client_idle_timeout = 300
 
 For pooled connections, configure at the pooler level:
 
-Reference: https://www.postgresql.org/docs/current/runtime-config-client.html#GUC-IDLE-IN-TRANSACTION-SESSION-TIMEOUT
+Reference: <https://www.postgresql.org/docs/current/runtime-config-client.html#GUC-IDLE-IN-TRANSACTION-SESSION-TIMEOUT>
 
 ---
 
@@ -344,7 +344,7 @@ select count(*), state from pg_stat_activity group by state;
 
 Monitor connection usage:
 
-Reference: https://supabase.com/docs/guides/platform/performance#connection-management
+Reference: <https://supabase.com/docs/guides/platform/performance#connection-management>
 
 ---
 
@@ -379,10 +379,11 @@ select count(*) from pg_stat_activity;  -- 10 connections
 ```
 
 Pool modes:
+
 - **Transaction mode**: connection returned after each transaction (best for most apps)
 - **Session mode**: connection held for entire session (needed for prepared statements, temp tables)
 
-Reference: https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler
+Reference: <https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler>
 
 ---
 
@@ -423,7 +424,7 @@ deallocate get_user;
 
 Check your driver settings:
 
-Reference: https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pool-modes
+Reference: <https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pool-modes>
 
 ---
 
@@ -478,7 +479,7 @@ revoke all on all tables in schema public from public;
 
 Revoke public defaults:
 
-Reference: https://supabase.com/blog/postgres-roles-and-privileges
+Reference: <https://supabase.com/blog/postgres-roles-and-privileges>
 
 ---
 
@@ -523,7 +524,7 @@ create policy orders_user_policy on orders
 
 Policy for authenticated role:
 
-Reference: https://supabase.com/docs/guides/database/postgres/row-level-security
+Reference: <https://supabase.com/docs/guides/database/postgres/row-level-security>
 
 ---
 
@@ -571,7 +572,7 @@ create index orders_user_id_idx on orders (user_id);
 Use security definer functions for complex checks:
 Always add indexes on columns used in RLS policies:
 
-Reference: https://supabase.com/docs/guides/database/postgres/row-level-security#rls-performance-recommendations
+Reference: <https://supabase.com/docs/guides/database/postgres/row-level-security#rls-performance-recommendations>
 
 ---
 
@@ -618,7 +619,7 @@ create table users (
 
 Key guidelines:
 
-Reference: https://www.postgresql.org/docs/current/datatype.html
+Reference: <https://www.postgresql.org/docs/current/datatype.html>
 
 ---
 
@@ -672,7 +673,7 @@ where c.contype = 'f'
 
 Find missing FK indexes:
 
-Reference: https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK
+Reference: <https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK>
 
 ---
 
@@ -720,11 +721,12 @@ drop table events_2023_01;  -- Instant vs DELETE taking hours
 ```
 
 When to partition:
+
 - Tables > 100M rows
 - Time-series data with date-based queries
 - Need to efficiently drop old data
 
-Reference: https://www.postgresql.org/docs/current/ddl-partitioning.html
+Reference: <https://www.postgresql.org/docs/current/ddl-partitioning.html>
 
 ---
 
@@ -773,6 +775,7 @@ create table events (
 ```
 
 Guidelines:
+
 - Single database: `bigint identity` (sequential, 8 bytes, SQL-standard)
 - Distributed/exposed IDs: UUIDv7 (requires pg_uuidv7) or ULID (time-ordered, no
   fragmentation)
@@ -830,7 +833,7 @@ CREATE VIEW users AS SELECT "userId" AS user_id, "firstName" AS first_name FROM 
 
 Common sources of mixed-case identifiers:
 
-Reference: https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+Reference: <https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS>
 
 ---
 
@@ -881,7 +884,7 @@ set local statement_timeout = '5s';
 
 Use `statement_timeout` to prevent runaway transactions:
 
-Reference: https://www.postgresql.org/docs/current/tutorial-transactions.html
+Reference: <https://www.postgresql.org/docs/current/tutorial-transactions.html>
 
 ---
 
@@ -989,7 +992,7 @@ if (acquired) {
 
 Try-lock for non-blocking operations:
 
-Reference: https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS
+Reference: <https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS>
 
 ---
 
@@ -1038,7 +1041,7 @@ returning *;
 
 Complete queue pattern:
 
-Reference: https://www.postgresql.org/docs/current/sql-select.html#SQL-FOR-UPDATE-SHARE
+Reference: <https://www.postgresql.org/docs/current/sql-select.html#SQL-FOR-UPDATE-SHARE>
 
 ---
 
@@ -1093,7 +1096,7 @@ copy events (user_id, action) from stdin with (format csv);
 
 For large imports, use COPY:
 
-Reference: https://www.postgresql.org/docs/current/sql-copy.html
+Reference: <https://www.postgresql.org/docs/current/sql-copy.html>
 
 ---
 
@@ -1141,7 +1144,7 @@ select * from orders where user_id = any($1::bigint[]);
 
 Application pattern:
 
-Reference: https://supabase.com/docs/guides/database/query-optimization
+Reference: <https://supabase.com/docs/guides/database/query-optimization>
 
 ---
 
@@ -1186,7 +1189,7 @@ limit 20;
 
 For multi-column sorting:
 
-Reference: https://supabase.com/docs/guides/database/pagination
+Reference: <https://supabase.com/docs/guides/database/pagination>
 
 ---
 
@@ -1231,7 +1234,7 @@ on conflict (page_id, user_id) do nothing;
 
 Insert-or-ignore pattern:
 
-Reference: https://www.postgresql.org/docs/current/sql-insert.html#SQL-ON-CONFLICT
+Reference: <https://www.postgresql.org/docs/current/sql-insert.html#SQL-ON-CONFLICT>
 
 ---
 
@@ -1287,7 +1290,7 @@ order by mean_exec_time desc;
 
 Key metrics to monitor:
 
-Reference: https://supabase.com/docs/guides/database/extensions/pg_stat_statements
+Reference: <https://supabase.com/docs/guides/database/extensions/pg_stat_statements>
 
 ---
 
@@ -1337,7 +1340,7 @@ select * from pg_stat_progress_vacuum;
 
 Autovacuum tuning for busy tables:
 
-Reference: https://supabase.com/docs/guides/database/database-size#vacuum-operations
+Reference: <https://supabase.com/docs/guides/database/database-size#vacuum-operations>
 
 ---
 
@@ -1377,7 +1380,7 @@ select * from orders where customer_id = 123 and status = 'pending';
 
 Key things to look for:
 
-Reference: https://supabase.com/docs/guides/database/inspect
+Reference: <https://supabase.com/docs/guides/database/inspect>
 
 ---
 
@@ -1427,7 +1430,7 @@ create index idx2 on products using gin (attributes jsonb_path_ops);
 
 Choose the right operator class:
 
-Reference: https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING
+Reference: <https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING>
 
 ---
 
@@ -1477,14 +1480,14 @@ to_tsquery('post:*')
 
 Search multiple terms:
 
-Reference: https://supabase.com/docs/guides/database/full-text-search
+Reference: <https://supabase.com/docs/guides/database/full-text-search>
 
 ---
 
 ## References
 
-- https://www.postgresql.org/docs/current/
-- https://supabase.com/docs
-- https://wiki.postgresql.org/wiki/Performance_Optimization
-- https://supabase.com/docs/guides/database/overview
-- https://supabase.com/docs/guides/auth/row-level-security
+- <https://www.postgresql.org/docs/current/>
+- <https://supabase.com/docs>
+- <https://wiki.postgresql.org/wiki/Performance_Optimization>
+- <https://supabase.com/docs/guides/database/overview>
+- <https://supabase.com/docs/guides/auth/row-level-security>

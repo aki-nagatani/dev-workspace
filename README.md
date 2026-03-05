@@ -28,7 +28,7 @@
 
 ## 構成
 
-```
+```text
 dev-workspace/
 ├── README.md                    # このファイル
 ├── dev-workspace.code-workspace # マルチルートワークスペースファイル
@@ -76,4 +76,3 @@ Cursorで `dev-workspace.code-workspace` を開くことで、MyHobbySite（ア�
 ## ライセンス
 
 （ライセンス情報を記載）
-

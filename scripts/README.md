@@ -20,7 +20,8 @@ python extract_pdf_text.py <PDFファイルパス>
 テキストが 50 文字未満の場合、以下の順でフォールバックを試行する。
 
 1. **pypdf**（必須・常に試行）: 埋め込みテキストを抽出
-2. **おたよりナビ OCR API**（オプション）: `http://localhost:5003` 固定。otayori-navi がローカル Docker で稼働している場合に検索可能 PDF を取得し、pypdf で再抽出
+2. **おたよりナビ OCR API**（オプション）: `http://localhost:5003` 固定。
+   otayori-navi がローカル Docker で稼働している場合に検索可能 PDF を取得し、pypdf で再抽出
 3. **Azure Document Intelligence**（オプション）: Read モデルで OCR。環境変数が設定されている場合のみ試行
 
 ### 環境変数

@@ -14,6 +14,7 @@ Comprehensive performance optimization guide for Postgres, maintained by Supabas
 ## When to Apply
 
 Reference these guidelines when:
+
 - Writing SQL queries or designing schemas
 - Implementing indexes or query optimization
 - Reviewing database performance issues
@@ -45,6 +46,7 @@ rules/_sections.md
 ```
 
 Each rule file contains:
+
 - Brief explanation of why it matters
 - Incorrect SQL example with explanation
 - Correct SQL example with explanation

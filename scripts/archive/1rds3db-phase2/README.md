@@ -18,6 +18,7 @@
 ## 実行方法（必要な場合）
 
 **ローカル移行**（dev-workspace ルートから）:
+
 ```powershell
 cd d:\OneDrive\git_work\dev-workspace
 .\scripts\archive\1rds3db-phase2\run_migrate_fishtrack_local.ps1
@@ -25,6 +26,7 @@ cd d:\OneDrive\git_work\dev-workspace
 ```
 
 **本番RDS 移行**（EC2 上・Phase 2 完了済みのため通常は不要）:
+
 ```bash
 export SOURCE_DATABASE_URL="postgresql://user:pass@host:5432/shared_db"
 ./run_migrate_fishtrack_rds_ec2.sh

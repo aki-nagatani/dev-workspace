@@ -1,6 +1,7 @@
 # 本番EC2接続・DB操作スキル（MyPokedex / FishTrack 共通）
 
 ## 概要
+
 MyPokedexおよびFishTrackの本番EC2インスタンスへの接続方法と、本番データベース（AWS RDS）へのアクセス方法を提供します。
 
 ## 重要: 正しいEC2インスタンスの確認
@@ -12,6 +13,7 @@ MyPokedexおよびFishTrackの本番EC2インスタンスへの接続方法と�
 ### 現在の本番インスタンス情報
 
 #### MyPokedex
+
 | 項目 | 値 | 備考 |
 |------|-----|------|
 | **本番インスタンスID** | `i-023a1623e48cabf1d` | **現在稼働中** |
@@ -22,6 +24,7 @@ MyPokedexおよびFishTrackの本番EC2インスタンスへの接続方法と�
 | ファクトリ関数 | `createApp` | |
 
 #### FishTrack
+
 | 項目 | 値 | 備考 |
 |------|-----|------|
 | **本番インスタンスID** | `i-05e573f245ca9e2d1` | **現在稼働中** |
@@ -44,6 +47,7 @@ gh secret list --repo aki-nagatani/FishTrack | Select-String "EC2"
 ```
 
 または、deploy.ymlのコメントを確認：
+
 ```yaml
 # deploy.yml内のコメント例
 # Current running instance: i-023a1623e48cabf1d (54.249.50.253)
@@ -55,12 +59,14 @@ gh secret list --repo aki-nagatani/FishTrack | Select-String "EC2"
 ### 方法1: AWS Systems Manager (Session Manager) 経由（推奨）
 
 **Session Managerを使用する利点：**
+
 - SSH鍵の管理が不要
 - セキュリティグループでSSHポート（22）を開放する必要がない
 - 接続ログがCloudTrailに記録される
 - IAM権限で接続を制御可能
 
 #### 前提条件
+
 - AWS CLIがインストール済み
 - Session Managerプラグインがインストール済み
 - 適切なIAM権限を持つプロファイルが設定済み
@@ -76,6 +82,7 @@ aws ssm start-session --target i-05e573f245ca9e2d1
 ```
 
 セッション開始後：
+
 ```bash
 # ec2-userに切り替え
 sudo su - ec2-user
@@ -121,6 +128,7 @@ aws ssm get-command-invocation --command-id <CommandId> --instance-id <InstanceI
 **注意**: SSH接続を使用する場合は、必ず正しいIPアドレスを確認してください。
 
 #### SSH鍵ファイル
+
 | プロジェクト | SSH鍵ファイル |
 |-------------|---------------|
 | MyPokedex | `C:\Users\Akihide\.ssh\mypokedex_ec2_key` |
@@ -199,6 +207,7 @@ with app.app_context():
 1. **ローカルでスクリプト作成**（上記テンプレートを参考）
 
 2. **EC2にスクリプト転送**
+
    ```powershell
    # MyPokedex
    scp -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no "D:\OneDrive\git_work\MyPokedex\scripts\my_script.py" ec2-user@54.249.50.253:/home/ec2-user/MyPokedex/scripts/
@@ -208,6 +217,7 @@ with app.app_context():
    ```
 
 3. **EC2上でスクリプト実行**
+
    ```powershell
    # MyPokedex
    ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@54.249.50.253 "cd /home/ec2-user/MyPokedex && docker exec mypokedex-app-1 python scripts/my_script.py"
@@ -217,6 +227,7 @@ with app.app_context():
    ```
 
 4. **スクリプト削除（必要に応じて）**
+
    ```powershell
    # MyPokedex - ローカル
    Remove-Item "D:\OneDrive\git_work\MyPokedex\scripts\my_script.py"
@@ -283,6 +294,7 @@ git log --oneline HEAD..origin/main
 ## 利用可能なモデル
 
 ### MyPokedex
+
 - `mypokedex.models.user.User` - ユーザー
 - `mypokedex.models.game_title.GameTitle` - ゲームタイトル
 - `mypokedex.models.party.Party`, `PartyMember` - パーティ
@@ -292,6 +304,7 @@ git log --oneline HEAD..origin/main
 - `mypokedex.models.user_game_setting.UserGameSetting` - ユーザーゲーム設定
 
 ### FishTrack
+
 - `fishtrack.models.User` - ユーザー
 - `fishtrack.models.FishingRecord` - 釣果記録
 - `fishtrack.models.FishSpecies` - 魚種
@@ -311,9 +324,11 @@ git log --oneline HEAD..origin/main
 ## 関連ドキュメント
 
 ### MyPokedex
+
 - `MyPokedex/docs/deployment/DEPLOYMENT_AWS.md` - AWSデプロイ手順
 - `MyPokedex/docs/deployment/PRODUCTION_DATA_IMPORT.md` - 本番データインポート手順
 - `MyPokedex/docs/deployment/ROLLBACK_PLAN.md` - ロールバック手順
 
 ### FishTrack
+
 - `FishTrack/docs/deployment/DEPLOYMENT_AWS.md` - AWSデプロイ手順
