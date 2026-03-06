@@ -1,30 +1,22 @@
 ---
 name: markdownlint-fix
-description: markdownlint エラー（MD013/MD036/MD040等）の修正作業。Fix it verify、MD013 line-length、For the code present we get this error、該当行指定でのエラー修正依頼時に使用。
+description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) in Markdown files. Use when user shows "For the code present, we get this error" with a markdownlint error (MD0xx), requests "Fix it verify", or specifies file/line with a markdownlint violation. Follows markdown-editing SKILL for correction rules. 周辺の同様エラーも併せて修正する。
 ---
 
 # マークダウンリント修正作業
 
+## 🚨 発火トリガー（この SKILL を適用すべき場合）
+
+ユーザーメッセージに以下のいずれかが含まれる場合、**本 SKILL を必ず適用する**:
+
+- 「For the code present, we get this error」+ MD0xx 系エラー
+- 「Fix it verify」+ ファイル・行指定
+- ファイル・行を指定した markdownlint エラー修正の依頼
+- 「markdownlint の修正」「MD013 を直して」などの明示的依頼
+
 ## 概要
 
 ユーザーが該当箇所を指示した markdownlint 修正作業を実施する際のワークフローと方針を定める。
-
-## 発火条件（この SKILL を適用するタイミング）
-
-以下のいずれかに該当する場合、**本 SKILL を必ず読み、手順に従って修正を行う**：
-
-1. **「For the code present, we get this error:」** で始まるメッセージで markdownlint 系エラー（MD013, MD036, MD040 等）が示されている
-2. ユーザーが「Fix it, verify」や「修正して」と依頼し、MD013 / line-length / markdownlint などのエラーが添付されている
-3. ユーザーが該当ファイル・行を指定して markdownlint エラーの修正を依頼している
-4. ユーザーが「markdownlint の修正」「MD013 を直して」などと明示的に依頼している
-
-## 使用タイミング
-
-以下の場合にこの SKILL を使用する：
-
-- ユーザーが「markdownlint の修正作業をしてほしい」と依頼した場合
-- ユーザーが該当ファイル・該当行を指定して markdownlint エラーの修正を依頼した場合
-- **「For the code present, we get this error:」** で始まるメッセージ（IDE の linter エラー貼り付け等）で markdownlint エラー（MD013, MD060 等）が示されている場合
 
 ## 作業フロー（必須）
 

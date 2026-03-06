@@ -85,19 +85,25 @@ alwaysApply: true
 
 ## 作業ログ（最重要・必須実行）
 
-**🚨🚨🚨 絶対に忘れてはならない: Cursorの作業内容はすべてObsidianにログとして残す。🚨🚨🚨**
+### 絶対に忘れてはならない
 
-**報告前の一文（必ず実行）**: ファイルを変更したなら、**ユーザーに報告する直前に**「CursorLogを更新したか？」を自問する。未更新なら**即座に更新してから**報告する。報告文には**「CursorLogは更新しました」**を必ず含める。
+🚨 Cursorの作業内容はすべてObsidianにログとして残す。
 
-**⚠️ 違反は許されない**: ファイルを変更した作業を完了した際にCursorログを更新しなかった場合、ユーザーから指摘を受けることになる。これは重大な違反である。
+### 報告前の一文（必ず実行）
+
+ファイルを変更したなら、**ユーザーに報告する直前に**「CursorLogを更新したか？」を自問する。未更新なら**即座に更新してから**報告する。報告文には**「CursorLogは更新しました」**を必ず含める。
+
+### 違反は許されない
+
+⚠️ ファイルを変更した作業を完了した際にCursorログを更新しなかった場合、ユーザーから指摘を受けることになる。これは重大な違反である。
 
 - **詳細**: `obsidian-cursor-log` SKILLに従う
-- **更新タイミング**: 
+- **更新タイミング**:
   - ファイルを変更した作業が完了した時点で、**必ず**Cursorログを更新する
   - コマンドやSKILLを実行してファイルを変更した場合は、処理完了後に**必ず**Cursorログを更新する
   - 複数の作業を連続して行う場合も、各作業完了時にCursorログを更新する
   - **ユーザーに作業完了を報告する前に、必ずCursorログの更新を確認すること**
-- **更新内容**: 
+- **更新内容**:
   - 作業名、プロジェクト名、変更ファイル、実施内容、結果を記録する
   - タグは作業内容に応じて適宜追加する
 - **重要**: Cursorログの更新を忘れないこと。これは必須の作業である。
@@ -198,7 +204,7 @@ alwaysApply: true
 
 **作業開始時に以下の宣言を意識する：**
 
-```
+```text
 「この作業が完了したら、必ずCursorLogを更新する」
 ```
 
@@ -232,25 +238,25 @@ alwaysApply: true
 - **ソースコード修正時は仕様書も必ず同時に更新する**（ソースコードと仕様書は常に同期を保つ）
 - **仕様書の更新は実装と同時に行う**（後回しにしない）
 - **仕様書の場所**: Obsidian に集約（例：`FishTrack`、`MyPokedex` 等のノート）。各プロジェクトの `docs/` は使用しない
-- **更新対象**: 
+- **更新対象**:
   - 機能追加・変更・削除時は該当セクションを更新
   - API仕様変更時はAPI仕様セクションを更新
   - データモデル変更時はデータモデルセクションを更新
   - 設定変更時は設定セクションを更新
-- **更新内容**: 
+- **更新内容**:
   - 変更前後の差分を明確に記載
   - 変更理由を簡潔に記載（必要に応じて）
   - 既存の記述との整合性を確認
-- **計画書の進捗状況の反映**: 
+- **計画書の進捗状況の反映**:
   - 実装作業の完了時は、統合作業スケジュールや各計画書の進捗状況を適宜更新する
   - 完了したタスクには完了マーク（✅）を付与し、完了日を記載する
   - マイルストーンやチェックポイントの達成状況を更新する
   - スケジュールの変更（前倒し・遅延等）があった場合は、計画書に反映する
-- **仕様書の変更箇所の反映**: 
+- **仕様書の変更箇所の反映**:
   - 実装過程で仕様書との差異や変更が必要になった場合は、仕様書を適宜更新する
   - 仕様変更の理由を簡潔に記載する
   - 仕様書と実装の整合性を常に保つ
-- **仕様書と実装の随時同期（AIの裁量）**: 
+- **仕様書と実装の随時同期（AIの裁量）**:
   - 実装と仕様書が食い違っていることに気づいた場合、**ユーザーの明示的な指示がなくても**AIが判断して仕様書を更新してよい
   - ソースコード解析・レビュー・調査の結果、仕様書に未記載の実装や仕様との乖離が見つかった場合は、その場で仕様書を更新する
   - 更新対象: 画面仕様、APIルート、データモデル、処理フローなど、実装に即した記述
@@ -261,7 +267,7 @@ alwaysApply: true
 
 **🚨 絶対ルール: ユーザーからの明示的な指示がない限り、いかなるドキュメントも作成してはならない。**
 
-### 基本原則
+### 基本原則（ドキュメント作成）
 
 - **ユーザーからの指示がない場合、勝手にドキュメントを作成しないこと**（違反禁止）
 - **ドキュメントを作成したほうが良いと判断した場合は、必ずユーザーに判断を仰ぐこと**（確認必須）
@@ -296,9 +302,21 @@ alwaysApply: true
 ### 例外
 
 以下の場合はドキュメント作成が許可される：
+
 - ユーザーが明示的に「ドキュメントを作成して」「ドキュメント化して」などと指示した場合
 - ユーザーが「はい」「作成して」などと明示的に承認した場合
 - 既存のドキュメントを更新する場合（ただし、ユーザーの指示または「ドキュメント更新規律」に基づく場合のみ）
+
+## Markdownlint修正（SKILL発火条件）
+
+**🚨 markdownlintエラー修正時は、必ず markdownlint-fix SKILL を発火させる。**
+
+- **発火パターン**（以下のいずれかに該当する場合）:
+  - ユーザーが「For the code present, we get this error」+ MD0xx系エラーを示している
+  - ユーザーが「Fix it verify」+ ファイル・行指定で markdownlint エラーを示している
+  - ユーザーが該当ファイル・行を指定して markdownlint エラーの修正を依頼している
+- **必須の最初アクション**: 修正作業を開始する前に、**必ず** Read ツールで `dev-workspace/.cursor/skills/markdownlint-fix/SKILL.md` を読み、その「作業フロー」に従って修正する。**SKILL を読まずに修正を開始してはならない。**
+- **詳細**: SKILL の「発火条件」「作業フロー」「周辺の同様エラーも併せて修正」に従う
 
 ## ファイルサイズ規律（重要）
 
@@ -341,19 +359,8 @@ alwaysApply: true
 - **ユーザーの明示的な許可がない限り、コミット・プッシュを実行しない**
 - 「コミットしてください」等の明示依頼がある場合に限りコミット
 - コンベンショナルコミット形式を使用（feat:, fix:, docs:, test:, refactor:, chore:）
-- コミットメッセージは日本語で記述（PowerShellの文字化け防止のため `-F` オプション推奨）
+- コミットメッセージは日本語で記述（PowerShellでの文字化け防止は `commit-message` SKILLを参照）
 - **コミットメッセージ用テキストファイル（`commit_msg.txt`等）は、コミット・プッシュ完了後に必ず削除**
-
-**PowerShellでのコミットメッセージ文字化け防止方法**:
-```powershell
-# ファイルから読み込む方法（推奨）
-@"
-コミットメッセージの内容
-複数行も可能
-"@ | Out-File -FilePath commit_msg.txt -Encoding utf8
-git commit -F commit_msg.txt
-Remove-Item commit_msg.txt  # 必須：削除
-```
 
 ## ファイル改行ポリシー
 
@@ -370,10 +377,20 @@ Remove-Item commit_msg.txt  # 必須：削除
 - **ドキュメントやソースコードのコメントに日付を記載する場合**: 必ず現在日時を取得して記載すること（固定値や仮の日付は使用禁止）
 
 **AIエージェントでの取得方法**:
-- PowerShell: `Get-Date -Format 'yyyy-MM-dd'`（タイムゾーン指定: `[TimeZoneInfo]::FindSystemTimeZoneById('Tokyo Standard Time')`）
-- Python: `datetime.now(timezone(timedelta(hours=9))).strftime('%Y-%m-%d')` または `datetime.now(JST).strftime('%Y-%m-%d')`（`from datetime import datetime, timezone, timedelta`、`JST = timezone(timedelta(hours=9))`）
 
-**CursorLog の HH:mm:ss（重要）**: CursorLog に追記する際は、**必ず追記の直前に**ターミナルで現在時刻（JST）を取得し、その値を記載すること。プレースホルダー（`--:--:--`）や仮の時刻は使用禁止。取得例（PowerShell）: `[TimeZoneInfo]::ConvertTimeFromUtc((Get-Date).ToUniversalTime(), [TimeZoneInfo]::FindSystemTimeZoneById('Tokyo Standard Time')).ToString('HH:mm:ss')`
+- PowerShell: `Get-Date -Format 'yyyy-MM-dd'`（タイムゾーン指定: `[TimeZoneInfo]::FindSystemTimeZoneById('Tokyo Standard Time')`）
+- Python: `datetime.now(timezone(timedelta(hours=9))).strftime('%Y-%m-%d')` または
+  `datetime.now(JST).strftime('%Y-%m-%d')`
+  （`from datetime import datetime, timezone, timedelta`、`JST = timezone(timedelta(hours=9))`）
+
+**CursorLog の HH:mm:ss（重要）**: CursorLog に追記する際は、**必ず追記の直前に**ターミナルで現在時刻（JST）を取得し、
+その値を記載すること。プレースホルダー（`--:--:--`）や仮の時刻は使用禁止。
+
+取得例（PowerShell）:
+
+```powershell
+[TimeZoneInfo]::ConvertTimeFromUtc((Get-Date).ToUniversalTime(), [TimeZoneInfo]::FindSystemTimeZoneById('Tokyo Standard Time')).ToString('HH:mm:ss')
+```
 
 ## 一時ファイル管理ルール（重要）
 
@@ -388,6 +405,7 @@ Remove-Item commit_msg.txt  # 必須：削除
 ### 一時ファイルの例
 
 以下のようなファイルは一時ファイルとして扱い、専用ディレクトリ配下に作成すること：
+
 - カバレッジ関連の一時ファイル（`coverage_*.json`、`coverage_temp.json` など）
 - スクリプト実行時の中間ファイル
 - テスト実行時の一時データファイル
