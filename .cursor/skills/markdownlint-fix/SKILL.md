@@ -1,6 +1,6 @@
 ---
 name: markdownlint-fix
-description: マークダウンリント（markdownlint）の修正作業を行う際の手順と方針。ユーザーが該当箇所を指示したら、周辺の同様のエラーも併せて修正し、SKILLに未記載のエラー種別があればmarkdown-editing SKILLを更新する。markdownlint修正作業、MD013/MD024/MD060等の一括修正時に使用する。「For the code present, we get this error:」で始まるメッセージ（linter等のエラー貼り付け）でも発火する。
+description: markdownlint エラー（MD013/MD036/MD040等）の修正作業。Fix it verify、MD013 line-length、For the code present we get this error、該当行指定でのエラー修正依頼時に使用。
 ---
 
 # マークダウンリント修正作業
@@ -8,6 +8,15 @@ description: マークダウンリント（markdownlint）の修正作業を行�
 ## 概要
 
 ユーザーが該当箇所を指示した markdownlint 修正作業を実施する際のワークフローと方針を定める。
+
+## 発火条件（この SKILL を適用するタイミング）
+
+以下のいずれかに該当する場合、**本 SKILL を必ず読み、手順に従って修正を行う**：
+
+1. **「For the code present, we get this error:」** で始まるメッセージで markdownlint 系エラー（MD013, MD036, MD040 等）が示されている
+2. ユーザーが「Fix it, verify」や「修正して」と依頼し、MD013 / line-length / markdownlint などのエラーが添付されている
+3. ユーザーが該当ファイル・行を指定して markdownlint エラーの修正を依頼している
+4. ユーザーが「markdownlint の修正」「MD013 を直して」などと明示的に依頼している
 
 ## 使用タイミング
 
