@@ -233,6 +233,20 @@ alwaysApply: true
 - **ドキュメントは各プロジェクト配下ではなく、Obsidian に集約する**
 - 仕様書・設計メモ・運用メモなどは Obsidian のボールト内で管理し、プロジェクトごとの `docs/` は設けない
 
+## 仕様書探索の既定パス（重要）
+
+- AI は、各プロジェクトの仕様書をまず Obsidian 側で探すこと
+- 既定の探索先は `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/`
+- 主要プロジェクトの仕様書パスは以下の通り
+  - `FishTrack`:
+    `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/FishTrack`
+  - `MyPokedex`:
+    `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/MyPokedex`
+  - `otayori-navi`:
+    `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/おたよりナビ仕様書.md`
+- 実装・調査・レビュー開始時は、対象プロジェクトの `AGENTS.md` と上記仕様書を最初に確認する
+- フォルダ型の仕様書は `INDEX.md` を起点に参照する
+
 ## ドキュメント更新規律（重要）
 
 - **ソースコード修正時は仕様書も必ず同時に更新する**（ソースコードと仕様書は常に同期を保つ）
