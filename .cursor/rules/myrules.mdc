@@ -118,7 +118,7 @@ alwaysApply: true
   - 変更したファイルが1つでもある場合は、Cursorログの更新が必須
 - [ ] **Cursorログの更新を実行**
   - `obsidian-cursor-log` SKILLを使用してログを更新
-  - または、`D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM-DD.md`を直接編集
+  - または、`D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM/YYYY-MM-DD.md`を直接編集（月フォルダYYYY-MM配下）
 - [ ] **更新内容の確認**
   - 作業名、プロジェクト名、変更ファイル、実施内容、結果が記録されているか？
   - **タイムスタンプ（HH:mm:ss）が実時刻で記載されているか？**（`--:--:--` や仮の時刻は禁止。追記前にターミナルで JST 現在時刻を取得してから記載すること）
