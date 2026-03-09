@@ -9,7 +9,7 @@ description: コミットメッセージの作成ガイドラインとベスト�
 
 ### コンベンショナルコミット形式（必須）
 
-```
+```text
 <type>: <subject>
 
 <body>
@@ -49,7 +49,7 @@ description: コミットメッセージの作成ガイドラインとベスト�
 
 ### 良い例
 
-```
+```text
 feat: CAPTCHA導入（不正登録対策・ログイン連続失敗対策）
 
 - hCaptcha/reCAPTCHA v3対応のCAPTCHA検証ユーティリティを追加
@@ -66,15 +66,15 @@ Closes #123
 
 ### 悪い例
 
-```
+```text
 fix: バグ修正
 ```
 
-```
+```text
 update: いろいろ修正した
 ```
 
-```
+```text
 feat: CAPTCHA機能を追加しました。これは不正登録対策とログイン連続失敗対策のために実装したもので、hCaptchaとreCAPTCHA v3の両方に対応しています。
 ```
 
@@ -133,7 +133,7 @@ Remove-Item temp/commit_msg.txt # 必須：削除
 
 ### 5. 破壊的変更は明示
 
-```
+```text
 feat: APIエンドポイントの変更
 
 BREAKING CHANGE: /api/v1/users エンドポイントが削除されました。

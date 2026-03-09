@@ -13,7 +13,7 @@ description: 本番AWSのEC2およびRDSへ、AI（Cursorエージェント）�
 ## 接続方式の選択（AI向け）
 
 | 目的 | 方式 | コマンド例 |
-|------|------|------------|
+| --- | --- | --- |
 | EC2で単発コマンド実行し結果を取得 | **Session Manager send-command** | 下記「send-command」参照 |
 | EC2で対話的に複数コマンド | **Session Manager start-session** | `aws ssm start-session --target <id> --region ap-northeast-1` |
 | EC2で単発コマンド（SSH鍵あり） | **SSH リモート** | `ssh -i <key> ec2-user@<ip> "command"` |

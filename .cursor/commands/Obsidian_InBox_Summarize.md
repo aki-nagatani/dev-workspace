@@ -1,3 +1,5 @@
+# Obsidian InBox Summarize
+
 myrulesを厳守して作業してください
 
 `obsidian-inbox-summarize` SKILLを使用して、ObsidianのInBoxにあるノートを要約してナレッジとして保存してください。

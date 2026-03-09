@@ -66,15 +66,11 @@ Comprehensive Postgres performance optimization guide for developers using Supab
 
 ## 1. Query Performance
 
-**Impact: CRITICAL**
-
-Slow queries, missing indexes, inefficient query plans. The most common source of Postgres performance issues.
+**Impact: CRITICAL** — Slow queries, missing indexes, inefficient query plans. The most common source of Postgres performance issues.
 
 ### 1.1 Add Indexes on WHERE and JOIN Columns
 
-**Impact: CRITICAL (100-1000x faster queries on large tables)**
-
-Queries filtering or joining on unindexed columns cause full table scans, which become exponentially slower as tables grow.
+**Impact: CRITICAL (100-1000x faster queries on large tables)** — Queries filtering or joining on unindexed columns cause full table scans, which become exponentially slower as tables grow.
 
 **Incorrect (sequential scan on large table):**
 
@@ -110,9 +106,7 @@ Reference: <https://supabase.com/docs/guides/database/query-optimization>
 
 ### 1.2 Choose the Right Index Type for Your Data
 
-**Impact: HIGH (10-100x improvement with correct index type)**
-
-Different index types excel at different query patterns. The default B-tree isn't always optimal.
+**Impact: HIGH (10-100x improvement with correct index type)** — Different index types excel at different query patterns. The default B-tree isn't always optimal.
 
 **Incorrect (B-tree for JSONB containment):**
 
@@ -150,9 +144,7 @@ Reference: <https://www.postgresql.org/docs/current/indexes-types.html>
 
 ### 1.3 Create Composite Indexes for Multi-Column Queries
 
-**Impact: HIGH (5-10x faster multi-column queries)**
-
-When queries filter on multiple columns, a composite index is more efficient than separate single-column indexes.
+**Impact: HIGH (5-10x faster multi-column queries)** — When queries filter on multiple columns, a composite index is more efficient than separate single-column indexes.
 
 **Incorrect (separate indexes require bitmap scan):**
 
@@ -189,9 +181,7 @@ Reference: <https://www.postgresql.org/docs/current/indexes-multicolumn.html>
 
 ### 1.4 Use Covering Indexes to Avoid Table Lookups
 
-**Impact: MEDIUM-HIGH (2-5x faster queries by eliminating heap fetches)**
-
-Covering indexes include all columns needed by a query, enabling index-only scans that skip the table entirely.
+**Impact: MEDIUM-HIGH (2-5x faster queries by eliminating heap fetches)** — Covering indexes include all columns needed by a query, enabling index-only scans that skip the table entirely.
 
 **Incorrect (index scan + heap fetch):**
 
@@ -224,9 +214,7 @@ Reference: <https://www.postgresql.org/docs/current/indexes-index-only-scans.htm
 
 ### 1.5 Use Partial Indexes for Filtered Queries
 
-**Impact: HIGH (5-20x smaller indexes, faster writes and queries)**
-
-Partial indexes only include rows matching a WHERE condition, making them smaller and faster when queries consistently filter on the same condition.
+**Impact: HIGH (5-20x smaller indexes, faster writes and queries)** — Partial indexes only include rows matching a WHERE condition, making them smaller and faster when queries consistently filter on the same condition.
 
 **Incorrect (full index includes irrelevant rows):**
 
@@ -264,15 +252,11 @@ Reference: <https://www.postgresql.org/docs/current/indexes-partial.html>
 
 ## 2. Connection Management
 
-**Impact: CRITICAL**
-
-Connection pooling, limits, and serverless strategies. Critical for applications with high concurrency or serverless deployments.
+**Impact: CRITICAL** — Connection pooling, limits, and serverless strategies. Critical for applications with high concurrency or serverless deployments.
 
 ### 2.1 Configure Idle Connection Timeouts
 
-**Impact: HIGH (Reclaim 30-50% of connection slots from idle clients)**
-
-Idle connections waste resources. Configure timeouts to automatically reclaim them.
+**Impact: HIGH (Reclaim 30-50% of connection slots from idle clients)** — Idle connections waste resources. Configure timeouts to automatically reclaim them.
 
 **Incorrect (connections held indefinitely):**
 
@@ -311,9 +295,7 @@ Reference: <https://www.postgresql.org/docs/current/runtime-config-client.html#G
 
 ### 2.2 Set Appropriate Connection Limits
 
-**Impact: CRITICAL (Prevent database crashes and memory exhaustion)**
-
-Too many connections exhaust memory and degrade performance. Set limits based on available resources.
+**Impact: CRITICAL (Prevent database crashes and memory exhaustion)** — Too many connections exhaust memory and degrade performance. Set limits based on available resources.
 
 **Incorrect (unlimited or excessive connections):**
 
@@ -350,9 +332,7 @@ Reference: <https://supabase.com/docs/guides/platform/performance#connection-man
 
 ### 2.3 Use Connection Pooling for All Applications
 
-**Impact: CRITICAL (Handle 10-100x more concurrent users)**
-
-Postgres connections are expensive (1-3MB RAM each). Without pooling, applications exhaust connections under load.
+**Impact: CRITICAL (Handle 10-100x more concurrent users)** — Postgres connections are expensive (1-3MB RAM each). Without pooling, applications exhaust connections under load.
 
 **Incorrect (new connection per request):**
 
@@ -389,9 +369,7 @@ Reference: <https://supabase.com/docs/guides/database/connecting-to-postgres#con
 
 ### 2.4 Use Prepared Statements Correctly with Pooling
 
-**Impact: HIGH (Avoid prepared statement conflicts in pooled environments)**
-
-Prepared statements are tied to individual database connections. In transaction-mode pooling, connections are shared, causing conflicts.
+**Impact: HIGH (Avoid prepared statement conflicts in pooled environments)** — Prepared statements are tied to individual database connections. In transaction-mode pooling, connections are shared, causing conflicts.
 
 **Incorrect (named prepared statements with transaction pooling):**
 
@@ -430,15 +408,11 @@ Reference: <https://supabase.com/docs/guides/database/connecting-to-postgres#con
 
 ## 3. Security & RLS
 
-**Impact: CRITICAL**
-
-Row-Level Security policies, privilege management, and authentication patterns.
+**Impact: CRITICAL** — Row-Level Security policies, privilege management, and authentication patterns.
 
 ### 3.1 Apply Principle of Least Privilege
 
-**Impact: MEDIUM (Reduced attack surface, better audit trail)**
-
-Grant only the minimum permissions required. Never use superuser for application queries.
+**Impact: MEDIUM (Reduced attack surface, better audit trail)** — Grant only the minimum permissions required. Never use superuser for application queries.
 
 **Incorrect (overly broad permissions):**
 
@@ -485,9 +459,7 @@ Reference: <https://supabase.com/blog/postgres-roles-and-privileges>
 
 ### 3.2 Enable Row Level Security for Multi-Tenant Data
 
-**Impact: CRITICAL (Database-enforced tenant isolation, prevent data leaks)**
-
-Row Level Security (RLS) enforces data access at the database level, ensuring users only see their own data.
+**Impact: CRITICAL (Database-enforced tenant isolation, prevent data leaks)** — Row Level Security (RLS) enforces data access at the database level, ensuring users only see their own data.
 
 **Incorrect (application-level filtering only):**
 
@@ -530,9 +502,7 @@ Reference: <https://supabase.com/docs/guides/database/postgres/row-level-securit
 
 ### 3.3 Optimize RLS Policies for Performance
 
-**Impact: HIGH (5-10x faster RLS queries with proper patterns)**
-
-Poorly written RLS policies can cause severe performance issues. Use subqueries and indexes strategically.
+**Impact: HIGH (5-10x faster RLS queries with proper patterns)** — Poorly written RLS policies can cause severe performance issues. Use subqueries and indexes strategically.
 
 **Incorrect (function called for every row):**
 
@@ -578,15 +548,11 @@ Reference: <https://supabase.com/docs/guides/database/postgres/row-level-securit
 
 ## 4. Schema Design
 
-**Impact: HIGH**
-
-Table design, index strategies, partitioning, and data type selection. Foundation for long-term performance.
+**Impact: HIGH** — Table design, index strategies, partitioning, and data type selection. Foundation for long-term performance.
 
 ### 4.1 Choose Appropriate Data Types
 
-**Impact: HIGH (50% storage reduction, faster comparisons)**
-
-Using the right data types reduces storage, improves query performance, and prevents bugs.
+**Impact: HIGH (50% storage reduction, faster comparisons)** — Using the right data types reduces storage, improves query performance, and prevents bugs.
 
 **Incorrect (wrong data types):**
 
@@ -625,9 +591,7 @@ Reference: <https://www.postgresql.org/docs/current/datatype.html>
 
 ### 4.2 Index Foreign Key Columns
 
-**Impact: HIGH (10-100x faster JOINs and CASCADE operations)**
-
-Postgres does not automatically index foreign key columns. Missing indexes cause slow JOINs and CASCADE operations.
+**Impact: HIGH (10-100x faster JOINs and CASCADE operations)** — Postgres does not automatically index foreign key columns. Missing indexes cause slow JOINs and CASCADE operations.
 
 **Incorrect (unindexed foreign key):**
 
@@ -679,9 +643,7 @@ Reference: <https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CON
 
 ### 4.3 Partition Large Tables for Better Performance
 
-**Impact: MEDIUM-HIGH (5-20x faster queries and maintenance on large tables)**
-
-Partitioning splits a large table into smaller pieces, improving query performance and maintenance operations.
+**Impact: MEDIUM-HIGH (5-20x faster queries and maintenance on large tables)** — Partitioning splits a large table into smaller pieces, improving query performance and maintenance operations.
 
 **Incorrect (single large table):**
 
@@ -732,9 +694,7 @@ Reference: <https://www.postgresql.org/docs/current/ddl-partitioning.html>
 
 ### 4.4 Select Optimal Primary Key Strategy
 
-**Impact: HIGH (Better index locality, reduced fragmentation)**
-
-Primary key choice affects insert performance, index size, and replication
+**Impact: HIGH (Better index locality, reduced fragmentation)** — Primary key choice affects insert performance, index size, and replication
 efficiency.
 
 **Incorrect (problematic PK choices):**
@@ -789,9 +749,7 @@ Guidelines:
 
 ### 4.5 Use Lowercase Identifiers for Compatibility
 
-**Impact: MEDIUM (Avoid case-sensitivity bugs with tools, ORMs, and AI assistants)**
-
-PostgreSQL folds unquoted identifiers to lowercase. Quoted mixed-case identifiers require quotes forever and cause issues with tools, ORMs, and AI assistants that may not recognize them.
+**Impact: MEDIUM (Avoid case-sensitivity bugs with tools, ORMs, and AI assistants)** — PostgreSQL folds unquoted identifiers to lowercase. Quoted mixed-case identifiers require quotes forever and cause issues with tools, ORMs, and AI assistants that may not recognize them.
 
 **Incorrect (mixed-case identifiers):**
 
@@ -839,15 +797,12 @@ Reference: <https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-
 
 ## 5. Concurrency & Locking
 
-**Impact: MEDIUM-HIGH**
-
-Transaction management, isolation levels, deadlock prevention, and lock contention patterns.
+**Impact: MEDIUM-HIGH** — Transaction management, isolation levels, deadlock prevention, and lock contention patterns.
 
 ### 5.1 Keep Transactions Short to Reduce Lock Contention
 
-**Impact: MEDIUM-HIGH (3-5x throughput improvement, fewer deadlocks)**
-
-Long-running transactions hold locks that block other queries. Keep transactions as short as possible.
+**Impact: MEDIUM-HIGH (3-5x throughput improvement, fewer deadlocks)** — Long-running transactions hold locks that block other queries.
+Keep transactions as short as possible.
 
 **Incorrect (long transaction with external calls):**
 
@@ -890,9 +845,7 @@ Reference: <https://www.postgresql.org/docs/current/tutorial-transactions.html>
 
 ### 5.2 Prevent Deadlocks with Consistent Lock Ordering
 
-**Impact: MEDIUM-HIGH (Eliminate deadlock errors, improve reliability)**
-
-Deadlocks occur when transactions lock resources in different orders. Always
+**Impact: MEDIUM-HIGH (Eliminate deadlock errors, improve reliability)** — Deadlocks occur when transactions lock resources in different orders. Always
 acquire locks in a consistent order.
 
 **Incorrect (inconsistent lock ordering):**
@@ -947,9 +900,7 @@ Detect deadlocks in logs:
 
 ### 5.3 Use Advisory Locks for Application-Level Locking
 
-**Impact: MEDIUM (Efficient coordination without row-level lock overhead)**
-
-Advisory locks provide application-level coordination without requiring database rows to lock.
+**Impact: MEDIUM (Efficient coordination without row-level lock overhead)** — Advisory locks provide application-level coordination without requiring database rows to lock.
 
 **Incorrect (creating rows just for locking):**
 
@@ -998,9 +949,7 @@ Reference: <https://www.postgresql.org/docs/current/explicit-locking.html#ADVISO
 
 ### 5.4 Use SKIP LOCKED for Non-Blocking Queue Processing
 
-**Impact: MEDIUM-HIGH (10x throughput for worker queues)**
-
-When multiple workers process a queue, SKIP LOCKED allows workers to process different rows without waiting.
+**Impact: MEDIUM-HIGH (10x throughput for worker queues)** — When multiple workers process a queue, SKIP LOCKED allows workers to process different rows without waiting.
 
 **Incorrect (workers block each other):**
 
@@ -1047,15 +996,11 @@ Reference: <https://www.postgresql.org/docs/current/sql-select.html#SQL-FOR-UPDA
 
 ## 6. Data Access Patterns
 
-**Impact: MEDIUM**
-
-N+1 query elimination, batch operations, cursor-based pagination, and efficient data fetching.
+**Impact: MEDIUM** — N+1 query elimination, batch operations, cursor-based pagination, and efficient data fetching.
 
 ### 6.1 Batch INSERT Statements for Bulk Data
 
-**Impact: MEDIUM (10-50x faster bulk inserts)**
-
-Individual INSERT statements have high overhead. Batch multiple rows in single statements or use COPY.
+**Impact: MEDIUM (10-50x faster bulk inserts)** — Individual INSERT statements have high overhead. Batch multiple rows in single statements or use COPY.
 
 **Incorrect (individual inserts):**
 
@@ -1102,9 +1047,7 @@ Reference: <https://www.postgresql.org/docs/current/sql-copy.html>
 
 ### 6.2 Eliminate N+1 Queries with Batch Loading
 
-**Impact: MEDIUM-HIGH (10-100x fewer database round trips)**
-
-N+1 queries execute one query per item in a loop. Batch them into a single query using arrays or JOINs.
+**Impact: MEDIUM-HIGH (10-100x fewer database round trips)** — N+1 queries execute one query per item in a loop. Batch them into a single query using arrays or JOINs.
 
 **Incorrect (N+1 queries):**
 
@@ -1150,9 +1093,7 @@ Reference: <https://supabase.com/docs/guides/database/query-optimization>
 
 ### 6.3 Use Cursor-Based Pagination Instead of OFFSET
 
-**Impact: MEDIUM-HIGH (Consistent O(1) performance regardless of page depth)**
-
-OFFSET-based pagination scans all skipped rows, getting slower on deeper pages. Cursor pagination is O(1).
+**Impact: MEDIUM-HIGH (Consistent O(1) performance regardless of page depth)** — OFFSET-based pagination scans all skipped rows, getting slower on deeper pages. Cursor pagination is O(1).
 
 **Incorrect (OFFSET pagination):**
 
@@ -1195,9 +1136,7 @@ Reference: <https://supabase.com/docs/guides/database/pagination>
 
 ### 6.4 Use UPSERT for Insert-or-Update Operations
 
-**Impact: MEDIUM (Atomic operation, eliminates race conditions)**
-
-Using separate SELECT-then-INSERT/UPDATE creates race conditions. Use INSERT ... ON CONFLICT for atomic upserts.
+**Impact: MEDIUM (Atomic operation, eliminates race conditions)** — Using separate SELECT-then-INSERT/UPDATE creates race conditions. Use INSERT ... ON CONFLICT for atomic upserts.
 
 **Incorrect (check-then-insert race condition):**
 
@@ -1240,15 +1179,11 @@ Reference: <https://www.postgresql.org/docs/current/sql-insert.html#SQL-ON-CONFL
 
 ## 7. Monitoring & Diagnostics
 
-**Impact: LOW-MEDIUM**
-
-Using pg_stat_statements, EXPLAIN ANALYZE, metrics collection, and performance diagnostics.
+**Impact: LOW-MEDIUM** — Using pg_stat_statements, EXPLAIN ANALYZE, metrics collection, and performance diagnostics.
 
 ### 7.1 Enable pg_stat_statements for Query Analysis
 
-**Impact: LOW-MEDIUM (Identify top resource-consuming queries)**
-
-pg_stat_statements tracks execution statistics for all queries, helping identify slow and frequent queries.
+**Impact: LOW-MEDIUM (Identify top resource-consuming queries)** — pg_stat_statements tracks execution statistics for all queries, helping identify slow and frequent queries.
 
 **Incorrect (no visibility into query patterns):**
 
@@ -1296,9 +1231,7 @@ Reference: <https://supabase.com/docs/guides/database/extensions/pg_stat_stateme
 
 ### 7.2 Maintain Table Statistics with VACUUM and ANALYZE
 
-**Impact: MEDIUM (2-10x better query plans with accurate statistics)**
-
-Outdated statistics cause the query planner to make poor decisions. VACUUM reclaims space, ANALYZE updates statistics.
+**Impact: MEDIUM (2-10x better query plans with accurate statistics)** — Outdated statistics cause the query planner to make poor decisions. VACUUM reclaims space, ANALYZE updates statistics.
 
 **Incorrect (stale statistics):**
 
@@ -1346,9 +1279,7 @@ Reference: <https://supabase.com/docs/guides/database/database-size#vacuum-opera
 
 ### 7.3 Use EXPLAIN ANALYZE to Diagnose Slow Queries
 
-**Impact: LOW-MEDIUM (Identify exact bottlenecks in query execution)**
-
-EXPLAIN ANALYZE executes the query and shows actual timings, revealing the true performance bottlenecks.
+**Impact: LOW-MEDIUM (Identify exact bottlenecks in query execution)** — EXPLAIN ANALYZE executes the query and shows actual timings, revealing the true performance bottlenecks.
 
 **Incorrect (guessing at performance issues):**
 
@@ -1386,15 +1317,11 @@ Reference: <https://supabase.com/docs/guides/database/inspect>
 
 ## 8. Advanced Features
 
-**Impact: LOW**
-
-Full-text search, JSONB optimization, PostGIS, extensions, and advanced Postgres features.
+**Impact: LOW** — Full-text search, JSONB optimization, PostGIS, extensions, and advanced Postgres features.
 
 ### 8.1 Index JSONB Columns for Efficient Querying
 
-**Impact: MEDIUM (10-100x faster JSONB queries with proper indexing)**
-
-JSONB queries without indexes scan the entire table. Use GIN indexes for containment queries.
+**Impact: MEDIUM (10-100x faster JSONB queries with proper indexing)** — JSONB queries without indexes scan the entire table. Use GIN indexes for containment queries.
 
 **Incorrect (no index on JSONB):**
 
@@ -1436,9 +1363,7 @@ Reference: <https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDE
 
 ### 8.2 Use tsvector for Full-Text Search
 
-**Impact: MEDIUM (100x faster than LIKE, with ranking support)**
-
-LIKE with wildcards can't use indexes. Full-text search with tsvector is orders of magnitude faster.
+**Impact: MEDIUM (100x faster than LIKE, with ranking support)** — LIKE with wildcards can't use indexes. Full-text search with tsvector is orders of magnitude faster.
 
 **Incorrect (LIKE pattern matching):**
 

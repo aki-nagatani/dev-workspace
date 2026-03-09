@@ -47,7 +47,7 @@ npm run build
 
 ## Repository Structure
 
-```
+```text
 skills/postgres-best-practices/
 ├── SKILL.md           # Agent-facing skill manifest
 ├── AGENTS.md          # [GENERATED] Compiled rules document
@@ -96,7 +96,7 @@ tags: relevant, keywords
 [Good SQL example]
 ```
 
-```
+```markdown
 ## Writing Guidelines
 
 See `rules/_contributing.md` for detailed guidelines. Key principles:

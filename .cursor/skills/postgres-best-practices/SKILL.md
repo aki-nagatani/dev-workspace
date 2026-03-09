@@ -9,7 +9,9 @@ metadata:
 
 # Supabase Postgres Best Practices
 
-Comprehensive performance optimization guide for Postgres, maintained by Supabase. Contains rules across 8 categories, prioritized by impact to guide automated query optimization and schema design.
+Comprehensive performance optimization guide for Postgres, maintained by Supabase.
+Contains rules across 8 categories, prioritized by impact to guide automated query
+optimization and schema design.
 
 ## When to Apply
 
@@ -25,7 +27,7 @@ Reference these guidelines when:
 ## Rule Categories by Priority
 
 | Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
+| --- | --- | --- | --- |
 | 1 | Query Performance | CRITICAL | `query-` |
 | 2 | Connection Management | CRITICAL | `conn-` |
 | 3 | Security & RLS | CRITICAL | `security-` |
@@ -39,7 +41,7 @@ Reference these guidelines when:
 
 Read individual rule files for detailed explanations and SQL examples:
 
-```
+```text
 rules/query-missing-indexes.md
 rules/schema-partial-indexes.md
 rules/_sections.md

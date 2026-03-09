@@ -12,10 +12,10 @@ MyPokedexおよびFishTrackの本番EC2インスタンスへの接続方法と�
 
 ### 現在の本番インスタンス情報
 
-#### MyPokedex
+#### 本番インスタンス（MyPokedex）
 
 | 項目 | 値 | 備考 |
-|------|-----|------|
+| --- | --- | --- |
 | **本番インスタンスID** | `i-023a1623e48cabf1d` | **現在稼働中** |
 | **本番IPアドレス** | `54.249.50.253` | **デプロイ先** |
 | EC2上のアプリパス | `/home/ec2-user/MyPokedex` | |
@@ -23,10 +23,10 @@ MyPokedexおよびFishTrackの本番EC2インスタンスへの接続方法と�
 | アプリモジュール | `mypokedex` | |
 | ファクトリ関数 | `createApp` | |
 
-#### FishTrack
+#### 本番インスタンス（FishTrack）
 
 | 項目 | 値 | 備考 |
-|------|-----|------|
+| --- | --- | --- |
 | **本番インスタンスID** | `i-05e573f245ca9e2d1` | **現在稼働中** |
 | **本番IPアドレス** | `52.197.69.195` | **デプロイ先** |
 | EC2上のアプリパス | `/home/ec2-user/FishTrack` | |
@@ -130,7 +130,7 @@ aws ssm get-command-invocation --command-id <CommandId> --instance-id <InstanceI
 #### SSH鍵ファイル
 
 | プロジェクト | SSH鍵ファイル |
-|-------------|---------------|
+| --- | --- |
 | MyPokedex | `C:\Users\Akihide\.ssh\mypokedex_ec2_key` |
 | FishTrack | `C:\Users\Akihide\.ssh\fishtrack_ec2_key` |
 
@@ -293,7 +293,7 @@ git log --oneline HEAD..origin/main
 
 ## 利用可能なモデル
 
-### MyPokedex
+### MyPokedex のモデル一覧
 
 - `mypokedex.models.user.User` - ユーザー
 - `mypokedex.models.game_title.GameTitle` - ゲームタイトル
@@ -303,7 +303,7 @@ git log --oneline HEAD..origin/main
 - `mypokedex.models.regist.Regist` - 登録データ
 - `mypokedex.models.user_game_setting.UserGameSetting` - ユーザーゲーム設定
 
-### FishTrack
+### FishTrack のモデル一覧
 
 - `fishtrack.models.User` - ユーザー
 - `fishtrack.models.FishingRecord` - 釣果記録
@@ -323,12 +323,12 @@ git log --oneline HEAD..origin/main
 
 ## 関連ドキュメント
 
-### MyPokedex
+### MyPokedex の関連ドキュメント
 
 - `MyPokedex/docs/deployment/DEPLOYMENT_AWS.md` - AWSデプロイ手順
 - `MyPokedex/docs/deployment/PRODUCTION_DATA_IMPORT.md` - 本番データインポート手順
 - `MyPokedex/docs/deployment/ROLLBACK_PLAN.md` - ロールバック手順
 
-### FishTrack
+### FishTrack の関連ドキュメント
 
 - `FishTrack/docs/deployment/DEPLOYMENT_AWS.md` - AWSデプロイ手順

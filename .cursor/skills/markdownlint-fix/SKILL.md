@@ -53,6 +53,10 @@ description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) i
 - 既存の Markdown 構造・見出し階層・箇条書きは維持する
 - 文脈を壊さない最小限の編集で完結させる
 
+## CursorLog の更新について
+
+**本 SKILL を用いて md の修正のみを行った場合は、CursorLog の更新は不要とする。**
+
 ## 検証
 
 修正後は markdownlint で再チェックし、エラーが解消されていることを確認する：

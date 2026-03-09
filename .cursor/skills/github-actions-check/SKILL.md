@@ -35,7 +35,7 @@ description: GitHub Actionsの完了を待って結果を確認するSKILL。ota
 
 最新のワークフロー実行を確認します：
 
-**方法1: GitHub CLIを使用（推奨・最優先）**
+#### 方法1: GitHub CLIを使用（推奨・最優先）
 
 GitHub CLI（`gh`）がインストールされている場合、最も簡単に確認できます：
 
@@ -103,7 +103,7 @@ while ($true) {
 }
 ```
 
-**方法2: GitHub APIを使用**
+#### 方法2: GitHub APIを使用
 
 GitHub CLIが使用できない場合：
 
@@ -122,7 +122,7 @@ try {
 }
 ```
 
-**方法3: ブラウザで確認**
+#### 方法3: ブラウザで確認
 
 - GitHub Actionsのページを開く: `https://github.com/{repo}/actions`
 - 最新のワークフロー実行を確認
