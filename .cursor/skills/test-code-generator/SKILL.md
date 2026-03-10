@@ -1,7 +1,7 @@
 ---
 name: test-code-generator
 description: |
-  Generate comprehensive test code for Python (pytest) and JavaScript (Jest) projects to achieve 99% test coverage. MANDATORY: Continuously generates tests until 99% coverage is achieved. After generating test code, MUST check coverage and continue generating additional tests if coverage is below 99%. This process MUST be repeated until all coverage metrics (branches, functions, lines, statements) reach 99% or higher. Use when users request test generation, test coverage improvement, or adding tests for specific functions, classes, or modules. Supports unit tests, integration tests, edge cases, error handling, and mocking patterns. NEVER modifies source code - only generates test code. If source code issues are found, proposes fixes but never modifies code without permission.
+  Generate comprehensive test code for Python (pytest) and JavaScript (Jest) projects to achieve 99% test coverage. MANDATORY: Continuously generates tests until 99% coverage is achieved. NEVER interrupt to ask "shall I continue?" when coverage is below 99% - keep generating tests without user confirmation. After generating test code, MUST check coverage and continue generating additional tests if coverage is below 99%. This process MUST be repeated until all coverage metrics (branches, functions, lines, statements) reach 99% or higher. Use when users request test generation, test coverage improvement, or adding tests for specific functions, classes, or modules. Supports unit tests, integration tests, edge cases, error handling, and mocking patterns. NEVER modifies source code - only generates test code. If source code issues are found, proposes fixes but never modifies code without permission.
 ---
 
 # Test Code Generator
@@ -17,6 +17,30 @@ description: |
 - **必須**: カバレッジ99%以上を達成するまで、このプロセスを継続的に繰り返す
 - **禁止**: カバレッジ99%未満で作業を終了することは許可されない
 - **🚨 作業中断の原則**: 作業を中断するのは、**ユーザーが判断をする必要がある場合のみ**である。AIエージェントは勝手に作業を中断してはならない。カバレッジ確認ができない場合でも、ソースコード分析ベースで継続的にテストコードを生成し続ける。
+
+### 🚨 作業中断禁止（厳守・絶対に違反しないこと）
+
+**カバレッジ99%未満の間、以下の行為は絶対に禁止である。**
+
+| 禁止行為 | 正しい対応 |
+| --- | --- |
+| 「続けてよいですか？」「このまま追加してよいですか？」とユーザーに確認を取る | 確認せずに、即座に次のテストを生成して継続する |
+| 「99%達成には多くのテストが必要」と述べて中断する | 必要なテストを追加し続ける。量は理由にならない |
+| 「作業量が大変」「時間がかかりそう」を理由に止まる | そのような理由で中断しない。継続する |
+| カバレッジ97%・98%など「あと少し」の時点で止まる | 99%以上になるまで止まらない |
+| 未カバー行数が多いことを理由に判断を仰ぐ | ソースコードを分析し、テストを追加し続ける |
+
+**中断を正当化できない理由（技術的・量的理由）**:
+
+- 追加テストが多く必要そう
+- 未カバー行数が80行以上ある
+- テスト作成が大変・複雑
+- カバレッジ確認ができない（→ ソースコード分析で継続）
+- 一度に多くのテストを書く必要がある
+
+**中断してよい唯一のケース**: ユーザーが判断を要する**非技術的**な事態（ソースに重大な不備があり修正が必要、テスト不可能なコードの除外判断、到達不能コードの`# pragma: no cover`追加の可否など）。
+
+**自問**: 「このまま続けてもよいですか？」と聞きたくなったら、それは**違反**。聞かずに継続する。
 
 **重要**: テストカバレッジ方針については、[テストカバレッジ方針.md](../../docs/guidelines/テストカバレッジ方針.md) を参照してください。
 
@@ -187,7 +211,7 @@ description: |
    - 未カバー部分を再度特定
    - ステップ2-4を繰り返して追加のテストコードを生成
    - **このプロセスをカバレッジ99%以上になるまで継続する（必須）**
-   - **🚨 作業を中断してはならない**: ユーザーが判断をする必要がある場合のみ中断する
+   - **🚨 作業を中断してはならない**: 「続けてよいですか？」と質問せず、即座に次のテストを追加する。中断してよいのは「作業中断禁止」セクションで定める唯一のケースのみ。
 
 3. **99%以上の場合**:
    - 作業完了
@@ -386,8 +410,8 @@ describe('Module Name', () => {
    - 一度にすべてを生成する必要はなく、段階的に生成してもよい
    - **ただし、カバレッジ99%未満で作業を終了することは許可されない**
    - **カバレッジ確認ができない場合でも、ソースコード分析ベースで継続する**
-   - **🚨 作業を中断してはならない**: カバレッジ確認ができない場合でも、すべてのソースコードがテストされるまで継続する
-   - **作業を中断するのは、ユーザーが判断をする必要がある場合のみである**
+   - **🚨 絶対禁止**: カバレッジ99%未満で「続けてよいですか？」とユーザーに確認を取ること。確認せずに即座に継続する。
+   - **作業を中断してよいのは、「作業中断禁止」セクションで定める唯一のケースのみ**
 
 **実行例**:
 
@@ -433,14 +457,17 @@ npm run test:coverage
 12. **問題点の明確な記録**: ソースコードに不備を発見した場合は、修正案を提案し、問題点を明確に記録
 13. **継続的なループ実行**: カバレッジ99%未満の場合は、カバレッジ確認 → テスト生成 → カバレッジ確認のループを継続する
 14. **完了条件の厳守**: すべてのカバレッジ指標（ブランチ、関数、行、ステートメント）が99%以上に達した場合のみ作業を完了とする
-15. **🚨 作業中断の原則**: 作業を中断するのは、**ユーザーが判断をする必要がある場合のみ**である。AIエージェントは勝手に作業を中断してはならない。カバレッジ確認ができない場合でも、ソースコード分析ベースで未カバー部分を特定し、テストコードを生成し続ける。
+15. **🚨 作業中断禁止（厳守）**: カバレッジ99%未満で「続けてよいですか？」と質問することは**絶対禁止**。追加作業量・未カバー行数・技術的困難を理由に中断しない。本SKILL冒頭の「作業中断禁止」セクションを参照。
 16. **カバレッジ確認ができない場合の対処**: pytestコマンドが見つからない場合、仮想環境のアクティベートや `python -m pytest` の使用を試す。それでも確認できない場合は、ソースコード分析ベースで継続する。
-17. **ユーザー判断が必要な場合**: 以下の場合のみ、ユーザーに判断を仰ぐ必要がある：
+17. **ユーザー判断が必要な場合**: 以下の場合**のみ**、ユーザーに判断を仰ぐ。**これ以外では質問・確認しない**：
     - ソースコードに重大な不備を発見し、修正が必要な場合（テストコード生成だけでは解決できない）
     - テスト不可能なコードが存在し、除外が必要な場合（例外的な場合のみ）
     - 到達不可能なコード（デッドコード）が存在し、`# pragma: no cover`で除外する必要がある場合（ユーザーの明示的な指示がある場合のみ適用可能）
     - その他、ユーザーの判断が必要な明確な理由がある場合
-    - **カバレッジ確認ができない、テストコード生成が困難などの技術的な問題は、ユーザー判断を仰ぐ理由にはならない**
+    - **🚨 以下はユーザー判断を仰ぐ理由にならない（質問してはならない）**:
+      - カバレッジ確認ができない、テストコード生成が困難
+      - 追加テストが多く必要、未カバー行数が多い
+      - 「このまま続けてよいですか？」「追加してよいですか？」（→ 聞かずに継続）
 18. **到達不可能なコードの除外**: ユーザーの明示的な指示がある場合、到達不可能なコード（デッドコード）に`# pragma: no cover`を追加してカバレッジ測定から除外することができます。ただし、テストでカバー可能なコードは除外しないこと。
 
 ## ソースコードに不備がある場合の対応例
