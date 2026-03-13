@@ -1,6 +1,6 @@
 ---
 name: markdownlint-fix
-description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) in Markdown files. Use when user shows "For the code present, we get this error" with a markdownlint error (MD0xx), requests "Fix it verify", or specifies file/line with a markdownlint violation. Follows markdown-editing SKILL for correction rules. 周辺の同様エラーも併せて修正する。
+description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) in Markdown files. Use when user shows "For the code present, we get this error" with a markdownlint error (MD0xx), requests "Fix it verify", or specifies file/line with a markdownlint violation. Follows markdown-editing SKILL for correction rules. 同ファイルのエラーをすべて修正する。
 ---
 
 # マークダウンリント修正作業
@@ -25,10 +25,11 @@ description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) i
 - ユーザーが指定したファイルと行（または選択範囲）を確認する
 - 指定された箇所の markdownlint エラーを特定する
 
-### 2. 周辺の同様エラーを併せて修正
+### 2. 同ファイルのエラーを併せて修正
 
-**重要**: 該当箇所の修正に留めず、**周辺の同様のエラーも併せて対応する**。
+**重要**: 該当箇所の修正に留めず、**同ファイル内のエラーをすべて修正する**。
 
+- **同ファイルの全エラーを修正する**: ユーザーが指定した箇所だけでなく、同一ファイル内に残る markdownlint エラーをすべて解消する
 - 同一ファイル内の同じ種類のエラー（例：他のテーブル区切り行の MD060、他のリストの MD032 など）を探して修正する
 - 同じテーブル内の他の行、同じセクション内の他のリストなど、文脈的にまとめて修正すべき範囲を判断する
 
@@ -47,7 +48,7 @@ description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) i
 
 ## 修正時の心構え
 
-- **該当箇所だけでなく、周辺の同様のエラーもまとめて修正する**
+- **該当箇所だけでなく、同ファイル内の全エラーを修正する**
 - 同一ファイル内で同じパターンの違反が複数ある場合は、一括で修正する
 - **別パターンのエラーも修正すること**（MD013 と MD060 が同時に存在する場合など）
 - 既存の Markdown 構造・見出し階層・箇条書きは維持する
