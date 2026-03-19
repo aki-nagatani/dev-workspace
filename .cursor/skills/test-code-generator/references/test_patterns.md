@@ -32,7 +32,14 @@
 2. **実行（Act）**: テスト対象のコードを実行
 3. **検証（Assert）**: 期待される結果を検証
 
-### 2. テスト命名規則
+### 2. テストメソッドのコメント（必須）
+
+各テストメソッドの冒頭に、なんのためのテストなのかを必ず記述する。
+
+- **Python**: 各テスト関数に docstring を付与。例: `"""SECRET_KEY が未設定のとき EmailVerificationError を送出する。"""`
+- **JavaScript**: `test()` / `it()` のテスト名で目的が伝わる文言にする。必要に応じて直前コメントで補足
+
+### 3. テスト命名規則
 
 - **Python**: `test_<function_name>_<scenario>`形式
   - 例: `test_login_post_with_invalid_password`
@@ -42,7 +49,7 @@
   - 例: `should return error when password is invalid`
   - 例: `should update user when valid data provided`
 
-### 3. テストカテゴリ
+### 4. テストカテゴリ
 
 #### 正常系テスト
 
@@ -61,7 +68,7 @@
 
 ## Python (pytest) パターン
 
-### 基本的なテスト構造
+### 基本的なテスト構造（Python）
 
 ```python
 def test_function_name_scenario(app, client):
@@ -139,7 +146,7 @@ def test_function_with_mock(app, client):
 
 ## JavaScript (Jest) パターン
 
-### 基本的なテスト構造
+### 基本的なテスト構造（JavaScript）
 
 ```javascript
 describe('Module Name', () => {
