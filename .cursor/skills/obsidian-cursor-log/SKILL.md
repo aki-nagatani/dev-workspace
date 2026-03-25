@@ -122,7 +122,7 @@ description: Cursorの作業内容をObsidianのCursorLogに記録する。作�
 ```markdown
 ### 残作業・課題
 
-- 仕様書 MP-5 のUI調整がレビュー待ち
+- 仕様書 P5 のUI調整がレビュー待ち
 - 本番デプロイは次メンテ窓で実施予定
 ```
 
