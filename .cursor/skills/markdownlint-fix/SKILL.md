@@ -5,6 +5,14 @@ description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) i
 
 # マークダウンリント修正作業
 
+## 作業開始前（必須・省略禁止）
+
+- **修正・検証・提案のいずれかを行う前に**、本ファイル
+  `dev-workspace/.cursor/skills/markdownlint-fix/SKILL.md` を **Read ツールで全文読み**、
+  以下の作業フローに従うこと
+- SKILL の説明文や会話内の要約だけに頼らず、**毎回ファイルを開いて読む**（エージェントの抜け漏れ防止）
+- `dev-workspace/.cursor/rules/myrules.mdc` の「Markdownlint修正（SKILL発火条件）」と整合させる
+
 ## 🚨 発火トリガー（この SKILL を適用すべき場合）
 
 ユーザーメッセージに以下のいずれかが含まれる場合、**本 SKILL を必ず適用する**:
@@ -56,7 +64,8 @@ description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) i
 
 ## CursorLog の更新について
 
-**本 SKILL を用いて md の修正のみを行った場合は、CursorLog の更新は不要とする。**
+- **原則**: 本 SKILL で `.md` の修正のみのときは CursorLog を省略してよい
+- **競合時**: `myrules.mdc` の作業ログ規律と本節が食い違う場合は **本 SKILL を優先**する
 
 ## 検証
 
