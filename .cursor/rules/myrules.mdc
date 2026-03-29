@@ -354,6 +354,21 @@ alwaysApply: true
 - **必須の最初アクション**: 修正作業を開始する前に、**必ず** Read ツールで `dev-workspace/.cursor/skills/markdownlint-fix/SKILL.md` を読み、その「作業フロー」に従って修正する。**SKILL を読まずに修正を開始してはならない。**
 - **詳細**: SKILL の「発火条件」「作業フロー」「周辺の同様エラーも併せて修正」に従う
 
+## Python コードエラー修正（SKILL発火条件）
+
+**🚨 Python の構文エラー・型エラー・Lint 解析エラーなど、`.py` を原因側から直す作業では、必ず `python-code-error-fix` SKILL を参照する。**
+
+- **発火パターン**（以下のいずれかに該当する場合）:
+  - **`SyntaxError` / `IndentationError`** やパーサが通らない状態の修正
+  - **basedpyright / Pyright / Pylance / mypy** 等の指摘、**オーバーロード不一致**、**代入不可**など
+  - **未定義名・import・シグネチャ不一致**など、静的解析・Lint の **エラー級**の解消
+  - 「**エラーを直して**」「**テストが落ちる**」で手を入れる対象が **Python ソース**であるとき
+- **必須の最初アクション**: 修正作業を開始する前に、**必ず** Read ツールで
+    `dev-workspace/.cursor/skills/python-code-error-fix/SKILL.md` を読み、**汎用フロー**と該当節
+    （構文 / 型 / **付録**の SQLAlchemy・WTForms 等）に従う
+- **詳細**: 同 SKILL の汎用フロー・付録（SQLAlchemy・WTForms 等）に従う
+- **対象外**: **markdownlint（.md）** は `markdownlint-fix` SKILL。**JS/TS 等**は本 SKILL の対象外
+
 ## ファイルサイズ規律（重要）
 
 - **ソースコードファイル（src/配下）**: 理想500行以下、許容1,000行以下、上限2,000行（超過時は分割を検討）
