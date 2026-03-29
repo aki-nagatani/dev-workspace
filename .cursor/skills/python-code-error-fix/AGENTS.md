@@ -23,3 +23,8 @@ Always respond in Japanese when applying this skill.
 ## 適用範囲
 
 dev-workspace および連携リポジトリ（MyPokedex、FishTrack、otayori-navi 等）の **Python コード**。
+
+## Cursor エディタ側（正本の取り込み）
+
+- **Skills**: `dev-workspace/.cursor/skills/python-code-error-fix/` を **1つだけ** 登録する（同名・別パスでの重複は冗長で発火条件が二重になる）。
+- **旧 SKILL 名**（移行前の basedpyright 専用ディレクトリ等）を Cursor に残している場合は**登録を外す**。**myrules** の Python 節は **`python-code-error-fix` のみ**を参照する。
