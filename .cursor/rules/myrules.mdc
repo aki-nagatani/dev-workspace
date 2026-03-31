@@ -269,6 +269,7 @@ alwaysApply: true
 ## ドキュメント更新規律（重要）
 
 - **仕様書の更新手順・注意点（タスク ID を仕様本文に書かないこと、計画書との役割分担等）**: `.cursor/skills/specification-update/SKILL.md` を参照する
+- **仕様書編集後の点検**: タスク番号（Fxx / Pxx / Oxx 等）が本文・Wiki リンクに残っていないか、`specification-update` SKILL の「再発防止」に従い `scripts/check_spec_task_ids.py` または同等の検索で確認する（**タスク ID は `統合作業スケジュール.md` 側のみ**）
 - **統合作業スケジュールの更新（タスク一覧・週次・ガント・三本柱・完了表記）**: `.cursor/skills/integrated-schedule-update/SKILL.md` を参照する
 - **ソースコード修正時は仕様書も必ず同時に更新する**（ソースコードと仕様書は常に同期を保つ）
 - **仕様書の更新は実装と同時に行う**（後回しにしない）
