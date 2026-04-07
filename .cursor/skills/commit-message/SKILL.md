@@ -1,6 +1,6 @@
 ---
 name: commit-message
-description: コミットメッセージの作成ガイドラインとベストプラクティス。コンベンショナルコミット形式に従い、日本語で記述し、PowerShellでの文字化けを防止する。コミットメッセージを作成・確認・修正する際に使用する。
+description: コミットメッセージの作成ガイドラインとベストプラクティス。コンベンショナルコミット形式に従い、日本語で記述し、PowerShellでは BOM なし UTF-8 でファイルに書いてから -F で読み込み、文字化けを防止する。コミットメッセージを作成・確認・修正する際に使用する。
 ---
 
 # コミットメッセージ作成ガイドライン
@@ -80,21 +80,41 @@ feat: CAPTCHA機能を追加しました。これは不正登録対策とログ�
 
 ## プロジェクト固有のルール
 
-### 言語と文字化け対策
+### 言語・エンコーディングと文字化け対策
 
 - **コミットメッセージは日本語で記述**
-- **PowerShellでの文字化け防止**: `-F` オプションを使用してファイルから読み込む
+- **エンコーディングは BOM なし UTF-8（必須）**  
+  - タイトル先頭に **UTF-8 BOM（`EF BB BF`）** が付くと、不可視文字が混ざり、**先頭マッチする自動チェック**（Conventional Commits 等）や**文字列比較**で不整合の原因になりうる。  
+  - Windows PowerShell 5.1 の `Out-File -Encoding utf8` は **既定で BOM 付き**になりやすいため、**コミット用メッセージファイルには使わない**（下記の **BOM なし** の書き方を正とする）。
+- **PowerShellでの文字化け防止**: 内容を **BOM なし UTF-8** のファイルに書き、**`git commit -F`** で読み込む
 
-**PowerShellでのコミットメッセージ文字化け防止方法**:
+**PowerShell で BOM なし UTF-8 に書く方法（推奨・どの版でも安全）**:
 
 ```powershell
-# ファイルから読み込む方法（推奨）
-@"
-コミットメッセージの内容
-複数行も可能
-"@ | Out-File -FilePath temp/commit_msg.txt -Encoding utf8
+# プロジェクト直下ではなく temp/ 配下に置く（リポジトリの一時ファイル規約に合わせる）
+$content = @"
+feat: 変更の要約
+
+- 本文行1
+- 本文行2
+"@
+[System.IO.File]::WriteAllText(
+    "temp/commit_msg.txt",
+    $content,
+    [System.Text.UTF8Encoding]::new($false)
+)
 git commit -F temp/commit_msg.txt
-Remove-Item temp/commit_msg.txt # 必須：削除
+Remove-Item temp/commit_msg.txt  # 必須：削除
+```
+
+**PowerShell 7+ の場合**（`utf8NoBOM` が使える環境のみ）:
+
+```powershell
+@"
+feat: 変更の要約
+"@ | Out-File -FilePath temp/commit_msg.txt -Encoding utf8NoBOM
+git commit -F temp/commit_msg.txt
+Remove-Item temp/commit_msg.txt
 ```
 
 ### コミットメッセージの確認
@@ -149,7 +169,7 @@ BREAKING CHANGE: /api/v1/users エンドポイントが削除されました。
 - [ ] 変更の理由と内容が明確か
 - [ ] 関連するIssue番号が記載されているか（該当する場合）
 - [ ] 破壊的変更がある場合は明示されているか（該当する場合）
-- [ ] PowerShellでの文字化け対策が実施されているか（`-F`オプション使用）
+- [ ] PowerShellでの文字化け対策が実施されているか（`-F` でファイルから読み込み、かつ **BOM なし UTF-8** で保存）
 - [ ] 一時ファイルは `temp/` 配下に作成されているか
 - [ ] コミット後に文字化けしていないか確認済みか
 
@@ -163,13 +183,18 @@ BREAKING CHANGE: /api/v1/users エンドポイントが削除されました。
 ### 修正方法
 
 ```powershell
-# コミットメッセージを修正
+# コミットメッセージを修正（エディタ）
 git commit --amend
 
-# または、ファイルから読み込んで修正
-@"
+# または、BOM なし UTF-8 のファイルから読み込んで修正
+$content = @"
 修正後のコミットメッセージ
-"@ | Out-File -FilePath temp/commit_msg.txt -Encoding utf8
+"@
+[System.IO.File]::WriteAllText(
+    "temp/commit_msg.txt",
+    $content,
+    [System.Text.UTF8Encoding]::new($false)
+)
 git commit --amend -F temp/commit_msg.txt
 Remove-Item temp/commit_msg.txt
 ```
