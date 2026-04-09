@@ -250,6 +250,20 @@ alwaysApply: true
     **MyPokedex** のように**並列実行段**で一時的に **`--cov-fail-under=0`** とし、**続けて段**で **99%** を満たす既存の CI／pre-commit 手順は、**最終ゲートが 99% のままである限り**許容する。\
     閾値の置き場所・実行コマンドは **各リポジトリの `AGENTS.md`**・**`pytest.ini` / `pyproject.toml`**・**GitHub Actions** を正とする。\
     **閾値用の専用検証スクリプトは置かず、本ルールとレビューで対応する**
+- **E2E 必須シナリオ ID（Playwright・FishTrack / MyPokedex / おたよりナビ）**: **`tests/e2e/conftest.py`** の **`REQUIRED_E2E_SCENARIOS`** が**正本**（母数・必須 ID の定義）。\
+    対象はこの **3 製品**に限る（他リポジトリは本節の対象外）。\
+    **ユーザー向け機能の追加**（新規・拡張の画面・主要フロー、ログイン後のクリティカル経路に触れる変更）を**同一リリース／同一変更**で入れる場合は、**原則として** **`REQUIRED_E2E_SCENARIOS` にシナリオ ID を追加**し、\
+    対応する **`@pytest.mark.e2e_scenario` 付き E2E**・**`pyproject.toml` / `pytest.ini` の `e2e_scenario` マーカー説明**・**仕様**\
+    （Obsidian `DevProject/specifications/` の当該製品テスト節）を**同一変更**で揃える（**機能だけ先**・**ID は後**は禁止）。\
+    **必須 ID を増やさない**場合は、**仕様書またはレビュー可能な説明**に**対象外の理由**を短く残す。\
+    （例: 内部 API のみ・E2E は後続タスク・単体テストのみで担保等）\
+    あわせて、**ログイン後の新規クリティカル領域**を E2E で押さえることにしたとき、**E2E の対象範囲が変わったとき**、または**必須シナリオから外す判断**をしたときも、**同一変更**で次を揃える（**リストだけ**・**テストだけ**の片方更新は禁止）。\
+    **(1)** `REQUIRED_E2E_SCENARIOS` に **ID の追加／削除／改名**を反映する。\
+    **(2)** 各必須 ID について **`tests/e2e/test_*.py` に `@pytest.mark.e2e_scenario("id")` が少なくとも1本**あるようにする。\
+    **(3)** **`pyproject.toml`** または **`pytest.ini`** の **`e2e_scenario` マーカー説明**（ID の列挙が変わる場合）を更新する。\
+    **仕様書**（Obsidian `DevProject/specifications/` の当該製品テスト節）に E2E 方針を書いている場合は、**実装と同時に**そこも更新する。\
+    **FishTrack**・**MyPokedex**・**おたよりナビ** は **`scripts/check_e2e_scenario_coverage.py`** で必須シナリオ ID の充足率を pre-commit（ブラウザ不要）で検査する。\
+    しきい値・環境変数名は **各 `AGENTS.md`**・**`README.md`** を正とする。
 - **テストファイルサイズの上限**: 理想500行以下、許容1,000行以下、上限1,500行（超過時は分割検討）
 
 ## ドキュメント配置方針（重要）

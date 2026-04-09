@@ -1,7 +1,7 @@
 ---
 name: test-code-generator
 description: |
-  Generate comprehensive test code for Python (pytest) and JavaScript (Jest) projects to achieve 99% test coverage. MANDATORY: Continuously generates tests until 99% coverage is achieved. NEVER interrupt to ask "shall I continue?" when coverage is below 99% - keep generating tests without user confirmation. After generating test code, MUST check coverage and continue generating additional tests if coverage is below 99%. This process MUST be repeated until all coverage metrics (branches, functions, lines, statements) reach 99% or higher. Use when users request test generation, test coverage improvement, or adding tests for specific functions, classes, or modules. Supports unit tests, integration tests, edge cases, error handling, and mocking patterns. NEVER modifies source code - only generates test code. If source code issues are found, proposes fixes but never modifies code without permission.
+  Generate comprehensive test code for Python (pytest) and JavaScript (Jest) projects to achieve 99% test coverage. MANDATORY: Continuously generates tests until 99% coverage is achieved. NEVER interrupt to ask "shall I continue?" when coverage is below 99% - keep generating tests without user confirmation. After generating test code, MUST check coverage and continue generating additional tests if coverage is below 99%. This process MUST be repeated until all coverage metrics (branches, functions, lines, statements) reach 99% or higher. Use when users request test generation, test coverage improvement, or adding tests for specific functions, classes, or modules. Supports unit tests, integration tests, edge cases, error handling, and mocking patterns. For Playwright E2E (tests/e2e), follow dev-workspace myrules and each repo AGENTS.md: REQUIRED_E2E_SCENARIOS, @pytest.mark.e2e_scenario, pyproject.toml/pytest.ini markers, and Obsidian specs must be updated in the same change. NEVER modifies source code - only generates test code. If source code issues are found, proposes fixes but never modifies code without permission.
 ---
 
 # Test Code Generator
@@ -117,6 +117,25 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
   - **判定基準**: コードの論理的な流れから到達不可能であることが明確な場合（例：型チェッカーのための到達不可能なコード、条件分岐で常に`True`を返すため到達不可能な分岐など）
   - **適用方法**: ユーザーの明示的な指示がある場合のみ、該当行に`# pragma: no cover`を追加
   - **注意**: テストでカバー可能なコードは除外しないこと
+
+### 6. Playwright E2E と必須シナリオ ID（FishTrack / MyPokedex / おたよりナビ）
+
+**ブラウザ E2E**（`tests/e2e/`・pytest-playwright）を追加・変更するときは、**行カバレッジ 99%**（`src/` 向け pytest-cov）とは別のゲートとして、**必須シナリオ ID の充足**を満たす。
+
+- **機能追加と必須 ID**: **FishTrack**・**MyPokedex**・**おたよりナビ** で **ユーザー向け機能**（画面・主要フロー・ログイン後のクリティカル経路に触れる変更）を入れる場合は、\
+  **原則** **`REQUIRED_E2E_SCENARIOS` に ID を追加**する（**myrules**・各 **AGENTS.md**）。\
+  増やさない場合は**対象外理由**を仕様等に残す。
+- **正本**: 各リポジトリの **`tests/e2e/conftest.py`** 内 **`REQUIRED_E2E_SCENARIOS`**（文字列 ID のリスト）。**母数・必須 ID の定義はここだけ**とする。
+- **マーカー**: 各必須 ID について、`tests/e2e/test_*.py` のいずれかに **`@pytest.mark.e2e_scenario("id")`** が**少なくとも1本**付くこと。
+- **同一変更で揃える**（**リストだけ**／**テストだけ**の片方更新は禁止）:
+  1. `REQUIRED_E2E_SCENARIOS` の **追加・削除・改名**
+  2. 対応する **E2E テスト**（上記マーカー）
+  3. **`pyproject.toml`** または **`pytest.ini`** の **`e2e_scenario` マーカー説明**（ID の列挙が変わる場合）
+  4. **Obsidian** の当該製品テスト節（`10_testing.md` 等）で E2E 方針を書いている場合は**本文も同期**
+- **規約の正**: **dev-workspace** **`.cursor/rules/myrules.mdc`** の **「テスト規律」→「E2E 必須シナリオ ID」**、および各リポジトリ **`AGENTS.md`** の **「E2E 必須シナリオ ID」** 節。
+- **充足率チェック**: **FishTrack**・**MyPokedex**・**おたよりナビ** は **`scripts/check_e2e_scenario_coverage.py`** を pre-commit（ブラウザ不要）で実行する。\
+    しきい値・環境変数は **`AGENTS.md`** / **`README.md`**。あわせて **`pytest tests/e2e`** 実行時は **conftest** のフックでも不足 ID を検出する。
+- **実行の分離**: 通常の `pytest` は `tests/e2e` を **収集しない**設定（`collect_ignore`）のリポジトリがある。E2E は **`pytest tests/e2e --base-url … --no-cov`** で別実行。
 
 ## ワークフロー（カバレッジ99%達成まで継続実行）
 
