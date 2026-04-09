@@ -41,7 +41,11 @@ description: ソースコードのコメントを必要十分な量で記載す�
 - 実装と重複するだけの説明（ノイズ）
 - テスト回避のためのコメント（例: `# pragma: no cover` の乱用）
 - 数行ごとに機械的に付ける見出しコメント
-- **計画用タスク番号**（**Fxx** / **Pxx** / **Oxx** / **Mxx** / **Ixx**）。進捗・割り当ての ID は **`Obsidian/DevProject/plans/統合作業スケジュール.md`** のみで管理し、コメントは**意図・制約（Why）**に留める（myrules「タスク番号の正本」）
+- **計画用タスク番号**（**Fxx** / **Pxx** / **Oxx** / **Mxx** / **Ixx**）。進捗・割り当ての ID は\
+  **`Obsidian/DevProject/plans/統合作業スケジュール.md`** のみで管理し、コメントは**意図・制約（Why）**に留める（myrules「タスク番号の正本」）
+- **機械検査**: **FishTrack** は **`scripts/check_source_task_ids.py`** を **`.githooks/pre-commit`** から実行し、\
+  `src/`・`tests/`・`migrations/versions/` の Python に上記 ID が混入していないか検出する。SKILL の参照だけでは漏れるため、\
+  **コミット前に必ず通る状態**を正とする。
 
 ## 記載ルール
 
