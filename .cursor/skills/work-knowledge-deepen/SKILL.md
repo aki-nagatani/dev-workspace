@@ -1,9 +1,36 @@
 ---
 name: work-knowledge-deepen
-description: 仕事用ナレッジを深掘りして記録する。Workフォルダは会社の規約として明記されているものではなく、暗黙知になっているものをまとめるためのノート群。会社規約・公式文書・別途ルールで既に定まっている事項はObsidian（Work）へ転記・二重管理する必要はない。テーマごとのフォルダでノートを管理し、質問→回答でナレッジを更新するサイクルを繰り返す。暗黙知の明文化・開示範囲の記録に使う。仕事用ナレッジ深掘り、Workナレッジ、暗黙知の明文化の依頼時に使用する。
+description: >-
+  仕事用ナレッジを深掘りして記録する。Workフォルダは会社の規約として明記されているものではなく、
+  暗黙知になっているものをまとめるためのノート群。会社規約・公式文書・別途ルールで既に定まっている事項は
+  Obsidian（Work）へ転記・二重管理する必要はない。テーマごとのフォルダでノートを管理し、質問→回答で
+  ナレッジを更新するサイクルを繰り返す。暗黙知の明文化・開示範囲の記録に使う。専用 Cursor Command
+  （旧 Work_Knowledge_Deepen.md）は廃止し本 SKILL が正本。仕事用ナレッジ深掘り、Workナレッジ、
+  暗黙知の明文化、Work_Knowledge_Deepen の依頼時に使用する。
 ---
 
 # 仕事用ナレッジ深掘り（Work Knowledge Deepen）
+
+## 入口（旧 Cursor Command の統合）
+
+**旧 `.cursor/commands/Work_Knowledge_Deepen.md` は廃止**し、**手順の正本は本 SKILL のみ**。
+
+myrules を厳守して作業してください。
+
+**最初の作業**として、本ファイル（`d:\OneDrive\git_work\dev-workspace\.cursor\skills\work-knowledge-deepen\SKILL.md`）を **Read** で読み込み、**その手順・制約に完全に従って**実行する。`AGENTS.md` にある「日本語で応答」も守る。
+
+### 参照パス（本 SKILL と整合）
+
+- **Work ルート**: `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/`
+- **ノート分割の基準**: `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/その他/ノート分割の基準.md`
+- **深掘りネタ帳（例）**: `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/ネタ帳.md`（上記「ネタ帳の運用」と同一）
+
+**機密**: Work 配下の内容は社外秘。要約・引用は会話内を最小限にし、外部検索・外部ツールに送らない（下記「適用条件」「注意事項」の「機密」に従う）。
+
+### Cursor ログ更新（必須・要約）
+
+Work フォルダ内のノートを**作成・更新・削除**した場合は、処理完了後に必ず **`obsidian-cursor-log` SKILL** で当日の CursorLog に記録する。記録項目は、作業名・プロジェクト名・変更ファイル・実施内容・結果。タグは `#work-knowledge-deepen` 等。  
+**詳細**は下記 **「1 ラウンドで行うこと」手順 6** および **「注意事項」の CursorLog**。
 
 ## Work フォルダの位置づけ
 

@@ -3,7 +3,7 @@
 """
 人事の目標管理シート（Excel）を読み取り、JSON またはテキストで stdout に出すだけのツール。
 
-- hr-goal-sheet-excel-to-markdown SKILL のセル正本（BH4・BF6・枝番基準行・列オフセット）に従う。
+- mokuhyo-excel-to-markdown SKILL のセル正本（BH4・BF6・枝番基準行・列オフセット）に従う。
 - **Markdown への書き込みは行わない**（myrules の「スクリプトで .md を生成・上書き禁止」と整合）。
 
 使用例:

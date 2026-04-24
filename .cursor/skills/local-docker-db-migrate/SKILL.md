@@ -1,12 +1,24 @@
-# ローカルDocker DBマイグレーション（MyPokedex / FishTrack / otayori-navi）
+---
+name: local-docker-db-migrate
+description: >-
+  ローカル Docker Compose の app サービス内から MyPokedex / FishTrack / otayori-navi 向けに
+  Alembic 等で DB マイグレーションを実行する。dev-workspace の shared-db、論理DB名、
+  docker compose run/exec の手順。エージェントはターミナルで実行し手順の提示だけで終えない。
+  専用 Cursor Command（旧 local_docker_db_migrate.md）は廃止し本 SKILL が正本。ローカル DB マイグレ、
+  alembic upgrade、otayori run_migrations の依頼時に使用する。
+---
 
-myrulesを厳守して作業してください。
+# ローカル Docker DB マイグレーション（local-docker-db-migrate）
+
+**旧 `.cursor/commands/local_docker_db_migrate.md` は廃止**し、手順の正本を本 SKILL に置く。`name` は **`local-docker-db-migrate`**（従来の **local_docker_db_migrate** 相当）。
+
+myrules を厳守して作業してください。
 
 対象アプリのリポジトリルートで **Docker Compose** の **`app`** サービス内から **Alembic** を実行する（**エージェントがターミナルで実行**する。手順の提示だけで終わらない）。
 
-## 0. ローカルDocker・DBの早見（名称で迷わない）
+## 0. ローカル Docker・DB の早見（名称で迷わない）
 
-### Postgres（共有DBコンテナ）の場所
+### Postgres（共有 DB コンテナ）の場所
 
 - **定義ファイル**: `dev-workspace/docker-compose.yml` のサービス **`shared-db`**（Compose の **profile `local`** 付き）。
 - **起動例**（`dev-workspace` ルート）:
@@ -21,7 +33,7 @@ myrulesを厳守して作業してください。
 - **クラスタログインロール**: ユーザー **`shared_user`** / パスワード **`shared_password`**（`POSTGRES_*` と一致）。
 - **イメージ起動時の既定データベース名（`POSTGRES_DB`）**: **`shared_db`**（Postgres の「接続先 DB 名」としての初期 DB。各アプリ用の **論理 DB** はこれと別名）。
 
-### アプリ別・論理DB名と接続URL用の環境変数
+### アプリ別・論理 DB 名と接続 URL 用の環境変数
 
 マイグレーションは **各アプリが接続する URL の末尾の DB 名** にスキーマを載せる。compose 既定 URL は概ね次のとおり（上書きは各 `.env` / `docker-compose.yml` を正とする）。
 
@@ -38,8 +50,8 @@ myrulesを厳守して作業してください。
 
 - **`shared_db` と `mypokedex_db` / `fishtrack_db` は別物**。Alembic は通常 **各アプリの論理DB** を向く（compose の `DATABASE_URL` 既定を確認）。
 - **論理DBが未作成**のままだと接続に失敗する。初回のみ `CREATE DATABASE <論理名>` が必要な環境がある（各リポジトリ README・`dev-workspace/scripts` の手順を参照）。
-- **otayori-navi** の README に **実コンテナ名**（例: `…-shared-db-1`）が載ることがある。\
-    **`app` から接続する DNS 名は `shared-db`**（同一 `shared-db-network`）。
+- **otayori-navi** の README に **実コンテナ名**（例: `…-shared-db-1`）が載ることがある。  
+  **`app` から接続する DNS 名は `shared-db`**（同一 `shared-db-network`）。
 
 ## 1. 対象リポジトリの特定
 
@@ -84,7 +96,7 @@ docker compose exec app …
 docker compose run --rm app alembic upgrade head
 ```
 
-（`exec` のときも同じく `alembic upgrade head`。本番デプロイと同様の形に揃えるなら\
+（`exec` のときも同じく `alembic upgrade head`。本番デプロイと同様の形に揃えるなら  
 `sh -c "cd /app && alembic upgrade head"` でもよい。）
 
 ### FishTrack
@@ -108,3 +120,7 @@ docker compose run --rm app python scripts/run_migrations.py
 ## 4. 結果の報告
 
 標準出力・終了コードを踏まえ、成功／失敗をユーザーに報告する。
+
+## 使用タイミング
+
+- ローカル Docker 上の **DB スキーマを最新にしたい**、**`alembic upgrade head` を Docker 経由で**、**otayori の `run_migrations`** 等の依頼があったとき

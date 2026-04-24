@@ -1,7 +1,8 @@
-# hr-goal-sheet-excel-to-markdown
+# mokuhyo-excel-to-markdown
 
 **ユーザーが Excel を渡したとき**に本 SKILL を参照する。人事の**目標管理シート（Excel）**を\
-**Markdown（人事考課_管理シート形式）**へ同期するセル対応・手順は **`SKILL.md`** を正とする。
+**Markdown（人事考課_管理シート形式）**へ同期するセル対応・手順は **`SKILL.md`** を正とする（**旧
+`hr-goal-sheet-excel-to-markdown` は `SKILL.md` に統合済み**）。
 
 **Markdown への書き込み**は **myrules**「ファイル修正と差分確認」に従い、**スクリプトによる置換は厳禁**。**複数回**の編集ツールで追記・置換する（詳細は **SKILL**「Markdown への書き込み」）。\
 管理シートの正本は **`Work/社内業務/人事考課/人事考課_管理シート.md`**。\

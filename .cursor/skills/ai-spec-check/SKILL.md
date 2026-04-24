@@ -1,4 +1,26 @@
-# AI スペック取り込みプレビュー検証（本番 FishTrack・ロッド／リール）
+---
+name: ai-spec-check
+description: >-
+  本番 FishTrack のログから「AI補助スペック取り込みプレビュー結果」を取得し、
+  本家ページと突き合わせてロッド／リールの取り込み品質を検証する。差異は 🔴🟡🔵 に分類し、
+  対策を即時／中期／長期で具体化して Obsidian 正本 `ai_spec_check_report.md` に書き、
+  CursorLog を更新する。専用 Cursor Command はなく本 SKILL が正本。AI スペック取り込みプレビュー検証、
+  spec import プレビュー照合、dump_spec_import_preview、本番 fishtrack.log プレビュー行の依頼時に使用する。
+---
+
+# AI スペック取り込みプレビュー検証 SKILL
+
+## 概要
+
+**手順・セクション番号の正本は本 SKILL のみ**（旧 `.cursor/commands/AI_spec_check.md` は廃止し、当時の**入口用メモ**を本節に統合した）。
+
+**エージェントは** `dev-workspace/.cursor/skills/ai-spec-check/SKILL.md`（本ファイル）を **Read** し、ターミナル実行・本家突き合わせ・Obsidian 正本・markdownlint・作業用 `temp/` の後片付け・**obsidian-cursor-log** まで行う。手順の提示だけで終わらない。
+
+**人間向けパス（再掲）**:
+
+- FishTrack ルート: `d:/OneDrive/git_work/FishTrack`
+- レポート正本: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`
+- 作業用出力先: FishTrack リポ内 `temp/`（完了後に当該作業分を削除。セクション 10）
 
 myrules を厳守して作業してください。
 
@@ -20,9 +42,18 @@ myrules を厳守して作業してください。
 のみとする。プレビュー結果（DB 未保存）を見る段階で、問題があれば確定前に
 止めるための作業です。
 
+## 使用タイミング
+
+- ユーザーが AI 補助スペック取り込みのプレビュー品質を本番ログで確認したいとき
+- `ai-spec-check`（本 SKILL）の実行依頼、「AI スペック取り込みプレビュー検証」、「プレビュー結果を本家と照合」等の指示があったとき
+
 ## 0. 前提・環境
 
 - プロジェクトルート: `d:/OneDrive/git_work/FishTrack`（**常設スクリプト**の実行元）
+- **作業用ファイル**（`tmp_latest_preview.json`・`tmp_prod_preview_grep.log` 等）は
+  リポジトリ直下に置かず、**`temp/`** 配下に集約する（例: `temp/tmp_latest_preview.json`）。
+  `dump_spec_import_preview.py --out` は親ディレクトリを自動作成する。
+  **本作業の作業完了後**（Obsidian レポート・セクション 13 CursorLog まで済んだ時点）に、当該実行で用いた **`temp/` 配下の作業用ファイルはすべて削除**する（**セクション 10**）。
 - 本番確認手順の詳細: dev-workspace `.cursor/skills/ec2-rds-connection/SKILL.md`、
   および（人間用）Obsidian `DevProject/guidelines/EC2_SSH接続手順.md`
 - 本番 EC2 の**現行**インスタンス ID・ホスト: GitHub Secrets / AWS コンソールで
@@ -43,12 +74,15 @@ myrules を厳守して作業してください。
 - プレビュー payload のキー:
   `manufacturer, resolvedUrl, pageTitle, requestId, category, categoryReason,
    rowsCount, usage, rows[]`
-- 各 row のキー（ロッド／リール共通サマリ構造）:
-  `row, seriesName, modelName, genre, length.{ft,in}, lureWeightOz.{min,max},
-   missingRequired[], missingOptional[], technologyLabels[],
-   matchedTechnologyLabels[], newTechnologyLabels[]`
-  - 注意: `length` / `lureWeightOz` はサマリ構造上 **リール時でも含まれる** が、
-    リール本来の属性ではないため本検証では**無視**する（埋まっていても対象外）
+- 各 row のキー: **マージ済みプレビュー行の全フィールド**に加え、
+  `row`（1 始まり行番号）・`missingRequired[]`・`missingOptional[]` が付く。
+  ロッド例: `seriesName`, `modelName`, `genre`, `lengthFt`, `lengthIn`, `power`,
+  `action`, `listPrice`, `weightG`, `lureWeightMinOz`, `lureWeightMaxOz`,
+  `lineMinLb`, `lineMaxLb`, `pieces`, `blankMaterial`, `carbonRatePct`,
+  `releaseYear`, `janCode`, `features`, `technologyLabels`,
+  `matchedTechnologyLabels`, `newTechnologyLabels`, `matchedTechnologyIds` など。
+  - 注意: リールプレビューで `lengthFt` / `lureWeightMinOz` 等が null のことはあり得る。
+    本検証ではリールの主属性以外は**無視**してよい（埋まっていてもロッド観点では対象外）
 - 対象カテゴリ:
   - `category = "rod"` → ロッド検証（主属性: power, action, length,
     lureWeight, line, pieces, carbon_rate, blank_material, release_year）
@@ -115,7 +149,7 @@ PowerShell の標準リダイレクト（`> file.txt`）は日本語環境で UT
 
 ## 2. プレビュー結果ログの件数・一覧確認（常設スクリプト）
 
-本コマンドでは FishTrack 側の常設スクリプト
+本作業では FishTrack 側の常設スクリプト
 `scripts/dump_spec_import_preview.py` を使う。base64 ダンプ + ワンライナー
 Python を廃し、日本語も UTF-8 のまま安全に扱える。
 
@@ -124,6 +158,7 @@ Python を廃し、日本語も UTF-8 のまま安全に扱える。
 - **A. 抜粋＋`--file`（推奨）**: 本番上で `grep` 等で
   `AI補助スペック取り込みプレビュー` を含む行**だけ**出し、ローカルで
   バイナリ書き（UTF-8）→ `python scripts/dump_spec_import_preview.py --file <path> --list`
+  （`<path>` は **`temp/tmp_prod_preview_grep.log`** 等、`temp/` 配下を推奨）
 - **B. パイプ**（行数が少ないとき・検証用）: 下記。巨大ログの**丸ごと `cat`**
   は、環境によって**極端に遅い**場合がある。まず A を検討。
 
@@ -170,26 +205,26 @@ python scripts/dump_spec_import_preview.py --list --limit 5
 本番（セクション 2 の `ssh` / `--file` のいずれかの後）:
 
 ```powershell
-python scripts/dump_spec_import_preview.py --stdin --latest --out tmp_latest_preview.json
+python scripts/dump_spec_import_preview.py --stdin --latest --out temp/tmp_latest_preview.json
 # 抜粋をファイルに置いた場合
-python scripts/dump_spec_import_preview.py --file tmp_prod_preview_grep.log --latest --out tmp_latest_preview.json
+python scripts/dump_spec_import_preview.py --file temp/tmp_prod_preview_grep.log --latest --out temp/tmp_latest_preview.json
 ```
 
 ローカル Docker のみ（`--stdin` / `--file` なし）の場合:
 
 ```powershell
-python scripts/dump_spec_import_preview.py --latest --out tmp_latest_preview.json
+python scripts/dump_spec_import_preview.py --latest --out temp/tmp_latest_preview.json
 ```
 
 - 新しい順 **2 件目** など: `--index 1`（順序は `--order` 準拠）
 - ローカル `docker` 経路でローテ済みログも対象にする: `--include-rotated`
-- 出力 `tmp_latest_preview.json` は UTF-8（BOM なし）。`--out` は
+- 出力 `temp/tmp_latest_preview.json` は UTF-8（BOM なし）。`--out` は
   スクリプト内で UTF-8 書き込み（PowerShell の `>` では書かない）
 
 ## 4. JSON サマリ確認
 
 ```powershell
-python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8'); p=json.load(open('tmp_latest_preview.json',encoding='utf-8')); print('category:', p.get('category')); print('resolvedUrl:', p.get('resolvedUrl')); print('rowsCount:', p.get('rowsCount'))"
+python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8'); p=json.load(open('temp/tmp_latest_preview.json',encoding='utf-8')); print('category:', p.get('category')); print('resolvedUrl:', p.get('resolvedUrl')); print('rowsCount:', p.get('rowsCount'))"
 ```
 
 **カテゴリ分岐**: `category` の値で検証内容を分岐する。
@@ -221,7 +256,7 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
   - `rowsCount` が本家製品スペック表の行数と一致するか
   - 過不足があれば該当 row と model を列挙
 - **B. 数値の原文一致**
-  - `lureWeightOz.min/max`, `length.ft/in` が本家の数値表記と一致するか
+  - `lureWeightMinOz` / `lureWeightMaxOz`, `lengthFt` / `lengthIn` が本家の数値表記と一致するか
   - **帯分数と小数は同値なら一致**: 例として本家が `1 1/2oz` / `1-1/2 oz` /
     `1+1/2oz` 等、AI が `1.5oz` に**小数化**している場合は、数値として等しければ
     **差分ではなく一致**と判定する（逆も同様。単位 `oz` の有無・スペースの差は
@@ -232,18 +267,20 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 - **C. 技術特性**
   - `technologyLabels` が**当該アイテムの TECHNOLOGY 行**と一致するか
   - ページ冒頭の技術紹介セクションを別アイテムに**誤付与**していないか
+  - **不足**: 本家（技術紹介・※脚注・当該行 `TECHNOLOGY：` 等）に照らし**付くべき**ラベルが
+    `technologyLabels` に無い・著しく欠ける場合は **🔴**（セクション 7）。「空でよい行」と判断できる根拠が本家に無いのに空なら同様。
   - `matchedTechnologyLabels` / `newTechnologyLabels` の振り分けが妥当か
   - マスタ突き合わせは `tackle_technology_feature.category = 'rod'` のみ対象
 - **D. シリーズ・型番**
   - `seriesName` が本家見出しどおりか（新旧世代混在がないか）
   - `modelName` が本家表記そのままか
     （中黒 `・`、`【コードネーム】` の扱いが一貫しているか）
-- **E. サマリ外項目（ログに出ないが確定時に効く）**
-  - `release_year`, `carbon_rate_pct`, `jan_code`, `list_price`
-  - `line_min_lb`, `line_max_lb`, `pieces`, `weight_g`
-  - `power`, `action`, `blank_material`
+- **E. その他スペック項目（payload の `rows[]` にも載る）**
+  - `releaseYear`, `carbonRatePct`, `janCode`, `listPrice`
+  - `lineMinLb`, `lineMaxLb`, `pieces`, `weightG`
+  - `power`, `action`, `blankMaterial`
 
-**注**: リール時のサマリに含まれる `length` / `lureWeightOz` は対象外（本観点では評価しない）。
+**注**: リールプレビューでロッド用キー（全長・ルアー重量など）が null の場合は本観点では評価しない。
 
 ## 6B. リール検証（5 観点）
 
@@ -259,29 +296,32 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 - **C. 主要数値項目の原文一致**
   - `gear_ratio`: 本家表記そのまま（例 `6.3`, `7.1` / `8.1`／ダブルハンドル表記含む）
   - `weight_g`: 整数 g
-  - `list_price`: 税抜／税込の扱い（マスタ運用に合わせる。不明なら 🟡 で報告）
+  - `list_price`: 本家表記とプレビューが食い違う場合は **🔴**。税抜／税込の**解釈方針**がページから一意に決まらない（比較不能）場合のみ **🟡**（不一致ではなく判定保留の別枠。セクション 7）
   - `jan_code`: 13 桁数字。欠落時は空で OK（`missingOptional`）
   - 近似語（`約` 等）混入禁止はロッドと同様
 - **D. 技術特性**
   - `technologyLabels` が**当該アイテムの TECHNOLOGY 行**と一致するか
   - ページ冒頭の技術紹介セクションを別番手に**誤付与**していないか
+  - **不足**: 本家に照らし**付くべき**ラベルが `technologyLabels` に無い・著しく欠ける場合は **🔴**（セクション 7）。
+    ロッドの **C** と同様の解釈。
   - マスタ突き合わせは `tackle_technology_feature.category = 'reel'` のみ対象
     （ロッド用スラグ・ラベルを誤って再利用していないか）
-- **E. シリーズ・型番 / サマリ外項目**
+- **E. シリーズ・型番 / その他項目**
   - `seriesName` が本家見出しどおりか（世代／XH・HG 等の派生統合に注意）
   - `modelName` が本家表記そのままか（番手・ハンドル仕様の記述一貫性）
-  - サマリ外項目: `list_price`, `jan_code`, `gear_ratio`, `weight_g`
-    はログ payload の `rows[]` 直下に入る想定。未出力なら保存時に
-    `missingOptional` で検知されるが、本検証で**本家に記載があるのに
-    AI が拾えていない**ケースは 🟡 として報告する
+  - `listPrice`, `janCode`, `gearRatio`, `weightG` 等はログ payload の `rows[]` に載る
+    （キー名は実装どおり。ロッド現行は camelCase）。値が null でもキーは確認できる。
+    本家に記載があるのに AI が拾えていないケースは **🔴**（セクション 7）
 
 ## 7. 差異の分類
 
+**原則**: `resolvedUrl` の**本家ページ**とプレビュー JSON を突き合わせ、セクション 6A / 6B の**解釈ルール**（例: 帯分数と小数の同値、単位の表記揺れ）を適用したうえでなお残る**不一致はすべて 🔴**とする。🟡・🔵 は、**本家とプレビューが一致している**（または本家が比較対象外・欠損で「不一致」とは呼べない）前提で付す**別種**の注意・参考に限る。
+
 見つけた差異は以下のいずれかに分類する:
 
-- 🔴 **問題（保存前に修正必須）**: 数値異常、技術誤付与、NOT NULL / 制約違反の懸念
-- 🟡 **注意（運用判断）**: マスタ整備、シリーズ命名ポリシー、既存データとの整合
-- 🔵 **情報（参考）**: ログサマリ外項目の参考チェック、表記揺れ統合候補
+- 🔴 **問題（保存前に修正必須）**: **本家との不一致すべて**（件数・数値・シリーズ／型番・技術特性の不足・誤付与・サマリ項目の取りこぼし等）、NOT NULL / 制約違反の懸念
+- 🟡 **注意（運用判断）**: **本家一致が確認できたうえで**のマスタ整備、命名ポリシー、税抜／税込など**ページから一意に読めない**ときの方針保留、既存 DB との整合方針（不一致そのものではない注記）
+- 🔵 **情報（参考）**: **本家一致**のうえでの補足、表記揺れの統合候補メモ、🔴🟡 に該当しない運用メモ（突き合わせ結果が一致している場合の付記）
 
 ## 8. 対策の 3 段整理
 
@@ -301,7 +341,7 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
   - リール価格の税抜／税込ポリシー統一
 - **長期対応（仕組み）**
   - プレビュー UI に警告バッジ表示
-  - 本コマンドを定期バッチ化し、保存前に自動チェック
+  - 本作業を定期バッチ化し、保存前に自動チェック
 
 ### 8.1 対策の記述ルール（必須）
 
@@ -321,7 +361,7 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 - **特定シリーズ・特定 URL・特定型番だけ**の例外分岐（if URL == …）は**最終手段**とし、単独提案では足りない。採用する場合は必ず併記する:
   - なぜ一般ルールに落とせないか（ページ構造の限界など）1〜2文
   - 可能な**一般化**（同メーカー同型のページでも効く条件、正規表現・DOM パターンの抽象度）
-- シリーズ固有の用語（商品固有名）だけを増やす対策は **🟡 情報**に留め、**即時対応の主対策**にしない（マスタ・別表で吸収する方を優先）。
+- シリーズ固有の用語（商品固有名）だけを増やす対策は **🔵 情報**に留め、**即時対応の主対策**にしない（マスタ・別表で吸収する方を優先）。
 
 ### 8.2 記載例（粒度の目安）
 
@@ -375,7 +415,7 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 ### 9.0.2 旧パス・旧ファイル名（参考）
 
 - 2026-04: `tmp_ai_spec_check_report.md` を `DevProject/` 直下や旧
-  `d:/OneDrive/git_work/FishTrack/` に置いていた時期あり。**現行**は **§9.0** の
+  `d:/OneDrive/git_work/FishTrack/` に置いていた時期あり。**現行**は **セクション 9.0** の
   **`ai_spec_check_report.md`**（`DevProject/FishTrack/`）。**`tmp_` 接頭辞は廃止**。
   古い path の残ファイルは移動・削除可。
 
@@ -390,7 +430,7 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 
 ### 9.1 フロントマター（必須）
 
-ファイル先頭に YAML を置く。続けて **§9.0.1** の **h1 1 行**のあと、本文（`##` 見出し）を書く（**markdownlint 整合**用）。
+ファイル先頭に YAML を置く。続けて **セクション 9.0.1** の **h1 1 行**のあと、本文（`##` 見出し）を書く（**markdownlint 整合**用）。
 
 ```yaml
 ---
@@ -400,7 +440,7 @@ resolvedUrl: "https://..."
 category: "rod"
 rowsCount: 13
 pageTitle: "取得できた場合"
-source_log_hint: "例: tmp_prod_preview_grep.log / --index 0 / ssh パイプ"
+source_log_hint: "例: temp/tmp_prod_preview_grep.log / --index 0 / ssh パイプ"
 ---
 ```
 
@@ -414,7 +454,7 @@ source_log_hint: "例: tmp_prod_preview_grep.log / --index 0 / ssh パイプ"
 
 ### 9.2 前回ファイルとの扱い（URL による分岐）
 
-1. **§9.0 の固定パス**に**既存**の `ai_spec_check_report.md` があるか読み、あればフロントマターの `resolvedUrl` を取り出す。
+1. **セクション 9.0 の固定パス**に**既存**の `ai_spec_check_report.md` があるか読み、あればフロントマターの `resolvedUrl` を取り出す。
 2. **ファイルが無い**、または `resolvedUrl` が**今回の JSON の `resolvedUrl` と異なる**場合:
    - **全文を置換**する（旧内容は残さない＝**クリア相当の上書き**）。
    - 本文先頭に 1 行程度の注記を付けてよい: 例「※ 前回と URL が異なるため、ベースラインを新規に記録した。」
@@ -433,14 +473,19 @@ source_log_hint: "例: tmp_prod_preview_grep.log / --index 0 / ssh パイプ"
 
 ## 10. 後片付け（必須）
 
+**完了条件**: FishTrack リポ内の**作業用一時ファイルを残さない**こと（存在しなければスキップ可）。
+
 ```powershell
-Remove-Item tmp_latest_preview.json -ErrorAction SilentlyContinue
+cd d:/OneDrive/git_work/FishTrack
+Remove-Item temp/tmp_latest_preview.json, temp/tmp_prod_preview_grep.log -ErrorAction SilentlyContinue
+# 当該実行で temp/ に追加したその他の作業用ファイル（例: 抜粋ログ・fetch スクリプト出力）があれば同様に削除
 ```
 
 EC2 上に一時ファイルを作った場合は、作業方針に従い削除する。常設スクリプト
-`scripts/dump_spec_import_preview.py` は削除しないこと（本コマンドから毎回利用する）。
+`scripts/dump_spec_import_preview.py` は削除しないこと（本作業から毎回利用する）。
 
-**Obsidian 正本**（**§9.0**）の `ai_spec_check_report.md` は**削除しない**（次回の URL 比較・差分確認用）。
+**Obsidian 正本**（**セクション 9.0**）の `ai_spec_check_report.md` は**削除しない**（次回の URL 比較・差分確認用）。
+**`temp/` ディレクトリ自体**は残してよい（`.gitignore` 対象。空でも可）。
 
 ## 11. レポート本文の構成（`DevProject/FishTrack/ai_spec_check_report.md` 正本）
 
@@ -455,7 +500,7 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
    - リール: row / modelName / 本家値（reel_type, gear_ratio, weight_g,
      list_price, jan_code 等）/ AI 値 / 判定
 4. **技術特性突き合わせ表**（マスタ `category` と AI 出力カテゴリの一致確認を含む）
-5. **差異の分類（🔴 / 🟡 / 🔵）**
+5. **差異の分類（🔴 / 🟡 / 🔵）** — **セクション 7** の原則どおり、**本家との不一致はすべて 🔴**（🟡・🔵 に降格しない）
 6. **対策提案（即時 / 中期 / 長期）** — **セクション 8.1** どおり、**具体**（ファイル・関数・テスト・期待挙動）かつ**汎用**（シリーズ固有例外に頼らない主軸）で書く。セクション **8.2** の悪い例・良い例に倣う。
 7. **次アクション候補 (1)〜(n)** とおすすめ順
 
@@ -465,7 +510,7 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
 
 - PowerShell の直リダイレクト（`> file`）で UTF-8 ログの本文だけを**誤った
   エンコード**で受け取ること（`--out` またはパイプ先の Python 経路を用いる）
-- 本番 **RDS / データベース**への接続、および **DB への書き込み**（本コマンドは
+- 本番 **RDS / データベース**への接続、および **DB への書き込み**（本作業は
   ログ照会・取り込み前検証のみ）
 - 作業用の一時ファイル・機密を**不用意に**残すこと
 - プロンプト補強のみで満足し、サーバ側バリデーションやテスト追加を
@@ -473,6 +518,7 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
   サーバ側対策まで必ず提案する）
 - **対策が抽象的な一行**、または**特定シリーズ・URL・型番だけの例外**に
   終始すること（セクション **8.1** 違反）
+- **本家**ページとプレビューの**不一致**を 🟡 / 🔵 へ**格下げ**して報告すること（セクション **7** 違反）
 
 ## 13. CursorLog 更新（必須）
 
@@ -480,7 +526,7 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
   （`D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM/YYYY-MM-DD.md`）
   に記録する
 - 記録内容: 対象 URL・対象シリーズ・差異サマリ・提案した対策の要点・
-  **§9.0** の **Obsidian 絶対パス**（`D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`）・同一 URL 時の「前回からの変化」要約・
+  **セクション 9.0** の **Obsidian 絶対パス**（`D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`）・同一 URL 時の「前回からの変化」要約・
   ユーザーの合意状況
 - タグ候補: `#fishtrack` `#spec-import` `#ai-preview-check`
   `#データ品質`。カテゴリに応じて `#ロッド` または `#リール` を追加し、
