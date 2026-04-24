@@ -1,0 +1,5 @@
+{
+    "commands":  [
+                     "cat /tmp/ai_latest.b64"
+                 ]
+}

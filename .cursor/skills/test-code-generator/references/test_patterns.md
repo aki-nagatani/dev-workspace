@@ -337,7 +337,7 @@ test('should handle null/undefined', () => {
 
 ### テスト除外の禁止
 
-テストカバレッジ方針に従い、以下は禁止です：
+テストカバレッジ方針（正本: Obsidian `DevProject/guidelines/テストカバレッジ方針.md`）に従い、以下は禁止です：
 
 - ❌ ファイル単位の除外（`omit`設定の使用）
 - ❌ 行単位の除外（`# pragma: no cover`の安易な使用）

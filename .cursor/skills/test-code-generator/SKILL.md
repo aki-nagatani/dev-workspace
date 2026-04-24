@@ -1,7 +1,7 @@
 ---
 name: test-code-generator
 description: |
-  Generate comprehensive test code for Python (pytest) and JavaScript (Jest) projects to achieve 99% test coverage. MANDATORY: Continuously generates tests until 99% coverage is achieved. NEVER interrupt to ask "shall I continue?" when coverage is below 99% - keep generating tests without user confirmation. After generating test code, MUST check coverage and continue generating additional tests if coverage is below 99%. This process MUST be repeated until all coverage metrics (branches, functions, lines, statements) reach 99% or higher. Use when users request test generation, test coverage improvement, or adding tests for specific functions, classes, or modules. Supports unit tests, integration tests, edge cases, error handling, and mocking patterns. For Playwright E2E (tests/e2e), follow dev-workspace myrules and each repo AGENTS.md: REQUIRED_E2E_SCENARIOS, @pytest.mark.e2e_scenario, pyproject.toml/pytest.ini markers, and Obsidian specs must be updated in the same change. NEVER modifies source code - only generates test code. If source code issues are found, proposes fixes but never modifies code without permission.
+  Generate comprehensive test code for Python (pytest) and JavaScript (Jest). The numeric coverage target follows each repository's pyproject.toml, package.json, and team policy, defaulting to 99% for branches, functions, lines, and statements when unspecified. MANDATORY: keep generating until that effective threshold is met; never ask the user to continue when below it. For Playwright E2E, SKILL section 6 applies only to FishTrack, MyPokedex, and otayori-navi; other repos follow their AGENTS.md. In those three repos, E2E changes follow dev-workspace myrules and AGENTS: REQUIRED_E2E_SCENARIOS, e2e_scenario markers, and same-change updates to tests/e2e conftest, pyproject.toml/pytest.ini marker docs, and Obsidian test specs. Does not modify application product code (e.g. src/); the E2E same-change files above are exceptions. If source issues are found, propose fixes but do not change application code without permission.
 ---
 
 # Test Code Generator
@@ -53,13 +53,14 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
 
 **目的**: ユーザーが「なぜ途中で止まったのか」を理解できるようにする。SKILL違反による中断ではなく、システム制約による事象であることを明示する。
 
-**重要**: テストカバレッジ方針については、[テストカバレッジ方針.md](../../docs/guidelines/テストカバレッジ方針.md) を参照してください。
+**重要**: テストカバレッジ方針の正本は Obsidian ボールト内 **`DevProject/guidelines/テストカバレッジ方針.md`**（例: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/guidelines/テストカバレッジ方針.md`）の1本とする。リポ内の他パスに複製しない。
 
 ## 基本原則
 
 ### 1. カバレッジ目標（必須）
 
-- **目標カバレッジ**: 99%以上（Python、JavaScript共通）
+- **閾値の定め方**: 当リポジトリの `pyproject.toml`・`package.json`・チーム方針で定められたカバレッジ閾値に従い、**未指定のときの既定は 99%**（本SKILL中の「99%」は主にこの既定を指す）。
+- **目標カバレッジ**: 上記閾値以上（未指定なら 99%以上。Python、JavaScript共通）
 - **継続的な生成**: **カバレッジ99%を達成するまで、継続してテストコードを生成する（必須）**
 - **カバレッジ指標**:
   - Python: ブランチ、関数、行、ステートメントすべて99%以上
@@ -82,6 +83,7 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
 - ✅ テストファイルの作成・更新
 - ✅ カバレッジレポートの確認と分析
 - ✅ **例外**: ユーザーの明示的な指示がある場合、到達不可能なコードに`# pragma: no cover`を追加することができます（詳細は「テスト除外の禁止」セクションを参照）
+- ✅ **E2E（§6）を扱う場合の追認**: アプリの `src/` 等のプロダクトコードは**変更しない**前提で、同一変更でよいのは次に限る — `tests/e2e/conftest.py`（`REQUIRED_E2E_SCENARIOS` 等）・`pyproject.toml` または `pytest.ini`（E2E マーカー説明等）・**Obsidian** の当該製品テスト節（`10_testing.md` 等。E2E 方針の同期が必要な場合）
 
 ### 3. ソースコードに不備がある場合の対応
 
@@ -120,7 +122,9 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
 
 ### 6. Playwright E2E と必須シナリオ ID（FishTrack / MyPokedex / おたよりナビ）
 
-**ブラウザ E2E**（`tests/e2e/`・pytest-playwright）を追加・変更するときは、**行カバレッジ 99%**（`src/` 向け pytest-cov）とは別のゲートとして、**必須シナリオ ID の充足**を満たす。
+**適用範囲**: 本節は **FishTrack** / **MyPokedex** / **おたよりナビ** かつ **ブラウザ E2E**（`tests/e2e/` 等）を扱うときのみ従うこと。**それ以外のリポジトリ**は当該リポの **`AGENTS.md`** に準拠し、本節の E2E 手続きに必ずしも縛られない。
+
+**ブラウザ E2E**（`tests/e2e/`・pytest-playwright）を追加・変更するときは、**行カバレッジ**（`src/` 向け pytest-cov。閾値は §1 および当リポ設定）は **E2E 必須シナリオ ID の充足**とは別のゲートとして、両方を満たす。
 
 - **機能追加と必須 ID**: **FishTrack**・**MyPokedex**・**おたよりナビ** で **ユーザー向け機能**（画面・主要フロー・ログイン後のクリティカル経路に触れる変更）を入れる場合は、\
   **原則** **`REQUIRED_E2E_SCENARIOS` に ID を追加**する（**myrules**・各 **AGENTS.md**）。\
@@ -198,7 +202,12 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
 
 ### ステップ3.5: 意味のあるテストを生成する戦略（品質重視）
 
+**数値目標との関係（一文）**: カバレッジの**数値目標**（§1の閾値、既定99%）は**作業完了のゲート**であり、**本節の品質方針**（振る舞いの検証・エッジの洗い出し・偽陽性の抑制）は**そのゲート内で同時に満たすべき中身**である。
+
 **重要**: カバレッジの「数」だけでなく「質」を追求する。表面的なアサーションではなく、**バグを発見できるテスト**を生成する。
+
+- **禁止**: **無意味なアサーション**（行を踏むためだけの弱い `assert`、振る舞い・仕様を検証しない通過のみ）で閾値を満たすこと。
+- **必須**: カバレッジが足りないときは、未カバー行・分岐ごとに**何を保証すべきか**を特定し、**意味のあるテスト**を追加する。
 
 **AIが生成しがちな落とし穴と対策**（古典派 vs ロンドン派）:
 
@@ -232,7 +241,7 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
 
 既存のパターンに従ってテストコードを生成します。詳細なパターンは [references/test_patterns.md](references/test_patterns.md) を参照してください。
 
-**重要**: ソースコードは一切変更しません。テストコードのみを生成します。
+**重要**: アプリのプロダクトコード（`src/` 等）は変更しません。テストコードのみを生成します（E2E §6 の**同一変更**で許される conftest / 設定 / Obsidian 追記を除く）。
 
 ### ステップ5: カバレッジの再確認と継続ループ
 
@@ -405,10 +414,10 @@ describe('Module Name', () => {
 
 ### カバレッジ目標
 
-生成するテストコードは、以下のカバレッジ目標を達成することを目指します：
+生成するテストコードは、**§1 どおり**当リポの閾値（未指定なら各指標 99%以上）を達成することを目指します。
 
-- **Python**: ブランチ、関数、行、ステートメントすべて99%以上
-- **JavaScript**: branches, functions, lines, statements すべて99%以上
+- **Python**: ブランチ、関数、行、ステートメントすべて、上記閾値以上
+- **JavaScript**: branches, functions, lines, statements すべて、上記閾値以上
 
 ### カバレッジ達成プロセス（必須実行）
 
@@ -492,7 +501,7 @@ npm run test:coverage
 8. **意味のあるテスト**: 表面的なアサーションではなく、バグを発見できる質の高いテストを生成する。敵対的視点（「このコードを壊す入力」を探す）でテストを設計する
 9. **プロパティベーステストの検討**: 計算・変換・バリデーション等の関数では、`hypothesis`（Python）や`fast-check`（JavaScript）によるプロパティベーステストを検討する
 10. **モックの適切な使用**: 外部依存関係（DB、API）はモックするが、内部の協調オブジェクトを過度にモック化しない。ロンドン派（相互作用検証）より古典派（振る舞い検証）を優先
-11. **ソースコードの改変禁止**: テストコードのみを生成し、ソースコードは一切変更しない
+11. **アプリのソース改変禁止**: テストコード（および §6 E2E 時の conftest / マーカー設定 / Obsidian 同期。詳細は「ソースコードの改変禁止」）に留め、プロダクトの `src/` 等は変更しない
 12. **🚨 カバレッジの継続的な確認（必須）**: テスト生成後は必ずカバレッジを確認し、99%未満の場合は追加のテストを生成する。カバレッジ99%以上を達成するまで継続する。
 13. **問題点の明確な記録**: ソースコードに不備を発見した場合は、修正案を提案し、問題点を明確に記録
 14. **継続的なループ実行**: カバレッジ99%未満の場合は、カバレッジ確認 → テスト生成 → カバレッジ確認のループを継続する

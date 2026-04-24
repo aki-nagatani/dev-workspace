@@ -7,7 +7,23 @@ description: Cursorの作業内容をObsidianのCursorLogに記録する。作�
 
 ## 報告前の必須アクション（記録漏れ防止）
 
-**ファイルを変更した作業を完了した場合**は、**ユーザーに報告する前に必ず**本SKILLに従い CursorLog を更新すること。報告文の末尾に「CursorLogは更新しました」と明記する。これを省略すると記録漏れとなる。**追記するエントリの「使用AIモデル」行は、記入直前に当該チャットのモデル選択と照合し、誤ったモデル名のままにしないこと。**
+**ワークスペース内のファイルを追加・更新・削除した作業を完了した場合**
+（**`StrReplace` / `Write` / `Delete` / `EditNotebook`** 等。旧ドキュメントの `write` / `search_replace` / `edit_file` と同義）は、
+**ユーザーに報告する前に必ず**本SKILLに従い CursorLog を更新すること。
+
+報告文の末尾に「CursorLogは更新しました」と明記する。省略すると記録漏れとなる。
+**追記するエントリの「使用AIモデル」行は、記入直前に当該チャットのモデル選択と照合し、誤ったモデル名のままにしないこと。**
+
+### 記録漏れの典型原因（対策の観点）
+
+- **会話要約（summarize）**や長文の打ち切りのあと、「報告直前の自己チェック（CursorLog 更新したか？）」が文脈から消え、次の応答でコード変更が未記録のままになる。
+- **「完了」や成果報告の文面**を**先に**心の中・下書きで作り、**CursorLog 追記を同じ最終返答の後回し**にする（**順序の逆転**。**myrules**「**取り扱い終了文の前ゲート**」で禁止）
+- 実装に集中し、**本 SKILL を参照せず**に **`StrReplace` / `Write` 等の連打**で終える。
+- **チェックリストとツール名の不一致**: ルール文面が旧ツール名だけだと、**自分の操作が「ログ対象」だと結びつかず**漏れる。
+    dev-workspace **myrules** は **`StrReplace` / `Write` / `Delete` / `EditNotebook`** を明示していること。
+- **対策**: 各プロジェクトの **AGENTS.md** に「コード変更完了時は CursorLog」を短く載せる（dev-workspace の
+    **myrules** の「記録漏れが起きやすい状況」参照）、**報告の直前**に必ず Obsidian 側を更新する。成果を**ユーザーに文で述べ始める前**に、
+    **同一応答内で** log 用 `Write` / `StrReplace` を**済ませる**（**前ゲート**）
 
 **残作業・課題の記載（推奨・強く推奨）**: マイルストーン区切り、長めのセッションの終わり、またはユーザーが明示したときは、同一日のログに **`### 残作業・課題`** 見出し付きの箇条書きを追記する。内容は次を含めてよい（当日の文脈で重要なものに絞る。詳細は統合作業スケジュール・Issue・仕様のリンクで足りる）。
 
@@ -45,6 +61,43 @@ description: Cursorの作業内容をObsidianのCursorLogに記録する。作�
 - **エントリ見出し形式（必須）**: 各エントリの先頭は **`## HH:mm:ss [作業名]`** の見出し形式で統一する。リスト形式（`- HH:mm:ss`）は使用しない。
 
 ## 記録手順
+
+### 🚨 日本語 UTF-8 ファイルへの破壊的操作の禁止（文字化け防止）
+
+**CursorLog（および Obsidian vault 配下の日本語 .md ファイル）は BOM なし UTF-8 で保存されている。以下の操作は文字化けで全文破壊する可能性があるため、**絶対に使用しない**。**
+
+**禁止**:
+
+- PowerShell の **`Get-Content -Raw` でファイル全体を読み込み、`[System.IO.File]::WriteAllText` / `Set-Content` で書き戻す** パターン。\
+    日本語 Windows 既定の **`cp932`（Shift-JIS）** でファイルを読んでしまい、それを **UTF-8 として再保存**することで、全行の日本語が **mojibake**（`繧ｿ繧ｹ繧ｯ` のような文字列）化する。
+- `Get-Content` / `Set-Content` を `-Encoding` 指定なしで使うこと（PowerShell 5.x の既定は **環境依存**でしばしば cp932）。
+- PowerShell の `>`・`>>` リダイレクトで **日本語テキスト**を既存ファイルへ追記すること（出力エンコーディングが cp932 になり得る）。
+- PowerShell のヒアドキュメント（`@"…"@`）で日本語を含む **ファイル生成**（`commit-message` SKILL に沿って Python で書く）。
+
+**推奨**:
+
+1. 編集は **`StrReplace` ツール**を最優先で使う（エンコーディングを意識しない。差分だけを変更する）。
+2. 末尾改行の付与・整形など **バイナリレベルの確定操作**が必要な場合は **Python を使う**。例:
+
+   ```bash
+   python -c "
+   import pathlib
+   p = pathlib.Path(r'D:\OneDrive\アプリ\remotely-save\Obsidian\CursorLog\YYYY-MM\YYYY-MM-DD.md')
+   data = p.read_bytes()
+   if not data.endswith(b'\n'):
+       p.write_bytes(data + b'\n')
+   "
+   ```
+
+3. どうしても PowerShell を使うなら、**読み書きとも `-Encoding utf8NoBOM`**（PS7+）または\
+   `[System.IO.File]::ReadAllText(path, [System.Text.UTF8Encoding]::new($false))` / `WriteAllText` の\
+   **両方**で UTF-8 を明示する（片方だけ明示は最も危険）。
+
+**事故検知**: 編集後に `python -c "print(open(path,'rb').read()[:200])"` でバイト列先頭を確認し、\
+**`繧`・`縺`・`\uf8f0`・`\x80`** のような Shift-JIS → UTF-8 二重解釈由来のバイト列が出たら **即座に中断**し、\
+**Obsidian vault は git 管理外のため OneDrive のバージョン履歴から復元**する（`.md` を右クリック → 「バージョン履歴」）。
+
+**過去事故（2026-04-20）**: `[System.IO.File]::WriteAllText($path, (Get-Content -Raw $path) + "\`n", …)` で `2026-04-20.md` 全文を破壊。git なし・OneDrive 復元が必要になった。
 
 ### 🚨 タイムスタンプ（実時刻）の必須手順（失敗防止）
 
@@ -227,6 +280,9 @@ description: Cursorの作業内容をObsidianのCursorLogに記録する。作�
 
 ## 実装上の注意
 
+- **日本語 UTF-8 ファイルの破壊防止**: `Get-Content -Raw` + `Set-Content` / `WriteAllText` で\
+    **ファイル全体を読み書きし直すパターンは禁止**。差分編集は `StrReplace`、末尾改行などのバイナリ確定は\
+    **Python の `write_bytes`** を使う（詳細は本 SKILL **「🚨 日本語 UTF-8 ファイルへの破壊的操作の禁止」**）。
 - **使用AIモデル**: タイムスタンプと同様、**毎エントリで再確認**する。チャットを切り替えた・モデルを変えた直後の追記では特に誤記が起きやすい。
 - **エントリ長（30行目安）**: 追記後に行数を確認し、超える場合は省略・分割・参照に置き換える（詳細は `markdown-editing` の MD013 対策と両立させる）。
 - **時系列優先**: エントリは HH:mm:ss の昇順で並べること。新規エントリの時刻が既存末尾より後なら末尾に追加。後から記録する作業で時刻が途中になる場合は、正しい位置に挿入する（単純に末尾追加のみでは不十分な場合あり）
@@ -239,3 +295,4 @@ description: Cursorの作業内容をObsidianのCursorLogに記録する。作�
   - [ ] 新規追加したタグ行は、先頭ブロックの**他のどの行ともタグ重複していないか？**
   - [ ] プロジェクト名タグ（`#MyPokedex` / `#FishTrack` / `#otayori-navi` 等）を**二重に書いていないか？**
   - [ ] 完了条件として、先頭ブロックの**タグ重複ゼロ**と **markdownlint `Summary: 0 error(s)`** の両方を満たしているか？
+  - [ ] 編集後に **`Get-Content -Raw` + `Set-Content` / `WriteAllText`** で**全文書き戻し**をしていないか？（禁止。した場合はバイト列先頭を確認し、`繧`・`縺`・`\uf8f0` が出ていれば **OneDrive バージョン履歴から復元**する）
