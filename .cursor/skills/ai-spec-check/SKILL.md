@@ -1,9 +1,11 @@
 ---
 name: ai-spec-check
 description: >-
-  本番 FishTrack のログから「AI補助スペック取り込みプレビュー結果」を取得し、
-  本家ページと突き合わせてロッド／リールの取り込み品質を検証する。差異は 🔴🟡🔵 に分類し、
-  対策を即時／中期／長期で具体化して Obsidian 正本 `ai_spec_check_report.md` に書き、
+  本番 FishTrack のログから「AI補助スペック取り込みプレビュー結果」、
+  「AI補助スペック取り込みLLM入出力」（API 呼び出しごとの入出力）、および
+  プレビュー未到達時の「プレビュー失敗」1行JSON（必要時 `llmExchanges`）を取得し、
+  本家ページと突き合わせてロッド／リールの取り込み品質を検証する（失敗時は原因整理中心）。差異は 🔴🟡🔵 に分類し、
+  対策を即時／中期／長期で具体化し**各対策に期待効果**を併記して Obsidian 正本 `ai_spec_check_report.md` に書き、
   CursorLog を更新する。専用 Cursor Command はなく本 SKILL が正本。AI スペック取り込みプレビュー検証、
   spec import プレビュー照合、dump_spec_import_preview、本番 fishtrack.log プレビュー行の依頼時に使用する。
 ---
@@ -28,7 +30,7 @@ myrules を厳守して作業してください。
 「AI補助スペック取り込みプレビュー結果」を取得し、ログ中の `resolvedUrl` に
 アクセスして本家ページと突き合わせ、取り込み漏れ・想定外・誤変換がないかを
 判定してください。問題があれば、根本原因と対策（即時／中期／長期）を具体的に
-まとめてください。エージェントがターミナルで実行すること。手順の提示だけで
+まとめ、**各対策の期待効果**を併記してください。エージェントがターミナルで実行すること。手順の提示だけで
 終わらないでください。
 
 **報告の出し分け**: 表・分類・対策の**全文**は **セクション 9** の
@@ -70,10 +72,28 @@ myrules を厳守して作業してください。
 - プレビュー結果の出力条件（アプリ設定・両方満たすこと）:
   - `FISHTRACK_STANDALONE=true`（`docker-compose.yml` 本番想定で既定 on）
   - `FISHTRACK_SPEC_IMPORT_DEBUG_LOG=true`（本番では `.env` 要確認）
-- プレビュー結果の識別文字列: `AI補助スペック取り込みプレビュー結果:`
-- プレビュー payload のキー:
+- プレビュー**成功**の識別文字列: `AI補助スペック取り込みプレビュー結果:`
+- **プレビュー未到達・ジョブ失敗**（`store.set_error` 等でプレビュー JSON が出ない経路）の識別文字列: `AI補助スペック取り込みプレビュー失敗:`
+  - 出力元: `src/fishtrack/blueprints/tackle/routes_master.py` の `_log_spec_import_preview_job_failure`（WARNING・1 行 JSON）
+  - **本番に当該コードがデプロイされた後**の失敗のみファイルログに残る。過去の失敗で UI に出た OpenAI `requestId` だけでは、デプロイ前ログに**行が無い**ことがある
+  - 失敗 payload のキー: `jobId`, `code`, `message`, `requestId`, `sourceUrl`, `model`
+  - **dump**: `python scripts/dump_spec_import_preview.py --kind failure` と `--count` / `--list` / `--latest` / `--index` / `--out` を組み合わせる（成功時と同じく `--stdin` / `--file` / docker 経路）
+  - UI の **OpenAI request id**（`req_…`）はログでは主に **`requestId`** で突き合わせる（`grep req_5826…` 等）。補助: `spec-import preview job failed` / `no_preview_rows` 等
+- プレビュー（成功時）payload のキー:
   `manufacturer, resolvedUrl, pageTitle, requestId, category, categoryReason,
-   rowsCount, usage, rows[]`
+   rowsCount, usage, rows[]` に加え、**デバッグプレビューログ有効時**（`FISHTRACK_SPEC_IMPORT_DEBUG_LOG` 等）は
+  **`llmPrompts`**（配列）が含まれることがある。各要素は `step`（例: `classify` / `rod_extract_1_of_3` /
+  `verify` / `refine_<modelName>_1`）・`systemPrompt`・`userPrompt` で、**当該実行で API に送った
+  system / user 本文**を再現する。
+- **`AI補助スペック取り込みLLM入出力:`**（**同一のデバッグ条件**で、**OpenAI を 1 回呼ぶごとに 1 行**。成功は INFO、HTTP/JSON 失敗は WARNING）
+  - 行末 JSON に **`step`**・**`model`**・**`requestId`**・**`systemPrompt` / `userPrompt`** に加え、
+    成功時はパース済み **`response`**、失敗時は **`httpStatus`** / **`openaiErrorExcerpt`** / **`responseRaw`** 等（実装: `src/fishtrack/services/tackle_spec_import_openai_client.py`）。
+  - **照合・原因分析の必須参照**: **`llmPrompts`（入力のみ）だけに頼らず、可能な限り本マーカー行を読む**
+    （**プロンプトと実際の LLM 出力の対応**・どの段（classify / extract / verify / refine / manufacturer_infer）で本家とズレたかを切り分ける）。同一実行の行はログ先頭の**壁時刻**、**`requestId`**、**`step`** で
+    `プレビュー結果:` / `プレビュー失敗:` 行と突き合わせる。
+  - **プレビュー失敗** 1 行 JSON に **`llmExchanges`** 配列が付くことがある（ジョブ内の往復のコピー、上記と同型）。
+    **失敗行だけで足りない**・ログが切り詰められている場合は、本番ログを **`grep LLM入出力:`**
+    （または `AI補助スペック取り込みLLM入出力` の一部）で抜粋し **`temp/` に UTF-8 保存**して目視する（セクション 2）。
 - 各 row のキー: **マージ済みプレビュー行の全フィールド**に加え、
   `row`（1 始まり行番号）・`missingRequired[]`・`missingOptional[]` が付く。
   ロッド例: `seriesName`, `modelName`, `genre`, `lengthFt`, `lengthIn`, `power`,
@@ -158,7 +178,9 @@ Python を廃し、日本語も UTF-8 のまま安全に扱える。
 - **A. 抜粋＋`--file`（推奨）**: 本番上で `grep` 等で
   `AI補助スペック取り込みプレビュー` を含む行**だけ**出し、ローカルで
   バイナリ書き（UTF-8）→ `python scripts/dump_spec_import_preview.py --file <path> --list`
-  （`<path>` は **`temp/tmp_prod_preview_grep.log`** 等、`temp/` 配下を推奨）
+  （`<path>` は **`temp/tmp_prod_preview_grep.log`** 等、`temp/` 配下を推奨）。
+  **失敗だけ追う**ときは同じ抜粋に `プレビュー失敗:` が含まれる行があれば
+  `--kind failure --list` で解析する（成功マーカーだけの抜粋なら `--kind failure` は 0 件になり得る）
 - **B. パイプ**（行数が少ないとき・検証用）: 下記。巨大ログの**丸ごと `cat`**
   は、環境によって**極端に遅い**場合がある。まず A を検討。
 
@@ -168,6 +190,17 @@ cd d:/OneDrive/git_work/FishTrack
 ssh -i "$env:USERPROFILE\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@<本番IP> 'cd <deploy-dir> && docker compose -f docker-compose.yml exec -T app sh -c "grep -h プレビュー結果: /app/instance/logs/fishtrack.log* 2>/dev/null"' | python scripts/dump_spec_import_preview.py --stdin --list --limit 5
 ```
 
+```powershell
+# プレビュー失敗行のみ（UI の req_… 追跡・デプロイ後ログ向け）
+ssh -i "$env:USERPROFILE\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@<本番IP> 'cd <deploy-dir> && docker compose -f docker-compose.yml exec -T app sh -c "grep -h プレビュー失敗: /app/instance/logs/fishtrack.log* 2>/dev/null"' | python scripts/dump_spec_import_preview.py --stdin --kind failure --list --limit 10
+```
+
+```powershell
+# LLM 往復ログ（1 API 呼び出し 1 行・response 含む）。プレビュー結果/失敗と同時刻帯・同 requestId で突合
+ssh -i "$env:USERPROFILE\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@<本番IP> 'cd <deploy-dir> && docker compose -f docker-compose.yml exec -T app sh -c "grep -h LLM入出力: /app/instance/logs/fishtrack.log* 2>/dev/null | tail -n 80"'
+```
+
+- 抜粋を **`temp/tmp_prod_llm_io_grep.log`** 等へ **Python / バイナリ書き込みで UTF-8 保存**し、エディタや `jq` で **`step` / `requestId` / `response`** を追う（常設 `dump` はプレビュー成功/失敗マーカー専用のため、LLM 入出力は **grep 目視または別スクリプト**でよい）。
 - `--stdin` … 前段の**標準出力**をそのままログ本文として解析
 - 0 件のとき、PowerShell 直パイプで**マーカーに一致しない**（UTF-8 破壊）の
   可能性 → **A の `--file` へ切り替え**
@@ -180,16 +213,22 @@ ssh -i "$env:USERPROFILE\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2
 cd d:/OneDrive/git_work/FishTrack
 python scripts/dump_spec_import_preview.py --count
 python scripts/dump_spec_import_preview.py --list --limit 5
+python scripts/dump_spec_import_preview.py --kind failure --count
+python scripts/dump_spec_import_preview.py --kind failure --list --limit 10
 ```
 
+- `--kind` … `success`（既定）＝`プレビュー結果:` 行のみ。`failure` ＝`プレビュー失敗:` 行のみ
 - `--count` … ヒット件数のみ表示
-- `--list --limit N` … `[index] timestamp  category=...  rows=...  url=...` を
-  N 件表示。**「新しい」順**は既定で `--order time`（ログ行先頭
+- `--list --limit N` … 成功時は `[index] timestamp  category=...  rows=...  url=...`。
+  **失敗時**は `code` / `jobId` / `requestId` / `url`（`sourceUrl`）/ `message` 先頭。
+  **「新しい」順**は既定で `--order time`（ログ行先頭
   `[YYYY-MM-DD HH:MM:SS]` の**壁時刻**降順）。`grep` のファイル順混在に依存しない
 - `--order file` … 従来どおり、入力テキスト上の**出現の逆順**（特殊用途）
 - 0 件だった場合の切り分け:
+  - **`--kind success` で 0 件・UI は失敗表示** → `--kind failure` と
+    `プレビュー失敗:` の grep を試す（未デプロイならログに無い）
   - 環境変数 2 つ（`FISHTRACK_STANDALONE`, `FISHTRACK_SPEC_IMPORT_DEBUG_LOG`）
-    が本番 `.env` で有効か
+    が本番 `.env` で有効か（**成功プレビュー行**の出力条件。**失敗行**は別経路で WARNING 出力）
   - ファイルに出ておらず **stdout** のみの可能性 → セクション 0 の (2) を参照
   - ローテーション後で別ファイルに移っている（ローカル `docker` 経路）
     → `--include-rotated` を付けて再実行、または本番 EC2 側で連結してから `--stdin`
@@ -208,12 +247,15 @@ python scripts/dump_spec_import_preview.py --list --limit 5
 python scripts/dump_spec_import_preview.py --stdin --latest --out temp/tmp_latest_preview.json
 # 抜粋をファイルに置いた場合
 python scripts/dump_spec_import_preview.py --file temp/tmp_prod_preview_grep.log --latest --out temp/tmp_latest_preview.json
+# 最新のプレビュー失敗 1 件（JSON に code / message / requestId / sourceUrl 等）
+python scripts/dump_spec_import_preview.py --stdin --kind failure --latest --out temp/tmp_latest_failure.json
 ```
 
 ローカル Docker のみ（`--stdin` / `--file` なし）の場合:
 
 ```powershell
 python scripts/dump_spec_import_preview.py --latest --out temp/tmp_latest_preview.json
+python scripts/dump_spec_import_preview.py --kind failure --latest --out temp/tmp_latest_failure.json
 ```
 
 - 新しい順 **2 件目** など: `--index 1`（順序は `--order` 準拠）
@@ -222,6 +264,8 @@ python scripts/dump_spec_import_preview.py --latest --out temp/tmp_latest_previe
   スクリプト内で UTF-8 書き込み（PowerShell の `>` では書かない）
 
 ## 4. JSON サマリ確認
+
+**成功プレビュー**（`temp/tmp_latest_preview.json`）:
 
 ```powershell
 python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8'); p=json.load(open('temp/tmp_latest_preview.json',encoding='utf-8')); print('category:', p.get('category')); print('resolvedUrl:', p.get('resolvedUrl')); print('rowsCount:', p.get('rowsCount'))"
@@ -232,6 +276,17 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 - `rod` → セクション 6A（ロッド検証）
 - `reel` → セクション 6B（リール検証）
 - `lure` / `unknown` → スコープ外。カテゴリと `categoryReason` を報告して終了
+
+**プレビュー失敗**（`--kind failure` で得た JSON）:
+
+- `resolvedUrl` / `rows[]` は無い。`sourceUrl`・`code`・`message`・`requestId` を確認する
+- 付随する **`llmExchanges`** があれば **各要素の `step` / `response` / エラー項目**を読み、
+  失敗直前までどの抽出段が通ったかを整理する。無い場合はセクション **2** の **`grep LLM入出力:`** で補う。
+- **セクション 5〜6** の本家表との突き合わせは、プレビュー行が無いため**原則スキップ**
+  （任意で `sourceUrl` を取得し、URL 妥当性・ページ構造の参考コメントに限る）
+- **セクション 9・11** のレポートは「失敗系」テンプレに従う（下記）
+
+**成功プレビュー**で **`llmPrompts` がある場合**も、**セクション 0** の **`AI補助スペック取り込みLLM入出力:`** 行を **同一実行・同一 URL 相当の時刻帯**で探し、**`response` と本家の突き合わせ**に使う（入力だけでは足りない差分の説明に必要）。
 
 ## 5. resolvedUrl の本家ページ取得
 
@@ -326,7 +381,7 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 ## 8. 対策の 3 段整理
 
 問題 (🔴) が 1 件以上ある場合、以下 3 段でユーザーに提示する。
-**書き方は必ずセクション 8.1 に従う**（具体性・汎用性）。
+**書き方は必ずセクション 8.1 に従う**（具体性・汎用性・**期待効果**）。
 
 - **即時対応（コード変更・保存前に適用推奨）**
   - `tackle_spec_import.py` の system_prompt へ禁則文言追加（例: 近似語禁止）
@@ -335,13 +390,16 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
   - リール: `reel_type` の値域（`spinning` / `bait`）を
     サーバ側で再チェックし、想定外値はプレビュー段階でエラー化
   - `tests/services/test_tackle_spec_import_*.py` に該当ケース追加
+  - **期待効果（例）**: プレビュー上の当該種別の**誤変換・制約違反の再発を抑止**、回帰をテストで捕捉
 - **中期対応（運用ポリシー）**
   - `tackle_technology_feature` の正典化（`category` 別に表記揺れ統合）
   - シリーズ命名ポリシー（新旧世代分離ルール）の文書化
   - リール価格の税抜／税込ポリシー統一
+  - **期待効果（例）**: マスタ・表記の**一貫性**向上、解釈のばらつきによる 🟡 を減らす
 - **長期対応（仕組み）**
   - プレビュー UI に警告バッジ表示
   - 本作業を定期バッチ化し、保存前に自動チェック
+  - **期待効果（例）**: 利用者が**保存前**に不整合に気づきやすい、**品質の継続監視**が可能になる
 
 ### 8.1 対策の記述ルール（必須）
 
@@ -363,16 +421,27 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
   - 可能な**一般化**（同メーカー同型のページでも効く条件、正規表現・DOM パターンの抽象度）
 - シリーズ固有の用語（商品固有名）だけを増やす対策は **🔵 情報**に留め、**即時対応の主対策**にしない（マスタ・別表で吸収する方を優先）。
 
+#### 期待効果（各対策に併記・必須）
+
+- 即時／中期／長期の**各項目**（箇条書きの一塊）に、**この対策を入れたら何が改善するか**を **1 行**で必ず付ける。書き方の例:
+  - **品質・リスク**: 「プレビューにおける X の取りこぼしを減らす」「Y という 🔴 原因をサーバでブロック」
+  - **観測性**: 「同種の不整合をテストで**回帰検知**」「運用で参照する**正典**が1つになる」
+  - **利用者体験**: 「保存前に**警告**が出るため誤登録の手前で止まりやすい」
+- 抽象語だけ（例:「品質が上がる」**のみ**）は避け、**どの失敗パターンが減るか**に紐づける。
+- Obsidian 正本（セクション 11 の「6. 対策」）では、**対策文の直後**に `- **期待効果**:` または行末の括弧 `（期待効果: …）` のいずれかで統一してよい（同一ファイル内で表記を混在しすぎないこと）。
+
 ### 8.2 記載例（粒度の目安）
 
 #### 悪い例（不十分）
 
 - 即時: j1nnhzx の行だけ直す。中期: ダイワを見直す。
 
-#### 良い例（具体かつ汎用）
+#### 良い例（具体かつ汎用＋期待効果）
 
 - 即時: `tackle_spec_import.py` の system_prompt 内「ルアー重量」節に、本家が分数 `1/96` のとき**別分数へ近似しない**旨を追記。サーバ側は `fractions.py`（または既存の oz 正規化）で `約` を拒否し、`test_tackle_spec_import_helpers.py` に「`1/96` 入力→`1/64` 化しない」**パラメタ化**したケースを追加。
+  - **期待効果**: 同種の**分数誤変換**をプレビュー上で減らし、回帰をテストで捕捉できる。
 - 中期: `tackle_technology_feature` でロッド用ラベルの表記揺れを統合し、プレビューは **当該行の TECHNOLOGY** と **脚注ブロック**の突合を優先する方針を SPEC に1段落で残す。
+  - **期待効果**: マスタと本家表記の**揺れ**を抑え、技術名の**取り違い・不足**（🔴/🟡）の再発率を下げる。
 
 ## 9. 結果の Markdown ファイル出力（必須）
 
@@ -385,7 +454,7 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
   `d:/OneDrive/git_work/FishTrack` とは**別物**（同一マシン上の**別パス**）。
 - **上記 git リポジトリ**のルートには**本レポートを書かない**（作業用・git 外とする）。
 
-**正本は上記 1 ファイルのみ**とする。セクション 11「レポート本文の構成」の **1〜7**（および URL 同一時の **「## 前回からの変化」**）を**すべて**ここへ UTF-8（BOM なし）で書き出す。
+**正本は上記 1 ファイルのみ**とする。セクション **11.1（成功）または 11.2（プレビュー未到達）** の本文構成（および URL 同一時の **「## 前回からの変化」**）を**すべて**ここへ UTF-8（BOM なし）で書き出す。
 チャットに**同一本文を繰り返し載せる必要はない**（**9.4** の要約で足りる）。
 
 `Write` ツール、または Python の `path.write_text(..., encoding="utf-8")` を用いる（**BOM なし**）。
@@ -424,7 +493,9 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 チャットには次だけを書く（表・長文の対策全文は**書かない**。ファイルが正本）。
 
 - **レポートの絶対パス**（`D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`）
-- **1〜3 行サマリ**: `resolvedUrl` / category / rowsCount / 🔴・🟡 の件数または要旨
+- **1〜3 行サマリ**:
+  - **成功時**: `resolvedUrl` / category / rowsCount / 🔴・🟡 の件数または要旨
+  - **失敗のみ時**: `sourceUrl` / `code` / `requestId`（`req_…`）/ メッセージ要旨 / ログに行があったか
 - **同一 URL の再チェック時**: 「前回からの変化」の**一文**（詳細はファイル内の当該見出し）
 - ユーザーがファイルにアクセスできない事情がある場合のみ、チャット側に抜粋を足してよい（**原則不要**）
 
@@ -468,7 +539,7 @@ source_log_hint: "例: temp/tmp_prod_preview_grep.log / --index 0 / ssh パイ�
 
 ### 9.3 本文の構成
 
-次節「11. レポート本文の構成」の **1〜7** と同じ順・同粒度で本文を書く（表・🔴🟡🔵・対策を省略しない）。
+次節「11. レポート本文の構成」の **11.1（成功）または 11.2（プレビュー未到達）** に従い、同じ順・同粒度で本文を書く（表・🔴🟡🔵・対策を省略しない）。
 **「## 前回からの変化」**は、セクション 9.2 のとおり URL が同一のときのみ必須。URL が変わった初回は省略可。
 
 ## 10. 後片付け（必須）
@@ -477,7 +548,7 @@ source_log_hint: "例: temp/tmp_prod_preview_grep.log / --index 0 / ssh パイ�
 
 ```powershell
 cd d:/OneDrive/git_work/FishTrack
-Remove-Item temp/tmp_latest_preview.json, temp/tmp_prod_preview_grep.log -ErrorAction SilentlyContinue
+Remove-Item temp/tmp_latest_preview.json, temp/tmp_latest_failure.json, temp/tmp_prod_preview_grep.log, temp/tmp_prod_llm_io_grep.log -ErrorAction SilentlyContinue
 # 当該実行で temp/ に追加したその他の作業用ファイル（例: 抜粋ログ・fetch スクリプト出力）があれば同様に削除
 ```
 
@@ -491,8 +562,14 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
 
 **セクション 9** で出力する Markdown の本文に、必ず以下の順で書く（**チャットには転記しない**。**9.4** の要約のみ）。
 
+### 11.1 プレビュー成功時（従来）
+
 1. **対象ログ**: 取得時刻 / category / resolvedUrl / pageTitle / rowsCount
-   / 確定状態（DB 保存済みか）
+   / 確定状態（DB 保存済みか）。**原因分析**では次を**併用**する（デバッグログ有効時・取得できた範囲で）。
+   - **`llmPrompts`**（プレビュー結果 JSON 内）… 各 `step` の **system / user 入力**
+   - **`AI補助スペック取り込みLLM入出力:`** ログ行… 各 `step` の **入力に加え `response`（またはエラー時の生/要約）**。
+     **本家との差分の説明では `response` を優先的に参照**する（入力だけでは足りないことが多い）。
+   - ログ断片の突合は **`requestId`**・壁時刻・`resolvedUrl` / `sourceUrl` で行う。
 2. **件数整合**: rowsCount vs 本家表行数
 3. **数値突き合わせ表**:
    - ロッド: row / modelName / 本家値（lureWeightOz, length 等）
@@ -501,10 +578,31 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
      list_price, jan_code 等）/ AI 値 / 判定
 4. **技術特性突き合わせ表**（マスタ `category` と AI 出力カテゴリの一致確認を含む）
 5. **差異の分類（🔴 / 🟡 / 🔵）** — **セクション 7** の原則どおり、**本家との不一致はすべて 🔴**（🟡・🔵 に降格しない）
-6. **対策提案（即時 / 中期 / 長期）** — **セクション 8.1** どおり、**具体**（ファイル・関数・テスト・期待挙動）かつ**汎用**（シリーズ固有例外に頼らない主軸）で書く。セクション **8.2** の悪い例・良い例に倣う。
+6. **対策提案（即時 / 中期 / 長期）** — **セクション 8.1** どおり、**具体**（ファイル・関数・テスト・期待挙動）かつ**汎用**（シリーズ固有例外に頼らない主軸）で書き、**各対策に期待効果**（**セクション 8.1**「期待効果」）を**必ず併記**する。セクション **8.2** の悪い例・良い例に倣う。
 7. **次アクション候補 (1)〜(n)** とおすすめ順
 
 同一 `resolvedUrl` の再チェック時は、上記に加え **「## 前回からの変化」**（セクション 9.2）を**ファイル本文に**含める。チャットでは **9.4** に従い一文要約にとどめる。
+
+### 11.2 プレビュー未到達時（`--kind failure` の JSON のみ）
+
+本家との**行単位突き合わせは無い**。次の順で書く。
+
+1. **対象ログ**: 壁時刻 / `jobId` / `code` / `message` / `requestId` / `sourceUrl` / `model` / ログ取得手段（`source_log_hint`）。
+   **`llmExchanges` がある場合は**各要素の **`step`・`response`（または失敗時フィールド）**を要約して記載する。
+   **無い場合**はセクション **2** の **`grep LLM入出力:`** 結果で同趣旨を補う。
+2. **件数・表の整合**: 「プレビュー行未取得のため対象外」と明示
+3. **数値・技術表**: 同上（対象外）
+4. **差異の分類**: セクション 7 の「本家不一致 🔴」ではなく、**ジョブ失敗・品質ブロック**として整理する。
+   - 例: `no_preview_rows` かつメッセージが「型番候補なし」→ 🔴（保存不能・要原因調査）
+   - `manufacturer_inference_failed` → 🔴 または 🟡（`sourceUrl`・ページ内容による）
+   - ログが無く追えない場合は 🟡「デプロイ前ログ／未出力」の注記と**再現手順**
+5. **対策**: **セクション 8.1** どおり。`tackle_spec_import.py` の抽出・分類・
+   `routes_master` のエラーコード、`tests/services/test_tackle_spec_import_*.py` 等に**汎用的に**紐づける。**各項目に期待効果を1行**
+6. **次アクション**: デプロイ確認・同一 `sourceUrl` での再試行・`grep` 手順の見直し 等
+
+**フロントマター**（セクション 9.1）: `resolvedUrl` に **`sourceUrl` を入れてよい**（比較・再チェックのキー）。`category` は `failure` または `-`、`rowsCount` は `0`。`pageTitle` は空または手動取得時のみ。
+
+**「前回からの変化」**（セクション 9.2）: 比較キーは **`sourceUrl` + `requestId`**（または `jobId`）。成功レポートとの切替時は URL 変更扱いでよい。
 
 ## 12. 禁止事項
 
@@ -518,6 +616,7 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
   サーバ側対策まで必ず提案する）
 - **対策が抽象的な一行**、または**特定シリーズ・URL・型番だけの例外**に
   終始すること（セクション **8.1** 違反）
+- **対策だけを列挙し期待効果を書かない**こと（セクション **8.1**「期待効果」違反）
 - **本家**ページとプレビューの**不一致**を 🟡 / 🔵 へ**格下げ**して報告すること（セクション **7** 違反）
 
 ## 13. CursorLog 更新（必須）
