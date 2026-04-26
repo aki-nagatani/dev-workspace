@@ -59,7 +59,9 @@ myrules を厳守して作業してください。
 - 本番確認手順の詳細: dev-workspace `.cursor/skills/ec2-rds-connection/SKILL.md`、
   および（人間用）Obsidian `DevProject/guidelines/EC2_SSH接続手順.md`
 - 本番 EC2 の**現行**インスタンス ID・ホスト: GitHub Secrets / AWS コンソールで
-  確認（SKILL 記載の ID は**例示**のため、実行前に要確認）
+  確認（`ec2-rds-connection` の IP / ID は**例示**。実行前に**必ず**要確認。デプロイ
+  ディレクトリ例: `/home/ec2-user/FishTrack`。コンテナ内ログは
+  `docker compose -f docker-compose.yml exec -T app ...` 前提）
 - Docker: 本番は `docker-compose.yml` 単体で起動。サービス名は `app`。
   コンテナ名は `docker ps` で確認（例: `*-app-1`）
 - プレビュー用ログの**取得元**（どちらか、または併用）:
@@ -87,9 +89,9 @@ myrules を厳守して作業してください。
   system / user 本文**を再現する。
 - **`AI補助スペック取り込みLLM入出力:`**（**同一のデバッグ条件**で、**OpenAI を 1 回呼ぶごとに 1 行**。成功は INFO、HTTP/JSON 失敗は WARNING）
   - 行末 JSON に **`step`**・**`model`**・**`requestId`**・**`systemPrompt` / `userPrompt`** に加え、
-    成功時はパース済み **`response`**、失敗時は **`httpStatus`** / **`openaiErrorExcerpt`** / **`responseRaw`** 等（実装: `src/fishtrack/services/tackle_spec_import_openai_client.py`）。
+    成功時はパース済み **`response`**、失敗時は **`httpStatus`** / **`openaiErrorExcerpt`** / **`responseRaw`** 等（実装: `src/fishtrack/services/spec_import/tackle_spec_import_openai_client.py`）。
   - **照合・原因分析の必須参照**: **`llmPrompts`（入力のみ）だけに頼らず、可能な限り本マーカー行を読む**
-    （**プロンプトと実際の LLM 出力の対応**・どの段（classify / extract / verify / refine / manufacturer_infer）で本家とズレたかを切り分ける）。同一実行の行はログ先頭の**壁時刻**、**`requestId`**、**`step`** で
+    （**プロンプトと実際の LLM 出力の対応**・どの段（classify / extract / verify / refine / manufacturer_infer）で本家とズレたかを切り分ける）。同一実行の行は**ログ行先頭の日時**、**`requestId`**、**`step`** で
     `プレビュー結果:` / `プレビュー失敗:` 行と突き合わせる。
   - **プレビュー失敗** 1 行 JSON に **`llmExchanges`** 配列が付くことがある（ジョブ内の往復のコピー、上記と同型）。
     **失敗行だけで足りない**・ログが切り詰められている場合は、本番ログを **`grep LLM入出力:`**
@@ -110,7 +112,7 @@ myrules を厳守して作業してください。
     gear_ratio, weight_g, list_price, jan_code）
   - `category` がそれ以外（lure, unknown 等）はスコープ外。対象外として報告。
 - 関連ソース（必要時のみ参照・不要なら触らない）:
-  - `src/fishtrack/services/tackle_spec_import.py`（system_prompt / preview logger）
+  - `src/fishtrack/services/spec_import/tackle_spec_import.py`（system_prompt / preview logger）
   - ロッド: `src/fishtrack/models/rod_model.py` / `rod_series.py`
   - リール: `src/fishtrack/models/reel_model.py` / `reel_series.py` /
     `reel_model_technology.py`
@@ -124,31 +126,58 @@ PowerShell の標準リダイレクト（`> file.txt`）は日本語環境で UT
 
 - ログの解析は**常設スクリプト** `scripts/dump_spec_import_preview.py` を使う
   - **ローカル Docker**: スクリプト内部で `docker exec` の出力を bytes 取得
-  - **本番**: `ssh` の**標準出力**を**パイプ**で `python ... --stdin` へ渡す、
-    あるいは EC2 上で取得したログを**バイナリ近い**経路でローカルに置き
-    `--file` する。いずれも「PowerShell の `>` だけで丸ごと保存」は禁止
+  - **本番（Windows エージェント）**: **優先**は `ssh` の stdout を **Python で
+    `write_bytes`** し `--file`（セクション「Windows エージェント」）。**非推奨**:
+    PowerShell 上の **`ssh | python --stdin` のみ**（0 件**偽陰性**の実績あり）
+  - **本番（Linux シェル等）** または **上記 `write_bytes` 後**: `python ... --stdin`
+    あるいは `--file`。**PowerShell の `>` だけで丸ごと保存**は禁止
 - `docker exec ... > file` / `Get-Content -Raw` + 紛らわしいエンコード、等の
   「意図しない再エンコード」は禁止
 - 詳細は `markdown-editing` / `obsidian-cursor-log` SKILL 参照
 
-### PowerShell で SSH する場合（追加の注意）
+### Windows エージェント（PowerShell）での本番抜粋（再発防止・重要）
 
-**二重引用符 `"..."` だけで `ssh` の引数を囲まない**と、次が **Windows 側**で
-解釈され、リモートに届かない・別の解釈になる:
+**予定通りに進まなかった主因**（本 SKILL 作業の実績）:
+
+1. **`ssh ... | python scripts/dump_spec_import_preview.py --stdin` のみ**に頼ると、
+   **0 件**（`プレビュー結果が見つかりませんでした`）になることがある。本番
+   コンテナ内には **`grep` で行がある**のに、**パイプ経路で UTF-8 が壊れる・
+   解釈差**で `dump` がマーカーに一致しない**偽陰性**。
+2. **`python -c "...."` 内**に `2>/dev/null` 等を書くと、PowerShell が **`2>`** を
+   **リダイレクト**と解釈し、**スクリプト全体が壊れる**（例: ドライブ不検出のエラー）。
+   **リモート**に届かない。
+
+**エージェントは次を既定とする（本番・Windows）**:
+
+- **第1**: FishTrack ルートで **Python** の `subprocess.run` に **`ssh` を
+  引数リスト**で渡し、`stdout=subprocess.PIPE` の **生バイト**を
+  `pathlib.Path('temp/tmp_prod_preview_grep.log').write_bytes(...)` する。
+  その後 `python scripts/dump_spec_import_preview.py --file temp/tmp_prod_preview_grep.log --list`。
+- **リモート `grep` の文字列**は `dump` の正本と揃え、
+  **`AI補助スペック取り込みプレビュー結果:`** を含む行に限定。失敗行は
+  **`AI補助スペック取り込みプレビュー失敗:`** 同様。短い `プレビュー結果:`**のみ**は
+  他行と**誤合致**しうる。
+- **リモートで `2>/dev/null` は付けない**（`python -c` にシェルリダイレクトを含めない
+  ため。stderr への grep 注意書きは無視し、常設 `dump` の入力を正しく保つ）。
+- 上記を **1 回限りの `temp/_fetch_*.py`（数十行）**にまとめてもよい。
+  myrules「一括置換用スクリプト」とは別。作業完了後 **セクション 10** で**必ず削除**。
+
+**`ssh | python --stdin`**: **検証用・小ログ専用**。本番の多行 grep 抜粋では
+**使わない**。0 件なら**疑わず**上記 `write_bytes` + `--file` へ切替。
+
+### PowerShell で SSH する場合（引用符・メタ文字）
+
+**二重引用符 `"..."` だけで `ssh` の最外層を囲むと**、文字列**内**の
+`2>/dev/null` 等が **Windows 側**で解釈され、リモートに届かない:
 
 - `2>/dev/null` や `2>&1`（**`2>`** も**リダイレクト**）
-- `$(command)`（**PowerShell / cmd のコマンド置換**）。EC2 上の `ls` ではない
+- `$(command)`（**PowerShell のコマンド置換**）。EC2 上の `ls` ではない
 
-**推奨**:
+**併用ルール**:
 
-- リモート 1 本にしたい部分は、**`ssh` の最外層引数を単一引用符 `'...'`**
-  （PowerShell 7）で囲み、その中身は**Linux 向け**のまま渡す
-- 難しければ **Python** の `subprocess.run([...], ...)` を使い、**引数のリスト**
-  で `ssh` を起動し、シェル解釈を避ける
-- 短い**プレビュー行だけ**抜き出すなら、本番上で
-  `grep`（識別文字列の一部で可）し、**出力を Python から** UTF-8 バイトで
-  `open(..., "wb")` してから `dump` に `--file` する方が、日本語の**一致率**
-  も **パイプの遅延**も安定しやすい
+- リモート 1 本を **`ssh` の最外層を単一引用符 `'...'`**（PowerShell 7）で
+  囲むか、**Python `subprocess` + 引数リスト**でシェル解釈を避ける
+- **Python** から `write_bytes` + `--file` する方が、日本語の**一致率**と**安定性**が高い
 
 ## 1. 本番でログ断片を取得
 
@@ -163,9 +192,10 @@ PowerShell の標準リダイレクト（`> file.txt`）は日本語環境で UT
     `dump` の「末尾＝最新」解釈と食い違うが、**既定の `--order time`**
     でログ行の日時に基づき補正される）
 
-**ローカル（開発 PC）**では、上記 `cat` 相当の**バイト列**がそのまま
-`ssh` の stdout を経由して、次節の `python ... --stdin` に届く想定でよい
-（`ssh` 経由のパイプ先が Python なら、PowerShell の `>` を挟まない）。
+**ローカル（開発 PC）**で **Linux 以外のシェル（PowerShell）**を挟む場合、
+`ssh` の stdout → `python` の **パイプは UTF-8 を保証しない**。次節の
+`--stdin` は、**WSL / Git Bash 等**、または**先に `write_bytes` したファイル**
+の **`--file`** を正とする。
 
 ## 2. プレビュー結果ログの件数・一覧確認（常設スクリプト）
 
@@ -175,35 +205,42 @@ Python を廃し、日本語も UTF-8 のまま安全に扱える。
 
 **本番（SSH）の例**（キー・ホスト・デプロイパスは差し替え）:
 
-- **A. 抜粋＋`--file`（推奨）**: 本番上で `grep` 等で
-  `AI補助スペック取り込みプレビュー` を含む行**だけ**出し、ローカルで
-  バイナリ書き（UTF-8）→ `python scripts/dump_spec_import_preview.py --file <path> --list`
-  （`<path>` は **`temp/tmp_prod_preview_grep.log`** 等、`temp/` 配下を推奨）。
-  **失敗だけ追う**ときは同じ抜粋に `プレビュー失敗:` が含まれる行があれば
-  `--kind failure --list` で解析する（成功マーカーだけの抜粋なら `--kind failure` は 0 件になり得る）
-- **B. パイプ**（行数が少ないとき・検証用）: 下記。巨大ログの**丸ごと `cat`**
-  は、環境によって**極端に遅い**場合がある。まず A を検討。
+- **A. 抜粋＋`--file`（推奨・Windows エージェントでは必須に近い）**:
+  本番上で `grep` 等で
+  `AI補助スペック取り込みプレビュー結果:` 行**だけ**出し、**ローカルは必ず
+  `write_bytes` 等**で **`temp/tmp_prod_preview_grep.log`** へ保存 →
+  `python scripts/dump_spec_import_preview.py --file <path> --list`
+  （`temp/` 配下。セクション「Windows エージェント」参照）。**失敗行**は別抜粋
+  `temp/tmp_prod_fail_grep.log` / **`AI補助スペック取り込みプレビュー失敗:`** →
+  `--kind failure`。**0 バイト**かつ本番に失敗が無い期間なら**正常**（`--kind failure` が
+  0 件で**作業失敗としない**）。
+- **B. パイプ**（`ssh | python --stdin`）: **WSL / Linux / 小規模検証**向け。Windows
+  PowerShell の**単独手順**としては**非推奨**（0 件偽陰性の実績。セクション「Windows
+  エージェント」）。巨大ログの**丸ごと `cat`**は遅延の要因。まず A。
 
 ```powershell
+# 【B】検証用: WSL やパイプが信頼できる環境向け。Windows PowerShell 単体の本番作業では
+# セクション「Windows エージェント」の write_bytes + --file を使う。
 cd d:/OneDrive/git_work/FishTrack
-# 最外層を単一引用符にし、2> や $() がローカルで展開されないようにする
-ssh -i "$env:USERPROFILE\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@<本番IP> 'cd <deploy-dir> && docker compose -f docker-compose.yml exec -T app sh -c "grep -h プレビュー結果: /app/instance/logs/fishtrack.log* 2>/dev/null"' | python scripts/dump_spec_import_preview.py --stdin --list --limit 5
+ssh -i "$env:USERPROFILE\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@<本番IP> 'cd <deploy-dir> && docker compose -f docker-compose.yml exec -T app sh -c "grep -h プレビュー結果: /app/instance/logs/fishtrack.log*"' | python scripts/dump_spec_import_preview.py --stdin --list --limit 5
 ```
 
 ```powershell
-# プレビュー失敗行のみ（UI の req_… 追跡・デプロイ後ログ向け）
-ssh -i "$env:USERPROFILE\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@<本番IP> 'cd <deploy-dir> && docker compose -f docker-compose.yml exec -T app sh -c "grep -h プレビュー失敗: /app/instance/logs/fishtrack.log* 2>/dev/null"' | python scripts/dump_spec_import_preview.py --stdin --kind failure --list --limit 10
+# プレビュー失敗行。リモート sh -c 内の 2>/dev/null は、PowerShell+python -c では避ける
+#（メタ文字事故）。B と同じく、本番の既定は A（--file）。
+ssh -i "$env:USERPROFILE\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@<本番IP> 'cd <deploy-dir> && docker compose -f docker-compose.yml exec -T app sh -c "grep -h プレビュー失敗: /app/instance/logs/fishtrack.log*"' | python scripts/dump_spec_import_preview.py --stdin --kind failure --list --limit 10
 ```
 
 ```powershell
-# LLM 往復ログ（1 API 呼び出し 1 行・response 含む）。プレビュー結果/失敗と同時刻帯・同 requestId で突合
-ssh -i "$env:USERPROFILE\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@<本番IP> 'cd <deploy-dir> && docker compose -f docker-compose.yml exec -T app sh -c "grep -h LLM入出力: /app/instance/logs/fishtrack.log* 2>/dev/null | tail -n 80"'
+# LLM 往復ログ。多い場合は A と同様に抜粋を temp に write_bytes してから目視
+ssh -i "$env:USERPROFILE\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@<本番IP> 'cd <deploy-dir> && docker compose -f docker-compose.yml exec -T app sh -c "grep -h LLM入出力: /app/instance/logs/fishtrack.log* | tail -n 80"'
 ```
 
 - 抜粋を **`temp/tmp_prod_llm_io_grep.log`** 等へ **Python / バイナリ書き込みで UTF-8 保存**し、エディタや `jq` で **`step` / `requestId` / `response`** を追う（常設 `dump` はプレビュー成功/失敗マーカー専用のため、LLM 入出力は **grep 目視または別スクリプト**でよい）。
 - `--stdin` … 前段の**標準出力**をそのままログ本文として解析
-- 0 件のとき、PowerShell 直パイプで**マーカーに一致しない**（UTF-8 破壊）の
-  可能性 → **A の `--file` へ切り替え**
+- 0 件のとき、**PowerShell 上の** `ssh | python --stdin` で**マーカーに一致しない**
+  （UTF-8 破壊・偽陰性）の可能性が高い → **A の `write_bytes` + `--file` へ必ず切替**
+  （セクション「Windows エージェント」）
 - 件数だけ: `... | python ... --stdin --count`
 
 **補足（ローカル Docker での検証に切り替える場合）**: 同一リポをローカル
@@ -221,8 +258,9 @@ python scripts/dump_spec_import_preview.py --kind failure --list --limit 10
 - `--count` … ヒット件数のみ表示
 - `--list --limit N` … 成功時は `[index] timestamp  category=...  rows=...  url=...`。
   **失敗時**は `code` / `jobId` / `requestId` / `url`（`sourceUrl`）/ `message` 先頭。
-  **「新しい」順**は既定で `--order time`（ログ行先頭
-  `[YYYY-MM-DD HH:MM:SS]` の**壁時刻**降順）。`grep` のファイル順混在に依存しない
+  **「新しい」順**は既定で `--order time`（各ログ行先頭の
+  `[YYYY-MM-DD HH:MM:SS]` を**記録日時**として比較し、**新しい順＝降順**）。
+  `grep` のファイル順混在に依存しない
 - `--order file` … 従来どおり、入力テキスト上の**出現の逆順**（特殊用途）
 - 0 件だった場合の切り分け:
   - **`--kind success` で 0 件・UI は失敗表示** → `--kind failure` と
@@ -239,7 +277,7 @@ python scripts/dump_spec_import_preview.py --kind failure --list --limit 10
 
 - **既定**の「最新」は **ログ行の日時**（`--order time`）が最大の 1 件。複数
   プレビューがあるとき、**`--list` で日付を目視**し、特定したい 1 件を
-  `--index` で指す、という運用も可（index 0 ＝壁時刻で最新）。
+  `--index` で指す、という運用も可（index 0 ＝**記録日時**が**最新**の1件）。
 
 本番（セクション 2 の `ssh` / `--file` のいずれかの後）:
 
@@ -334,6 +372,12 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
   - `releaseYear`, `carbonRatePct`, `janCode`, `listPrice`
   - `lineMinLb`, `lineMaxLb`, `pieces`, `weightG`
   - `power`, `action`, `blankMaterial`
+  - **`pieces`（継数とジョイント）**:
+    本家製品スペック表で**継数が 2**かつ**ジョイント仕様がグリップジョイント**
+    （又はメーカーが同等と分かる表記）のとき、プレビューが**ジョイント種別のみ**
+    （例: `グリップジョイント`）であっても**本家と矛盾しない**。**差分（🔴）に含めない**
+    （🔵 参考に留めてよい）。
+    継数・ジョイントの**いずれかが本家と食い違う**場合は従来どおり 🔴。
 
 **注**: リールプレビューでロッド用キー（全長・ルアー重量など）が null の場合は本観点では評価しない。
 
@@ -384,7 +428,7 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 **書き方は必ずセクション 8.1 に従う**（具体性・汎用性・**期待効果**）。
 
 - **即時対応（コード変更・保存前に適用推奨）**
-  - `tackle_spec_import.py` の system_prompt へ禁則文言追加（例: 近似語禁止）
+  - `spec_import/tackle_spec_import.py` の system_prompt へ禁則文言追加（例: 近似語禁止）
   - ロッド: `_parse_decimal_range_text` / `_format_preview_ounce`
     で近似語を正規化 or 拒否
   - リール: `reel_type` の値域（`spinning` / `bait`）を
@@ -438,7 +482,9 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 
 #### 良い例（具体かつ汎用＋期待効果）
 
-- 即時: `tackle_spec_import.py` の system_prompt 内「ルアー重量」節に、本家が分数 `1/96` のとき**別分数へ近似しない**旨を追記。サーバ側は `fractions.py`（または既存の oz 正規化）で `約` を拒否し、`test_tackle_spec_import_helpers.py` に「`1/96` 入力→`1/64` 化しない」**パラメタ化**したケースを追加。
+- 即時: `spec_import/tackle_spec_import.py` の system_prompt 内「ルアー重量」節に、本家が分数 `1/96` のとき**別分数へ近似しない**旨を追記。
+  サーバ側は `fractions.py`（または既存の oz 正規化）で `約` を拒否し、
+  `test_tackle_spec_import_helpers.py` に「`1/96` 入力→`1/64` 化しない」**パラメタ化**したケースを追加。
   - **期待効果**: 同種の**分数誤変換**をプレビュー上で減らし、回帰をテストで捕捉できる。
 - 中期: `tackle_technology_feature` でロッド用ラベルの表記揺れを統合し、プレビューは **当該行の TECHNOLOGY** と **脚注ブロック**の突合を優先する方針を SPEC に1段落で残す。
   - **期待効果**: マスタと本家表記の**揺れ**を抑え、技術名の**取り違い・不足**（🔴/🟡）の再発率を下げる。
@@ -548,8 +594,8 @@ source_log_hint: "例: temp/tmp_prod_preview_grep.log / --index 0 / ssh パイ�
 
 ```powershell
 cd d:/OneDrive/git_work/FishTrack
-Remove-Item temp/tmp_latest_preview.json, temp/tmp_latest_failure.json, temp/tmp_prod_preview_grep.log, temp/tmp_prod_llm_io_grep.log -ErrorAction SilentlyContinue
-# 当該実行で temp/ に追加したその他の作業用ファイル（例: 抜粋ログ・fetch スクリプト出力）があれば同様に削除
+Remove-Item temp/tmp_latest_preview.json, temp/tmp_latest_failure.json, temp/tmp_prod_preview_grep.log, temp/tmp_prod_fail_grep.log, temp/tmp_prod_llm_io_grep.log, temp/_fetch_prod_grep.py, temp/_fetch_prod_fail.py -ErrorAction SilentlyContinue
+# 当該実行で temp/ に追加したその他の作業用ファイル（抜粋・短い取得用 .py 等）があれば同様に削除
 ```
 
 EC2 上に一時ファイルを作った場合は、作業方針に従い削除する。常設スクリプト
@@ -569,7 +615,7 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
    - **`llmPrompts`**（プレビュー結果 JSON 内）… 各 `step` の **system / user 入力**
    - **`AI補助スペック取り込みLLM入出力:`** ログ行… 各 `step` の **入力に加え `response`（またはエラー時の生/要約）**。
      **本家との差分の説明では `response` を優先的に参照**する（入力だけでは足りないことが多い）。
-   - ログ断片の突合は **`requestId`**・壁時刻・`resolvedUrl` / `sourceUrl` で行う。
+   - ログ断片の突合は **`requestId`**・**ログ行先頭日時**・`resolvedUrl` / `sourceUrl` で行う。
 2. **件数整合**: rowsCount vs 本家表行数
 3. **数値突き合わせ表**:
    - ロッド: row / modelName / 本家値（lureWeightOz, length 等）
@@ -587,7 +633,7 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
 
 本家との**行単位突き合わせは無い**。次の順で書く。
 
-1. **対象ログ**: 壁時刻 / `jobId` / `code` / `message` / `requestId` / `sourceUrl` / `model` / ログ取得手段（`source_log_hint`）。
+1. **対象ログ**: **ログ行先頭日時** / `jobId` / `code` / `message` / `requestId` / `sourceUrl` / `model` / ログ取得手段（`source_log_hint`）。
    **`llmExchanges` がある場合は**各要素の **`step`・`response`（または失敗時フィールド）**を要約して記載する。
    **無い場合**はセクション **2** の **`grep LLM入出力:`** 結果で同趣旨を補う。
 2. **件数・表の整合**: 「プレビュー行未取得のため対象外」と明示
@@ -596,7 +642,7 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
    - 例: `no_preview_rows` かつメッセージが「型番候補なし」→ 🔴（保存不能・要原因調査）
    - `manufacturer_inference_failed` → 🔴 または 🟡（`sourceUrl`・ページ内容による）
    - ログが無く追えない場合は 🟡「デプロイ前ログ／未出力」の注記と**再現手順**
-5. **対策**: **セクション 8.1** どおり。`tackle_spec_import.py` の抽出・分類・
+5. **対策**: **セクション 8.1** どおり。`spec_import/tackle_spec_import.py` の抽出・分類・
    `routes_master` のエラーコード、`tests/services/test_tackle_spec_import_*.py` 等に**汎用的に**紐づける。**各項目に期待効果を1行**
 6. **次アクション**: デプロイ確認・同一 `sourceUrl` での再試行・`grep` 手順の見直し 等
 
@@ -606,6 +652,9 @@ EC2 上に一時ファイルを作った場合は、作業方針に従い削除�
 
 ## 12. 禁止事項
 
+- Windows エージェントで、**本番の多行 grep 抜粋**に **`ssh | python --stdin` のみ**
+  を用い、**0 件で打ち切る**こと（**`write_bytes` + `--file`** を試さない。セクション
+  「Windows エージェント」）
 - PowerShell の直リダイレクト（`> file`）で UTF-8 ログの本文だけを**誤った
   エンコード**で受け取ること（`--out` またはパイプ先の Python 経路を用いる）
 - 本番 **RDS / データベース**への接続、および **DB への書き込み**（本作業は
