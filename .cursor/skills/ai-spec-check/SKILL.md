@@ -362,6 +362,12 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
   - ページ冒頭の技術紹介セクションを別アイテムに**誤付与**していないか
   - **不足**: 本家（技術紹介・※脚注・当該行 `TECHNOLOGY：` 等）に照らし**付くべき**ラベルが
     `technologyLabels` に無い・著しく欠ける場合は **🔴**（セクション 7）。「空でよい行」と判断できる根拠が本家に無いのに空なら同様。
+  - **DAIWA（ロッド）・`TECHNOLOGY：` 行先頭のブランク素材（観点 C の例外）**:
+    行内に併記されていても **`SVF NANOPLUS` / `SVF COMPILE-Xナノプラス`（等のブランク素材トークン）は
+    技術特性には含めない**のが**実装・仕様の正**（素材は `blankMaterial` 等。`tackle_spec_import_technology` の
+    除外方針と同趣旨）。**これらが `technologyLabels` に無いこと単体**をもって、本家スラッシュ列と
+    の**集合不一致 🔴**とは**扱わない**。`previewHtmlTechnologyLabels` に先頭を含めて出ているが
+    `technologyLabels` に無い**差**は、**表示用**と保存候補の役割違いとして **🟡 注記**または **🔵** に留める。
   - `matchedTechnologyLabels` / `newTechnologyLabels` の振り分けが妥当か
   - マスタ突き合わせは `tackle_technology_feature.category = 'rod'` のみ対象
 - **D. シリーズ・型番**
