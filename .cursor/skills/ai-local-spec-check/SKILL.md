@@ -33,7 +33,11 @@ description: >-
 
 - FishTrack ルート: `d:/OneDrive/git_work/FishTrack`
 - レポート正本: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`
-- 本家取得本文（`ai-spec-notes`）: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai-spec-notes/`（**`SKILL-SHARED.md` §5.1**。本家 URL 取得のみ。プレビューはレポートのみ。**差分なしならノート非更新**）
+- 突合用本家データ（`ai-spec-notes`）:
+  `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai-spec-notes/`。\
+  **`SKILL-SHARED.md` §5.1**。URL本文の丸写しではなく、
+  プレビュー `rows[]` と比較するための本家側データを残す。\
+  実行ごとの判定はレポートのみ。
 - **レポート本文の型**: 正本内 **`## 0. レポートの型（固定・分析ごとに維持）`** を読み、**見出し順・表列・フロントマター必須キー**に従って上書きする（分析ごとのブレ防止）。詳細は同ファイル §0 と **`SKILL-SHARED.md` §9・§11**。
 - 作業用出力先: FishTrack リポ内 `temp/`（完了後に当該作業分を削除。**`SKILL-SHARED.md` §10**）
 
@@ -125,7 +129,11 @@ python scripts/dump_spec_import_preview.py --kind failure --latest --out temp/tm
 
 - **正本**: **`SKILL-SHARED.md` §6A B**（**Obsidian 正本 `ai_spec_check_report.md`（テーパー／アクション・DAIWA ロッド）**）および **§11.1** 項 3（ロッドの数値突き合わせ表）。\
   本家表にテーパー列があるときの**行別表**・**判定（`XF→S` 等は原文どおり）**・**比率 prose と型番 Pattern**の扱いは **§6A B** に集約する。
-- **`ai-spec-notes`**: **本家 URL から取得した本文・表のみ**（**`SKILL-SHARED.md` §5.1**）。**期待 `power` / `action`**・**`technologyLabels` 等のプレビュー突合**・🔴🟡 は **`ai_spec_check_report.md`** にのみ記載する（ノートへ**書かない**）。
+- **`ai-spec-notes`**: **プレビュー `rows[]` と突合するための本家側データ**
+  （**`SKILL-SHARED.md` §5.1**）。**期待 `power` / `action`**・
+  本家側の `blankMaterial` / `technologyLabels` 期待値は、
+  根拠付きの突合データとしてノートへ記載してよい。\
+  🔴🟡🔵 判定・実行ごとのプレビュー値・対策は **`ai_spec_check_report.md`** にのみ記載する。
 
 ## DAIWA ロッド・X45 系（照合の補足）
 

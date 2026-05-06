@@ -29,7 +29,11 @@ description: >-
 
 - FishTrack ルート: `d:/OneDrive/git_work/FishTrack`
 - レポート正本: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`
-- 本家取得本文（`ai-spec-notes`）: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai-spec-notes/`（**`SKILL-SHARED.md` §5.1**。**本家 URL から取得した情報のみ**。プレビュー・照合・課題は **`ai_spec_check_report.md`** のみ。**本家本文に差分が無い実行では当該ノートを更新しない**）
+- 突合用本家データ（`ai-spec-notes`）:
+  `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai-spec-notes/`。\
+  **`SKILL-SHARED.md` §5.1**。URL本文の丸写しではなく、
+  プレビュー `rows[]` と比較するための本家側データを残す。\
+  実行ごとの判定・課題は **`ai_spec_check_report.md`** のみ。
 - 作業用出力先: FishTrack リポ内 `temp/`（完了後に当該作業分を削除。**`SKILL-SHARED.md` §10**）
 
 myrules を厳守して作業してください。
