@@ -20,10 +20,12 @@ description: >-
 - **本ファイル（`ai-spec-check/SKILL.md`）**: 本番 EC2 からのログ取得を含む **§0〜3**（入口・前提・`dump` まで）
 - **`SKILL-SHARED.md`（同ディレクトリ）**: **§3.1**（`dump` CLI 早見）および **§4〜13**（サマリ確認・本家照合・レポート・禁止事項・CursorLog）。**`ai-local-spec-check` も同一ファイルを参照**
 
+- **実行順・実装の境界**: **`SKILL-SHARED.md`** の **「実行順：dump 検証を先に・対策の実施はユーザー決定」** に従う（**dump 照合・レポート検証を先に**、**対策の実施はユーザー判断**・無断実施禁止）。
+
 **エージェントは** 本ファイルを **Read** したうえで **`SKILL-SHARED.md` を Read** し、ターミナル実行・本家突き合わせ・Obsidian 正本・markdownlint・作業用 `temp/` の後片付け・**obsidian-cursor-log** まで行う。手順の提示だけで終わらない。
 
 **ローカル Docker のみ**で照合するときは **`ai-local-spec-check/SKILL.md`** を入口にする（本番 SSH は不要）。\
-**同一チャットで先に FishTrack `src/` を変更した**うえでローカル dump に進むときは、**入口 SKILL** の **「見逃し禁止」**どおり **`docker compose restart app`** を **dump より前に実行**する。
+**`src/` 変更後**に**ユーザーがブラウザでアプリを操作する**（プレビュー含む）**前**の **`docker compose restart app`** は **ブラウザ側の要件**であり、**`dump` スクリプトとは無関係**（詳細は **`ai-local-spec-check`** 本文）。
 
 **人間向けパス（再掲）**:
 
@@ -32,9 +34,15 @@ description: >-
 - 突合用本家データ（`ai-spec-notes`）:
   `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai-spec-notes/`。\
   **`SKILL-SHARED.md` §5.1**。URL本文の丸写しではなく、
-  プレビュー `rows[]` と比較するための本家側データを残す。\
+  プレビュー `rows[]` と比較するための**本家側データ（数値・JAN 等）をノート内に必ず残す**。\
+  **ノートのファイル名**に **URL の一部**（`/product/` 末尾の短い ID 等）を**含めない**（同 §5.1 命名規則。同定は **`## メタ` の `resolvedUrl`** のみ）。
+  **`## 行別スペック` を `ai_spec_check_report.md` への参照だけで埋めることは禁止**（§5.1 冒頭）。\
+  **ロッドで本家にジャンル列が無いページ**は **`ai-spec-notes`** に **FishTrack が確定する
+  `genre`（`bait`／`spinning`）の行別表**を置く（**§5.1.1** 項 5。**`05`** の型番末尾ルールを根拠列に書く）。\
+  **本家にパワー列・テーパー（アクション）列が無い DAIWA ロッド**は **`## 行別 Pattern 期待値`** に\
+  **`infer_power…` / `infer_action…` の行別表**を置く（**§5.1.1** 項 4・**`SKILL-SHARED.md` §5.1**）。\
   実行ごとの判定・課題は **`ai_spec_check_report.md`** のみ。
-- 作業用出力先: FishTrack リポ内 `temp/`（完了後に当該作業分を削除。**`SKILL-SHARED.md` §10**）
+- 作業用出力先: FishTrack リポ内 `temp/`（完了後に当該作業分を削除。**`SKILL-SHARED.md` §10**）。**次回も使う補助スクリプト**は **`SKILL-SHARED.md` §3.2 `helpers/`**（削除しない）
 
 myrules を厳守して作業してください。
 
@@ -72,9 +80,12 @@ myrules を厳守して作業してください。
 - `ai-spec-check`（本 SKILL）の実行依頼、「AI スペック取り込みプレビュー検証」、「プレビュー結果を本家と照合」等の指示があったとき（**本番**）
 - **ローカル Docker**のみのときは **`ai-local-spec-check`** を使う
 
-## 補足（DAIWA ロッド・X45 系）
+## 補足（DAIWA ロッド）
 
-- **`X45` と `X45フルシールド`** は**併記しうる**（**トレードオフではない**）。照合・`ai_spec_check_report.md` で **🔴／🟡** の根拠に**しない**。**詳細は `SKILL-SHARED.md` §6A C**。
+- **`X45` と `X45フルシールド`** は**併記しうる**（**トレードオフではない**）。照合・`ai_spec_check_report.md` で **🔴／🟡** の根拠に**しない**。\
+  **詳細は `SKILL-SHARED.md` §6A C**。
+- **`pieces` の `N（テレスコピック）`**: **製品表の継数が数値のみ**かつ **型番コアがテレスコ振出**（全長ブロック直後が **`T`**）のとき、プレビュー **`pieces`** が **`6（テレスコピック）`** 等でも **FishTrack 仕様**（Obsidian **`05_ai_spec_import.md`**）。\
+  **🟡（表記ゆれ）とはしない**。**詳細は `SKILL-SHARED.md` §6A E**。
 
 ## 0. 前提・環境
 
@@ -186,8 +197,8 @@ PowerShell の標準リダイレクト（`> file.txt`）は日本語環境で UT
   他行と**誤合致**しうる。
 - **リモートで `2>/dev/null` は付けない**（`python -c` にシェルリダイレクトを含めない
   ため。stderr への grep 注意書きは無視し、常設 `dump` の入力を正しく保つ）。
-- 上記を **1 回限りの `temp/_fetch_*.py`（数十行）**にまとめてもよい。
-  myrules「一括置換用スクリプト」とは別。作業完了後 **`SKILL-SHARED.md` §10** で**必ず削除**。
+- 上記を **`temp/_fetch_*.py`（数十行）**にまとめて試してもよい。
+  myrules「一括置換用スクリプト」とは別。**使い捨て**なら作業完了後 **`SKILL-SHARED.md` §10** で削除。**次回以降も同じ手順で使う**なら **`SKILL-SHARED.md` §3.2** の **`helpers/`** へ昇格し、**§3.2 登録一覧**に 1 行追記する（`temp/` 側の重複は削除）。
 
 **`ssh | python --stdin`**: **検証用・小ログ専用**。本番の多行 grep 抜粋では
 **使わない**。0 件なら**疑わず**上記 `write_bytes` + `--file` へ切替。
@@ -318,6 +329,9 @@ python scripts/dump_spec_import_preview.py --kind failure --latest --out temp/tm
 **ロッド・テーパー／`action` 照合（レポート必須・DAIWA 等）**: 本家表に **テーパー**列がある \
 `category = "rod"` 成功プレビューでは、**本家テーパー（原文）** と **`rows[].action`** の**行別表**を **必ず**書く。\
 正本は **`SKILL-SHARED.md` §6A B**（**Obsidian 正本 … テーパー／アクション・DAIWA ロッド**）・**§11.1**。
+
+**ロッド・`power` 照合（レポート必須）**: `category = "rod"` 成功プレビューでは、本家表に **パワー列があるときは本家原文 vs `rows[].power`**、**列が無いときは期待 `power`（根拠） vs `rows[].power`** の**行別表**を **必ず**書く（**テーパー／`action` と同義務**）。\
+正本は **`SKILL-SHARED.md` §6A B**・**§11.1**・**`ai-local-spec-check` の「パワー照合の必須要件（ロッド）」**。
 
 ## 4. 以降の手順（共通・正本）
 

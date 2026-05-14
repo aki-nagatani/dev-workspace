@@ -18,14 +18,13 @@ description: >-
 
 - **本ファイル（`ai-local-spec-check/SKILL.md`）**: ローカル Docker の **§0〜3**（前提・`dump` まで）。**SSH / EC2 は使わない**
 - **`SKILL-SHARED.md`**: `d:\OneDrive\git_work\dev-workspace\.cursor\skills\ai-spec-check\SKILL-SHARED.md` の **§3.1** および **§4〜13**
+- **実行順・実装の境界**: **`SKILL-SHARED.md`** の **「実行順：dump 検証を先に・対策の実施はユーザー決定」** を正とする（**dump 照合・レポート検証を先に**、**対策の実施はユーザー判断**・無断実施禁止）。
 
 **エージェントは** 本ファイルを **Read** したうえで **`SKILL-SHARED.md` を Read** し、ターミナル実行・本家突き合わせ・Obsidian 正本・markdownlint・作業用 `temp/` の後片付け・**obsidian-cursor-log** まで行う。手順の提示だけで終わらない。
 
-**🚨 見逃し禁止（同一チャット・検証フロー）**: **当該セッションで先に** FishTrack **`src/`**（またはアプリが読み込む **`*.py`**）を\
-**`StrReplace` / `Write` 等で変更した**うえで、本 SKILL に従い **`dump_spec_import_preview.py`**（**§2 の `--count` / `--list` を含む**）でログ検証に入るときは、\
-**ユーザーに「restart しましたか」と聞いて省略してはならない**。**§2 より前に** **`docker compose -f docker-compose.yml restart app`** を\
-**エージェント自身がターミナルで実行**する（下記 **「Python 変更と dump 前の再起動」**・**`local-docker-python-restart`** SKILL）。\
-**SKILL を読んだのに restart を実行せず dump だけ進める**のは**手順違反**とする。
+**🚨 見逃し禁止（ブラウザ操作・同一チャット）**: **`src/`**（またはアプリが読み込む **`*.py`**）を **`StrReplace` / `Write` 等で変更した**うえで、**ユーザーがブラウザから FishTrack を操作する**（スペック取り込みプレビュー等）**流れに入る**ときは、\
+**そのブラウザ操作より前**に **`docker compose -f docker-compose.yml restart app`** を**エージェント自身がターミナルで試行**する（**`local-docker-python-restart`** SKILL・**myrules**）。**ユーザーへの確認文だけで代用しない**。**推測で省略しない**。\
+**`dump_spec_import_preview.py`** は**ログ読取のみ**で、**`dump` の実行・照合に `restart` は不要**（**`dump` 検証とは無関係**。既存ログだけを読むなら **`restart` はスキル上不要**）。
 
 **本番ログ**で照合するときは **`ai-spec-check/SKILL.md`** を入口にする。
 
@@ -36,7 +35,13 @@ description: >-
 - 突合用本家データ（`ai-spec-notes`）:
   `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai-spec-notes/`。\
   **`SKILL-SHARED.md` §5.1**。URL本文の丸写しではなく、
-  プレビュー `rows[]` と比較するための本家側データを残す。\
+  プレビュー `rows[]` と比較するための**本家側データ（数値・JAN 等）をノート内に必ず残す**。\
+  **ノートのファイル名**に **URL の一部**（`/product/` 末尾の短い ID 等）を**含めない**（同 §5.1 命名規則。同定は **`## メタ` の `resolvedUrl`** のみ）。
+  **`## 行別スペック` を `ai_spec_check_report.md` への参照だけで埋めることは禁止**（§5.1 冒頭）。\
+  **ロッドで本家にジャンル列が無いページ**は **`ai-spec-notes`** に **FishTrack が確定する
+  `genre`（`bait`／`spinning`）の行別表**を置く（**§5.1.1** 項 5。**`05`** の型番末尾ルールを根拠列に書く）。\
+  **本家にパワー列・テーパー（アクション）列が無い DAIWA ロッド**は **`## 行別 Pattern 期待値`** に\
+  **`infer_power…` / `infer_action…` の行別表**を置く（**§5.1.1** 項 4・**`SKILL-SHARED.md` §5.1**）。\
   実行ごとの判定はレポートのみ。
 - **レポート本文の型**: 正本内 **`## 0. レポートの型（固定・分析ごとに維持）`** を読み、**見出し順・表列・フロントマター必須キー**に従って上書きする（分析ごとのブレ防止）。詳細は同ファイル §0 と **`SKILL-SHARED.md` §9・§11**。
 - 作業用出力先: FishTrack リポ内 `temp/`（完了後に当該作業分を削除。**`SKILL-SHARED.md` §10**）
@@ -62,18 +67,16 @@ myrules を厳守して作業してください。
 - **コンテナが起動**していること: `docker compose -f docker-compose.yml ps` で `app` が Up。ログはコンテナ内 `FISHTRACK_LOG_DIR` 配下（既定 `/app/instance/logs`）の `fishtrack.log` 等
 - **`dump_spec_import_preview.py` の既定**はローカル Docker 経由: スクリプトが `docker exec` でログを **bytes 取得**する（PowerShell の `>` リダイレクトでログを保存しない）
 - **コンテナ名**: スクリプト既定は `fishtrack-app-1`（`scripts/dump_spec_import_preview.py` の `DEFAULT_CONTAINER`）。`docker ps` で実名が異なる場合は `--container <名前>` を付ける
-- **作業用ファイル**はすべて **`temp/`** 配下（例: `temp/tmp_latest_preview.json`）。**作業完了後**（**`SKILL-SHARED.md` §13** まで済んだら）当該実行分の作業用ファイルを **§10** で削除
+- **作業用ファイル**はすべて **`temp/`** 配下（例: `temp/tmp_latest_preview.json`）。**作業完了後**（**`SKILL-SHARED.md` §13** まで済んだら）当該実行分の作業用ファイルを **§10** で削除（**再利用ヘルパー**は **`SKILL-SHARED.md` §3.2 `helpers/`** に置き、**§10 では削除しない**）
 - プレビュー結果の出力条件・識別文字列・payload キー・`AI補助スペック取り込みLLM入出力:` の説明は **`ai-spec-check/SKILL.md` §0 と同趣旨**（ローカル `.env` / `docker-compose.yml` で `FISHTRACK_STANDALONE`・`FISHTRACK_SPEC_IMPORT_DEBUG_LOG` を確認）
 
-## 🚨 Python 変更と dump 前の再起動（必須・myrules 整合）
+## 🚨 `src/` 変更後のブラウザ操作と `dump`（`restart` の位置づけ）
 
-- **同一セッションまたは直前に** FishTrack の **`src/`**（例: `fishtrack/services/spec_import/`）など**アプリが読み込む Python** を変更し、\
-  **続けて**本 SKILL の **`dump_spec_import_preview.py`** で**新実装の挙動**をログから検証する場合は、\
-  **§2 の `--count` / `--list` / `--latest` いずれより前に**次を**必ず**実行する。
-  - **`docker compose -f docker-compose.yml restart app`**（**ターミナル**。FishTrack リポ直下。**手順の提示のみ禁止**・**`local-docker-python-restart`** の「必須アクション」と同一）
-  - 根拠: **dev-workspace** **`local-docker-python-restart`** SKILL・**myrules**「ローカル Docker と Python ソース変更」と同一。**Gunicorn は既定でホットリロードしない**ため、再起動なしの dump は**旧プロセスのログ**になり得る。
-- **ユーザーが既に restart したかもしれない**という**推測で省略しない**。迷うときは **restart を重ねてよい**（冪等）。
-- **Python を触っていない**（Obsidian レポートのみ・スクリプト引数のみ等）ときは本節の対象外。
+- **`restart` が要る場面**: **`src/` 等アプリ用 Python を変更したあと**、**ユーザーがブラウザからアプリを操作する**（プレビュー含む）**までに**。**Gunicorn 等は既定でホットリロードしない**（**`local-docker-python-restart`**・**myrules**）。
+- **`dump_spec_import_preview.py`**: コンテナ内 `fishtrack.log` 等を**読むだけ**。**スクリプトの成否・照合作業に `restart` は不要**（**`dump` 検証とは非関係**）。
+- **接続**: **新コードのログ**を**ブラウザで再現してから** `dump` したいときだけ、順序として **`restart` →（ユーザー操作）→ `dump`**。**ログファイルが既にあり**、`--count` / `--latest` のみするなら **`restart` は不要**。
+- **`myrules`**: **`src/` を変えたターン**の**ユーザー向け完了報告の前**の **`restart` 試行**は**継続**（**ブラウザ検証に絡むとき**と整合）。
+- **対象条件を満たす**とき、**ユーザーが既に restart したかもしれない**という**推測で省略しない**。迷うときは **restart を重ねてよい**（冪等）。
 
 ## 🚨 文字コードの絶対ルール（ローカル）
 
@@ -130,14 +133,23 @@ python scripts/dump_spec_import_preview.py --kind failure --latest --out temp/tm
 - **正本**: **`SKILL-SHARED.md` §6A B**（**Obsidian 正本 `ai_spec_check_report.md`（テーパー／アクション・DAIWA ロッド）**）および **§11.1** 項 3（ロッドの数値突き合わせ表）。\
   本家表にテーパー列があるときの**行別表**・**判定（`XF→S` 等は原文どおり）**・**比率 prose と型番 Pattern**の扱いは **§6A B** に集約する。
 - **`ai-spec-notes`**: **プレビュー `rows[]` と突合するための本家側データ**
-  （**`SKILL-SHARED.md` §5.1**）。**期待 `power` / `action`**・
+  （**`SKILL-SHARED.md` §5.1**）。**期待 `power` / `action`**・**ロッドでジャンル列が無いときは FishTrack が確定する `genre`（`bait`／`spinning`）の行別表**（§5.1.1。**根拠は `05` の型番ルール**）・\
   本家側の `blankMaterial` / `technologyLabels` 期待値は、
   根拠付きの突合データとしてノートへ記載してよい。\
   🔴🟡🔵 判定・実行ごとのプレビュー値・対策は **`ai_spec_check_report.md`** にのみ記載する。
 
-## DAIWA ロッド・X45 系（照合の補足）
+## パワー照合の必須要件（ロッド）
+
+- **`SKILL-SHARED.md` §6A B**（**本家「パワー」列とプレビュー `power`**）および **§11.1** 項 3 に従い、`category = "rod"` かつ**プレビュー成功**のときは、Obsidian 正本 **`ai_spec_check_report.md`** に次を **必ず**含める（**「未実施」一言でのスキップ禁止**）。
+  - 本家表に **パワー**（または硬度・調子相当の正本列）があるとき: **本家パワー（原文）** と **`rows[].power`** の**行別照合表**。
+  - 本家表に **パワー列が無い**とき（DAIWA で型番・サーバ補完が主となるページ）: **期待 `power`（根拠）** と **`rows[].power`** の**行別照合表**（仕様 `05_ai_spec_import.md` の `power` ヒント・🔵 条件と整合）。
+- **換算・一致判定**の正本は **§6A B** と **`05_ai_spec_import.md`**（本家セルがある場合は**原文優先**、無い場合は**型番 Pattern / サーバ補完の説明**を期待値列に書く）。
+
+## DAIWA ロッド・照合の補足（X45／`pieces`）
 
 - **`X45` と `X45フルシールド`** は**トレードオフではなく併記しうる**。**併記のみ**で **🔴／🟡** としない（詳細は **`SKILL-SHARED.md` §6A C**）。
+- **`pieces` の `N（テレスコピック）`**: **製品表の継数が数値のみ**かつ **型番コアがテレスコ振出**（全長ブロック直後が **`T`**）のとき、プレビューが **`6（テレスコピック）`** 等でも **FishTrack 仕様**（**`05_ai_spec_import.md`**）。\
+  **🟡（表記ゆれ）とはしない**。**詳細は `SKILL-SHARED.md` §6A E**。
 
 ## 4. 以降の手順（共通・正本）
 

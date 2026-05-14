@@ -6,8 +6,18 @@
 
 - **`ai-spec-check/SKILL.md`**: 本番 EC2・SSH 経由でログを取得する場合。**§0〜3** の後に本ファイルを Read する。
 - **`ai-local-spec-check/SKILL.md`**: ローカル `docker compose` の `app` のログのみ。**§0〜3** の後に**同一の本ファイル**を Read する。
-- **本ファイル**: **§3.1**（CLI 詳細・0 件切り分け）および **§4〜13**（**§5.1** `ai-spec-notes` 含む）。§3「最新 1 件を JSON 化」等の本体は各入口 SKILL 側（ここでは繰り返さない）。
+- **本ファイル**: **§3.1**（CLI 詳細・0 件切り分け）、**§3.2**（**`helpers/`** 再利用スクリプト）、および **§4〜13**（**§5.1** `ai-spec-notes` 含む）。§3「最新 1 件を JSON 化」等の本体は各入口 SKILL 側（ここでは繰り返さない）。
 - **ユーザー指摘の反映**: 共通手順・レポート §9・禁止事項などへの**指摘**があった場合は、**同一セッションで**本ファイルを修正する（dev-workspace **myrules**「**ユーザー指摘に基づくルール・SKILL の育成**」）。
+
+## 実行順：dump 検証を先に・対策の実施はユーザー決定
+
+**本ファイルを Read したあとの全体フロー**（`ai-spec-check` / `ai-local-spec-check` のいずれからでも）で、次の順序と境界を守る。
+
+1. **まず dump 検証を完了させる**: `dump_spec_import_preview.py` による取得、**§4** 以降のサマリ確認・本家照合（**§5**〜**§6**）、\
+  Obsidian 正本 **`ai_spec_check_report.md`** の **§1**〜**§8**（検証・分類）までを**先に**行う。**推測や対策の議論だけ**で **FishTrack コード**・**仕様**・**テスト**に**着手しない**。
+2. **不備への対策は検討し、レポートにまとめるのみ**: 差分に対する**対策案**（即時／中期／長期・期待効果）は **§8**・正本 **§6** 等に**記載**する。
+3. **対策の実施はユーザーが決定**: **FishTrack の `src/`**・Obsidian **仕様の追記・改稿**（本 SKILL で書く**検証レポート**・**`ai-spec-notes`** を除く）・**テスト**・**マイグレーション**・**デプロイ**・**環境設定変更**など、\
+  **対策の実施**は**ユーザーの明示指示があるまで無断で行わない**。SKILL 範囲内で可なのは、dump・照合・レポート **`ai_spec_check_report.md`**・**`ai-spec-notes`**・markdownlint・**`obsidian-cursor-log`**・**本ファイル／入口 SKILL の追記**（**ユーザー指摘**に基づくもの）などである。
 
 ## 用語（本スキル群の本文）
 
@@ -35,19 +45,63 @@
     → `--include-rotated` を付けて再実行、または本番 EC2 側で連結してから `--stdin`
   - まだ 1 度も**当該環境**でプレビューを実行していない → ユーザーの合意のもと UI で再現依頼
 
-**ローカル Docker（FishTrack）で `src/` を同一セッションで変更したあとにログを読むとき**:
+**ローカル Docker（FishTrack）と `restart`（`dump` とは切り離す）**:
 
-- **§4 より前に** **`ai-local-spec-check` SKILL** の **「Python 変更と dump 前の再起動」**および概要の **「見逃し禁止」**に従い、\
-  **`dump_spec_import_preview.py`（`--count` 含む）より前に** **`docker compose restart app`** を**エージェントがターミナルで実行**する（**myrules**・**`local-docker-python-restart`** と整合）。\
-  **ユーザーへの確認文だけで代用しない**。
+- **`restart` の要請**: **`src/` 等アプリ用 Python を変更したあと**、**ユーザーがブラウザでアプリを操作する**（スペック取り込みプレビュー含む）**前**に必要。\
+  **WSGI（例: Gunicorn）は起動時にモジュールを読み込む**ことが多く、**bind-mount だけでは**ブラウザ経由のリクエストが**旧コード**のままになり得る（**`local-docker-python-restart`**・**myrules**「ローカル Docker と Python ソース変更」）。
+- **`dump_spec_import_preview.py`**: コンテナ内ログを**読むだけ**。**`dump` の実行・ログ照合そのものに `restart` は不要**（**`dump` 検証とは非関係**）。
+- **運用の接点**: **`src/` 変更と同一セッション**で**新コードのログ**を**ブラウザで再現**してから `dump` したいときは、**先に `restart`**（**ユーザー操作の前**）。\
+  **既に書き込まれたログ**だけを `--count` / `--latest` する**照合**なら **`restart` はスキル上不要**。\
+  **エージェントの `restart` 試行・確認文の代用禁止**は **`ai-local-spec-check` 本文**・**myrules** を正とする。
+
+### 3.2. 再利用ヘルパー（`helpers/`）— 次回実行でも使うスクリプト
+
+- **ディレクトリ（正本・git 管理）**:\
+  `d:/OneDrive/git_work/dev-workspace/.cursor/skills/ai-spec-check/helpers/`\
+  （入口 `README.md` のみでも可。**`FishTrack/temp/` の §10 掃除では削除しない**）。
+- **目的**: SKILL 実行中に `FishTrack/temp/` に置いた **取得・整形用の短い Python** 等のうち、**手順が固定**し**次回以降も同一コマンドで使う**ものを残す（毎回 `temp/` から消えないようにする）。
+- **昇格の判断**: **2回以上**同じコードパスを踏んだ、または **入口 SKILL（本番／ローカル）にそのまま手順として書くには長い**が **引数と cwd だけで再利用できる**ときに、`helpers/` へ移す。
+- **運用（エージェント）**:
+  1. **初回試作**は従来どおり **`FishTrack/temp/`**（例: `temp/_fetch_prod_grep.py`）。**myrules** の「一括置換用スクリプト禁止」とは別扱い（**単一ファイル**の補助に限る）。
+  2. **昇格**: `helpers/` に **UTF-8（BOM なし）**で追加する。実装は **Cursor の `Write` / `StrReplace` のみ**（シェルループでの一括生成は禁止）。**`temp/` に同名を残す場合は helpers を正とし、temp 側は削除して二重管理にしない**。
+  3. **正本への記録**: **本節「登録一覧」**に **ファイル名・一言用途・ cwd（原則 FishTrack ルート）・典型コマンド1行**を追記する（次回 SKILL が **Read だけ**で再実行できる粒度）。
+  4. **§10 の `Remove-Item`**: **`helpers/` は列挙・再帰削除の対象に含めない**（誤削除防止）。**消すのはあくまで `FishTrack/temp/` の実行ごとの `.json` / `.log` / 使い捨て `.py`**。
+- **FishTrack 常設との境界**: `scripts/dump_spec_import_preview.py` はリポ常設。**`helpers/` は dev-workspace 側**の SKILL 専用（本番 SSH・Windows パイプ等の**手順都合**で dump 単体に含めにくい薄いラッパ向き）。
+
+**登録一覧**: **`helpers/` に `.py` 等を新規追加したセッション**では、本節に **箇条書きを 1 件追加**する。各件に **`ファイル名`・用途（1行）・cwd（原則 `FishTrack` ルート）・典型コマンド 1 行**を含める（\
+**FishTrack** と **dev-workspace** が兄弟ディレクトリのときの例: `python ../dev-workspace/.cursor/skills/ai-spec-check/helpers/<name>.py`）。**まだ `helpers/` にファイルが無いセッション**では、登録行を増やさなくてよい。
 
 ## 4. JSON サマリ確認
 
 **成功プレビュー**（`temp/tmp_latest_preview.json`）:
 
 ```powershell
-python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8'); p=json.load(open('temp/tmp_latest_preview.json',encoding='utf-8')); print('category:', p.get('category')); print('resolvedUrl:', p.get('resolvedUrl')); print('rowsCount:', p.get('rowsCount'))"
+python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8'); p=json.load(open('temp/tmp_latest_preview.json',encoding='utf-8')); print('manufacturer:', p.get('manufacturer')); print('seriesName:', p.get('seriesName')); print('category:', p.get('category')); print('resolvedUrl:', p.get('resolvedUrl')); print('rowsCount:', p.get('rowsCount')); u=p.get('usage') or {}; print('usage:', 'promptTokens=', u.get('promptTokens'), 'completionTokens=', u.get('completionTokens'), 'totalTokens=', u.get('totalTokens')); print('previewBuildElapsedSeconds:', p.get('previewBuildElapsedSeconds'))"
 ```
+
+**メーカー・シリーズ（検証・レポート記載・必須）**:
+
+- プレビュー結果 JSON の **`manufacturer`**（例: **`ダイワ`**）と **`seriesName`**（例: 主シリーズ名）を **§4 のサマリ段階で必ず確認**する。
+- **`ai_spec_check_report.md`** の **「## 1. 対象ログ」** 表（または直後の箇条書き）に **`manufacturer`・`seriesName` を欠かさず記載**する。\
+  **フロントマター**にキーが無くても**本文で明示**すればよい（**`pageTitle` と混同しない**。シリーズ名は **`seriesName` を正**とする）。
+- **`ai-spec-notes`**（**§5.1**）の **`## メタ`** に置く **メーカー・シリーズ名**と**矛盾がないか**、再プレビュー時に突合する。
+
+**使用トークン数（検証対象）**:
+
+- プレビュー結果 JSON の **`usage`** は **`promptTokens` / `completionTokens` / `totalTokens`**（**当該プレビュー実行の LLM 合算**。FishTrack `OpenAiUsageSummary.as_dict()` の正本）を指す。
+- **必ず確認する**（§4 のサマリ段階でよい）。
+- **キー欠落**・**3 つとも 0**（かつ本実行で複数 LLM ステップがあるのに変化がない）のときは、
+  **API 応答**・**ログ経路**・**`FISHTRACK_SPEC_IMPORT_DEBUG_LOG`** の有効性を疑い、
+  **`AI補助スペック取り込みLLM利用`**
+  （**`tackle_spec_import_openai_client._log_spec_import_llm_usage`** 由来。各呼び出しの **`promptTokens` 等**）と**突き合わせる**。
+- **品質・コストの切り分け**: プレビュー品質が悪化している実行では **合算 `totalTokens` の急増**・**入力過大**・**コンテキスト上限付近**の疑いがある。**`ai_spec_check_report.md` §11.1「対象ログ」**に **合算 1 行**（数値 3 つ）を載せる（**通常実行でも再現比較用に残してよい**。**チャット全文転記は §9.4 に反する**）。
+
+**AI の経過時間（検証対象・出力必須）**:
+
+- プレビュー結果 JSON の **`previewBuildElapsedSeconds`**（**秒**・FishTrack が `プレビュー結果:` ペイロードに付与。**`perf_counter` ベースのプレビュー構築所要**）を **§4 のサマリで必ず出力する**（上記 `python -c` の**最終 `print`**。**`None` なら `None` と表示**でよい）。
+- **キー欠落**・常に `None` のときは、**当該 FishTrack 版**がフィールド未実装・ログ欠落の可能性。**原因整理に1行**足してよい。
+- **`ai_spec_check_report.md`** の **§1「対象ログ」**（**表または `source_log_hint` 直下**）に **`usage`** と**同じ実行の文脈**で **秒数 1 項目**を載せる（例: **`previewBuildElapsedSeconds` 12.345**。**欠落時は「キーなし」等と明示**）。
+- **§9.4 チャット要約**・**§13 CursorLog** にも **同値を1行以内**で含める（**チャットに表を転記しない**方針は変えない）。
 
 **カテゴリ分岐**: `category` の値で検証内容を分岐する。
 
@@ -87,6 +141,12 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 **次回以降のプレビュー `rows[]` と突合しやすい本家側データ**（行キー・数値・技術名・比較除外列・期待値の根拠）を残す。
 **詳細な実行結果・判定・対策の正本は常に `ai_spec_check_report.md`**（§9・§6 等）。
 
+**`## 行別スペック` の必須要件（エージェントは遵守）**:
+
+- **本家製品スペック表**から、**プレビュー `rows[]` と同じ行粒度**で、**比較に使う数値・JAN 等をノート内に必ず書く**（表または行ごとの箇条書き）。**`ai_spec_check_report.md` や別ノートへの参照だけ**にして **本家数値を載せない**ことは**禁止**（次回 SKILL が **単体のノート Read だけ**で突合できなくなるため）。
+- 本家セルに **表示欠落・単位曖昧**がある行は、**`L(表)` と `L(突合)`** のように **列を分けて**本家側の解釈を残す（プレビュー値・🔴 判定列は**書かない**）。
+- 表が**横幅超過**する場合は **複数表に分割**してよい。`markdownlint`（MD013 等）に合わせて**行を折り返し可能な幅**に整える。
+
 **無変更時はファイルを触らない**: 今回の `WebFetch` 等で得た本家表・技術説明を、既存ノートの突合用データと比較し、\
 突合に使う値や根拠が変わらないと判断できるときは、当該 `ai-spec-notes` に対して `Write` / `StrReplace` を一切行わない。\
 メタのタイムスタンプだけ更新するなど、見かけ上の更新は禁止。
@@ -101,15 +161,24 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
   - **メーカーごとに 1 段のサブフォルダ**（例: `daiwa/`、`shimano/`。表記は**運用で統一**し、**英小文字スラッグ**を推奨）。
   - **本家 URL（`resolvedUrl` を正規化した同一ページ）ごとに 1 ファイル**。\
     **ファイル名**は、その回の **WebFetch 結果から取得したシリーズ名**（ページ上のシリーズ見出し・パンくず・`<title>` 等で**人間が追える表記**）を基にする。\
-    **Windows 禁止文字**（`<>:"/\|?*` 等）は **`_`** に置換する。**重複**しうるときは **`_url末尾8文字`** や **`_型番範囲の要約`** を括弧付きで付与して区別する。
+    **URL の一部をファイル名に含めない**（**禁止**）: **`resolvedUrl` のパス末尾スラッグ**（例: `…/jp/product/ybd2nlg` の **`ybd2nlg`**）、**ドメイン**、\
+    **`?` 以降のクエリ**、パス上の**任意の短い識別子**をファイル名や `_識別子` 接尾に**使わない**。ページ同定は **`## メタ` の `resolvedUrl`**（全文 1 行）にのみ書く。\
+    **Windows 禁止文字**（`<>:"/\|?*` 等）は **`_`** に置換する。同一メーカーでシリーズ名が衝突しうるときは **`_トラベル`**・**`_エリート`** のように**人間が区別できるサブシリーズ表記**で区別する。**`_url末尾8文字`** や **`_型番範囲の要約`** による区別は**例外的な最終手段**に留める。
 - **毎回の本家取得**: 照合のため **`WebFetch`（または入口 SKILL が定める取得手段）で `resolvedUrl` を取得する処理は毎回実行**する（キャッシュのみで照合を省略しない）。**ノートへの反映は下記の突合用データ差分があるときのみ**。
 - **ノートへの Write 条件**:
-  - **初回**: 当該 `resolvedUrl` のファイルが無いときのみ新規作成する。`## メタ` に `resolvedUrl`・メーカー・シリーズ名・用途を置き、以降に突合用の本家データを置く。
-  - **更新**: 既存ノートがあり、本家表の行・数値・技術名・比較除外列・期待値根拠が変わったときのみ、該当する表・箇条書きを更新する。長文本文の差分だけでは更新しない。
+  - **初回**: 当該 `resolvedUrl` のファイルが無いときのみ新規作成する。`## メタ` に `resolvedUrl`・メーカー・シリーズ名・用途を置き、以降に突合用の本家データを置く。**`## 行別スペック` に本家数値表が無いまま**ノート作成を**完了としない**（§5.1 冒頭の必須要件）。\
+    **ロッドかつ本家にジャンル列が無い**ときは **§5.1.1 項 5 の genre 行別表**も**欠けたまま完了としない**。\
+    **ロッドかつ DAIWA で本家にパワー列・テーパー（アクション）列が無い**ときは **§5.1.1 項 4 の Pattern 期待値表**（**`infer_power…` / `infer_action…`）も**欠けたまま完了としない**。
+  - **更新**: 既存ノートがあり、本家表の行・数値・技術名・比較除外列・期待値根拠・**FishTrack が確定する `genre`（混在シリーズの行別区分）**が変わったときのみ、該当する表・箇条書きを更新する。長文本文の差分だけでは更新しない。
   - **`## メタ`** は URL・シリーズ名・用途など、突合キーに関わる情報が変わるときにだけ更新してよい。
 - **`ai-spec-notes` に書いてよいもの**:
   - 本家スペック表を、`rows[]` と比較しやすい列に整形したデータ（例: row / 型番コア / JAN / 全長m / ft-in / 自重 / oz / line / 価格）。
-  - 本家表から直接は出ないが、保存候補と照合するための期待値（例: DAIWA 型番 Pattern 由来の期待 `power` / `action`）。根拠列を必ず添える。
+  - 本家表から直接は出ないが、保存候補と照合するための期待値（例: DAIWA 型番 Pattern 由来の期待 `power` / `action`）。根拠列を必ず添える。\
+    **本家にパワー列・テーパー（アクション）列が無い DAIWA ロッド**では、`## 行別 Pattern 期待値` に\
+    **`infer_power_from_daiwa_model_name` / `infer_action_from_daiwa_model_name`**（**FishTrack `src/` 正本**）の\
+    **行別結果を表で載せる**（**`None` 行も含む**。**プレビュー実値・判定は `ai_spec_check_report.md` のみ**）。
+  - **ロッドで本家表にジャンル列が無いページ**: **FishTrack が確定する `genre`**（**`bait`**／**`spinning`**）を **行別の表**で記載する（**§5.1.1** 項 5）。\
+    **プレビューの `[整合性] genre …`**・サーバ正規化との突合用。根拠列には **`05_ai_spec_import.md`**（末尾 **`…ULXS`／`…LFS`／`…MLFS`**・**`MHRS`** 等の型番ルール）を短く書く。
   - 技術名・素材の期待値（例: `blankMaterial` と `technologyLabels` の切り分け、脚注の適用範囲）。
   - 比較除外・任意項目の扱い（例: `releaseYear` は null 期待、`foldedLengthCm` は現行保存候補外）。
 - **`ai-spec-notes` に書いてはならないもの（すべて `ai_spec_check_report.md` へ）**:
@@ -127,10 +196,16 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 
 1. **`## メタ`** — `resolvedUrl`、メーカー、シリーズ名、用途。
 2. **`## 突合方針`** — 行キー、比較対象列、比較除外列、任意項目の扱い。
-3. **`## 行別スペック`** — row / model / JAN / 数値項目など、プレビュー `rows[]` と同じ粒度の表。
-4. **`## 行別 Pattern 期待値`** — 必要な場合のみ。型番から期待する `power` / `action` 等と根拠。
-5. **`## 技術・素材の期待値`** — `blankMaterial` と `technologyLabels` の本家側期待値、脚注の適用範囲。
-6. **`## 任意項目・比較除外`** — `releaseYear` null 期待や保存候補外列など。
+3. **`## 行別スペック`** — row / model / JAN / 数値項目など、プレビュー `rows[]` と同じ粒度の表。**本家側の数値はノート内に必ず記載**し、`ai_spec_check_report.md` **への参照のみ**で代用しない。
+4. **`## 行別 Pattern 期待値`** — **本家表にパワー（硬度）列・テーパー（アクション）相当列が無い DAIWA ロッド**では**必須**。\
+   **行別表**で **`power`・`action`** それぞれの**期待値**を載せる。\
+   **正本**は **`daiwa_rod_model_naming.infer_power_from_daiwa_model_name`** / **`infer_action_from_daiwa_model_name`**（**`05_ai_spec_import.md`** と併読）。\
+   **`infer` が `None` の行も表に含める**（省略禁止）。🔴🟡🔵・**プレビュー `rows[]` の実値**は書かない。
+5. **`## 行別 genre（FishTrack 確定）`** — **ロッドかつ本家製品表にジャンル列が無いページでは必須**（後方互換として **`## 行別 genre 期待値（ベイト／スピニング）`** でも可）。\
+   row / modelName / **FishTrack が確定する `genre`**／根拠（**`05_ai_spec_import.md`**・末尾 **`FS`／`LFS`／`MLFS`／`ULXS`／`MHRS`**）。\
+   **プレビューログの `[整合性] genre がサーバ正規化で変更 …`** と突合する固定参照。**ロッド以外**、または本家表にジャンル列があるときは**当該見出しごと省略可**。
+6. **`## 技術・素材の期待値`** — `blankMaterial` と `technologyLabels` の本家側期待値、脚注の適用範囲。
+7. **`## 任意項目・比較除外`** — `releaseYear` null 期待や保存候補外列など。
 
 **既存ノート**に過去方針で残った取得全文がある場合は、通常実行で気づいた時点で突合用データへ整理してよい。\
 プレビュー由来の実行結果や判定が混ざっている場合は、`ai_spec_check_report.md` へ移すか削除し、ノートを本家側データに戻す。
@@ -176,6 +251,17 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
     **本家製品スペック表に「テーパー」列**（または**アクション相当の単名列**）があるとき、**本家テーパー（原文）** と **`rows[].action`** の**行別照合表**を**必ず**書く（**`##` 見出し**のみの節でもよい）。**省略禁止**（**「未実施」一言**は不可）。\
     **判定**は **`XF→S` / `R→S` 等は本家表記どおり**で比較し、**本家と異なる**値は **🔴**（例: 本家 **`F`**、プレビュー **`FR`**）。\
     **比率 prose と `action`**: アイテム紹介の **7：3** 等は **`rows[].action` にテーパーとして載せない**。**テーパー列が無い**ときは **型番 Pattern** 由来の **S/R/F/X（または RF/RS 等）**で **`action`** を照合する（例: **701MHRB-G**→**R**）。\
+    **`ULXS`／`ULXS-ST`**: ブロックが **`UL`＋`X`＋`S`（スピニング）**の並びのとき、\
+    **テーパーは `X` のみ**（エクストラファスト）で**末尾 `S` はロッド種別**。**`XS` をテーパー複合とみなさない**。\
+    期待 **`action` は `XF`**（単独 **`X`** と省略しない。仕様 **`05_ai_spec_import.md`** と整合）。\
+    **推定不能時の null**：上記のとおり **型番からも決め打ちできない**（例: **`646TUL`** で **単独 `T` がテレスコのみ**）ときは、**`action` が null でも本家照合では 🔴 としない**（**🔵／許容**。仕様 **`05_ai_spec_import.md`** と整合）。\
+    **`missingRequired`** や verify→final の揺れは **実装・品質の 🟡**として切り分ける。\
+    上記は **`ai-spec-check` / `ai-local-spec-check` 共通**（§11.1 項 3 のロッド節と併読）。
+  - **本家「パワー」列とプレビュー `power`（ロッド）**:
+    本家製品スペック表に **パワー**（または**硬度・調子**相当で、表上が正本となる単名列）があるページでは、**同一 `modelName` 行の本家セル**と **`rows[].power`** を**行別に**照合する。**省略禁止**。
+    **パワー列が無い**ページでは、**本家期待**列に **型番からの期待 `power`（Pattern / サーバ補完の根拠を短く）** を書き、\
+    **`rows[].power`** と突き合わせる**行別表**を **`ai_spec_check_report.md` に必ず**含める（**テーパー／`action` 行別表と同義務**。\
+    仕様 `05_ai_spec_import.md` の `power` ヒント・🔵 条件と整合。**「未実施」一言不可**）。
     上記は **`ai-spec-check` / `ai-local-spec-check` 共通**（§11.1 項 3 のロッド節と併読）。
 - **C. 技術特性**
   - `technologyLabels` が**当該アイテムの TECHNOLOGY 行**と一致するか
@@ -196,8 +282,8 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
   - マスタ突き合わせは `tackle_technology_feature.category = 'rod'` のみ対象
 - **D. シリーズ・型番**
   - `seriesName` が本家見出しどおりか（新旧世代混在がないか）
-  - `modelName` が本家表記そのままか
-    （中黒 `・`、`【コードネーム】` の扱いが一貫しているか）
+  - **`modelName`（ロッド）**: プレビューは **`modelName` を型番コア**（例 `666TMLRB`）へ揃える実装を正とし、**本家製品スペック表の「アイテム」列からシリーズ略称・括弧内別名等の接頭を除いた型番コア**と**行別に**突き合わせる（`05_ai_spec_import.md` の正規化方針と整合）。\
+    本家が `トリプルビー 666TMLRB` のように別名付きでも、プレビューが **`666TMLRB`** なら一致。中黒 `・`、`【コードネーム】` の扱いの一貫性も併せて見る。
 - **E. その他スペック項目（payload の `rows[]` にも載る）**
   - `releaseYear`, `carbonRatePct`, `janCode`, `listPrice`
   - `lineMinLb`, `lineMaxLb`, `pieces`, `weightG`
@@ -207,6 +293,9 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
     （又はメーカーが同等と分かる表記）のとき、プレビューが**ジョイント種別のみ**
     （例: `グリップジョイント`）であっても**本家と矛盾しない**。**差分（🔴）に含めない**
     （🔵 参考に留めてよい）。
+    **DAIWA・テレスコ振出**: **製品スペック表の継数セルが数値のみ**で、**型番コアがテレスコ振出**\
+    （全長ブロック直後が **`T`**）のとき、プレビュー **`pieces`** が **`N（テレスコピック）`**（全角括弧・仕様文どおり）であっても\
+    **FishTrack のプレビュー表示仕様**（Obsidian **`05_ai_spec_import.md`**）。**本家の継数数値と一致すれば 🔴にも 🟡（表記ゆれ）にもしない**（**🔵／一致**）。
     継数・ジョイントの**いずれかが本家と食い違う**場合は従来どおり 🔴。
 
 **注**: リールプレビューでロッド用キー（全長・ルアー重量など）が null の場合は本観点では評価しない。
@@ -246,6 +335,8 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 
 **原則**: `resolvedUrl` の**本家ページ**とプレビュー JSON を突き合わせ、§6A / §6B の**解釈ルール**（例: 帯分数と小数の同値、単位の表記揺れ）を適用したうえでなお残る**不一致はすべて 🔴**とする。🟡・🔵 は、**本家とプレビューが一致している**（または本家が比較対象外・欠損で「不一致」とは呼べない）前提で付す**別種**の注意・参考に限る。
 
+**DAIWA ロッド・本家にテーパー列が無い記事等**: **`infer_action_from_daiwa_model_name`**（突合 **§行別 Pattern 期待値**と整合）と **`rows[].action`** が**行ごとに一致しない**ときは **🔴** とする（**`ai_spec_check_report.md` §9**）。**🟡 に降格しない**（**決定関数とプレビュー値の乖離は保存品質上の問題**）。
+
 見つけた差異は以下のいずれかに分類する:
 
 - 🔴 **問題（保存前に修正必須）**: **本家との不一致すべて**（件数・数値・シリーズ／型番・技術特性の不足・誤付与・サマリ項目の取りこぼし等）、NOT NULL / 制約違反の懸念
@@ -256,6 +347,8 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 
 問題 (🔴) が 1 件以上ある場合、以下 3 段でユーザーに提示する。
 **書き方は必ず §8.1 に従う**（具体性・汎用性・**実装との整合**・**期待効果**）。
+
+**実施の境界**: 本節・**§8.1** は**対策案の検討とレポートへの記載**までを指す。以降の **「即時対応」** などに列挙する**コード・プロンプト・サーバ**の変更は、**レポート上の提案**であり、**実行は冒頭「実行順：dump 検証を先に・対策の実施はユーザー決定」**に従い**ユーザー判断**とする。
 
 - **改善案の優先順位（必須）**: **根本解決**を**最優先**とする。
   単一事象・単一 URL・単一型番を**伏せ込むだけ**の対策（**場当たり**の例外分岐、再現条件に**密結合**した**一文だけ**の追記）を**主対策**にしない。
@@ -398,7 +491,7 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 
 - **レポートの絶対パス**（`D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`）
 - **1〜3 行サマリ**:
-  - **成功時**: `resolvedUrl` / category / rowsCount / 🔴・🟡 の件数または要旨
+  - **成功時**: `manufacturer` / `seriesName` / `resolvedUrl` / category / rowsCount / **`usage` 合算** / **`previewBuildElapsedSeconds`（秒。キーあれば）** / 🔴・🟡 の件数または要旨
   - **失敗のみ時**: `sourceUrl` / `code` / `requestId`（`req_…`）/ メッセージ要旨 / ログに行があったか
 - **同一 URL の再チェック時**: 「前回からの変化」の**一文**（詳細はファイル内の当該見出し）
 - ユーザーがファイルにアクセスできない事情がある場合のみ、チャット側に抜粋を足してよい（**原則不要**）
@@ -408,6 +501,8 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 ファイル先頭に YAML を置く。続けて **§9.0.1** の **h1 1 行**のあと、本文（`##` 見出し）を書く（**markdownlint 整合**用）。
 
 ```yaml
+# manufacturer / seriesName はプレビュー JSON に準拠。フロントマターに無い場合は
+# 「## 1. 対象ログ」表に必ず書く（§4・§11.1）。
 ---
 ai_spec_check_report: "1"
 checked_at: "YYYY-MM-DDTHH:MM:SS+09:00"
@@ -454,6 +549,7 @@ source_log_hint: "例: temp/tmp_prod_preview_grep.log / --index 0 / ssh また�
 cd d:/OneDrive/git_work/FishTrack
 Remove-Item temp/tmp_latest_preview.json, temp/tmp_latest_failure.json, temp/tmp_prod_preview_grep.log, temp/tmp_prod_fail_grep.log, temp/tmp_prod_llm_io_grep.log, temp/_fetch_prod_grep.py, temp/_fetch_prod_fail.py -ErrorAction SilentlyContinue
 # 当該実行で temp/ に追加したその他の作業用ファイル（抜粋・短い取得用 .py 等）があれば同様に削除
+# **§3.2 `helpers/`** 配下はここでは削除しない（再利用正本）
 ```
 
 **`ai-spec-check`（本番）**で EC2 上に一時ファイルを作った場合は、作業方針に従い削除する。常設スクリプト
@@ -469,8 +565,9 @@ Remove-Item temp/tmp_latest_preview.json, temp/tmp_latest_failure.json, temp/tmp
 
 ### 11.1 プレビュー成功時（従来）
 
-1. **対象ログ**: 取得時刻 / category / resolvedUrl / pageTitle / rowsCount
-   / 確定状態（DB 保存済みか）。**原因分析**では次を**併用**する（デバッグログ有効時・取得できた範囲で）。
+1. **対象ログ**: 取得時刻 / **`manufacturer`** / **`seriesName`** / category / resolvedUrl /
+   pageTitle / rowsCount / 確定状態（DB 保存済みか）。**`usage`**
+   （**`promptTokens`・`completionTokens`・`totalTokens`**）および **`previewBuildElapsedSeconds`**（**秒**。**§4**・**「AI の経過時間」**）を確認し、**正本 JSON と整合**する**一行以上**を本文に含める（**経過秒の欠落は明示**）。**原因分析**では次を**併用**する（デバッグログ有効時・取得できた範囲で）。
    - **`llmPrompts`**（プレビュー結果 JSON 内）… 各 `step` の **system / user 入力**
    - **`AI補助スペック取り込みLLM入出力:`** ログ行… 各 `step` の **入力に加え `response`（またはエラー時の生/要約）**。
      **本家との差分の説明では `response` を優先的に参照**する（入力だけでは足りないことが多い）。
@@ -482,6 +579,8 @@ Remove-Item temp/tmp_latest_preview.json, temp/tmp_latest_failure.json, temp/tmp
    - **本家スペック表の丸写し抜粋だけの節は置かない**。本家値と **`rows[]`** は **同一表で対照**（判定列つき）にまとめる（Obsidian 正本 **`## 0. レポートの型` §4〜5** と整合）。
    - **ロッドでは `lengthFt` / `lengthIn` と本家 全長（m）の行別照合を必ず含める**（**専用小表を §3 直後に置いてもよい**。**記載省略禁止**）
    - **ロッド（DAIWA 等）で本家表にテーパー列がある場合**: **本家テーパー vs `rows[].action`** の**行別表**を必ず含める（**§6A B** 末項「**Obsidian 正本 … テーパー／アクション**」。**記載省略禁止**）
+   - **ロッドで本家表にパワー列がある場合**: **本家パワー（原文） vs `rows[].power`** の**行別表**を必ず含める（**§6A B**「**本家『パワー』列とプレビュー `power`**」。**記載省略禁止**）
+   - **ロッドで本家表にパワー列が無い場合**（DAIWA で型番補完が主となるページ）: **期待 `power`（根拠） vs `rows[].power`** の**行別表**を必ず含める（**§6A B** 同項。**記載省略禁止**）
    - リール: row / modelName / 本家値（reel_type, gear_ratio, weight_g,
      list_price, jan_code 等）/ AI 値 / 判定
 4. **技術特性突き合わせ表**（マスタ `category` と AI 出力カテゴリの一致確認を含む）
@@ -497,7 +596,8 @@ Remove-Item temp/tmp_latest_preview.json, temp/tmp_latest_failure.json, temp/tmp
 
 本家との**行単位突き合わせは無い**。次の順で書く。
 
-1. **対象ログ**: **ログ行先頭日時** / `jobId` / `code` / `message` / `requestId` / `sourceUrl` / `model` / ログ取得手段（`source_log_hint`）。
+1. **対象ログ**: **ログ行先頭日時** / 成功時と同様 **`manufacturer`・`seriesName` が JSON にあれば必須で記載** / `jobId` / `code` / `message` /
+   `requestId` / `sourceUrl` / `model` / ログ取得手段（`source_log_hint`）。
    **`llmExchanges` がある場合は**各要素の **`step`・`response`（または失敗時フィールド）**を要約して記載する。
    **無い場合**は**入口 SKILL §2** の **`grep LLM入出力:`** 結果で同趣旨を補う。
 2. **件数・表の整合**: 「プレビュー行未取得のため対象外」と明示
@@ -537,7 +637,7 @@ Remove-Item temp/tmp_latest_preview.json, temp/tmp_latest_failure.json, temp/tmp
 - 作業完了後、`obsidian-cursor-log` SKILL を使用して当日の CursorLog
   （`D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM/YYYY-MM-DD.md`）
   に記録する
-- 記録内容: 対象 URL・対象シリーズ・差異サマリ・提案した対策の要点・
+- 記録内容: 対象 URL・**メーカー**・**シリーズ**（**`manufacturer` / `seriesName`**）・**`usage` 合算**・**`previewBuildElapsedSeconds`（秒）**・差異サマリ・提案した対策の要点・
   **§9.0** の **Obsidian 絶対パス**（`D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`）・同一 URL 時の「前回からの変化」要約・
   ユーザーの合意状況
 - タグ候補: `#fishtrack` `#spec-import` `#ai-preview-check`
