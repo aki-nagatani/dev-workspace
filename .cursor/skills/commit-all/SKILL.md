@@ -1,8 +1,8 @@
 ---
 name: commit-all
 description: >-
-  ワークスペース内の複数リポジトリ（FishTrack、MyPokedex、personal-tools、dev-workspace 等）で、
-  差分のあるものをまとめてコミット＆プッシュする。**otayori-navi は対象外**（本 SKILL では扱わない）。
+  ワークスペース内の複数リポジトリ（FishTrack、MyPokedex、otayori-navi、personal-tools、dev-workspace 等）で、
+  差分のあるものをまとめてコミット＆プッシュする。
   1チャット1回限りの依頼、
   pre-commit 必須・--no-verify 禁止、develop/main のブランチ方針、カバレッジ・E2E・
   test-code-generator 連携、完了後の CursorLog 追記（JST 実時刻）まで含む。コミットメッセージは
@@ -25,7 +25,7 @@ myrules を厳守して作業してください。
 - **対象リポジトリごとに `git commit` が少なくとも 1 回成功した後**は、**同じ依頼での追加コミットは禁止**。本文の push は**同一フロー内**で続けてよい。
 - 本文の一連作業が**完了した後**は、**新たな明示がない限り** `git commit` / `git push` を行わない（**無断コミット禁止**に戻る）。
 
-**スコープ**: **`otayori-navi` は対象外**（差分があっても**コミット・プッシュしない**）。おたよりナビは **`otayori-navi_pull-request` SKILL** 等で**別依頼**とする。
+**スコープ**: **`otayori-navi` を含む**、下記ブランチ方針に従うリポジトリへコミット・プッシュする（**`otayori-navi_pull-request` SKILL** は **PR 作成・マージ・CI 追跡**など**別フロー**の正本で、本 SKILL の「一括コミット」とは併存する）。
 
 対象内リポジトリのファイルをコミット＆プッシュしてください。
 
@@ -35,7 +35,7 @@ myrules を厳守して作業してください。
 
 ただし、差分がないプロジェクトへのコミットはスキップしても構わない。
 
-FishTrack / MyPokedex / personal-tools のコミット前に必ず、`.githooks/pre-commit` を実行し、テストをスキップしないでください。
+FishTrack / MyPokedex / otayori-navi / personal-tools のコミット前に必ず、`.githooks/pre-commit` を実行し、テストをスキップしないでください。
 
 また、カバレッジ要件の無断での緩和も禁止とします。
 
@@ -60,11 +60,11 @@ E2E テストでアプリの起動が求められた場合は、Docker を起動
 - カバレッジ不足やテストエラーがある場合は、それらを解決してからコミットしてください
 - 一時的な回避策として `--no-verify` を使用することは許可されません
 
-FishTrack、MyPokedex のコミット先は **「develop」ブランチ**です（**`otayori-navi` は本 SKILL 対象外**のためここに含めない）。
+FishTrack、MyPokedex、**otayori-navi** のコミット先は **「develop」ブランチ**です（**myrules**「Git 運用」・各 **AGENTS.md** と整合）。
 
-**「main」ブランチには適用しないでください。**
+**上記 3 リポジトリでは「main」へ直接コミット・プッシュしないでください。**
 
-その他のプロジェクトは、**main** リポジトリにコミットしてください。
+その他のプロジェクト（例: **dev-workspace**、**personal-tools**）は、当該リポジトリの **main**（または既定ブランチ）へコミットしてください。
 
 コミット時にコメント用の一時ファイルを作成した場合は削除してください。
 
