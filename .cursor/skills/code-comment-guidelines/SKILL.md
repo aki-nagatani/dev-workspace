@@ -59,6 +59,9 @@ description: ソースコードのコメントを必要十分な量で記載す�
 - 数行ごとに機械的に付ける見出しコメント
 - **計画用タスク番号**（**Fxx** / **Pxx** / **Oxx** / **Mxx** / **Ixx**）。進捗・割り当ての ID は\
   **`Obsidian/DevProject/plans/統合作業スケジュール.md`** のみで管理し、コメントは**意図・制約（Why）**に留める（myrules「タスク番号の正本」）
+- **AI 補助スペック取り込み照合レポートの「対策 N」**（例:**対策 14**・**対策 22**）。番号付きの是正履歴は **Obsidian**\
+  **`DevProject/FishTrack/ai_spec_check_report.md`** の **§4／§5／§6** にのみ書き、**FishTrack `src/`・`tests/` のコメント／docstring**、および **FishTrack 仕様書**（\
+  **`Obsidian/DevProject/specifications/FishTrack/`**・典型 **`05_ai_spec_import.md`**）の本文には**書かない**（経緯はレポート・コミットメッセージへ。仕様は**振る舞い・関数参照・ルール**のみ同期。**エージェント向け**: **`ai-spec-check-report`** SKILL §8.1「ソース・仕様書・対策番号」）。
 - **機械検査**: **FishTrack** は **`scripts/check_source_task_ids.py`** を **`.githooks/pre-commit`** から実行し、\
   `src/`・`tests/`・`migrations/versions/` の Python に上記 ID が混入していないか検出する。SKILL の参照だけでは漏れるため、\
   **コミット前に必ず通る状態**を正とする。
@@ -88,3 +91,4 @@ description: ソースコードのコメントを必要十分な量で記載す�
 - コメントが古い仕様を示していないか
 - 1ファイル内で語彙・表現が一貫しているか
 - コメントを増やしすぎて、コードよりコメントを読む負担が大きくなっていないか
+- **AI 補助スペック取り込み照合の「対策 N」**がコメント／docstring・**FishTrack 仕様書**（`specifications/FishTrack/`）に無いか（番号の正本は **Obsidian** **`DevProject/FishTrack/ai_spec_check_report.md`** の §4／§5／§6 のみ）

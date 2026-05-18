@@ -31,7 +31,7 @@ description: >-
 3. **検証・ユーザー報告の前に**、当該リポジトリ直下で **`docker compose restart <サービス名>`** を**ターミナルから実行**する（例: **`docker compose restart app`**）。**デーモン未起動・compose 不在**などで **失敗した場合**は、**ユーザー報告に「試行したが未起動／エラー要約1行」**を書く（**未試行の沈黙は禁止**）。
 4. **複数リポ**で同じセッションに触れた場合は、**Python を変えた各リポ**でそれぞれ必要なら再起動する。
 
-5. **`ai-local-spec-check`**（**`dump_spec_import_preview.py`**）で続けて検証するときは、**dump 系コマンドより前に**上記 **restart** を済ませる（**`ai-local-spec-check` SKILL** の **「見逃し禁止」**・**「Python 変更と dump 前の再起動」**）。**ユーザーへの確認だけで代用しない**。
+5. **`ai-spec-check-local`**（**`dump_spec_import_preview.py`**）で続けて検証するときは、**dump 系コマンドより前に**上記 **restart** を済ませる（**`ai-spec-check-local` SKILL** の **「見逃し禁止」**・**「Python 変更と dump 前の再起動」**）。**ユーザーへの確認だけで代用しない**。
 
 **手順の提示だけで終えない**（エージェントはターミナルで実行する）。
 

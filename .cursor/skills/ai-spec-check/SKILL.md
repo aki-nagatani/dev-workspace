@@ -5,8 +5,8 @@ description: >-
   「AI補助スペック取り込みLLM入出力」（API 呼び出しごとの入出力）、および
   プレビュー未到達時の「プレビュー失敗」1行JSON（必要時 `llmExchanges`）を取得し、
   本家ページと突き合わせてロッド／リールの取り込み品質を検証する（失敗時は原因整理中心）。差異は 🔴🟡🔵 に分類し、
-  対策案を即時／中期／長期で具体化する（**FishTrack 実装・Obsidian 仕様を加味**。**正本 §6 は新規検討分のみ**・**実装済みの棚卸しは書かない**。共通 **`SKILL-SHARED.md` §8**）。
-  **各対策に期待効果**を併記して Obsidian 正本 `ai_spec_check_report.md` に書き、
+  対策案を優先度（高／中／低）で具体化する（**FishTrack 実装・Obsidian 仕様を加味**。**正本 §6 は新規検討分のみ**・**実装済みの棚卸しは書かない**。共通 **`ai-spec-check-report` §8**）。
+  **各対策に期待効果**を併記し、正本 **§4 は「対策 N」連番・§5 と対応**（**`ai-spec-check-report` §8.1**）して Obsidian `ai_spec_check_report.md` に書き、
   CursorLog を更新する。専用 Cursor Command はなく本 SKILL が正本。AI スペック取り込みプレビュー検証、
   spec import プレビュー照合、dump_spec_import_preview、本番 fishtrack.log プレビュー行の依頼時に使用する。
 ---
@@ -18,14 +18,14 @@ description: >-
 **手順の正本**は **二段構成**である（ダブルメンテ抑制のため共通化した）。
 
 - **本ファイル（`ai-spec-check/SKILL.md`）**: 本番 EC2 からのログ取得を含む **§0〜3**（入口・前提・`dump` まで）
-- **`SKILL-SHARED.md`（同ディレクトリ）**: **§3.1**（`dump` CLI 早見）および **§4〜13**（サマリ確認・本家照合・レポート・禁止事項・CursorLog）。**`ai-local-spec-check` も同一ファイルを参照**
+- **`ai-spec-check-report`（同ディレクトリ）**: **§3.1**（`dump` CLI 早見）および **§4〜13**（サマリ確認・本家照合・レポート・禁止事項・CursorLog）。**`ai-spec-check-local` も同一ファイルを参照**
 
-- **実行順・実装の境界**: **`SKILL-SHARED.md`** の **「実行順：dump 検証を先に・対策の実施はユーザー決定」** に従う（**dump 照合・レポート検証を先に**、**対策の実施はユーザー判断**・無断実施禁止）。
+- **実行順・実装の境界**: **`ai-spec-check-report`** の **「実行順：dump 検証を先に・対策の実施はユーザー決定」** に従う（**dump 照合・レポート検証を先に**、**対策の実施はユーザー判断**・無断実施禁止）。
 
-**エージェントは** 本ファイルを **Read** したうえで **`SKILL-SHARED.md` を Read** し、ターミナル実行・本家突き合わせ・Obsidian 正本・markdownlint・作業用 `temp/` の後片付け・**obsidian-cursor-log** まで行う。手順の提示だけで終わらない。
+**エージェントは** 本ファイルを **Read** したうえで **`ai-spec-check-report` を Read** し、ターミナル実行・本家突き合わせ・Obsidian 正本・markdownlint・作業用 `temp/` の後片付け・**obsidian-cursor-log** まで行う。手順の提示だけで終わらない。
 
-**ローカル Docker のみ**で照合するときは **`ai-local-spec-check/SKILL.md`** を入口にする（本番 SSH は不要）。\
-**`src/` 変更後**に**ユーザーがブラウザでアプリを操作する**（プレビュー含む）**前**の **`docker compose restart app`** は **ブラウザ側の要件**であり、**`dump` スクリプトとは無関係**（詳細は **`ai-local-spec-check`** 本文）。
+**ローカル Docker のみ**で照合するときは **`ai-spec-check-local/SKILL.md`** を入口にする（本番 SSH は不要）。\
+**`src/` 変更後**に**ユーザーがブラウザでアプリを操作する**（プレビュー含む）**前**の **`docker compose restart app`** は **ブラウザ側の要件**であり、**`dump` スクリプトとは無関係**（詳細は **`ai-spec-check-local`** 本文）。
 
 **人間向けパス（再掲）**:
 
@@ -33,33 +33,38 @@ description: >-
 - レポート正本: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`
 - 突合用本家データ（`ai-spec-notes`）:
   `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai-spec-notes/`。\
-  **`SKILL-SHARED.md` §5.1**。URL本文の丸写しではなく、
+  **`ai-spec-check-report` §5.1**（**DAIWA ロッド**は **`rod-daiwa/`**。取得元でフォルダを分けない）。URL本文の丸写しではなく、
   プレビュー `rows[]` と比較するための**本家側データ（数値・JAN 等）をノート内に必ず残す**。\
+  本家に **ライン（lb）** 列（**ナイロン lb レンジ**、または第三者 **`ライン(lb.)`** 型）があるときは **行別 lb 原文**を `ai-spec-notes` に載せ、**`lineMinLb`／`lineMaxLb`** と照合する（**`ai-spec-check-report` §6A B**）。\
   **ノートのファイル名**に **URL の一部**（`/product/` 末尾の短い ID 等）を**含めない**（同 §5.1 命名規則。同定は **`## メタ` の `resolvedUrl`** のみ）。
   **`## 行別スペック` を `ai_spec_check_report.md` への参照だけで埋めることは禁止**（§5.1 冒頭）。\
+  **ロッド**は **`## 行別スペック`** に **`rows[].modelName` と突合する期待文字列（`modelName期待` 等）を行別に必ず書く**（同 §5.1）。\
   **ロッドで本家にジャンル列が無いページ**は **`ai-spec-notes`** に **FishTrack が確定する
   `genre`（`bait`／`spinning`）の行別表**を置く（**§5.1.1** 項 5。**`05`** の型番末尾ルールを根拠列に書く）。\
   **本家にパワー列・テーパー（アクション）列が無い DAIWA ロッド**は **`## 行別 Pattern 期待値`** に\
-  **`infer_power…` / `infer_action…` の行別表**を置く（**§5.1.1** 項 4・**`SKILL-SHARED.md` §5.1**）。\
+  **`infer_power…` / `infer_action…` の行別表**を置く（**§5.1.1** 項 4・**`ai-spec-check-report` §5.1**）。\
   実行ごとの判定・課題は **`ai_spec_check_report.md`** のみ。
-- 作業用出力先: FishTrack リポ内 `temp/`（完了後に当該作業分を削除。**`SKILL-SHARED.md` §10**）。**次回も使う補助スクリプト**は **`SKILL-SHARED.md` §3.2 `helpers/`**（削除しない）
+- 作業用出力先: FishTrack リポ内 `temp/`（完了後に当該作業分を削除。**`ai-spec-check-report` 本 SKILL §10（後片付け）**）
 
 myrules を厳守して作業してください。
 
-**用語（本文）**: 本 SKILL および **`SKILL-SHARED.md`** の追記・改稿では **「総覧」** を**使わない**（**`SKILL-SHARED.md` の「用語（本スキル群の本文）」節**に従う）。
+**用語（本文）**: 本 SKILL および **`ai-spec-check-report`** の追記・改稿では **「総覧」** を**使わない**（**`ai-spec-check-report` の「用語（本スキル群の本文）」節**に従う）。
 
-**ユーザー指摘の反映**: レポート構成・§8 の体裁・dump 手順・lint・CursorLog 連携などへの**指摘**があった場合は、**同一セッションで** **`SKILL-SHARED.md`** または **`ai-local-spec-check/SKILL.md`** を修正する（\
+**ユーザー指摘の反映**: レポート構成・§8 の体裁・dump 手順・lint・CursorLog 連携などへの**指摘**があった場合は、**同一セッションで** **`ai-spec-check-report`** または **`ai-spec-check-local/SKILL.md`** を修正する（\
   dev-workspace **myrules**「**ユーザー指摘に基づくルール・SKILL の育成**」）。
 
 **本番** FishTrack（EC2 上の Docker / `app` サービス）のログから、最新の
 「AI補助スペック取り込みプレビュー結果」を取得し、ログ中の `resolvedUrl` に
 アクセスして本家ページと突き合わせ、取り込み漏れ・想定外・誤変換がないかを
-判定してください。問題があれば、根本原因と**対策案**（即時／中期／長期）を**実装を加味し**、
-**新たに**検討する**追加**対策に**絞って**（**`SKILL-SHARED.md` §8**・**§8.1**。**既存**実装の**列挙**は**正本 §6 に含めない**）具体的に
+判定してください。問題があれば、根本原因と**対策案**（優先度：高／中／低）を**実装を加味し**、
+**新たに**検討する**追加**対策に**絞って**（**`ai-spec-check-report` §8**・**§8.1**。**既存**実装の**列挙**は**正本 §6 に含めない**）具体的に
 まとめ、**各対策の期待効果**を併記してください。エージェントがターミナルで実行すること。手順の提示だけで
 終わらないでください。
 
-**報告の出し分け**: 表・分類・対策の**全文**は **`SKILL-SHARED.md` §9** の
+**報告確定チェック**：Obsidian に **`ai_spec_check_report.md`** を **`Write` で上書き**する直前、`ai-spec-check-report` SKILL **§8.1 の「報告直前チェックリスト」**で **`## 4.`/`## 5.` 消込**を確認する。\
+**§4 からの `対策 N` 削除**は **`FishTrack`/`src`・テストへの反映完了がトリガー**（**再プレビュー未取得でも可**。**正本「`対策 N` のクローズ削除」**・**§8.1**）。
+
+**報告の出し分け**: 表・分類・対策の**全文**は **`ai-spec-check-report` §9** の
 **Obsidian 上の** `ai_spec_check_report.md`（**固定絶対パス**、同 §9.0）にのみ書く。**チャット**には **§9.4**
 の要約（パス・数行サマリ）で足りる。同一本文をチャットに再掲載しない。
 
@@ -72,20 +77,20 @@ myrules を厳守して作業してください。
 
 ## Markdownlint（lint 無効化の禁止）
 
-- **無断での lint 無効化は禁止**（`markdownlint-disable` コメント、設定の勝手な緩和・除外など）。**正本・手順は `SKILL-SHARED.md` §9.0.1**。本文修正・折り返しで解消し、必要なときは**ユーザーの明示承認**のうえで限定的に対応する。
+- **無断での lint 無効化は禁止**（`markdownlint-disable` コメント、設定の勝手な緩和・除外など）。**正本・手順は `ai-spec-check-report` §9.0.1**。本文修正・折り返しで解消し、必要なときは**ユーザーの明示承認**のうえで限定的に対応する。
 
 ## 使用タイミング
 
 - ユーザーが AI 補助スペック取り込みのプレビュー品質を**本番ログ**で確認したいとき
 - `ai-spec-check`（本 SKILL）の実行依頼、「AI スペック取り込みプレビュー検証」、「プレビュー結果を本家と照合」等の指示があったとき（**本番**）
-- **ローカル Docker**のみのときは **`ai-local-spec-check`** を使う
+- **ローカル Docker**のみのときは **`ai-spec-check-local`** を使う
 
 ## 補足（DAIWA ロッド）
 
 - **`X45` と `X45フルシールド`** は**併記しうる**（**トレードオフではない**）。照合・`ai_spec_check_report.md` で **🔴／🟡** の根拠に**しない**。\
-  **詳細は `SKILL-SHARED.md` §6A C**。
+  **詳細は `ai-spec-check-report` §6A C**。
 - **`pieces` の `N（テレスコピック）`**: **製品表の継数が数値のみ**かつ **型番コアがテレスコ振出**（全長ブロック直後が **`T`**）のとき、プレビュー **`pieces`** が **`6（テレスコピック）`** 等でも **FishTrack 仕様**（Obsidian **`05_ai_spec_import.md`**）。\
-  **🟡（表記ゆれ）とはしない**。**詳細は `SKILL-SHARED.md` §6A E**。
+  **🟡（表記ゆれ）とはしない**。**詳細は `ai-spec-check-report` §6A E**。
 
 ## 0. 前提・環境
 
@@ -93,7 +98,8 @@ myrules を厳守して作業してください。
 - **作業用ファイル**（`tmp_latest_preview.json`・`tmp_prod_preview_grep.log` 等）は
   リポジトリ直下に置かず、**`temp/`** 配下に集約する（例: `temp/tmp_latest_preview.json`）。
   `dump_spec_import_preview.py --out` は親ディレクトリを自動作成する。
-  **本作業の作業完了後**（Obsidian レポート・**`SKILL-SHARED.md` §13** CursorLog まで済んだ時点）に、当該実行で用いた **`temp/` 配下の作業用ファイルはすべて削除**する（**§10**）。
+  **本作業の作業完了後**（Obsidian レポートと **`obsidian-cursor-log` による CursorLog** まで済んだ時点）に、\
+  当該実行で用いた **`temp/` 配下の作業用ファイルはすべて削除**する（**`ai-spec-check-report` SKILL §10（後片付け）**）。
 - 本番確認手順の詳細: dev-workspace `.cursor/skills/ec2-rds-connection/SKILL.md`、
   および（人間用）Obsidian `DevProject/guidelines/EC2_SSH接続手順.md`
 - 本番 EC2 の**現行**インスタンス ID・ホスト: GitHub Secrets / AWS コンソールで
@@ -198,7 +204,8 @@ PowerShell の標準リダイレクト（`> file.txt`）は日本語環境で UT
 - **リモートで `2>/dev/null` は付けない**（`python -c` にシェルリダイレクトを含めない
   ため。stderr への grep 注意書きは無視し、常設 `dump` の入力を正しく保つ）。
 - 上記を **`temp/_fetch_*.py`（数十行）**にまとめて試してもよい。
-  myrules「一括置換用スクリプト」とは別。**使い捨て**なら作業完了後 **`SKILL-SHARED.md` §10** で削除。**次回以降も同じ手順で使う**なら **`SKILL-SHARED.md` §3.2** の **`helpers/`** へ昇格し、**§3.2 登録一覧**に 1 行追記する（`temp/` 側の重複は削除）。
+  myrules「一括置換用スクリプト」とは別（**単一ファイル**の補助に限る）。\
+  **使い捨て**なら作業完了後 **`ai-spec-check-report` 本 SKILL §10（後片付け）** で削除する。
 
 **`ssh | python --stdin`**: **検証用・小ログ専用**。本番の多行 grep 抜粋では
 **使わない**。0 件なら**疑わず**上記 `write_bytes` + `--file` へ切替。
@@ -292,7 +299,7 @@ python scripts/dump_spec_import_preview.py --kind failure --count
 python scripts/dump_spec_import_preview.py --kind failure --list --limit 10
 ```
 
-**`--kind` / `--count` / `--list` / `--order` / 0 件時の切り分け**の詳細は **`SKILL-SHARED.md` の §3.1** に集約した（本番・ローカル共通）。
+**`--kind` / `--count` / `--list` / `--order` / 0 件時の切り分け**の詳細は **`ai-spec-check-report` の §3.1** に集約した（本番・ローカル共通）。
 
 ## 3. 最新 1 件を JSON として取得
 
@@ -324,23 +331,32 @@ python scripts/dump_spec_import_preview.py --kind failure --latest --out temp/tm
 
 **ロッド・全長照合（レポート必須）**: `category = "rod"` かつ成功プレビューの **`ai_spec_check_report.md`** では、\
 **本家 全長（m）** と **`lengthFt` / `lengthIn`** の行別表を **必ず**書く。\
-正本は **`SKILL-SHARED.md` §6A B**・**§11.1**・**`ai-local-spec-check` の「全長照合の必須要件（ロッド）」**。
+正本は **`ai-spec-check-report` §6A B**・**§11.1（本文構成）**・**Obsidian 正本 §2.2**・**`ai-spec-check-local` の「全長照合」**。
+
+**ロッド・ルアー重量照合（レポート・`ai-spec-notes` 必須）**: **本家表にルアー重量列がある** `category = "rod"` 成功プレビューでは、\
+**本家ルアー重量**（**DAIWA 複数列時は §6A B どおり oz 列のみ**）と **`lureWeightMinOz` / `lureWeightMaxOz`** の**行別表**を\
+**`ai_spec_check_report.md`** に **必ず**書く。\
+**`ai-spec-notes`** の **`## 行別スペック`** にも **本家値を行別で載せる**（**PE（号）列とライン lb を「いずれも突合不要」と一括しない**。**lb は §6A B**）。\
+正本は **`ai-spec-check-report` §5.1**・**§6A B**・**§11.1（本文構成）**・**Obsidian §2.4**・**`ai-spec-check-local` の「ルアー重量照合」**。
+
+**ロッド・ライン（lb）照合（`ai-spec-notes`・条件付き必須）**: 本家表に **lb レンジ列**（**適合ライン ナイロン（lb.）**、**第三者 `ライン(lb.)`** 等）がある\
+`category = "rod"` 成功プレビューでは、**本家 lb 原文**と **`lineMinLb`／`lineMaxLb`** の**行別**照合を **`ai-spec-notes`**（およびレポート方針に従い正本）へ載せる。\
+**PE（号）** だけを任意扱いする記述と **混同しない**。正本は **`ai-spec-check-report` §5.1**・**§6A B**。
 
 **ロッド・テーパー／`action` 照合（レポート必須・DAIWA 等）**: 本家表に **テーパー**列がある \
 `category = "rod"` 成功プレビューでは、**本家テーパー（原文）** と **`rows[].action`** の**行別表**を **必ず**書く。\
-正本は **`SKILL-SHARED.md` §6A B**（**Obsidian 正本 … テーパー／アクション・DAIWA ロッド**）・**§11.1**。
+正本は **`ai-spec-check-report` §6A B**（**テーパー／アクション**）・**§11.1**・**Obsidian §2.3**。
 
 **ロッド・`power` 照合（レポート必須）**: `category = "rod"` 成功プレビューでは、本家表に **パワー列があるときは本家原文 vs `rows[].power`**、**列が無いときは期待 `power`（根拠） vs `rows[].power`** の**行別表**を **必ず**書く（**テーパー／`action` と同義務**）。\
-正本は **`SKILL-SHARED.md` §6A B**・**§11.1**・**`ai-local-spec-check` の「パワー照合の必須要件（ロッド）」**。
+正本は **`ai-spec-check-report` §6A B**・**§11.1**・**Obsidian §2.3（power）**・**`ai-spec-check-local` の「パワー照合」**。
 
 ## 4. 以降の手順（共通・正本）
 
-**§3.1**（`dump_spec_import_preview.py` の CLI 早見・0 件切り分け）および **§4〜13**
-（JSON サマリ → 本家照合 → レポート → 後片付け → 禁止事項 → CursorLog）は、
+**§3.1**（CLI 早見・0 件切り分け）および **当該 SKILL §4〜§13（本 SKILL 内の章番号**。Obsidian **`ai_spec_check_report.md`** 本体は **§11.1**・**正本運用 §1〜§6**）は、\
 **本番・ローカル Docker で共通**である。
 
 次を **Read** し、**§3.1**（必要時）および **§4** から順に実行する。
 
-`d:\OneDrive\git_work\dev-workspace\.cursor\skills\ai-spec-check\SKILL-SHARED.md`
+`d:\OneDrive\git_work\dev-workspace\.cursor\skills\ai-spec-check-report\SKILL.md`
 
-**補足**: **`ai-local-spec-check`** から実行するときも **同一の `SKILL-SHARED.md`** を参照する（パスは上記と同じ）。
+**補足**: **`ai-spec-check-local`** から実行するときも **同一の `ai-spec-check-report`** を参照する（パスは上記と同じ）。

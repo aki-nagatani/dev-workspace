@@ -166,7 +166,7 @@ description: Cursorの作業内容をObsidianのCursorLogに記録する。作�
        **完了条件は `Summary: 0 error(s)`**。既存の別行の MD013 等が残っていれば、**同じ編集セッションでまとめて解消**する（\
        `markdownlint-fix` SKILL の「同ファイルのエラー一括」と同趣旨）。**例外**: ユーザーが「この行だけ」「他は触らない」と明示したときはその範囲に従う。  
    - MD013（行長超過）等のエラーが出た場合は、`markdown-editing` / `markdownlint-fix` SKILL に従って修正する（句読点・括弧前で改行、リスト継続は4スペース）  
-   - **禁止**: **ユーザー明示なく** `markdownlint-disable` コメントや設定の勝手な緩和・除外で Lint を迂回しない（**`ai-spec-check` の `SKILL-SHARED.md` §9.0.1** と同旨）。  
+   - **禁止**: **ユーザー明示なく** `markdownlint-disable` コメントや設定の勝手な緩和・除外で Lint を迂回しない（**`ai-spec-check-report` の §9.0.1** と同旨）。  
    - 修正後、再検証してエラーゼロであることを確認してから完了とする
 
 ### CursorLog 編集時の再発防止（「一部だけ解消」が起きうる理由と対策）
