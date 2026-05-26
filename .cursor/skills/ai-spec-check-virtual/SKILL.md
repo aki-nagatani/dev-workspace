@@ -10,6 +10,8 @@ description: >-
   必ず実行）。本番 SSH は使わない。
   ai-spec-check-virtual / virtual preview / ローカル Docker でスペック取り込みを試したい
   / プレビュー仮実行 の依頼時に使用する。
+  **`ai-spec-check-report-action` 完了後の効果測定（必須。正本 `resolvedUrl` 継承）**。
+  **本番 `ai-spec-check`・コミット・デプロイは行わない**（`ai-spec-check-report-action` SKILL 参照）。
 ---
 
 # AI スペック取り込みプレビュー検証 SKILL（ローカル Docker・仮実行）
@@ -24,6 +26,15 @@ description: >-
 - **DB へは保存しない**。新規メーカー候補があっても INSERT しない（transient `Manufacturer`）。
   既存マスタは読み取りのみ。終了時 `db.session.rollback()` を必ず実行（スクリプト内）。
 - **本番 EC2 / RDS には触れない**。本 SKILL は完全にローカル Docker のみ。
+
+### `ai-spec-check-report-action` からの呼び出し（効果測定・必須）
+
+**`ai-spec-check-report-action` SKILL** で **§4 対策を `FishTrack` `src`／`tests` に反映した同一セッション**では、
+ユーザーが **virtual を明示しなくても**、エージェントは **手順 7 として本 SKILL で効果測定を必ず実行する**
+（正本 **`resolvedUrl`** 継承）。**実施不能時のみ** action SKILL の「効果測定の例外」に従う。
+
+- **やること**: virtual 実行 → **`ai-spec-check-report` SKILL** で **§2〜§3・§6** 更新（§4 消込は action 側で済んでいる想定）。
+- **やらないこと**: **`ai-spec-check`（本番ログ）**、**`git commit`／`push`**、**本番デプロイ**（action SKILL **「効果測定で禁止すること」**と同じ）。
 
 エージェントは本ファイルを Read したうえで **`ai-spec-check-report` を Read** し、ターミナル実行・
 本家突き合わせ・Obsidian 正本・markdownlint・作業用 `temp/` 後片付け・**obsidian-cursor-log**

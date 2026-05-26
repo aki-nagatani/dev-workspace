@@ -163,8 +163,12 @@ python scripts/dump_spec_import_preview.py --kind failure --latest --out temp/tm
 ## DAIWA ロッド・照合の補足（X45／`pieces`）
 
 - **`X45` と `X45フルシールド`** は**トレードオフではなく併記しうる**。**併記のみ**で **🔴／🟡** としない（詳細は **`ai-spec-check-report` §6A C**）。
-- **`pieces` の `N（テレスコピック）`**: **製品表の継数が数値のみ**かつ **型番コアがテレスコ振出**（全長ブロック直後が **`T`**）のとき、プレビューが **`6（テレスコピック）`** 等でも **FishTrack 仕様**（**`05_ai_spec_import.md`**）。\
-  **🟡（表記ゆれ）とはしない**。**詳細は `ai-spec-check-report` §6A E**。
+- **`pieces` の `N（テレスコピック）`（全メーカー共通）**: テレスコピック（振出し）と確定し、本家 **継数が数値のみ**のとき、期待・プレビュー正は **`N（テレスコピック）`**（全角括弧・**`05_ai_spec_import.md`**）。\
+- **`action`（テーパー略号・全メーカー共通）**: 突合ノート／CSV の期待およびプレビュー照合正は **`F`／`RF`／`RS`／`XF` 等**（**`Fast`・`Regular Fast` 長文は載せない**）。\
+  本家 **Action** 列は原文のまま比較表に載せ、期待は略号（例: **`Regular Fast`／`Regular first`（typo）→ `RF`**）。詳細は **`ai-spec-check-report` §6A B**。
+- **`releaseYear`（販売年・全メーカー共通）**: 本家に発売年根拠があるときは **`ai-spec-notes` の行別期待**と **`rows[].releaseYear`** を **§2.7** で突合（**根拠なしは全行 null 期待で 🔵**）。\
+  **価格脚注の改定日だけ**は根拠にしない。詳細は **`ai-spec-check-report` §6A E**・**`05_ai_spec_import.md`**（横断フィールド **`releaseYear`**）。
+  判定例（DAIWA の **`T`**、LEGIT **TELECAST** 等）は **`ai-spec-check-report` §6A E**。**数値のみのプレビュー**は不一致（**🟡 にしない**）。
 
 ## 4. 以降の手順（共通・正本）
 
