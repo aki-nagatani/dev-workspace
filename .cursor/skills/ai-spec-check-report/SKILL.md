@@ -54,6 +54,8 @@ description: >-
     **`## 4.` から当該 `対策 N` を削除**する（**正本 `ai_spec_check_report.md` 冒頭「`対策 N` のクローズ削除」**・\
     **dev-workspace `myrules.mdc` ドキュメント配置**・**本 SKILL §8.1**）。\
     **効果の実測**は **同一 `resolvedUrl` の再プレビュー後の §2〜§3** と **§6** に書く。
+  - **推定 API コストの漏れ（再発防止）**: **`usage` 合算だけ `## 1.` に書き、USD・円・為替・注記を載せない**こと。\
+    **`previewBuildElapsedSeconds` や突合表を先に書いてコスト算定を後回し**にし、**レポート確定・ユーザー返答まで未実施**のまま終えること（**§4「推定 API コスト」**・**§8.1 チェックリスト項 2**）。
 - **必須（§3 まで終えた直後〜正本 §4 記入前）**
   1. **§3 の各課題**（🔴・解析阻害・「前回実行との差」の**継続**項）ごとに、**いまも残る理由**を\
     **実装済みが効いていない／別経路／観測不足**の観点で**短文整理**する。\
@@ -74,7 +76,8 @@ description: >-
 **本 SKILL を Read したあとの全体フロー**（`ai-spec-check` / `ai-spec-check-local` / `ai-spec-check-virtual` のいずれからでも）で、次の順序と境界を守る。
 
 1. **まず dump 検証を完了させる**: `dump_spec_import_preview.py` による取得、**本 SKILL §4** 以降のサマリ確認・本家照合（**§5**〜**§6**）、\
-  Obsidian 正本 **`ai_spec_check_report.md`** の **§1**〜**§3**（対象ログ・**§2 本家突合**・差異の分類）までを**先に**行う。**推測や対策の議論だけ**で **FishTrack コード**・**仕様**・**テスト**に**着手しない**。
+  Obsidian 正本 **`ai_spec_check_report.md`** の **§1**〜**§3**（対象ログ・**§2 本家突合**・差異の分類）までを**先に**行う。**推測や対策の議論だけ**で **FishTrack コード**・**仕様**・**テスト**に**着手しない**。\
+  **§1 を書く／更新するとき**は **`usage` 確認の直後**に **§4「推定 API コスト」**で算定し、**`estimatedLlmCost*` 4 項目を §1 に含めてから** §2 以降へ進む（**コストだけ最後に足す運用は禁止**）。
 2. **不備への対策は検討し、レポートにまとめるのみ**: 差分に対する**対策案**（優先度：高／中／低・期待効果）は\
   **本 SKILL §8**・正本 **`ai_spec_check_report.md` の §4「対策案」** に**記載**する。\
   **記載＝前回コピペではなく**、上記 **「本 SKILL を Read した時点の必須（対策の練り直し）」**に従い\
@@ -98,6 +101,26 @@ description: >-
 - **`ai-spec-check/SKILL.md`**、**`ai-spec-check-local/SKILL.md`**、**`ai-spec-check-virtual/SKILL.md`**、および**本 SKILL（`ai-spec-check-report/SKILL.md`）**の追記・改稿では、本家ページの説明ブロックを指す語として **「総覧」** を**使わない**。\
   **『ダイワテクノロジー』等の共通技術説明**・**ページ上部の技術紹介**・**共通説明**（脚注の有無を添える）など、**読み手がどの本文ブロックを意味するか**分かる表現にする。
 - **Obsidian**（`ai_spec_check_report.md`、FishTrack 仕様、`ai-spec-notes`）でも**同じ方針**（補足は **§5.1**）。
+
+## ロッド `modelName` 型番コアの記号正規化（全メーカー共通・突合・🔵）
+
+**対象**: **DAIWA・SHIMANO・NORIES・RAID JAPAN・LEGIT** 等、**ロッド**の **`rows[].modelName`** 突合（**リールの `modelName` は本節の対象外**）。
+
+| 本家・原文の典型 | FishTrack 出力・突合期待 | レポート判定 |
+| --- | --- | --- |
+| **`⁺`（U+207A・上付きプラス）** | **ASCII `+`** | **🔵**（**同一視**。**⁺→+ は正規化として OK**） |
+| **`+`（ASCII）** | **`+`** | **🔵** |
+| **`／`（U+FF0F・全角スラッシュ）** | **ASCII `/`** | **🔵**（**同一視**。**／→/ は正規化として OK**） |
+| **`/`（ASCII）** | **`/`** | **🔵** |
+| **型番と `【コードネーム】` の間の半角スペース** | **スペースなし**（例 **`C66M【WOLF】`**） | **🔵**（**同一視**） |
+
+**FishTrack コード**: **`tackle_spec_import_normalize_preview`** の **`normalize_model_name_plus_slash_symbols`**・\
+**`normalize_model_name_codename_bracket_spacing`**（**`_normalize_model_name`** およびメーカー別 postprocess で使用。\
+**RAID** は **`normalize_raid_japan_model_name_display`** が委譲）。
+
+**検証時の禁止**: 本家が **`⁺`／`／`**・プレビュー・突合ノート期待が **`+`／`/` のみ**の差分を **🔴 にしない**（**型番コアは同一**）。\
+**型番と `【】` の間に本家でスペースがあっても、FishTrack 出力・突合期待はスペースなし**を正とし **🔵**（**突合ノートの期待 `modelName` は ASCII `+`・`/`・スペースなし連結**を正とする。\
+本家原文に **`⁺`・`／`・スペースあり**を残す注記は可）。
 
 ## DAIWA ロッド 英・略語・日本語言い換え正本一覧（TECH／ブランク素材・canonical・混同禁止）
 
@@ -179,8 +202,10 @@ description: >-
 **成功プレビュー**（`temp/tmp_latest_preview.json`）:
 
 ```powershell
-python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8'); p=json.load(open('temp/tmp_latest_preview.json',encoding='utf-8')); print('manufacturer:', p.get('manufacturer')); print('seriesName:', p.get('seriesName')); print('category:', p.get('category')); print('resolvedUrl:', p.get('resolvedUrl')); print('rowsCount:', p.get('rowsCount')); u=p.get('usage') or {}; print('usage:', 'promptTokens=', u.get('promptTokens'), 'completionTokens=', u.get('completionTokens'), 'totalTokens=', u.get('totalTokens')); print('previewBuildElapsedSeconds:', p.get('previewBuildElapsedSeconds'))"
+python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8'); p=json.load(open('temp/tmp_latest_preview.json',encoding='utf-8')); print('manufacturer:', p.get('manufacturer')); print('seriesName:', p.get('seriesName')); print('category:', p.get('category')); print('resolvedUrl:', p.get('resolvedUrl')); print('rowsCount:', p.get('rowsCount')); print('llmModel:', p.get('llmModel')); u=p.get('usage') or {}; print('usage:', 'promptTokens=', u.get('promptTokens'), 'completionTokens=', u.get('completionTokens'), 'totalTokens=', u.get('totalTokens')); print('previewBuildElapsedSeconds:', p.get('previewBuildElapsedSeconds'))"
 ```
+
+**上記サマリの直後（同一ターン・必須）**: 下記 **「推定 API コスト」** に従い **USD・円・為替・注記**を算定し、**Obsidian 正本 `## 1.`** に書き込む（**チャット要約 §9.4** にも **USD・円の合計 1 行**）。**サマリだけでレポート確定しない**。
 
 **メーカー・シリーズ（検証・レポート記載・必須）**:
 
@@ -203,7 +228,21 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 
 **推定 API コスト（USD・円・§1 必須）**:
 
-- **`usage` と `model`（または `llmModel`）が揃ったら**、**同一ターン**で **§1「対象ログ」**に **推定コスト（USD・円・為替・注記）を計 4 行以内**で載せる（**§4 サマリ段階で算定してよい**）。
+**発火（省略禁止）**:
+
+- **成功プレビュー**で JSON に **`usage`** があり、**`promptTokens` と `completionTokens` の合算が 0 より大きい**とき → **必ず算定**して **§1** に載せる。\
+  **`llmModel` 欠落時は `FISHTRACK_SPEC_IMPORT_MODEL` 既定 `gpt-5.4-mini` を `estimatedLlmCostNote` に明記**。
+- **算定タイミング**: **§4 サマリで `usage` を確認した直後**（**§5 本家 `WebFetch`・§2 突合の前**）。**レポート全文を書き終えてからコストだけ追記**は**最終手段**とし、**通常は §1 初稿に同梱**する。
+- **失敗プレビュー**で **`llmExchanges` 等からトークンが復元できる**ときも同様（**復元不能**なら §1 に **`estimatedLlmCostNote`: 算定不可（理由 1 行）**）。
+
+**典型漏れ（禁止）**:
+
+- **`usage` 合算 1 行だけ**書いて **`estimatedLlmCostUsd` 等を空のまま**確定する。
+- **`totalTokens` のみ**から概算し、**入力／出力内訳・単価表・為替**を書かない。
+- **前回レポートのコスト行を複写**し、**当ターンの `usage` と不一致**のまま残す。
+
+**記載（§1 表または直後・計 4 行以内）**:
+
 - **単価の正本**: [OpenAI API Pricing](https://developers.openai.com/api/docs/pricing)（**標準処理**・**1M トークンあたり USD**）。\
   **算定日**（**JST の当日 `YYYY-MM-DD`**）を **`estimatedLlmCostNote`** に必ず書く（**プレースホルダー禁止**）。
 - **FishTrack 既定モデルと標準単価（2026-05-23 時点・要更新）**:
@@ -305,7 +344,8 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 - **本家製品スペック表**から、**プレビュー `rows[]` と同じ行粒度**で、**比較に使う数値・JAN 等をノート内に必ず書く**（表または行ごとの箇条書き）。**`ai_spec_check_report.md` や別ノートへの参照だけ**にして **本家数値を載せない**ことは**禁止**（次回 SKILL が **単体のノート Read だけ**で突合できなくなるため）。
 - **ロッド・`rows[].modelName` の突合**: **`resolvedUrl` ごとの `ai-spec-notes`** に、FishTrack プレビューと**行別に照合する `modelName` の期待文字列**を**必ず書く**（**省略禁止**）。\
   **本家がコードネーム（愛称）を品名と別セルで持つときは** `型番コア【コードネーム】` とする（**全角 `【】`**。**スティーズ／ハートランド**は **`rod-daiwa/`** 配下ノートの **`### モデル名（スティーズ・ハートランド共通）`** に従う）。\
-  **コードネームが本家に無く型番のみと確定できるページ**は **型番コアのみ**でよい。**突合方針に命名規則だけ書き、行別の具体値を書かない**ことは**禁止**（**`## 行別スペック`** の表に **`modelName期待`** 列を置くか、行別箇条書きで同等の情報を載せる）。
+  **コードネームが本家に無く型番のみと確定できるページ**は **型番コアのみ**でよい。**突合方針に命名規則だけ書き、行別の具体値を書かない**ことは**禁止**（**`## 行別スペック`** の表に **`modelName期待`** 列を置くか、行別箇条書きで同等の情報を載せる）。\
+  **型番コアの `⁺`・全角 `／` は ASCII `+`・`/` に正規化**（上記 **「ロッド `modelName` 型番コアの記号正規化」**。**突合は 🔵**）。
 - **ロッド**で本家表に **ルアー重量**列があるときは、**`## 行別スペック`** に **本家ルアー重量を行別で必ず含める**（**§5.1.1** 項 3・**§6A B**・**正本 §2.4** と整合）。\
   **ライン（lb）**（本家のナイロン lb レンジ、または第三者二段ヘッダの **`ライン(lb.)`** 列）も **ルアー oz とは別キー**として **`## 行別スペック` に載せる**（**§6A B** 「**`lineMinLb`／`lineMaxLb`**」）。\
   **PE（号）列**と**まとめて「突合から全面省略」にしない**（PE のみ任意、本 SKILL **`## 任意項目・比較除外`** 節のノート側と整合）。
@@ -892,15 +932,18 @@ python -c "import json,sys,io; sys.stdout=io.TextIOWrapper(sys.stdout.buffer,enc
 
 1. **`## 4.`**：**対応表**・**優先度ブロック本文**を **Read**。**`実装済`/`コード反映済`/履歴のみ**の **`対策 N` 説明が残っている**ときは **§8.1 どおり削除**。**削除と同じ編集バッチで**、`対策 M` が要るときだけ追記。**要らないとき**＝**次が再プレビュー実測のみ**で **`## 5.` にそれを書いた**とき（表だけ消して本文だけ古いことは禁止）。\
    **§3「当ターン」の 🔴・🟡 各箇条**に **§4 の `対策 N` が 1 件以上対応**しているか**検算**（**空の優先度ブロック**・**「なし」のみ**は**違反**）。
-2. **`## 5.`**：**§4 に無い **`対策 N` だけ**を指していない**。完了済みのみの項目を **削除**し **(1)〜(n)** を振り直したか。
-3. **`FishTrack` の `src`／`tests` を §4 の `対策 N` に紐づけて変更したターン**（**ソース反映ターン**）：\
+2. **`## 1.` 推定 API コスト（必須）**：当ターン JSON の **`usage` 合算が 0 より大きい**とき、**§1** に\
+   **`estimatedLlmCostUsd`・`estimatedLlmCostJpy`・`estimatedLlmCostFx`・`estimatedLlmCostNote`**（または**同等の 4 行**）があるか **Read** で確認。\
+   **無ければ §4「推定 API コスト」**で**算定してから**確定（**`usage` 行だけ**は**違反**）。**算定不可**のときは **`estimatedLlmCostNote` に理由 1 行**。
+3. **`## 5.`**：**§4 に無い **`対策 N` だけ**を指していない**。完了済みのみの項目を **削除**し **(1)〜(n)** を振り直したか。
+4. **`FishTrack` の `src`／`tests` を §4 の `対策 N` に紐づけて変更したターン**（**ソース反映ターン**）：\
    **`## 6.` 実装記録**・**正本を返答前に Read** 等の追加チェックは **`ai-spec-check-report-action/SKILL.md`** の\
    **「報告直前チェックリスト（本 SKILL 用）」** を正とする。\
-   dump のみで正本を確定するターンでは **本条 1〜2** で足りる場合が多い。
-4. **`§2.8` 行別突合**: 突合ノート **`ai-spec-notes`** と **`rows[]`** を照合し、**行別完全一致が 16/16 でない**ときは **§2.8 に不一致型番表**（不足・過剰・`blankMaterial`）を必ず書く。\
+   dump のみで正本を確定するターンでは **本条 1〜3**（**項 2＝コスト**を含む）で足りる場合が多い。
+5. **`§2.8` 行別突合**: 突合ノート **`ai-spec-notes`** と **`rows[]`** を照合し、**行別完全一致が 16/16 でない**ときは **§2.8 に不一致型番表**（不足・過剰・`blankMaterial`）を必ず書く。\
    **脚注観点別件数だけ 0** でも **「行別未達」だけ**で終えない（**§2.7 の `blankMaterial` を行別で評価**し、ページ一括 🔵 と混同しない）。\
    **ノート期待は揃いプレビューのみ不足**（**§5.1「取りこぼしの優先順位」**）→ **§2.8 はプレビュー不足として記載**し、**ノートを削らず §4 に対策**を書く。
-5. **`## 6.` 並び**: **`## 6.` 直下**の各 `- **YYYY-MM-DD HH:mm:ss` 行**を上から読み、タイムスタンプが**昇順（単調非減）**か確認。**先頭が最新・末尾に過去**（降順）や**途中だけ逆行**なら **§8.1「正本 `## 6.` の並び順」**どおり**昇順に並べ替えてから**確定する。
+6. **`## 6.` 並び**: **`## 6.` 直下**の各 `- **YYYY-MM-DD HH:mm:ss` 行**を上から読み、タイムスタンプが**昇順（単調非減）**か確認。**先頭が最新・末尾に過去**（降順）や**途中だけ逆行**なら **§8.1「正本 `## 6.` の並び順」**どおり**昇順に並べ替えてから**確定する。
 
 ### 8.2 記載例（粒度の目安）
 
@@ -1062,6 +1105,8 @@ Remove-Item temp/tmp_latest_preview.json, temp/tmp_latest_failure.json, temp/tmp
 1. **対象ログ**（`## 1.`）: 取得時刻 / **`manufacturer`** / **`seriesName`** / category / resolvedUrl /
    pageTitle / rowsCount / 確定状態（DB 保存済みか）。**`usage`**
    （**`promptTokens`・`completionTokens`・`totalTokens`**）および **`previewBuildElapsedSeconds`**（**秒**。**本 SKILL §4**・**「AI の経過時間」**）を確認し、**正本 JSON と整合**する**一行以上**を本文に含める（**経過秒の欠落は明示**）。\
+   **`usage` 合算が 0 より大きい成功プレビュー**では、**同じ `## 1.`** に **§4「推定 API コスト」**どおり\
+   **`estimatedLlmCostUsd`・`estimatedLlmCostJpy`・`estimatedLlmCostFx`・`estimatedLlmCostNote`**（**計 4 行以内**）を**必ず**含める（**§8.1 チェックリスト項 2**）。\
    **常設（必須）**: **フロントマター直後の h1 の次**、または **`## 1.` の本文直後**に\
    **「運用ルール（正本 §1〜§6 の固定）」** を置く（正本 **`ai_spec_check_report.md`** と**同じ文言**。正本側は **`###`** のサブ構成表を含む）。\
    **更新時は本節を削除・要約置換しない**（**§9.2「運用ルール節は削除禁止」**）。\
@@ -1140,13 +1185,14 @@ Remove-Item temp/tmp_latest_preview.json, temp/tmp_latest_failure.json, temp/tmp
   終始すること（**§8.1** 違反）
 - **対策だけを列挙し期待効果を書かない**こと（**§8.1**「期待効果」違反）
 - **本家**ページとプレビューの**不一致**を 🟡 / 🔵 へ**格下げ**して報告すること（**§7** 違反）
+- **成功プレビュー**で **`usage` 合算がある**のに、正本 **§1** と **§9.4 チャット要約**の**いずれか**から **推定 API コスト（USD・円）**を**省略**すること（**§4「推定 API コスト」**違反）
 
 ## 13. CursorLog 更新（必須）
 
 - 作業完了後、`obsidian-cursor-log` SKILL を使用して当日の CursorLog
   （`D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM/YYYY-MM-DD.md`）
   に記録する
-- 記録内容: 対象 URL・**メーカー**・**シリーズ**（**`manufacturer` / `seriesName`**）・**`usage` 合算**・**`previewBuildElapsedSeconds`（秒）**・差異サマリ・提案した対策の要点・
+- 記録内容: 対象 URL・**メーカー**・**シリーズ**（**`manufacturer` / `seriesName`**）・**`usage` 合算**・**推定 API コスト（USD・円・1 行）**（**算定したとき**）・**`previewBuildElapsedSeconds`（秒）**・差異サマリ・提案した対策の要点・
   **§9.0** の **Obsidian 絶対パス**（`D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`）・同一 URL 時の **§3「前回実行との差」**要約・
   ユーザーの合意状況
 - タグ候補: `#fishtrack` `#spec-import` `#ai-preview-check`

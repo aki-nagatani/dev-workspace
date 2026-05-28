@@ -167,7 +167,7 @@ spec_check_mode: "virtual-local-docker"
 
 特に次の節は**必ず**遵守する（仮実行でも変わらない）。
 
-- §4 JSON サマリ確認（`manufacturer` / `seriesName` / `usage` / `previewBuildElapsedSeconds` 必須）
+- §4 JSON サマリ確認（`manufacturer` / `seriesName` / `usage` / `previewBuildElapsedSeconds` 必須）→ **直後に §4「推定 API コスト」**で算定し **§1 に `estimatedLlmCost*` 4 項目**（**漏れ禁止**）
 - §5.1 `ai-spec-notes`（**プレビュー突合用の本家データ**を必ずノート化。判定は書かない）
 - §6A ロッド検証 5 観点（全長・ルアー重量・テーパー・パワーの**行別表必須**）
 - §7 差異の分類（**本家との不一致はすべて 🔴**。🟡 / 🔵 へ降格しない）
@@ -190,7 +190,7 @@ spec_check_mode: "virtual-local-docker"
 
 - 入力 URL
 - `manufacturer` / `seriesName` / category / rowsCount
-- `usage` 合算・`previewBuildElapsedSeconds`
+- `usage` 合算・**推定 API コスト（USD・円・1 行）**・`previewBuildElapsedSeconds`
 - 仮実行で利用した `previewRunId`
 - 差異サマリ・提案した対策の要点
 - レポートの絶対パス（共通 §9.0）
