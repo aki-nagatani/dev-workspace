@@ -72,7 +72,8 @@ myrules を厳守して作業してください。
 - レポート正本: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai_spec_check_report.md`
 - 突合用ノート（`ai-spec-notes`）:\
   `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/FishTrack/ai-spec-notes/`\
-  （**配置**は **`ai-spec-check-report` §5.1**。**DAIWA ロッド**は **`rod-daiwa/`**。**ロッド**の **`## 行別スペック`** には **`modelName` 期待の行別記載を含める**。§5.1 参照）
+  （**配置**は **`ai-spec-check-report` §5.1**。**DAIWA ロッド**は **`rod-daiwa/`**。**ロッド**の **`## 行別スペック`** には **`modelName` 期待の行別記載を含める**。\
+  **個別 URL があるシリーズ**は **§5.1「モデル個別ページ」**で**全モデル確認・ノート漏れなし**を先に済ませる。§5.1 参照）
 - 作業用一時ファイル: FishTrack リポ内 `temp/`（完了後に当該作業分を削除。**`ai-spec-check-report` 本 SKILL §10（後片付け）**）
 - bind-mount: `docker-compose.yml` の `volumes: - .:/app` により、コンテナ内 `/app/temp/foo.json`
   はホストの `temp/foo.json` と同一ファイル
