@@ -30,7 +30,7 @@ Obsidian vault・CursorLog・仕様書など**日本語を含む `.md`** は **B
 ## markdownlint エラー修正（既存違反の解消）
 
 - **MD0xx が既に出ている行・ファイルを直す作業**では、本 SKILL だけを見て進めない
-- **先に** `dev-workspace/.cursor/skills/markdownlint-fix/SKILL.md` を **Read ツールで全文読み**、
+- **先に** `dev-workspace/.cursor/skills/Obsidian/markdownlint-fix/SKILL.md` を **Read ツールで全文読み**、
   そのフロー（同ファイルのエラー一括・検証など）に従う
 - 本文の見出し以降のルールは、主に **新規編集時の防ぎ方**と **markdownlint-fix 経由の修正時の参照**として使う
 

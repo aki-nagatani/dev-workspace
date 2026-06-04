@@ -18,5 +18,7 @@
   **`評価の流れ.md`**（評価・面談の文脈）、\
   **`目標設定チェックポイント.md`**（行動目標・組織紐づけ・測定可能な達成基準・セルフチェック・**目標設定例（G4）**。**SKILL** 該当節）。
 - 完了後は **`obsidian-cursor-log`**。Markdown 編集後は **markdownlint**。
+- **校閲**（誤字脱字・チェックポイント・**`<改善案>`** 追記）は **`mokuhyo-proofread`** SKILL。
+- **設定時コメント(補助・１次調整者)**（長谷以外・最新期）は **`mokuhyo-hojo-setteiji-comment`** SKILL。
 
 Always respond in Japanese when using this skill.

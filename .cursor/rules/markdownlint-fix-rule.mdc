@@ -7,4 +7,4 @@ alwaysApply: false
 # markdownlint 修正時の SKILL 発火
 
 **.md / .mdc の markdownlint エラー修正時**は、myrules の「Markdownlint修正」に従い、
-**最初のアクションとして** `markdownlint-fix/SKILL.md` を Read して作業フローに従うこと。
+**最初のアクションとして** `Obsidian/markdownlint-fix/SKILL.md` を Read して作業フローに従うこと。

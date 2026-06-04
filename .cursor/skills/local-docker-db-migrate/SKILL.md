@@ -1,11 +1,11 @@
 ---
 name: local-docker-db-migrate
 description: >-
-  ローカル Docker Compose の app サービス内から MyPokedex / FishTrack / otayori-navi 向けに
-  Alembic 等で DB マイグレーションを実行する。dev-workspace の shared-db、論理DB名、
+  ローカル Docker Compose の app サービス内から MyPokedex / FishTrack 向けに
+  Alembic で DB マイグレーションを実行する。dev-workspace の shared-db、論理DB名、
   docker compose run/exec の手順。エージェントはターミナルで実行し手順の提示だけで終えない。
   専用 Cursor Command（旧 local_docker_db_migrate.md）は廃止し本 SKILL が正本。ローカル DB マイグレ、
-  alembic upgrade、otayori run_migrations の依頼時に使用する。
+  alembic upgrade の依頼時に使用する。**おたよりナビは対象外**。
 ---
 
 # ローカル Docker DB マイグレーション（local-docker-db-migrate）
@@ -13,6 +13,19 @@ description: >-
 **旧 `.cursor/commands/local_docker_db_migrate.md` は廃止**し、手順の正本を本 SKILL に置く。`name` は **`local-docker-db-migrate`**（従来の **local_docker_db_migrate** 相当）。
 
 myrules を厳守して作業してください。
+
+## 対象（スコープ）
+
+| 対象 | 扱い |
+| --- | --- |
+| **FishTrack** | **本 SKILL の対象**（`alembic upgrade head`） |
+| **MyPokedex** | **本 SKILL の対象**（`alembic upgrade head`） |
+| **おたよりナビ（otayori-navi）** | **対象外** — 本 SKILL では **実行・一括報告しない** |
+
+**おたよりナビを対象外とする理由**: ローカル Docker では `scripts/run_migrations.py` が **`load_config()` 経由で AWS Secrets Manager**（例: `otayori/web-secret`）を参照し、共有 `shared-db` 前提の **FishTrack / MyPokedex と同じ手順に載せない**。\
+マイグレが必要なときは **おたよりナビリポジトリの README・運用手順**を正とし、**ユーザー明示時のみ**別途案内する（**本 SKILL の「3製品まとめて」フローに含めない**）。
+
+**`/local-docker-db-migrate` 等の依頼時**: **FishTrack と MyPokedex の 2 リポのみ**を実行・報告する。**おたよりナビは試行しない**（失敗報告の列挙も不要）。
 
 対象アプリのリポジトリルートで **Docker Compose** の **`app`** サービス内から **Alembic** を実行する（**エージェントがターミナルで実行**する。手順の提示だけで終わらない）。
 
@@ -41,7 +54,6 @@ myrules を厳守して作業してください。
 | --- | --- | --- | --- |
 | MyPokedex | `mypokedex_db` | `MYPDEX_DATABASE_URL` | `http://localhost:5002` |
 | FishTrack | `fishtrack_db` | `FISHTRACK_DATABASE_URL` | `http://localhost:5001` |
-| otayori-navi | `otayori_navi` | ローカルは **`OTAYORI_DB_URL`**（`.env` で `shared-db` を指定。未設定時は本番向け・config 側） | `http://localhost:5003`（既定） |
 
 - **URL 例（コンテナ内から）**: `postgresql://shared_user:shared_password@shared-db:5432/<論理DB名>`
 - **URL 例（ホストから）**: `postgresql://shared_user:shared_password@localhost:5434/<論理DB名>`
@@ -50,23 +62,20 @@ myrules を厳守して作業してください。
 
 - **`shared_db` と `mypokedex_db` / `fishtrack_db` は別物**。Alembic は通常 **各アプリの論理DB** を向く（compose の `DATABASE_URL` 既定を確認）。
 - **論理DBが未作成**のままだと接続に失敗する。初回のみ `CREATE DATABASE <論理名>` が必要な環境がある（各リポジトリ README・`dev-workspace/scripts` の手順を参照）。
-- **otayori-navi** の README に **実コンテナ名**（例: `…-shared-db-1`）が載ることがある。  
-  **`app` から接続する DNS 名は `shared-db`**（同一 `shared-db-network`）。
 
 ## 1. 対象リポジトリの特定
 
-次のいずれかで **`MyPokedex` / `FishTrack` / `otayori-navi` のルート** を決める。
+次のいずれかで **`MyPokedex` / `FishTrack` のルート** を決める（**おたよりナビは本 SKILL の対象外**）。
 
 - ユーザーメッセージ・チャット文脈
 - 開いているワークスペース・カレントファイルのパス
 
-曖昧なときだけ、**どれに対して実行するか** を一言確認する。
+曖昧なときだけ、**どれに対して実行するか** を一言確認する（**2 リポのどちらか／両方**）。
 
 **作業ディレクトリ例（Windows）**:
 
 - `d:\OneDrive\git_work\MyPokedex`
 - `d:\OneDrive\git_work\FishTrack`
-- `d:\OneDrive\git_work\otayori-navi`
 
 ## 2. 共通前提（不足なら短くユーザーへ）
 
@@ -88,6 +97,8 @@ docker compose run --rm app …
 docker compose exec app …
 ```
 
+**依頼が製品名なし（まとめてマイグレ）のとき**: **FishTrack → MyPokedex** の順で **それぞれ**リポジトリ直下から実行し、**2 件分**を報告する。
+
 ### MyPokedex
 
 コンテナの **`WORKDIR` は `/app`**。ルートに **`alembic.ini`** がある。
@@ -107,20 +118,10 @@ MyPokedex と同じく **`alembic upgrade head`**（`/app`）。
 docker compose run --rm app alembic upgrade head
 ```
 
-### otayori-navi
-
-専用ラッパー **`scripts/run_migrations.py`** を使う（`migrations/alembic.ini`・補正処理あり）。
-
-```bash
-docker compose run --rm app python scripts/run_migrations.py
-```
-
-詳細は **`scripts/run_migrations.py` 先頭の docstring** を正とする。
-
 ## 4. 結果の報告
 
-標準出力・終了コードを踏まえ、成功／失敗をユーザーに報告する。
+標準出力・終了コードを踏まえ、**FishTrack / MyPokedex** それぞれの成功／失敗をユーザーに報告する。**おたよりナビは報告表に含めない**（対象外）。
 
 ## 使用タイミング
 
-- ローカル Docker 上の **DB スキーマを最新にしたい**、**`alembic upgrade head` を Docker 経由で**、**otayori の `run_migrations`** 等の依頼があったとき
+- ローカル Docker 上の **DB スキーマを最新にしたい**、**`alembic upgrade head` を Docker 経由で**（**FishTrack / MyPokedex**）の依頼があったとき

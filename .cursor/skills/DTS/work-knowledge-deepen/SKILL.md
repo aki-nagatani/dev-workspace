@@ -17,7 +17,7 @@ description: >-
 
 myrules を厳守して作業してください。
 
-**最初の作業**として、本ファイル（`d:\OneDrive\git_work\dev-workspace\.cursor\skills\work-knowledge-deepen\SKILL.md`）を **Read** で読み込み、**その手順・制約に完全に従って**実行する。`AGENTS.md` にある「日本語で応答」も守る。
+**最初の作業**として、本ファイル（`d:\OneDrive\git_work\dev-workspace\.cursor\skills\DTS\work-knowledge-deepen\SKILL.md`）を **Read** で読み込み、**その手順・制約に完全に従って**実行する。`AGENTS.md` にある「日本語で応答」も守る。
 
 ### 参照パス（本 SKILL と整合）
 
