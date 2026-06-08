@@ -163,7 +163,7 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
   2. 対応する **E2E テスト**（上記マーカー）
   3. **`pyproject.toml`** または **`pytest.ini`** の **`e2e_scenario` マーカー説明**（ID の列挙が変わる場合）
   4. **Obsidian** の当該製品テスト節（`10_testing.md` 等）で E2E 方針を書いている場合は**本文も同期**
-- **規約の正**: **dev-workspace** **`.cursor/rules/myrules.mdc`** の **「テスト規律」→「E2E 必須シナリオ ID」**、および各リポジトリ **`AGENTS.md`** の **「E2E 必須シナリオ ID」** 節。
+- **規約の正**: **本 SKILL §6**、各リポジトリ **`AGENTS.md`** の **「E2E 必須シナリオ ID」** 節。myrules「テスト規律」は要点のみ。
 - **充足率チェック**: **FishTrack**・**MyPokedex**・**おたよりナビ** は **`scripts/check_e2e_scenario_coverage.py`** を pre-commit（ブラウザ不要）で実行する。\
     しきい値・環境変数は **`AGENTS.md`** / **`README.md`**。あわせて **`pytest tests/e2e`** 実行時は **conftest** のフックでも不足 ID を検出する。
 - **実行の分離**: 通常の `pytest` は `tests/e2e` を **収集しない**設定（`collect_ignore`）のリポジトリがある。E2E は **`pytest tests/e2e --base-url … --no-cov`** で別実行。

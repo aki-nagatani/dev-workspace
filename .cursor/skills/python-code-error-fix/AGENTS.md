@@ -12,7 +12,7 @@ Always respond in Japanese when applying this skill.
 
 ## 必須の最初アクション
 
-**`SKILL.md` を Read ツールで読んでから**修正する。汎用フロー → 該当する節（構文 / 型 / 付録）の順。
+**`SKILL.md` を Read ツールで読んでから**修正する。汎用フロー → 該当する節（構文 / 型 / 付録）の順。**回避禁止の一般原則**は **`error-handling-policy`** SKILL も参照する。
 
 ## 対象外
 
@@ -27,4 +27,4 @@ dev-workspace および連携リポジトリ（MyPokedex、FishTrack、otayori-n
 ## Cursor エディタ側（正本の取り込み）
 
 - **Skills**: `dev-workspace/.cursor/skills/python-code-error-fix/` を **1つだけ** 登録する（同名・別パスでの重複は冗長で発火条件が二重になる）。
-- **旧 SKILL 名**（移行前の basedpyright 専用ディレクトリ等）を Cursor に残している場合は**登録を外す**。**myrules** の Python 節は **`python-code-error-fix` のみ**を参照する。
+- **旧 SKILL 名**（移行前の basedpyright 専用ディレクトリ等）を Cursor に残している場合は**登録を外す**。**myrules** は本 SKILL 参照のみ（発火条件の正本は本 AGENTS / `SKILL.md`）。

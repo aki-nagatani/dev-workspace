@@ -11,7 +11,7 @@ description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) i
   `dev-workspace/.cursor/skills/Obsidian/markdownlint-fix/SKILL.md` を **Read ツールで全文読み**、
   以下の作業フローに従うこと
 - SKILL の説明文や会話内の要約だけに頼らず、**毎回ファイルを開いて読む**（エージェントの抜け漏れ防止）
-- `dev-workspace/.cursor/rules/myrules.mdc` の「Markdownlint修正（SKILL発火条件）」と整合させる
+- **myrules** は本 SKILL 参照のみ。**発火条件・作業フローの正本は本ファイル**
 
 ## 🚨 発火トリガー（この SKILL を適用すべき場合）
 

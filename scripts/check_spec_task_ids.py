@@ -35,6 +35,24 @@ PATTERNS: list[tuple[re.Pattern[str], str]] = [
 ]
 
 
+def _is_product_model_code(line: str, match: re.Match[str]) -> bool:
+    """ロッド型番など、F数字の直後に型番文字が続くものはタスクIDではない。"""
+
+    start = match.start()
+    end = match.end()
+    if start > 0 and line[start - 1] == "/":
+        return True
+    return end < len(line) and line[end] in {"-", ".", "/"}
+
+
+def _pattern_hits(line: str, pat: re.Pattern[str]) -> bool:
+    for match in pat.finditer(line):
+        if pat is _PAT_TASK_F and _is_product_model_code(line, match):
+            continue
+        return True
+    return False
+
+
 def scan_file(path: Path) -> list[tuple[int, str, str]]:
     hits: list[tuple[int, str, str]] = []
     try:
@@ -43,7 +61,7 @@ def scan_file(path: Path) -> list[tuple[int, str, str]]:
         return [(0, "", f"{path}: read error {e}")]
     for lineno, line in enumerate(text.splitlines(), start=1):
         for pat, label in PATTERNS:
-            if pat.search(line):
+            if _pattern_hits(line, pat):
                 hits.append((lineno, label, line.rstrip()[:200]))
                 break
     return hits
