@@ -28,6 +28,8 @@ myrules を厳守して作業してください。
 
 - **Markdown 正本（管理シート）**:
   `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.md`
+- **CSV ミラー（Excel 作業用・同名）**:
+  `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.csv`（**`.md` 変更時は必ず同期**。詳細は **`mokuhyo-kanri-sheet-csv`** SKILL）
 - **目標ジャンル候補の正本（一覧）**:
   `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート_目標ジャンルリスト.md`
 - **入力**: 上記「Excel の提供」に従い、**同時に**渡された **目標管理シートの Excel**
@@ -40,6 +42,10 @@ myrules を厳守して作業してください。
 
 - **myrules**「ファイル修正と差分確認」に従い、**すべての編集**において**スクリプトによる置換・書き換えは厳禁**。**例外**は設けない。
 - 反映は **`search_replace` / `write` 等の複数回の編集**に寄せ、**枝番**・**`#####` 単位**など**追跡可能な単位**で行う。**一時スクリプト**（`temp/` の Python 等）で `.md` を機械一括変換しない。
+
+## CSV 同期（必須）
+
+**`人事考課_管理シート.md`** を更新した**同一セッション**では、**`mokuhyo-kanri-sheet-csv` SKILL** に従い **`人事考課_管理シート.csv`** を**必ず**更新する（**片方だけで終了しない**）。**既定**は **`export_hr_kanri_sheet_to_csv.py`** による全量再生成。
 
 ## Cursor ログ更新（必須）
 
@@ -275,4 +281,5 @@ Excel の取り込み・追記・ブロック移動のあと、該当期の **`#
 - **目標ジャンル**候補の正本: **`Work/社内業務/人事考課/人事考課_管理シート_目標ジャンルリスト.md`**
 - **上期の目標設定時**に、過去 Markdown から**通期・上期・下期の目標設定 12 項目**のたたき台を作る: **`mokuhyo-draft`** SKILL（**数値は仮値**・確定はユーザー提示。Excel 確定同期は本 SKILL が正本）
 - **最新期の校閲**（本文は変更せず **`<改善案>`** のみ）: **`mokuhyo-proofread`** SKILL
+- **管理シート CSV ミラー**（`.md` と同名・Excel 用）: **`mokuhyo-kanri-sheet-csv`** SKILL
 - 編集後は **markdownlint**（CursorLog や仕様ノートを触った場合）に留意

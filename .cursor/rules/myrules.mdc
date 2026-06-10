@@ -48,7 +48,7 @@ alwaysApply: true
   **`commit-all`**・**`commit-message`**・**`github-actions-check`**・**`code-comment-guidelines`**・**`git-workflow`** は **`dev-workspace/.cursor/skills/GitHub/`**。\
   **`error-handling-policy`**・**`document-creation-policy`**・**`temp-file-management`**・**`file-size-policy`**・**`frontend-html-template`**・**`datetime-jst`** は **`dev-workspace/.cursor/skills/`**（ルート）。\
   **`obsidian-cursor-log`**・**`obsidian-inbox-summarize`**・**`obsidian-update-rules`**・**`markdown-editing`**・**`markdownlint-fix`** は **`dev-workspace/.cursor/skills/Obsidian/`**。\
-  **`mokuhyo\*`**・**`work-kadai-update`**・**`work-knowledge-deepen`** は **`dev-workspace/.cursor/skills/DTS/`**。\
+  **`mokuhyo\*`**・**`work-folder-update`**・**`work-kadai-update`**・**`work-knowledge-deepen`** は **`dev-workspace/.cursor/skills/DTS/`**。\
   共通手順は **`ai-spec-check-report/SKILL.md`** 等）→\
   **製品一行**は各リポ **`AGENTS.md`** → **myrules** は **全タスク横断の短い原則のみ**（例: 後方互換方針、CursorLog 必須、無断コミット禁止）。迷ったら **SKILL 側に寄せる**。
 - **書き方**: 抽象的な反省のみにせず、**いつ発火するか**・**エージェントが取るべき具体動作**が読み取れる短文・箇条書きにする。既存節と**矛盾する場合は統合して一本化**する。
@@ -56,7 +56,9 @@ alwaysApply: true
 
 ## ローカル Docker と Python ソース変更（重要）
 
-**`docker compose` でアプリを動かすローカル開発**で **`src/` 等アプリ用 `*.py` を変更したら**、検証・報告の前に **`docker compose restart <サービス名>`** を**エージェントが実行**する（依頼種別・compose 起動可否にかかわらず**試行**。未起動なら報告に**1行**）。**FishTrack / MyPokedex / otayori-navi** では報告本文に実行結果を**明記**する。
+**`docker compose` でアプリを動かすローカル開発**で **`src/` 等アプリ用 `*.py` を変更したら**、\
+検証・報告の前に **`docker compose restart <サービス名>`** を**エージェントが実行**する（依頼種別・compose 起動可否にかかわらず**試行**。未起動なら報告に**1行**）。\
+**FishTrack / MyPokedex / otayori-navi** では報告本文に実行結果を**明記**する。
 
 - **手順の正本**: **`local-docker-python-restart`** SKILL（`.cursor/skills/local-docker-python-restart/SKILL.md`）。サービス名・再ビルド境界・`dump` 前の restart 順序は同 SKILL に従う。
 

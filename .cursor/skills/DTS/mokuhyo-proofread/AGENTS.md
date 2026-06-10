@@ -8,6 +8,7 @@
 - **見つけ方**: 検索 **`<改善案>`**（一覧は校閲報告のチャット）
 - **下書き作成**は **`mokuhyo-draft`**、**Excel 同期**は **`mokuhyo-excel-to-markdown`**（本 SKILL では行わない）
 - **編集**: **myrules**（**1 ブロック単位**・**`replace_all` 禁止**・対象期より前は触らない）
+- **CSV 同期**: `.md` 更新後は同一セッションで **`人事考課_管理シート.csv`** を必ず更新（**`mokuhyo-kanri-sheet-csv`** SKILL）
 - 完了後は **`obsidian-cursor-log`**。管理シート編集後は **`markdownlint-fix`**
 - **設定時コメント(補助・１次調整者)** の生成は **`mokuhyo-hojo-setteiji-comment`** SKILL（本 SKILL は `<改善案>` 校閲のみ）
 

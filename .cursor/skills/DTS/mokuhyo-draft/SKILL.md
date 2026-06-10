@@ -65,6 +65,7 @@ myrules を厳守して作業する。
 | 用途 | パス |
 | --- | --- |
 | 管理シート（Markdown 正本） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.md` |
+| CSV ミラー（Excel 作業用・同名） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.csv`（**`.md` 反映後に必ず同期**。**`mokuhyo-kanri-sheet-csv`** SKILL） |
 | 目標ジャンル候補 | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート_目標ジャンルリスト.md` |
 | **参考資料**（評価サイクル・面談） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/評価の流れ.md` |
 | **参考資料**（目標設定の品質・セルフチェック） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/目標設定チェックポイント.md` |
@@ -455,9 +456,13 @@ myrules を厳守して作業する。
 - **管理シート本文**に **AI・生成・ChatGPT・ドラフト作成** 等、**本人以外が書いたと分かる語**を入れること
 - **Python 等で管理シート全文を生成**して上書きすること（**myrules 違反**）
 
+## CSV 同期（必須）
+
+**`人事考課_管理シート.md`** を更新した**同一セッション**では、**`mokuhyo-kanri-sheet-csv` SKILL** に従い **`人事考課_管理シート.csv`** を**必ず**更新する（**片方だけで終了しない**）。
+
 ## Cursor ログ（必須）
 
-**管理シート**・**`課題.md`**（または目標ジャンルリスト）を変更した作業完了後、報告前に **`obsidian-cursor-log` SKILL** で当日の CursorLog に記録する。
+**管理シート**・**CSV ミラー**・**`課題.md`**（または目標ジャンルリスト）を変更した作業完了後、報告前に **`obsidian-cursor-log` SKILL** で当日の CursorLog に記録する。
 
 タグ例: `#人事考課` `#目標管理` `#mokuhyo` `#mokuhyo-draft` など。
 

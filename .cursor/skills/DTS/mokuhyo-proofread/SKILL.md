@@ -34,6 +34,7 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 | 用途 | パス |
 | --- | --- |
 | 管理シート（Markdown 正本） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.md` |
+| CSV ミラー（Excel 作業用・同名） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.csv`（**`.md` 変更後に必ず同期**。**`mokuhyo-kanri-sheet-csv`** SKILL） |
 | **校閲観点（方針・NG・セルフチェック）** | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/目標設定チェックポイント.md` |
 | 等級・G 別の書き方参考（任意） | 同上「目標設定例（G4）」 |
 | 目標ジャンル候補（参照のみ） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート_目標ジャンルリスト.md` |
@@ -45,6 +46,7 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 | **`mokuhyo-draft`** | 対象期の**12 項目**の下書き**作成・本文反映** |
 | **`mokuhyo-excel-to-markdown`** | Excel → 管理シートの**確定同期** |
 | **`mokuhyo-hojo-setteiji-comment`** | **設定時コメント(補助・１次調整者)** の生成（**長谷以外**） |
+| **`mokuhyo-kanri-sheet-csv`** | **`.md` 変更後の CSV ミラー同期**（`<改善案>` は CSV に含めない） |
 | **本 SKILL** | 既存本文は**触らず**、**`<改善案>`** のみ追記 |
 
 ## 対象範囲（必須）
@@ -259,7 +261,11 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 
 **管理シートに書かないもの**: 「AI 校閲済み」等のメタ見出し・**`### 校閲・改善案一覧`** 等の索引節・ログ節の新設（**CursorLog** に記録する）。
 
-### 6. CursorLog
+### 6. CSV 同期（必須）
+
+**`人事考課_管理シート.md`** を更新した**同一セッション**では、**`mokuhyo-kanri-sheet-csv` SKILL** に従い **`人事考課_管理シート.csv`** を**必ず**更新する（**`<改善案>` は CSV に含めない**が、**`.md` 変更後のミラー再生成は省略しない**）。
+
+### 7. CursorLog
 
 - **`obsidian-cursor-log` SKILL** に従い追記する。
 

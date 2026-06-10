@@ -16,6 +16,7 @@
 - **本人記載の繰り返し禁止**: 通期目標・設定理由の**言い換えだけ**は書かない（**SKILL**「本人記載の繰り返し禁止」）
 - **`課題.md`**: **Read 推奨**（組織・PL 文脈の参考。**編集は `work-kadai-update`**。本文・打ち手の復唱は禁止）
 - **本人 12 項目**は **`mokuhyo-draft`**、校閲は **`mokuhyo-proofread`**
+- **CSV 同期**: `.md` 更新後は同一セッションで **`人事考課_管理シート.csv`** を必ず更新（**`mokuhyo-kanri-sheet-csv`** SKILL）
 - 完了後 **`obsidian-cursor-log`**。Markdown 編集後 **`markdownlint-fix`**
 
 Always respond in Japanese when using this skill.
