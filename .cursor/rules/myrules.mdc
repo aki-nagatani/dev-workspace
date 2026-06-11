@@ -180,6 +180,7 @@ alwaysApply: true
 
 ## 一時ファイル管理（重要）
 
-**一時ファイルは `temp/` 配下のみ。プロジェクト直下への作成禁止。**
+**一時ファイルは `temp/` 配下のみ。プロジェクト直下への作成禁止。**\
+**1 チャットの作業完了時は `temp/` を空にする（理想状態）。次回も使うものは `scripts/` 等へ。**
 
 - **手順の正本**: **`temp-file-management`** SKILL（`.cursor/skills/temp-file-management/SKILL.md`）
