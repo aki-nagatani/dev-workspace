@@ -78,3 +78,22 @@ document.getElementById("save").addEventListener("click", () => {
   alert("保存しました");
 });
 ```
+
+## Windows × Cursor × `.sh`（Deploy on AWS フック等）
+
+**発火**: Cursor でエージェントの Write のたびに「`.sh` を開くアプリを選ぶ」ダイアログや **黒いコンソール（`sh.exe` / `bash.exe`）が残る**。
+
+**原因（典型）**:
+
+- **Deploy on AWS** プラグインの PostToolUse が **`validate-drawio.sh`** を **Edit|Write のたび**実行する
+- Windows で **`.sh` に関連付け**すると、フック実行のたびに **新しいコンソール**が開く（**`git-bash.exe` は GUI 窓**、**`bash.exe` でも黒窓は出うる**）
+- `ftype` を `bash.exe` に直しても **窓が自動で閉じない**ことがある（stdin 待ち・`sh.exe` 単体起動など）
+
+**対処（優先順 — FishTrack 突合など draw.io 不要なら 1 だけで足りる）**:
+
+1. **AWS Deployments プラグインをアンインストール**（Cursor → Settings → Plugins → **AWS Deployments** → **Uninstall**。一覧に Disable が無い場合は Uninstall で同等）— **最優先・管理者権限不要**。再起動推奨
+2. 残っている黒窓はタスクバーから **× で閉じる**、またはタスクマネージャで **`sh.exe` / `bash.exe` を終了**
+3. **`.sh` 関連付けを外す**（管理者 CMD）: `assoc .sh=`（ダイアログは戻りうるがコンソール量産は止まりやすい）
+4. draw.io 検証も使う場合のみ: 管理者 CMD で `ftype sh_auto_file="d:\Program Files\Git\bin\bash.exe" "%1" %*`（**`git-bash.exe` 不可**）。それでも窓が残るなら **1 に戻す**
+
+**確認**: プラグイン無効化後、エージェントに小さな Write を 1 回させ、ダイアログ・黒窓が増えないこと。
