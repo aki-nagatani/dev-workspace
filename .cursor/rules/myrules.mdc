@@ -57,8 +57,8 @@ alwaysApply: true
 ## ローカル Docker と Python ソース変更（重要）
 
 **`docker compose` でアプリを動かすローカル開発**で **`src/` 等アプリ用 `*.py` を変更したら**、\
-検証・報告の前に **`docker compose restart <サービス名>`** を**エージェントが実行**する（依頼種別・compose 起動可否にかかわらず**試行**。未起動なら報告に**1行**）。\
-**FishTrack / MyPokedex / otayori-navi** では報告本文に実行結果を**明記**する。
+**Docker が起動している場合に限り**検証・報告の前に **`docker compose restart <サービス名>`** を**エージェントが実行**する。\
+**Docker 未導入・未起動**のときは **restart しない**（報告に省略理由**1行**）。**FishTrack / MyPokedex / otayori-navi** では起動時は実行結果を**明記**する。
 
 - **手順の正本**: **`local-docker-python-restart`** SKILL（`.cursor/skills/local-docker-python-restart/SKILL.md`）。サービス名・再ビルド境界・`dump` 前の restart 順序は同 SKILL に従う。
 

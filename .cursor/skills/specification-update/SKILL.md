@@ -20,6 +20,7 @@ description: Obsidian `DevProject/specifications` 配下の仕様書を、ソー
 - **ソースコードを修正したら、仕様書も必ず同時に更新する**（ソースと仕様の正を一致させる）
 - **仕様の追記・修正は実装と同時**（「あとで仕様」と残さない）
 - **仕様の置き場所は Obsidian**（`DevProject/specifications/`）。各リポジトリの `docs/` に仕様を増やさない
+- **`11_future.md` は未実装・将来案のみ**を書く。実装済み／実装中の機能説明は `04_functional_spec.md`・`05_ui_ux.md`・`06_database.md`・`07_api_routing.md`・`10_testing.md` 等の正本へ移し、`11_future.md` からは削除する
 
 ## 仕様書の探索
 
@@ -38,6 +39,7 @@ description: Obsidian `DevProject/specifications` 配下の仕様書を、ソー
 | テーブル・制約・インデックス | データベース／スキーマ章（例: `06_database.md`） |
 | 環境変数・設定・フラグ | 設定・デプロイに関する節 |
 | 非機能（認証・権限の扱い） | 該当するセキュリティ・認証の節 |
+| 将来拡張・未採用案 | `11_future.md`（実装済み／実装中は置かない） |
 
 ## 記述の粒度
 

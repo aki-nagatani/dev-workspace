@@ -37,7 +37,7 @@ description: 開発に関わるTIPSや注意点を短く整理して提示する
 ## ローカル Docker × Python 変更（必須運用）
 
 - **`docker compose` + Gunicorn 等**でアプリを動かしているとき、**`*.py`（例: `src/`）を変えたら** bind-mount でも **プロセスは古いモジュールのまま**になりやすい
-- **対応**: プロジェクト直下で **`docker compose restart <アプリサービス名>`**（例: FishTrack は多くの場合 `app`）。**変更のたび・検証前**に実行する（**myrules.mdc**「ローカル Docker と Python ソース変更」に同旨をルール化）
+- **対応**: **Docker が起動している場合**、プロジェクト直下で **`docker compose restart <アプリサービス名>`**（例: FishTrack は多くの場合 `app`）。**変更のたび・検証前**に実行する（**myrules.mdc**「ローカル Docker と Python ソース変更」・**`local-docker-python-restart`** SKILL）。**未起動・未導入時は省略可**（報告に 1 行）
 - **イメージや依存の変更**は `build` / `up` が主。`--reload` 開発サーバのみの構成は別
 
 ## ドキュメント/レビューTIPS

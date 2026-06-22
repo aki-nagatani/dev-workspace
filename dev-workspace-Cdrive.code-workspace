@@ -1,0 +1,98 @@
+{
+  "folders": [
+    {
+      "name": "dev-workspace",
+      "path": "."
+    },
+    {
+      "name": "FishTrack",
+      "path": "../FishTrack"
+    },
+    {
+      "name": "MyPokedex",
+      "path": "../MyPokedex"
+    },
+    {
+      "name": "otayori-navi",
+      "path": "../otayori-navi"
+    },
+    {
+      "name": "personal-tools",
+      "path": "../personal-tools"
+    },
+    {
+      "name": "Obsidian",
+      "path": "../../アプリ/remotely-save/Obsidian"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.git": true,
+      "**/__pycache__": true,
+      "**/*.pyc": true
+    },
+    "powershell.cwd": "dev-workspace",
+    "terminal.integrated.env.windows": {
+      "PATH": "C:\\Program Files\\Git\\cmd;C:\\Users\\akihi\\AppData\\Local\\Programs\\Python\\Python312;C:\\Users\\akihi\\AppData\\Local\\Programs\\Python\\Python312\\Scripts;C:\\Users\\akihi\\AppData\\Local\\Programs\\Python\\Launcher;${env:PATH}"
+    }
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Auto: Detect from Active File",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${file}",
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "env": {
+          "FLASK_DEBUG": "1",
+          "MYPDEX_DEBUG": "1",
+          "FISHTRACK_DEBUG": "1"
+        },
+        "serverReadyAction": {
+          "pattern": "Running on (https?://\\S+|[0-9]+)",
+          "uriFormat": "%s/",
+          "action": "debugWithChrome"
+        }
+      },
+      {
+        "name": "FishTrack",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder:FishTrack}/run.py",
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "env": {
+          "FLASK_DEBUG": "1",
+          "FISHTRACK_DEBUG": "1"
+        },
+        "envFile": "${workspaceFolder:FishTrack}/.env.local",
+        "serverReadyAction": {
+          "pattern": "Running on (https?://\\S+|[0-9]+)",
+          "uriFormat": "%s/",
+          "action": "debugWithChrome"
+        }
+      },
+      {
+        "name": "MyPokedex",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder:MyPokedex}/run.py",
+        "console": "integratedTerminal",
+        "justMyCode": true,
+        "env": {
+          "FLASK_DEBUG": "1",
+          "MYPDEX_DEBUG": "1"
+        },
+        "envFile": "${workspaceFolder:MyPokedex}/.env.local",
+        "serverReadyAction": {
+          "pattern": "Running on (https?://\\S+|[0-9]+)",
+          "uriFormat": "%s/",
+          "action": "debugWithChrome"
+        }
+      }
+    ]
+  }
+}

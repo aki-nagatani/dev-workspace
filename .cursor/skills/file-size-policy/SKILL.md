@@ -74,7 +74,8 @@ description: >-
 
 ## 委譲時（Task サブエージェント・親エージェント）
 
-**再発原因**: 親が「pre-commit の行数上限を通して」「diff-cover を足して」とだけ **Task** に渡すと、サブエージェントは **myrules・本 SKILL を Read しない**まま動き、**末尾切り出し**・**`*_diff_cover.py`**・**PowerShell 行切り詰め**を選びがち（FishTrack `test_reel_line_capacity_daiwa_*` 事例）。
+**再発原因**: 親が「pre-commit の行数上限を通して」「diff-cover を足して」とだけ **Task** に渡すと、サブエージェントは **myrules・本 SKILL を Read しない**まま動き、\
+**末尾切り出し**・**`*_diff_cover.py`**・**PowerShell 行切り詰め**を選びがち（FishTrack `test_reel_line_capacity_daiwa_*` 事例）。
 
 ### 原則（親エージェント）
 
