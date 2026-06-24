@@ -5,6 +5,8 @@ description: Cursorの作業内容をObsidianのCursorLogに記録する。作�
 
 # Obsidian作業ログ（Cursor）
 
+**第二の脳との関係**: CursorLog は**作業証跡**（いつ・何をしたか）。**第二の脳のすべてではない**——仕様・Knowledge・Work・釣行メモ等の**ドメイン正本**への反映は **`obsidian-second-brain` SKILL**（すべての Cursor 利用時の横断原則）に従う。Log のみで終えない。
+
 ## 報告前の必須アクション（記録漏れ防止）
 
 **ワークスペース内のファイルを追加・更新・削除した作業を完了した場合**
