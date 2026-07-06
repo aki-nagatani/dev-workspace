@@ -26,5 +26,5 @@ dev-workspace および連携リポジトリ（MyPokedex、FishTrack、otayori-n
 
 ## Cursor エディタ側（正本の取り込み）
 
-- **Skills**: `dev-workspace/.cursor/skills/python-code-error-fix/` を **1つだけ** 登録する（同名・別パスでの重複は冗長で発火条件が二重になる）。
+- **Skills**: `dev-workspace/.agents/skills/python-code-error-fix/` を **1つだけ** 登録する（同名・別パスでの重複は冗長で発火条件が二重になる）。**旧 `.cursor/skills/` 登録は外す**。
 - **旧 SKILL 名**（移行前の basedpyright 専用ディレクトリ等）を Cursor に残している場合は**登録を外す**。**myrules** は本 SKILL 参照のみ（発火条件の正本は本 AGENTS / `SKILL.md`）。

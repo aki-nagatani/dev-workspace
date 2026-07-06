@@ -1,6 +1,6 @@
 ---
 name: markdown-editing
-description: Markdown（.md）ファイルを編集する際に守るべきルールを適用する。Obsidian・仕様書・CursorLog等のMarkdown編集時、読みやすさ（表・図・構造化）、またはMD013/MD024/MD025/MD031/MD032/MD033/MD036/MD040/MD041/MD047/MD051/MD058/MD060等のMarkdownlint違反を防ぐ場面で使用する。
+description: Markdown（.md）ファイルを編集する際に守るべきルールを適用する。Obsidian・仕様書・CursorLog等のMarkdown編集時、読みやすさ（表・図・構造化）、またはMD013/MD025/MD031/MD032/MD033/MD036/MD040/MD041/MD047/MD051/MD058/MD060等のMarkdownlint違反を防ぐ場面で使用する。
 ---
 
 # Markdown編集ルール
@@ -30,7 +30,7 @@ Obsidian vault・CursorLog・仕様書など**日本語を含む `.md`** は **B
 ## markdownlint エラー修正（既存違反の解消）
 
 - **MD0xx が既に出ている行・ファイルを直す作業**では、本 SKILL だけを見て進めない
-- **先に** `dev-workspace/.cursor/skills/Obsidian/markdownlint-fix/SKILL.md` を **Read ツールで全文読み**、
+- **先に** `dev-workspace/.agents/skills/Obsidian/markdownlint-fix/SKILL.md` を **Read ツールで全文読み**、
   そのフロー（同ファイルのエラー一括・検証など）に従う
 - 本文の見出し以降のルールは、主に **新規編集時の防ぎ方**と **markdownlint-fix 経由の修正時の参照**として使う
 
@@ -95,8 +95,8 @@ Obsidian vault・CursorLog・仕様書など**日本語を含む `.md`** は **B
 
 ### MD024（重複見出し）
 
-- **同一内容の見出しを複数使わない**（目次・アンカーが曖昧になる）
-- 重複する場合は親セクション番号等を付与して一意にする（例：`### 受け入れ条件（AC）` → `### 5-8 受け入れ条件（AC）`）
+- **lint 対象外**: `.markdownlint.json` で **`MD024: false`**（同一ファイル内の同一見出し文言を許容）
+- **任意の読みやすさ**: 目次・アンカーが曖昧になりうる箇所では、親セクション番号等で一意化してもよい（例：`### 受け入れ条件（AC）` → `### 5-8 受け入れ条件（AC）`）
 
 ### MD036（強調の見出し行き違反）
 
@@ -193,6 +193,7 @@ Obsidian vault・CursorLog・仕様書など**日本語を含む `.md`** は **B
 ## MD060 設定（.markdownlint.json）
 
 - プロジェクトでは MD060 を `style: "any"` で有効化している（compact / aligned / tight のいずれも許容）
+- **MD024（重複見出し）は無効**（`"MD024": false`）
 - 新規作成・修正時は **compact スタイル**（`| --- | --- |`）を推奨
 
 ## 編集後の確認（推奨）

@@ -19,7 +19,7 @@ description: >-
 
 myrules を厳守する（**スクリプト一括置換禁止**・**報告前 CursorLog**・**Markdown は編集ツールでブロック単位**）。
 
-**最初の作業**: 本ファイル（`dev-workspace/.cursor/skills/DTS/mokuhyo-proofread/SKILL.md`）を **Read** し、手順に従う。
+**最初の作業**: 本ファイル（`dev-workspace/.agents/skills/DTS/mokuhyo-proofread/SKILL.md`）を **Read** し、手順に従う。
 
 要約は同ディレクトリの **`AGENTS.md`** と整合させる。
 

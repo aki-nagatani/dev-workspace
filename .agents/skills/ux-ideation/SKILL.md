@@ -11,7 +11,7 @@ description: >-
 
 ## 単一情報源と適用タイミング（エージェント向け）
 
-**本 SKILL**（`dev-workspace/.cursor/skills/ux-ideation/SKILL.md`）が **手順・ルールの唯一の正本**である。旧 `.cursor/commands/ux_ideation.md` は廃止。ユーザーは **`ux-ideation`**・`@ux_ideation` 等で参照する。
+**本 SKILL**（`dev-workspace/.agents/skills/ux-ideation/SKILL.md`）が **手順・ルールの唯一の正本**である。旧 `.cursor/commands/ux_ideation.md` は廃止。ユーザーは **`ux-ideation`**・`@ux_ideation` 等で参照する。
 
 **手順・表の更新は本 SKILL のみ**（同内容の重複する別 SKILL は置かない）。
 
@@ -111,7 +111,7 @@ myrules を厳守して作業してください。
     **詳細の書きぶり**は **ねらい／具体案／論点／分担・横断／採用時** 等の構成で、下表の必須項目を満たす**同等以上**の具体度にする。\
     **特定のタスク ID を本 SKILL に固定例として書かない**（完了・削除で参照が死ぬため）。計画書内の**現時点の**同種行があれば体裁の手本にし、無ければ下表と本節を正とする。\
     新規 ID の採番・**一覧・週次・ガントの三本柱**は **`integrated-schedule-update` SKILL**（\
-    `dev-workspace/.cursor/skills/integrated-schedule-update/SKILL.md`）に**編集前に Read して従う**。
+    `dev-workspace/.agents/skills/integrated-schedule-update/SKILL.md`）に**編集前に Read して従う**。
 
 **[[#タスク詳細]] への必須記載（同一作業で追記する）**:
 

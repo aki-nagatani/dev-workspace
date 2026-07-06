@@ -617,7 +617,7 @@ source: InBox/YYYY-MM-DD.md
       **開発プロジェクト**（報告見出し `### 開発プロジェクト`）:
 
       - **対象**: FishTrack、MyPokedex、otayori-navi、personal-tools、dev-workspace
-      - **正本への反映**: 仕様・設計判断は **`specification-update` SKILL** で `DevProject/specifications/` へ。計画変更は **`integrated-schedule-update`**。SKILL・実装方針は dev-workspace `.cursor/skills/` 等
+      - **正本への反映**: 仕様・設計判断は **`specification-update` SKILL** で `DevProject/specifications/` へ。計画変更は **`integrated-schedule-update`**。SKILL・実装方針は dev-workspace `.agents/skills/` 等
       - **検討観点**（該当するものだけ簡潔に。該当時は**反映まで**）:
         1. **技術スタックの一致**（Docker、AWS、Python、PostgreSQL 等）
         2. **アーキテクチャの改善**（構成・デプロイ・マイグレーション実行方法等）
@@ -949,7 +949,7 @@ CursorはAI駆動のコードエディタ...
 
 ### 開発プロジェクト
 
-- dev-workspace の `AGENTS.md` / `.cursor/skills/` / pre-commit は記事の「コーディング側ハーネス」に相当
+- dev-workspace の `AGENTS.md` / `.agents/skills/` / pre-commit は記事の「コーディング側ハーネス」に相当
 - 「同じミス2回 → SKILL 化」は myrules の SKILL 育成方針と整合
 
 ### 仕事（本職）

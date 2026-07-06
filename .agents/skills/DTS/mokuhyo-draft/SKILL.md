@@ -45,7 +45,7 @@ myrules を厳守して作業する。
 
 **`mokuhyo-excel-to-markdown`** で前期の Excel を取り込む作業は**本 SKILL の対象外**。前期以前を直す必要がある場合は**別依頼・別 SKILL**とし、**本 SKILL の下書き作業と混在させない**。
 
-**最初の作業**として、本ファイル（`dev-workspace/.cursor/skills/DTS/mokuhyo-draft/SKILL.md`）を **Read** し、全文の手順に従う。\
+**最初の作業**として、本ファイル（`dev-workspace/.agents/skills/DTS/mokuhyo-draft/SKILL.md`）を **Read** し、全文の手順に従う。\
 あわせて **参考資料**（上記正本パス）を **Read** する。
 
 - **`評価の流れ.md`**: 評価・面談の前提確認。未整理の節は**推測で補完しない**。

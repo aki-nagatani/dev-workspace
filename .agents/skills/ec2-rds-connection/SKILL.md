@@ -81,4 +81,4 @@ RDSはSSH不可。EC2に接続した上で、EC2上で `psql` を実行する。
 ## 参照
 
 - **詳細手順**: Obsidian `DevProject/guidelines/EC2_SSH接続手順.md`
-- **本番インスタンス一覧・DB操作**: `dev-workspace/.cursor/skills/production-db-access/SKILL.md`
+- **本番インスタンス一覧・DB操作**: `dev-workspace/.agents/skills/production-db-access/SKILL.md`

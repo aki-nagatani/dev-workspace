@@ -120,7 +120,7 @@ description: >-
 ### Task prompt 雛形（親がコピー）
 
 ```text
-【必須】着手前に Read: dev-workspace/.cursor/skills/file-size-policy/SKILL.md（全文）
+【必須】着手前に Read: dev-workspace/.agents/skills/file-size-policy/SKILL.md（全文）
 
 対象: <リポ>/tests/<元ファイル>.py（現在 N 行。上限 1,500）
 

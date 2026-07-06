@@ -220,7 +220,7 @@ python scripts/send_slack_notification.py --help
 ## 関連ファイル
 
 - `scripts/send_slack_notification.py`: メインスクリプト
-- `.cursor/skills/slack-final-report/SKILL.md`: SKILL定義ファイル
+- `.agents/skills/slack-final-report/SKILL.md`: SKILL定義ファイル
 - `.env.example`: .envファイルのテンプレート
 - `config.local.json.example`: config.local.jsonファイルのテンプレート
 

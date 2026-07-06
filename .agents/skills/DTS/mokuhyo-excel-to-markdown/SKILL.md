@@ -12,7 +12,7 @@ description: >-
 
 **目標管理シート**の Excel を Markdown（**人事考課_管理シート**）へ反映する。**目標管理（mokuhyo）系**のワークフロー用**単一正本**（**旧 `hr-goal-sheet-excel-to-markdown` の全文を下記に統合**）。
 
-**旧 `.cursor/commands/mokuhyo-excel-to-markdown.md` は廃止**。**旧** `dev-workspace/.cursor/skills/hr-goal-sheet-excel-to-markdown/` **配下（SKILL.md / AGENTS.md）も廃止**。
+**旧 `.cursor/commands/mokuhyo-excel-to-markdown.md` は廃止**。**旧** `dev-workspace/.agents/skills/hr-goal-sheet-excel-to-markdown/` **配下（SKILL.md / AGENTS.md）も廃止**。
 
 myrules を厳守して作業してください。
 

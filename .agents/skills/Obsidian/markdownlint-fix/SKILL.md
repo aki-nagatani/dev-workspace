@@ -8,7 +8,7 @@ description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) i
 ## 作業開始前（必須・省略禁止）
 
 - **修正・検証・提案のいずれかを行う前に**、本ファイル
-  `dev-workspace/.cursor/skills/Obsidian/markdownlint-fix/SKILL.md` を **Read ツールで全文読み**、
+  `dev-workspace/.agents/skills/Obsidian/markdownlint-fix/SKILL.md` を **Read ツールで全文読み**、
   以下の作業フローに従うこと
 - SKILL の説明文や会話内の要約だけに頼らず、**毎回ファイルを開いて読む**（エージェントの抜け漏れ防止）
 - **myrules** は本 SKILL 参照のみ。**発火条件・作業フローの正本は本ファイル**
@@ -43,8 +43,8 @@ description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) i
 
 ### 3. 修正ルールの参照
 
-- 修正は `markdown-editing` SKILL（`dev-workspace/.cursor/skills/Obsidian/markdown-editing/SKILL.md`）のルールに従う
-- 該当するエラー種別（MD013, MD024, MD032, MD060 等）の対応策を SKILL で確認して適用する
+- 修正は `markdown-editing` SKILL（`dev-workspace/.agents/skills/Obsidian/markdown-editing/SKILL.md`）のルールに従う
+- 該当するエラー種別（MD013, MD032, MD060 等）の対応策を SKILL で確認して適用する（**MD024 は `.markdownlint.json` で無効 — 修正対象外**）
 
 ### 4. SKILL に未記載のエラーの場合
 
