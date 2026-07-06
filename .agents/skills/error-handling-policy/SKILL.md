@@ -63,6 +63,16 @@ description: >-
 
 **1 つでも「いいえ」なら不十分。やり直す。**
 
+## 明示的 except（ログ形式）— FishTrack / MyPokedex
+
+- **正本**:
+  - FishTrack: **`src/fishtrack/utils/exception_logging.py`**・**`AGENTS.md`**「例外ログ（catch 時）」
+  - MyPokedex: **`src/mypokedex/utils/exception_logging.py`**・**`AGENTS.md`**「例外ログ（catch 時）」
+- **`log_caught_exception(logger, context, exc)`** で `logger.error(..., exc_info=True)` に統一する
+- **APScheduler**: **`run_background_job`**（`app.logger` 必須。モジュール `logger` だけでは Slack/SNS 通知に届かない）
+- **禁止**: 同一例外に対する二重 `logger.error`、失敗通知用の入れ子 `try/except`（ドメイン補助は `on_error` のみ）
+- **機械検査**: 各リポ **`scripts/check_caught_exception_logging.py`**（pre-commit / CI）。`src/*` で **`logger.exception`** と allowlist 外の **`exc_info=True`** を検出。逸脱は **`# noqa: caught-exception-log`**（要レビュー・最小限）
+
 ## 関連
 
 - **Python 構文・型・Lint**: `python-code-error-fix` SKILL
