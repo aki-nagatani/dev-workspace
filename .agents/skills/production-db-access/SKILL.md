@@ -16,8 +16,8 @@ MyPokedexおよびFishTrackの本番EC2インスタンスへの接続方法と�
 
 | 項目 | 値 | 備考 |
 | --- | --- | --- |
-| **本番インスタンスID** | `i-023a1623e48cabf1d` | **現在稼働中** |
-| **本番IPアドレス** | `54.249.50.253` | **デプロイ先** |
+| **本番インスタンスID** | `i-0b2e6876c16609083` | **現在稼働中** |
+| **本番IPアドレス** | `13.158.196.131` | **デプロイ先** |
 | EC2上のアプリパス | `/home/ec2-user/MyPokedex` | |
 | Dockerコンテナ名 | `mypokedex-app-1` | |
 | アプリモジュール | `mypokedex` | |
@@ -50,7 +50,7 @@ gh secret list --repo aki-nagatani/FishTrack | Select-String "EC2"
 
 ```yaml
 # deploy.yml内のコメント例
-# Current running instance: i-023a1623e48cabf1d (54.249.50.253)
+# Current running instance: i-0b2e6876c16609083 (13.158.196.131)
 # Stopped instance: i-0b816de830482d542 (18.179.162.82) - DO NOT USE
 ```
 
@@ -75,7 +75,7 @@ gh secret list --repo aki-nagatani/FishTrack | Select-String "EC2"
 
 ```powershell
 # MyPokedex
-aws ssm start-session --target i-023a1623e48cabf1d
+aws ssm start-session --target i-0b2e6876c16609083
 
 # FishTrack
 aws ssm start-session --target i-05e573f245ca9e2d1
@@ -107,7 +107,7 @@ docker compose --env-file .env down && docker compose --env-file .env up -d
 ```powershell
 # MyPokedex - コマンド送信
 aws ssm send-command `
-  --instance-ids i-023a1623e48cabf1d `
+  --instance-ids i-0b2e6876c16609083 `
   --document-name "AWS-RunShellScript" `
   --parameters 'commands=["cd /home/ec2-user/MyPokedex && cat .env | grep VERSION"]' `
   --output json
@@ -138,7 +138,7 @@ aws ssm get-command-invocation --command-id <CommandId> --instance-id <InstanceI
 
 ```powershell
 # MyPokedex（正しいインスタンス）
-ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@54.249.50.253
+ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@13.158.196.131
 
 # FishTrack
 ssh -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@52.197.69.195
@@ -148,7 +148,7 @@ ssh -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2
 
 ```powershell
 # MyPokedex - 環境変数確認
-ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@54.249.50.253 "grep -E 'VERSION|CAPTCHA' /home/ec2-user/MyPokedex/.env"
+ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@13.158.196.131 "grep -E 'VERSION|CAPTCHA' /home/ec2-user/MyPokedex/.env"
 
 # FishTrack - 環境変数確認
 ssh -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@52.197.69.195 "grep VERSION /home/ec2-user/FishTrack/.env"
@@ -210,7 +210,7 @@ with app.app_context():
 
    ```powershell
    # MyPokedex
-   scp -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no "D:\OneDrive\git_work\MyPokedex\scripts\my_script.py" ec2-user@54.249.50.253:/home/ec2-user/MyPokedex/scripts/
+   scp -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no "D:\OneDrive\git_work\MyPokedex\scripts\my_script.py" ec2-user@13.158.196.131:/home/ec2-user/MyPokedex/scripts/
    
    # FishTrack
    scp -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no "D:\OneDrive\git_work\FishTrack\scripts\my_script.py" ec2-user@52.197.69.195:/home/ec2-user/FishTrack/scripts/
@@ -220,7 +220,7 @@ with app.app_context():
 
    ```powershell
    # MyPokedex
-   ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@54.249.50.253 "cd /home/ec2-user/MyPokedex && docker exec mypokedex-app-1 python scripts/my_script.py"
+   ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@13.158.196.131 "cd /home/ec2-user/MyPokedex && docker exec mypokedex-app-1 python scripts/my_script.py"
    
    # FishTrack
    ssh -i "C:\Users\Akihide\.ssh\fishtrack_ec2_key" -o StrictHostKeyChecking=no ec2-user@52.197.69.195 "cd /home/ec2-user/FishTrack && docker exec fishtrack-app-1 python scripts/my_script.py"
@@ -232,7 +232,7 @@ with app.app_context():
    # MyPokedex - ローカル
    Remove-Item "D:\OneDrive\git_work\MyPokedex\scripts\my_script.py"
    # MyPokedex - EC2
-   ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@54.249.50.253 "rm /home/ec2-user/MyPokedex/scripts/my_script.py"
+   ssh -i "C:\Users\Akihide\.ssh\mypokedex_ec2_key" -o StrictHostKeyChecking=no ec2-user@13.158.196.131 "rm /home/ec2-user/MyPokedex/scripts/my_script.py"
    
    # FishTrack - ローカル
    Remove-Item "D:\OneDrive\git_work\FishTrack\scripts\my_script.py"

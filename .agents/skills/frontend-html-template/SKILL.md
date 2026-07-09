@@ -14,6 +14,7 @@ description: >-
 
 - **`templates/`** 配下の HTML/Jinja を編集・新規作成するとき
 - テンプレに **JavaScript / CSS** を足す依頼があるとき
+- **`static/css/`・`static/js/`** を**レイアウト**（見た目・配置・表・sticky・パネル・レスポンシブ）に影響させて変更するとき
 - **CSP**・保守性・Jest 単体テストの観点でインラインコードを検討するとき
 
 ## インラインスクリプト禁止
@@ -61,8 +62,21 @@ description: >-
 - フォーム内の並びも **`__label` / `__value` 等の意味クラス**で指定（子要素番号に依存しない）
 - 既存の `nth-child` 列指定を見つけたら、列クラスへ置換する（新規追加も同様）
 
+## レイアウト変更後のブラウザ確認（必須）
+
+**画面レイアウト**に触れた変更（テンプレ・CSS・レイアウト用 JS）は、テスト・ユーザー報告の**前**に**ローカル Docker**上の対象画面を**ブラウザで目視確認**する。省略しない。
+
+| プロダクト | 手順の正本 |
+| --- | --- |
+| FishTrack | **`local-browser-verify`** SKILL（`FishTrack/.agents/skills/`）。AI 用アカウント・Cursor ブラウザ表示 |
+| MyPokedex | **`local-browser-verify`** SKILL（`MyPokedex/.agents/skills/`）。AI 用アカウント・Cursor ブラウザ表示 |
+
+- **確認観点**（代表）: ヘッダー・ナビ・表／フォーム配置・sticky・横スクロール・空状態・モーダル／パネル・主要ボタン
+- **報告**: 確認した URL と気づいた点を短く記載する
+
 ## 関連
 
+- **ブラウザ確認（FishTrack）**: **`local-browser-verify`** SKILL
 - **ファイルサイズ**: `file-size-policy` SKILL（`static/` の CSS/JS）
 - **FishTrack AGENTS.md**: タックル UI 共通化（テンプレ・JS・CSS の共通化方針）。**列幅・sticky は本 SKILL「データ表の列スタイル」**を正とする
 - **MyPokedex AGENTS.md**: **`pk-col--*`** による図鑑・パーティ表の列指定

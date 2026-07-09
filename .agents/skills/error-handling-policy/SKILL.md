@@ -60,18 +60,55 @@ description: >-
 - [ ] 同条件で再実行すると解消するか？
 - [ ] 将来の類似ケースでも起きにくい設計か？
 - [ ] 99% カバレッジ運用リポで **`--cov-fail-under` を 99 未満に下げていないか**（該当なしはスキップ）
+- [ ] FishTrack / MyPokedex で **`except` 内のログ**は **`log_caught_exception`** か？（`logger.exception`・手書き `exc_info=True` を新規追加していないか）
+- [ ] バックグラウンドジョブは **`run_background_job`** ＋ **`app.logger`** か？（該当なしはスキップ）
 
 **1 つでも「いいえ」なら不十分。やり直す。**
 
 ## 明示的 except（ログ形式）— FishTrack / MyPokedex
 
-- **正本**:
-  - FishTrack: **`src/fishtrack/utils/exception_logging.py`**・**`AGENTS.md`**「例外ログ（catch 時）」
-  - MyPokedex: **`src/mypokedex/utils/exception_logging.py`**・**`AGENTS.md`**「例外ログ（catch 時）」
-- **`log_caught_exception(logger, context, exc)`** で `logger.error(..., exc_info=True)` に統一する
-- **APScheduler**: **`run_background_job`**（`app.logger` 必須。モジュール `logger` だけでは Slack/SNS 通知に届かない）
-- **禁止**: 同一例外に対する二重 `logger.error`、失敗通知用の入れ子 `try/except`（ドメイン補助は `on_error` のみ）
-- **機械検査**: 各リポ **`scripts/check_caught_exception_logging.py`**（pre-commit / CI）。`src/*` で **`logger.exception`** と allowlist 外の **`exc_info=True`** を検出。逸脱は **`# noqa: caught-exception-log`**（要レビュー・最小限）
+**実装の正本は各リポの `exception_logging.py` と `AGENTS.md`「例外ログ（catch 時）」**。本節は横断ルールと機械検査の要点。
+
+### 導入済み製品
+
+| 製品 | 共通モジュール | 機械検査 |
+| --- | --- | --- |
+| FishTrack | `src/fishtrack/utils/exception_logging.py` | `scripts/check_caught_exception_logging.py` |
+| MyPokedex | `src/mypokedex/utils/exception_logging.py` | 同上 |
+| おたよりナビ | **開発凍結中** — 横展開・機械検査の導入は**対象外**（再開時は FishTrack を雛形） | — |
+
+### 記録形式（必須）
+
+- **`log_caught_exception(logger, context, exc)`** → `logger.error("Error in %s: %s", context, exc, exc_info=True)` に統一
+- **HTTP ルート**: `current_app.logger`（または `app.logger`）＋ `log_caught_exception`
+- **APScheduler 等**: **`run_background_job(app, context, fn, on_error=...)`**。**`app.logger` 必須**（モジュール直下 `logger` だけでは Slack/SNS 通知に届かない）
+- **`on_error`**: ドメイン補助のみ（例: spec-crawl 失敗 Slack）。追加の `logger.error` や失敗通知用の入れ子 `try/except` は書かない
+
+### 禁止（握りつぶしと同列）
+
+- 新規の **`logger.exception(...)`**
+- allowlist 外での手書き **`exc_info=True`**
+- 同一例外に対する **二重 `logger.error`**
+
+### 機械検査（`check_caught_exception_logging.py`）
+
+- **走査対象**: 各リポ `src/<パッケージ>/` 配下の `*.py`
+- **検出**: `.exception(` と allowlist 外の `exc_info=True`
+- **実行箇所**: **`.githooks/pre-commit`** と **`.github/workflows/deploy.yml`**（lint 段）
+- **手動**: リポジトリ直下で `python scripts/check_caught_exception_logging.py`（exit 0 が必須）
+- **allowlist**: 正本 `exception_logging.py`・グローバル 500 ハンドラ・WARNING 運用ログ等のみ。**追加はレビュー必須**（安易に広げない）
+- **逸脱の一時許可**: 行末 **`# noqa: caught-exception-log`**（最小限・理由が説明できる場合のみ。恒久利用は禁止）
+
+### 新規製品への導入手順（開発再開時）
+
+**おたよりナビは開発凍結中のため、現時点では本手順の対象外。** 凍結解除後に他製品へ展開するときは FishTrack を雛形とする。
+
+1. `exception_logging.py`（`log_caught_exception` / `run_background_job`）を追加
+2. 既存の `logger.exception`・手書き `exc_info=True` を一括 `log_caught_exception` へ移行
+3. `check_caught_exception_logging.py` を追加（走査ルート・allowlist を製品に合わせる）
+4. `tests/test_check_caught_exception_logging.py` を追加
+5. **pre-commit** と **deploy.yml** に検査を組み込む
+6. 各 **`AGENTS.md`**「例外ログ（catch 時）」節を同期
 
 ## 関連
 
