@@ -116,12 +116,6 @@ alwaysApply: true
 - **手順の正本**: **`error-handling-policy`** SKILL（`.agents/skills/error-handling-policy/SKILL.md`）
 - **Python 構文・型・Lint**: **`python-code-error-fix`** SKILL（併用）
 
-## 作業完了通知（最重要・必須実行）
-
-**🚨 現在、Slack通知機能は一時停止。ユーザーから再開指示があるまで送信しない。**
-
-**運用方法（再開後）**: Slack通知の作成・送信・確認は `slack-final-report` SKILL（`.agents/skills/slack-final-report/`）に従う。
-
 ## 作業ログ（最重要・必須実行）
 
 🚨 **ワークスペース内のファイルを変更した作業**では、**ユーザー報告の前に必ず** Obsidian CursorLog を更新する。**手順・チェックリスト・前ゲート・Q1〜Q3**の正本は **`obsidian-cursor-log`** SKILL（`.agents/skills/Obsidian/obsidian-cursor-log/SKILL.md`）。

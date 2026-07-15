@@ -43,64 +43,25 @@ GitHub CLI（`gh`）がインストールされている場合、最も簡単に
 # リポジトリディレクトリに移動（例: otayori-navi）
 cd d:\OneDrive\git_work\otayori-navi
 
-# 最新のワークフロー実行一覧を確認
-gh run list --limit 1
-
-# 最新の実行の詳細を確認（自動的に最新のrun IDを取得）
-$runId = (gh run list --limit 1 --json databaseId -q '.[0].databaseId')
-gh run view $runId
-
-# ブラウザで開く
-gh run view $runId --web
-
-# 失敗した場合のログを確認
-gh run view $runId --log-failed
-```
-
-**待機スクリプト例（GitHub CLI使用）**:
-
-```powershell
-cd d:\OneDrive\git_work\otayori-navi  # 対象リポジトリに変更
-$maxWaitMinutes = 20
-$checkIntervalSeconds = 30
-$startTime = Get-Date
-
-Write-Host "GitHub Actionsの完了を待機中..."
-
-while ($true) {
-    try {
-        $run = gh run list --limit 1 --json status,conclusion,databaseId,htmlUrl | ConvertFrom-Json
-        $status = $run.status
-        $conclusion = $run.conclusion
-        
-        Write-Host "Status: $status, Conclusion: $conclusion"
-        
-        if ($status -eq "completed") {
-            if ($conclusion -eq "success") {
-                Write-Host "✅ GitHub Actions成功: $($run.htmlUrl)"
-                gh run view $run.databaseId
-                break
-            } else {
-                Write-Host "❌ GitHub Actions失敗: $($run.htmlUrl)"
-                gh run view $run.databaseId --log-failed
-                exit 1
-            }
-        }
-        
-        $elapsed = (Get-Date) - $startTime
-        if ($elapsed.TotalMinutes -gt $maxWaitMinutes) {
-            Write-Host "⚠️ タイムアウト: 最大待機時間を超過しました"
-            Write-Host "手動で確認してください: $($run.htmlUrl)"
-            exit 1
-        }
-        
-        Start-Sleep -Seconds $checkIntervalSeconds
-    } catch {
-        Write-Host "⚠️ GitHub CLIエラー: $_"
-        Write-Host "手動で確認してください: https://github.com/aki-nagatani/otayori-navi/actions"
-        exit 1
-    }
+# マージ済みmainのコミットに紐づくpush実行だけを特定する
+git fetch origin main
+$commitSha = (git rev-parse origin/main).Trim()
+$run = gh run list --branch main --event push --commit $commitSha --limit 1 `
+  --json databaseId,status,conclusion,url | ConvertFrom-Json
+if (-not $run) {
+    throw "main の $commitSha に対応する GitHub Actions 実行が見つかりません。"
 }
+
+$runId = $run.databaseId
+Write-Host "GitHub Actionsを待機中: $($run.url)"
+gh run watch $runId --exit-status --interval 10
+if ($LASTEXITCODE -ne 0) {
+    gh run view $runId --log-failed
+    exit $LASTEXITCODE
+}
+
+# 成功時もジョブ結果を確認する
+gh run view $runId
 ```
 
 #### 方法2: GitHub APIを使用
@@ -132,10 +93,8 @@ try {
 **ワークフローが実行中（`status: "in_progress"`または`status: "queued"`）の場合**:
 
 - **必ず完了するまで待機する**（最大20分程度、通常は5-10分）
-- 定期的にステータスを確認する（30秒〜1分ごと）
+- `gh run watch <run-id> --exit-status --interval 10` で対象runを待機する
 - `status: "completed"`になるまで待機を継続する
-
-**待機スクリプト例は「方法1: GitHub CLIを使用」セクションを参照してください。**
 
 ### 5. 結果の確認（完了後）
 
