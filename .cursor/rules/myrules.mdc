@@ -47,7 +47,8 @@ alwaysApply: true
   **`otayori-navi_pull-request`** は **otayori-navi** `.agents/skills/`。\
   **`commit-all`**・**`commit-message`**・**`github-actions-check`**・**`code-comment-guidelines`**・**`git-workflow`** は **`dev-workspace/.agents/skills/GitHub/`**。\
   **`error-handling-policy`**・**`document-creation-policy`**・**`temp-file-management`**・**`file-size-policy`**・**`frontend-html-template`**・**`datetime-jst`** は **`dev-workspace/.agents/skills/`**（ルート）。\
-  **`obsidian-cursor-log`**・**`obsidian-second-brain`**・**`obsidian-inbox-summarize`**・**`obsidian-update-rules`**・**`markdown-editing`**・**`markdownlint-fix`** は **`dev-workspace/.agents/skills/Obsidian/`**。\
+  **`obsidian-cursor-log`**・**`obsidian-cursor-monthly-report`**・**`obsidian-second-brain`**・\
+  **`obsidian-inbox-summarize`**・**`obsidian-update-rules`**・**`markdown-editing`**・**`markdownlint-fix`** は **`dev-workspace/.agents/skills/Obsidian/`**。\
   **`mokuhyo\*`**・**`work-folder-update`**・**`work-kadai-update`**・**`work-knowledge-deepen`** は **`dev-workspace/.agents/skills/DTS/`**。\
   **`FaiNavi_deploy`** は **`personal-tools/.agents/skills/`**。\
   共通手順は **`ai-spec-check-report/SKILL.md`** 等）→\
@@ -118,7 +119,8 @@ alwaysApply: true
 
 ## 作業ログ（最重要・必須実行）
 
-🚨 **ワークスペース内のファイルを変更した作業**では、**ユーザー報告の前に必ず** Obsidian CursorLog を更新する。**手順・チェックリスト・前ゲート・Q1〜Q3**の正本は **`obsidian-cursor-log`** SKILL（`.agents/skills/Obsidian/obsidian-cursor-log/SKILL.md`）。
+🚨 **ワークスペース内のファイルを変更した作業**では、**ユーザー報告の前に必ず** Obsidian CursorLog を更新する。**手順・チェックリスト・前ゲート・Q0〜Q4**の正本は **`obsidian-cursor-log`** SKILL（`.agents/skills/Obsidian/obsidian-cursor-log/SKILL.md`）。\
+**月次日報**（`CursorLog/YYYY-MM/YYYY-MM 日報.md`）は **`obsidian-cursor-monthly-report`** SKILL が正本。Q0・「日報作成」依頼時は同 SKILL を Read してから着手する。
 
 - **報告文に「CursorLogは更新しました」を必ず含める**
 - **取り扱い終了文の前ゲート**: ファイル変更が1件でもあれば、**成果報告の本文を述べる前に** CursorLog 追記を**同一ターン内で完了**する（詳細は SKILL「作業フローと報告前ゲート」）
