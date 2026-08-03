@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "dev-workspace",
+			"path": "."
+		},
+		{
+			"name": "Obsidian",
+			"path": "../../アプリ/remotely-save/Obsidian"
+		}
+	],
+	"settings": {}
+}
