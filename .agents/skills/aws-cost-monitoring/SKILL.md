@@ -9,6 +9,23 @@ description: AWSコストを定期的に監視し、改善案を提案する。�
 
 AWSコストを定期的に監視し、コスト分析と最適化推奨事項を取得して、具体的な改善案を提案する。
 
+## 定期自動監視
+
+- 実行基盤は `dev-workspace` の GitHub Actions
+  `cost_monitoring.yml` とする。
+- 実行頻度は毎月1日・15日 09:00 JST
+  （cron: `0 0 1,15 * *`）とする。
+- AWS Cost Explorer と OpenAI Organization Costs API は別ジョブとして並列実行する。
+- 各ジョブは専用 Incoming Webhook を使い、Slack `#コスト監視` にサマリを投稿する。
+  Webhook は GitHub Actions Secret
+  `COST_MONITORING_SLACK_WEBHOOK_URL` にのみ保持する。
+- どちらかのジョブが失敗した場合は、失敗内容を同じチャンネルへ投稿して
+  ワークフローを失敗させる。通知失敗を成功として扱わない。
+- OpenAI の通知額は Organization Costs API を正とする。
+  プロダクト内の利用量ログは、内訳を調べるときだけ参照する。
+- 手動のコスト分析は本 SKILL の実行フローに従う。
+  定期ジョブの結果を深掘り・改善案の評価が必要なときに実行する。
+
 ## 実行フロー
 
 ### 1. コスト分析の実行

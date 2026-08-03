@@ -74,6 +74,17 @@ description: >-
 - **確認観点**（代表）: ヘッダー・ナビ・表／フォーム配置・sticky・横スクロール・空状態・モーダル／パネル・主要ボタン
 - **報告**: 確認した URL と気づいた点を短く記載する
 
+## 固定トースト（FishTrack・フィードバック共通）
+
+- **正本**: `static/js/fishtrack/ft_toast.js`（`base.html` / `landing_base.html` で読込）。`window.fishtrackToast.show(message, type)` または `show({ message, type, html, placement, duration })`。
+- **用途**:
+  - ページ内の非同期操作（AJAX）の結果通知
+  - リダイレクト後のサーバー `flash()`（`partials/_ft_flash_to_toast.html` → `hydrateFlashes`）
+- **配置**: 画面上部中央の固定トースト（既定 `placement: 'top'`）。スクロール位置に依存しない。
+- **種別**: `success` / `error` / `warning` / `info`。スタイルは `fishtrack_tail.css` の `.ft-toast*`。HTML 付き flash（リンク等）は `html` オプション。
+- **禁止**: 画面ごとにトースト DOM 生成ロジックを複製しない。ページ先頭の `.flash-container` バナー表示に戻さない（カード内インライン `flash--*` は例外）。
+- **テスト**: `tests/js/common/test.fishtrack.ft_toast.js` を参照。利用側 JS のテストでは `ft_toast.js` を先に `require` する。
+
 ## 関連
 
 - **ブラウザ確認（FishTrack）**: **`local-browser-verify`** SKILL
