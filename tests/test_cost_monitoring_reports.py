@@ -7,18 +7,19 @@ from decimal import Decimal
 
 from scripts.cost_monitoring import (
     CostPeriod,
+    anomaly_summary,
     comparison_periods,
     cost_deltas,
     daily_average,
+    evaluate_judgment,
+    is_meaningful_delta,
     monitoring_windows,
     percent_change,
     projected_month_total,
     share_percent,
+    significant_increases,
 )
-from scripts.report_aws_cost_to_slack import (
-    anomaly_summary,
-    build_report as build_aws_report,
-)
+from scripts.report_aws_cost_to_slack import build_report as build_aws_report
 from scripts.report_openai_cost_to_slack import (
     build_report as build_openai_report,
     daily_cost_series,
@@ -91,6 +92,41 @@ def test_cost_deltas_and_share_percent() -> None:
     assert share_percent(Decimal("3"), Decimal("15")) == "20.0%"
 
 
+def test_meaningful_delta_and_significant_increases() -> None:
+    """小さい増減は捨て、意味のある増加だけ残す。"""
+    assert is_meaningful_delta(Decimal("0.2"), Decimal("10")) is False
+    assert is_meaningful_delta(Decimal("1.2"), Decimal("10")) is True
+    increases = significant_increases(
+        {"Amazon RDS": Decimal("12"), "Amazon EC2": Decimal("3.1")},
+        {"Amazon RDS": Decimal("11.9"), "Amazon EC2": Decimal("2")},
+    )
+    assert [row[0] for row in increases] == ["Amazon EC2"]
+
+
+def test_judgment_escalates_for_mom_and_projection() -> None:
+    """前月比と月末予測で要注意／要確認に上げる。"""
+    warn = evaluate_judgment(
+        current_total=Decimal("13"),
+        previous_total=Decimal("10"),
+        previous_full_month_total=Decimal("20"),
+        projected_total=None,
+        has_daily_anomaly=False,
+    )
+    investigate = evaluate_judgment(
+        current_total=Decimal("13"),
+        previous_total=Decimal("10"),
+        previous_full_month_total=Decimal("20"),
+        projected_total=Decimal("30"),
+        has_daily_anomaly=False,
+    )
+
+    assert warn.level == "要注意"
+    assert warn.needs_cursor_paste is True
+    assert warn.user_action_line().startswith("【貼るだけ】")
+    assert investigate.level == "要確認"
+    assert investigate.needs_cursor_paste is True
+
+
 def test_anomaly_summary_detects_latest_daily_spike() -> None:
     """最新日が過去平均の1.5倍超なら警告を返す。"""
     summary = anomaly_summary(
@@ -103,36 +139,63 @@ def test_anomaly_summary_detects_latest_daily_spike() -> None:
 
     assert "日次異常" in summary
     assert "2026-08-03" in summary
+    assert anomaly_summary([("2026-08-01", Decimal("1")), ("2026-08-02", Decimal("1"))]) == (
+        "日次異常なし"
+    )
 
 
-def test_aws_report_includes_monthly_comparison_and_projection() -> None:
-    """AWS サマリに前月比較、月末予測、増減上位を含める。"""
+def test_aws_mid_month_normal_report_is_compact() -> None:
+    """当月累計で正常なら増減詳細と月次推移を省略する。"""
     windows = monitoring_windows(datetime(2026, 8, 15, 9, tzinfo=JST))
     report = build_aws_report(
         windows,
-        {"Amazon RDS": Decimal("12.50"), "Amazon EC2": Decimal("3.00")},
-        {"Amazon RDS": Decimal("10.00"), "Amazon EC2": Decimal("4.00")},
-        Decimal("28.00"),
+        {"Amazon RDS": Decimal("10.00"), "Amazon EC2": Decimal("1.00")},
+        {"Amazon RDS": Decimal("10.00"), "Amazon EC2": Decimal("1.00")},
+        Decimal("31.00"),
         [
-            (CostPeriod(datetime(2026, 5, 1).date(), datetime(2026, 6, 1).date()), Decimal("20")),
-            (CostPeriod(datetime(2026, 6, 1).date(), datetime(2026, 7, 1).date()), Decimal("24")),
-            (CostPeriod(datetime(2026, 7, 1).date(), datetime(2026, 8, 1).date()), Decimal("28")),
+            (CostPeriod(datetime(2026, 7, 1).date(), datetime(2026, 8, 1).date()), Decimal("31")),
         ],
         [("2026-08-01", Decimal("1")), ("2026-08-02", Decimal("1"))],
     )
 
-    assert "当月累計" in report
-    assert "$15.50" in report
+    assert "判定: 正常" in report
+    assert "【対応不要】" in report
     assert "月末予測" in report
-    assert "前月の完了月合計: $28.00" in report
+    assert "増加上位" not in report
+    assert "直近完了月の推移" not in report
+    assert "#cost-monitoring-handoff" not in report
+
+
+def test_aws_complete_month_report_includes_trend_and_movers() -> None:
+    """完了月レビューでは推移と意味のある増加を出す。"""
+    windows = monitoring_windows(datetime(2026, 8, 1, 9, tzinfo=JST))
+    report = build_aws_report(
+        windows,
+        {"Amazon RDS": Decimal("20.00"), "Amazon EC2": Decimal("5.00")},
+        {"Amazon RDS": Decimal("10.00"), "Amazon EC2": Decimal("4.00")},
+        Decimal("14.00"),
+        [
+            (CostPeriod(datetime(2026, 5, 1).date(), datetime(2026, 6, 1).date()), Decimal("12")),
+            (CostPeriod(datetime(2026, 6, 1).date(), datetime(2026, 7, 1).date()), Decimal("14")),
+            (CostPeriod(datetime(2026, 7, 1).date(), datetime(2026, 8, 1).date()), Decimal("25")),
+        ],
+        [("2026-07-01", Decimal("1")), ("2026-07-02", Decimal("1"))],
+    )
+
+    assert "完了月" in report
+    assert "判定: 要注意" in report or "判定: 要確認" in report
+    assert "【貼るだけ】" in report
+    assert "直近完了月の推移" in report
     assert "増加上位" in report
     assert "Amazon RDS" in report
-    assert "直近完了月の推移" in report
-    assert "日次異常: 検知なし" in report
+    assert "#cost-monitoring-handoff" in report
+    assert "SKILL: aws-cost-monitoring" in report
+    assert "追加質問はせず" in report
+    assert "ユーザー作業は貼り付けのみ完了" in report
 
 
 def test_openai_cost_report_sums_api_buckets_and_daily_series() -> None:
-    """OpenAI Costs API の複数バケットを合計し日次系列も作る。"""
+    """OpenAI Costs API の複数バケットを合計し判定付きで通知する。"""
     windows = monitoring_windows(datetime(2026, 8, 15, 9, tzinfo=JST))
     buckets = [
         {
@@ -158,7 +221,11 @@ def test_openai_cost_report_sums_api_buckets_and_daily_series() -> None:
 
     assert total == Decimal("4.00")
     assert "OpenAI API コスト監視（当月累計）" in report
+    assert "判定:" in report
+    assert "【貼るだけ】" in report
     assert "$4.00" in report
     assert "+100.0%" in report
     assert "月末予測" in report
-    assert "直近完了月の推移" in report
+    assert "直近完了月の推移" not in report
+    assert "#cost-monitoring-handoff" in report
+    assert "対象: OpenAI API" in report

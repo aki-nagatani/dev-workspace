@@ -11,6 +11,15 @@ from zoneinfo import ZoneInfo
 
 TOKYO = ZoneInfo("Asia/Tokyo")
 
+# 判定・詳細表示の初期閾値（少額運用向け）
+WARN_MOM_RATIO = Decimal("0.20")
+WARN_ABSOLUTE_USD = Decimal("5")
+INVESTIGATE_PROJECTION_RATIO = Decimal("0.20")
+DAILY_ANOMALY_RATIO = Decimal("1.5")
+MEANINGFUL_DELTA_USD = Decimal("1")
+MEANINGFUL_DELTA_RATIO = Decimal("0.15")
+MEANINGFUL_DELTA_MIN_USD = Decimal("0.5")
+
 
 @dataclass(frozen=True)
 class CostPeriod:
@@ -48,6 +57,31 @@ class MonitoringWindows:
     def mode_label(self) -> str:
         """通知見出し用のモード名を返す。"""
         return "完了月" if self.is_complete_month else "当月累計"
+
+
+@dataclass(frozen=True)
+class Judgment:
+    """コスト監視の判定結果。"""
+
+    level: str
+    reasons: tuple[str, ...]
+
+    @property
+    def needs_cursor_paste(self) -> bool:
+        """ユーザーが Slack 本文を Cursor へ貼るべき判定か。"""
+        return self.level in {"要注意", "要確認"}
+
+    def line(self) -> str:
+        """Slack 先頭の判定行を返す。"""
+        if not self.reasons:
+            return f"判定: {self.level}"
+        return f"判定: {self.level}（{' / '.join(self.reasons)}）"
+
+    def user_action_line(self) -> str:
+        """ユーザー向けの作業指示（貼る／何もしない）を返す。"""
+        if self.needs_cursor_paste:
+            return "【貼るだけ】このメッセージ全文を Cursor に貼る（考えなくてよい・追記不要）"
+        return "【対応不要】判定が正常のため、貼り付けも不要"
 
 
 def _month_start(value: date) -> date:
@@ -152,6 +186,47 @@ def cost_deltas(
     return rows
 
 
+def is_meaningful_delta(delta: Decimal, previous: Decimal) -> bool:
+    """増減が監視上意味のある大きさかを判定する。"""
+    absolute = abs(delta)
+    if absolute >= MEANINGFUL_DELTA_USD:
+        return True
+    if previous <= 0:
+        return absolute >= MEANINGFUL_DELTA_MIN_USD
+    ratio = absolute / previous
+    return ratio >= MEANINGFUL_DELTA_RATIO and absolute >= MEANINGFUL_DELTA_MIN_USD
+
+
+def significant_increases(
+    current: dict[str, Decimal],
+    previous: dict[str, Decimal],
+    *,
+    limit: int = 3,
+) -> list[tuple[str, Decimal, Decimal, Decimal]]:
+    """意味のある増加だけを差分の大きい順に返す。"""
+    rows = [
+        row
+        for row in cost_deltas(current, previous)
+        if row[3] > 0 and is_meaningful_delta(row[3], row[2])
+    ]
+    return rows[:limit]
+
+
+def significant_decreases(
+    current: dict[str, Decimal],
+    previous: dict[str, Decimal],
+    *,
+    limit: int = 3,
+) -> list[tuple[str, Decimal, Decimal, Decimal]]:
+    """意味のある減少だけを差分の大きい順（減り幅大）に返す。"""
+    rows = [
+        row
+        for row in reversed(cost_deltas(current, previous))
+        if row[3] < 0 and is_meaningful_delta(row[3], row[2])
+    ]
+    return rows[:limit]
+
+
 def top_cost_items(
     costs: dict[str, Decimal],
     *,
@@ -176,3 +251,117 @@ def month_trend_lines(
             change = f"（前月比 {percent_change(total, month_totals[index - 1][1])}）"
         lines.append(f"• {label}: {format_usd(total)}{change}")
     return lines
+
+
+def detect_daily_anomaly(
+    costs: list[tuple[str, Decimal]],
+) -> tuple[str, Decimal] | None:
+    """他日平均の1.5倍を超える日があればその日付と金額を返す。"""
+    if len(costs) < 2:
+        return None
+    highest_date, highest_cost = max(costs, key=lambda item: item[1])
+    other_costs = [cost for day, cost in costs if day != highest_date]
+    average = sum(other_costs, Decimal()) / len(other_costs)
+    if average > 0 and highest_cost > average * DAILY_ANOMALY_RATIO:
+        return highest_date, highest_cost
+    return None
+
+
+def anomaly_summary(costs: list[tuple[str, Decimal]]) -> str:
+    """日次異常の表示行を返す（正常時は短い文言）。"""
+    if len(costs) < 2:
+        return "日次異常なし（判定対象データ不足）"
+    detected = detect_daily_anomaly(costs)
+    if detected is None:
+        return "日次異常なし"
+    highest_date, highest_cost = detected
+    other_costs = [cost for day, cost in costs if day != highest_date]
+    average = sum(other_costs, Decimal()) / len(other_costs)
+    return (
+        f"日次異常: {highest_date} が他日の平均の"
+        f"{(highest_cost / average):.1f}倍（{format_usd(highest_cost)}）"
+    )
+
+
+def evaluate_judgment(
+    *,
+    current_total: Decimal,
+    previous_total: Decimal,
+    previous_full_month_total: Decimal,
+    projected_total: Decimal | None,
+    has_daily_anomaly: bool,
+) -> Judgment:
+    """合計・予測・日次異常から監視判定を作る。"""
+    investigate_reasons: list[str] = []
+    warn_reasons: list[str] = []
+
+    if has_daily_anomaly:
+        investigate_reasons.append("日次異常あり")
+
+    if projected_total is not None and previous_full_month_total > 0:
+        projection_ratio = (
+            projected_total - previous_full_month_total
+        ) / previous_full_month_total
+        if projection_ratio > INVESTIGATE_PROJECTION_RATIO:
+            investigate_reasons.append(
+                f"月末予測が前月比 {percent_change(projected_total, previous_full_month_total)}"
+            )
+
+    absolute_delta = current_total - previous_total
+    if previous_total > 0:
+        mom_ratio = absolute_delta / previous_total
+        if mom_ratio > WARN_MOM_RATIO or absolute_delta > WARN_ABSOLUTE_USD:
+            warn_reasons.append(f"同期間前月比 {percent_change(current_total, previous_total)}")
+    elif absolute_delta > WARN_ABSOLUTE_USD:
+        warn_reasons.append(f"同期間増分 {format_usd(absolute_delta)}")
+
+    if investigate_reasons:
+        return Judgment("要確認", tuple(investigate_reasons))
+    if warn_reasons:
+        return Judgment("要注意", tuple(warn_reasons))
+    return Judgment("正常", ())
+
+
+def delta_lines(
+    rows: list[tuple[str, Decimal, Decimal, Decimal]],
+    *,
+    empty_label: str,
+) -> list[str]:
+    """増減行を Slack 表示用に整形する。"""
+    if not rows:
+        return [f"• {empty_label}"]
+    return [
+        f"• {name}: {format_usd(delta)}（{format_usd(prev)} → {format_usd(now)}）"
+        for name, now, prev, delta in rows
+    ]
+
+
+def cursor_handoff_lines(
+    *,
+    target: str,
+    judgment: Judgment,
+    focus_points: list[str],
+) -> list[str]:
+    """Slack本文だけで Cursor が深掘りを開始できる依頼ブロックを返す。"""
+    focus = focus_points or ["レポート記載の判定理由と増減要因を確認する"]
+    return [
+        "-----",
+        "#cost-monitoring-handoff",
+        "【Cursor依頼】",
+        "ユーザー作業は貼り付けのみ完了。以降はエージェントが自動継続する。",
+        "SKILL: aws-cost-monitoring",
+        "SKILL path: dev-workspace/.agents/skills/aws-cost-monitoring/SKILL.md",
+        f"対象: {target}",
+        f"判定: {judgment.level}",
+        (
+            "依頼: このSlack通知本文だけを入力として深掘りを開始する。"
+            "追加質問はせず、SKILLの実行フローに従い原因候補と改善案を日本語で返す。"
+        ),
+        "調査観点:",
+        *[f"- {point}" for point in focus],
+        "成果物:",
+        "- 判定の妥当性（正常に戻せるか／要継続監視か）",
+        "- 原因仮説（確度つき）",
+        "- 優先度付き改善案（実施手順・注意点・概算効果）",
+        "- 次にユーザーが取るべきこと（多くて3件）",
+    ]

@@ -8,14 +8,20 @@ from typing import Any
 from scripts.cost_monitoring import (
     CostPeriod,
     MonitoringWindows,
-    cost_deltas,
+    anomaly_summary,
+    cursor_handoff_lines,
     daily_average,
+    delta_lines,
+    detect_daily_anomaly,
+    evaluate_judgment,
     format_usd,
     month_trend_lines,
     monitoring_windows,
     percent_change,
     projected_month_total,
     share_percent,
+    significant_decreases,
+    significant_increases,
     top_cost_items,
 )
 
@@ -84,22 +90,6 @@ def daily_costs(client: Any, period: CostPeriod) -> list[tuple[str, Decimal]]:
     ]
 
 
-def anomaly_summary(costs: list[tuple[str, Decimal]]) -> str:
-    """平均の1.5倍を超える日次コストがあるときだけ警告を返す。"""
-    if len(costs) < 2:
-        return "日次異常: 判定対象データ不足"
-
-    highest_date, highest_cost = max(costs, key=lambda item: item[1])
-    other_costs = [cost for day, cost in costs if day != highest_date]
-    average = sum(other_costs, Decimal()) / len(other_costs)
-    if average > 0 and highest_cost > average * Decimal("1.5"):
-        return (
-            f"日次異常: {highest_date} が他日の平均の"
-            f"{(highest_cost / average):.1f}倍（{format_usd(highest_cost)}）"
-        )
-    return "日次異常: 検知なし"
-
-
 def build_report(
     windows: MonitoringWindows,
     current_costs: dict[str, Decimal],
@@ -111,8 +101,25 @@ def build_report(
     """Slack へ投稿する AWS コストサマリを生成する。"""
     total_current = sum(current_costs.values(), Decimal())
     total_previous = sum(previous_costs.values(), Decimal())
-    avg_daily = daily_average(total_current, windows.focus.days)
-    top_services = top_cost_items(current_costs, limit=5)
+    projected = None
+    if not windows.is_complete_month:
+        projected = projected_month_total(
+            total_current,
+            windows.focus.days,
+            windows.focus.start,
+        )
+
+    has_anomaly = detect_daily_anomaly(current_daily_costs) is not None
+    judgment = evaluate_judgment(
+        current_total=total_current,
+        previous_total=total_previous,
+        previous_full_month_total=previous_full_month_total,
+        projected_total=projected,
+        has_daily_anomaly=has_anomaly,
+    )
+    show_details = windows.is_complete_month or judgment.needs_cursor_paste
+
+    top_services = top_cost_items(current_costs, limit=5 if windows.is_complete_month else 3)
     service_lines = [
         (
             f"• {service}: {format_usd(cost)}"
@@ -121,56 +128,76 @@ def build_report(
         for service, cost in top_services
     ] or ["• コストデータなし"]
 
-    deltas = cost_deltas(current_costs, previous_costs)
-    increases = [row for row in deltas if row[3] > 0][:3]
-    decreases = [row for row in reversed(deltas) if row[3] < 0][:3]
-    increase_lines = [
-        f"• {name}: {format_usd(delta)}（{format_usd(prev)} → {format_usd(now)}）"
-        for name, now, prev, delta in increases
-    ] or ["• 増加サービスなし"]
-    decrease_lines = [
-        f"• {name}: {format_usd(delta)}（{format_usd(prev)} → {format_usd(now)}）"
-        for name, now, prev, delta in decreases
-    ] or ["• 減少サービスなし"]
-
     lines = [
+        judgment.user_action_line(),
         f"*AWS コスト監視（{windows.mode_label}）*",
-        f"期間: {windows.focus.label()}",
+        judgment.line(),
+        (
+            f"期間: {windows.focus.label()}"
+            f"（比較: {windows.previous_comparable.label()}）"
+        ),
         (
             f"合計: {format_usd(total_current)}"
             f"（同期間前月比 {percent_change(total_current, total_previous)}）"
         ),
-        f"日次平均: {format_usd(avg_daily)}",
         (
             f"前月の完了月合計: {format_usd(previous_full_month_total)}"
             f"（{windows.previous_full_month.label()}）"
         ),
     ]
-    if not windows.is_complete_month:
-        projected = projected_month_total(
-            total_current,
-            windows.focus.days,
-            windows.focus.start,
-        )
+    if projected is not None:
         lines.append(
             f"月末予測: {format_usd(projected)}"
             f"（前月完了月比 {percent_change(projected, previous_full_month_total)}）"
         )
+    else:
+        lines.append(f"日次平均: {format_usd(daily_average(total_current, windows.focus.days))}")
 
-    lines.extend(
-        [
-            "上位サービス:",
-            *service_lines,
-            "増加上位:",
-            *increase_lines,
-            "減少上位:",
-            *decrease_lines,
-            "直近完了月の推移:",
-            *month_trend_lines(recent_month_totals),
-            anomaly_summary(current_daily_costs),
-            f"比較期間: {windows.previous_comparable.label()}",
+    lines.extend(["上位サービス:", *service_lines])
+
+    if show_details:
+        increases = significant_increases(current_costs, previous_costs)
+        decreases = significant_decreases(current_costs, previous_costs)
+        lines.extend(
+            [
+                "増加上位:",
+                *delta_lines(increases, empty_label="意味のある増加なし"),
+            ]
+        )
+        if decreases:
+            lines.extend(
+                [
+                    "減少上位:",
+                    *delta_lines(decreases, empty_label="意味のある減少なし"),
+                ]
+            )
+
+    if windows.is_complete_month:
+        lines.extend(["直近完了月の推移:", *month_trend_lines(recent_month_totals)])
+
+    lines.append(anomaly_summary(current_daily_costs))
+    if judgment.needs_cursor_paste:
+        increases = significant_increases(current_costs, previous_costs)
+        focus_points = [
+            "上位サービスと増加上位の内訳を Cost Explorer で確認する",
+            "日次異常がある場合はその日付のサービス別コストを特定する",
+            "不要リソース・設定ミス・想定外トラフィックの有無を切り分ける",
         ]
-    )
+        if increases:
+            focus_points.insert(
+                0,
+                "増加サービス: "
+                + ", ".join(name for name, *_rest in increases[:3]),
+            )
+        if judgment.reasons:
+            focus_points.insert(0, "判定理由: " + " / ".join(judgment.reasons))
+        lines.extend(
+            cursor_handoff_lines(
+                target="AWS",
+                judgment=judgment,
+                focus_points=focus_points,
+            )
+        )
     return "\n".join(lines)
 
 

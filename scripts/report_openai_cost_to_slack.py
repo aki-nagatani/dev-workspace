@@ -14,7 +14,11 @@ from scripts.cost_monitoring import (
     CostPeriod,
     MonitoringWindows,
     TOKYO,
+    anomaly_summary,
+    cursor_handoff_lines,
     daily_average,
+    detect_daily_anomaly,
+    evaluate_judgment,
     format_usd,
     month_trend_lines,
     monitoring_windows,
@@ -85,22 +89,6 @@ def daily_cost_series(buckets: list[dict[str, Any]]) -> list[tuple[str, Decimal]
     return series
 
 
-def anomaly_summary(costs: list[tuple[str, Decimal]]) -> str:
-    """平均の1.5倍を超える日次コストがあるときだけ警告を返す。"""
-    if len(costs) < 2:
-        return "日次異常: 判定対象データ不足"
-
-    highest_date, highest_cost = max(costs, key=lambda item: item[1])
-    other_costs = [cost for day, cost in costs if day != highest_date]
-    average = sum(other_costs, Decimal()) / len(other_costs)
-    if average > 0 and highest_cost > average * Decimal("1.5"):
-        return (
-            f"日次異常: {highest_date} が他日の平均の"
-            f"{(highest_cost / average):.1f}倍（{format_usd(highest_cost)}）"
-        )
-    return "日次異常: 検知なし"
-
-
 def build_report(
     windows: MonitoringWindows,
     current_total: Decimal,
@@ -110,40 +98,68 @@ def build_report(
     current_daily_costs: list[tuple[str, Decimal]],
 ) -> str:
     """Slack へ投稿する OpenAI コストサマリを生成する。"""
-    avg_daily = daily_average(current_total, windows.focus.days)
-    lines = [
-        f"*OpenAI API コスト監視（{windows.mode_label}）*",
-        f"期間: {windows.focus.label()}",
-        (
-            f"合計: {format_usd(current_total)}"
-            f"（同期間前月比 {percent_change(current_total, previous_total)}）"
-        ),
-        f"日次平均: {format_usd(avg_daily)}",
-        (
-            f"前月の完了月合計: {format_usd(previous_full_month_total)}"
-            f"（{windows.previous_full_month.label()}）"
-        ),
-    ]
+    projected = None
     if not windows.is_complete_month:
         projected = projected_month_total(
             current_total,
             windows.focus.days,
             windows.focus.start,
         )
+
+    has_anomaly = detect_daily_anomaly(current_daily_costs) is not None
+    judgment = evaluate_judgment(
+        current_total=current_total,
+        previous_total=previous_total,
+        previous_full_month_total=previous_full_month_total,
+        projected_total=projected,
+        has_daily_anomaly=has_anomaly,
+    )
+
+    lines = [
+        judgment.user_action_line(),
+        f"*OpenAI API コスト監視（{windows.mode_label}）*",
+        judgment.line(),
+        (
+            f"期間: {windows.focus.label()}"
+            f"（比較: {windows.previous_comparable.label()}）"
+        ),
+        (
+            f"合計: {format_usd(current_total)}"
+            f"（同期間前月比 {percent_change(current_total, previous_total)}）"
+        ),
+        (
+            f"前月の完了月合計: {format_usd(previous_full_month_total)}"
+            f"（{windows.previous_full_month.label()}）"
+        ),
+    ]
+    if projected is not None:
         lines.append(
             f"月末予測: {format_usd(projected)}"
             f"（前月完了月比 {percent_change(projected, previous_full_month_total)}）"
         )
+    else:
+        lines.append(f"日次平均: {format_usd(daily_average(current_total, windows.focus.days))}")
 
-    lines.extend(
-        [
-            "直近完了月の推移:",
-            *month_trend_lines(recent_month_totals),
-            anomaly_summary(current_daily_costs),
-            f"比較期間: {windows.previous_comparable.label()}",
-            "内訳確認: FishTrack 管理者の OpenAI 利用量画面",
+    if windows.is_complete_month:
+        lines.extend(["直近完了月の推移:", *month_trend_lines(recent_month_totals)])
+
+    lines.append(anomaly_summary(current_daily_costs))
+    if judgment.needs_cursor_paste:
+        focus_points = [
+            "判定理由: " + (" / ".join(judgment.reasons) if judgment.reasons else "前月比増加"),
+            "Organization Costs の合計増がどの用途か切り分ける",
+            "FishTrack 管理者の OpenAI 利用量画面でプロダクト内訳を確認する",
+            "AI補助スペック取込など短期間の集中利用がないか確認する",
         ]
-    )
+        lines.extend(
+            cursor_handoff_lines(
+                target="OpenAI API",
+                judgment=judgment,
+                focus_points=focus_points,
+            )
+        )
+    else:
+        lines.append("内訳確認: FishTrack 管理者の OpenAI 利用量画面")
     return "\n".join(lines)
 
 
