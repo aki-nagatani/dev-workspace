@@ -49,6 +49,13 @@ python extract_pdf_text.py <PDFファイルパス>
 `.github/workflows/cost_monitoring.yml` が毎月1日・15日 09:00 JSTに実行する。
 AWS と OpenAI API の集計は別ジョブで並列に動作し、Slack `#コスト監視` へ投稿する。
 
+通知内容の要点:
+
+- 毎月1日: 直前の完了月合計と前月比較
+- 毎月15日: 当月累計・同期間前月比・日次平均・月末予測
+- 共通: 前月の完了月合計、直近3完了月の推移、日次異常
+- AWS のみ: サービス上位（構成比）と増加／減少上位
+
 GitHub リポジトリ Secrets には、次を設定する。
 
 - `COST_MONITORING_SLACK_WEBHOOK_URL`: `#コスト監視` 向け Incoming Webhook URL
