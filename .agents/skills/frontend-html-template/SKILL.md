@@ -80,7 +80,8 @@ description: >-
 - **用途**:
   - ページ内の非同期操作（AJAX）の結果通知
   - リダイレクト後のサーバー `flash()`（`partials/_ft_flash_to_toast.html` → `hydrateFlashes`）
-- **配置**: 画面上部中央の固定トースト（既定 `placement: 'top'`）。スクロール位置に依存しない。
+- **配置**: 画面上部中央の固定トースト（既定 `placement: 'top'`）。スクロール位置に依存しない。\
+  **ヘッダー下**にオフセット（`ft_toast.js` が表示時に `header.ft-site-header` を実測して `top` を設定。CSS は `--ft-toast-clearance` をフォールバック。モバイル固定バーは `--ft-mobile-header-bar-height`）。ヘッダーと重ねない。
 - **種別**: `success` / `error` / `warning` / `info`。スタイルは `fishtrack_tail.css` の `.ft-toast*`。HTML 付き flash（リンク等）は `html` オプション。
 - **禁止**: 画面ごとにトースト DOM 生成ロジックを複製しない。ページ先頭の `.flash-container` バナー表示に戻さない（カード内インライン `flash--*` は例外）。
 - **テスト**: `tests/js/common/test.fishtrack.ft_toast.js` を参照。利用側 JS のテストでは `ft_toast.js` を先に `require` する。
