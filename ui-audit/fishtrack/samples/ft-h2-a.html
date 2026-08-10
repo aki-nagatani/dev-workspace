@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-H2 案A — 主CTA折り返し</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/app.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #fff; position: relative; }
+    .sample-badge {
+      position: absolute; top: 8px; right: 8px; z-index: 10;
+      background: #ecfdf5; color: #047857; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a7f3d0;
+    }
+    /* 改善: 見出し行でCTAを折り返し、全文表示 */
+    .page-head {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      margin-bottom: 12px; min-width: 0;
+    }
+    .page-head h1 { margin: 0; font-size: 1.25rem; flex: 1 1 200px; min-width: 0; }
+    .btn-primary {
+      display: inline-block; padding: 8px 14px; background: #1d4ed8; color: #fff;
+      border-radius: 6px; text-decoration: none; white-space: nowrap;
+      flex: 0 0 auto;
+    }
+    .card {
+      border: 1px solid #d8dde8; border-radius: 8px; padding: 12px; background: #fafbfc;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">FT-H2案A（CTA折り返し）</span>
+    <div class="page-head">
+      <h1>ロッドを探す</h1>
+      <a class="btn-primary" href="#">新しいロッドを登録</a>
+    </div>
+    <div class="card">フィルタ／一覧（省略）。主CTAは見出し行で折り返し、文字切れしない。</div>
+  </div>
+</body>
+</html>

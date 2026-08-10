@@ -119,12 +119,13 @@ alwaysApply: true
 
 ## 作業ログ（最重要・必須実行）
 
-🚨 **ワークスペース内のファイルを変更した作業**では、**ユーザー報告の前に必ず** Obsidian CursorLog を更新する。**手順・チェックリスト・前ゲート・Q0〜Q4**の正本は **`obsidian-cursor-log`** SKILL（`.agents/skills/Obsidian/obsidian-cursor-log/SKILL.md`）。\
+🚨 **ワークスペース内のファイルを変更した作業**では、**ユーザー報告の前に必ず** Obsidian CursorLog を更新する。**手順・チェックリスト・前ゲート・Q0〜Q5**の正本は **`obsidian-cursor-log`** SKILL（`.agents/skills/Obsidian/obsidian-cursor-log/SKILL.md`）。\
 **月次日報**（`CursorLog/YYYY-MM/YYYY-MM 日報.md`）は **`obsidian-cursor-monthly-report`** SKILL が正本。Q0・「日報作成」依頼時は同 SKILL を Read してから着手する。
 
 - **報告文に「CursorLogは更新しました」を必ず含める**
 - **取り扱い終了文の前ゲート**: ファイル変更が1件でもあれば、**成果報告の本文を述べる前に** CursorLog 追記を**同一ターン内で完了**する（詳細は SKILL「作業フローと報告前ゲート」）
 - **ファイル変更**の定義: **`StrReplace` / `Write` / `Delete` / `EditNotebook`** またはシェル経由の書き込み。CursorLog のみ追記で他に変更がなければ追加エントリ不要
+- **複数エージェント同時作業**: 既存の日次 CursorLog を **`Write` で全文置換しない**（他エージェントのエントリ消失の主因）。追記は直前再 Read＋`StrReplace`＋保全検証。詳細は同 SKILL「同時書き込み対策」
 
 ## テスト規律（重要）
 
@@ -136,7 +137,7 @@ alwaysApply: true
 
 - **ドキュメントは各プロジェクト配下ではなく、Obsidian に集約する**
 - 仕様書・設計メモ・運用メモなどは Obsidian のボールト内で管理し、プロジェクトごとの `docs/` は設けない
-- **FishTrack AI スペック照合**（`ai_spec_check_report.md`・突合ノート）: **`ai-spec-check-report`** / **`spec-import-make-csv`** SKILL（FishTrack `.agents/skills/`）が正本
+- **FishTrack AI スペック照合**（`ai_spec_check_report.md`・突合ノート）: **`ai-spec-check-report`** / **`spec-import-notes`** SKILL（FishTrack `.agents/skills/`）が正本
 
 ## Obsidian（第二の脳・重要）
 

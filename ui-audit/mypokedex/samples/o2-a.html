@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>O2 案A — 短いCTA＋最小タップ高（表維持）</title>
+  <!-- 製品 CSS 必須。トークン手書きの近似モック禁止。改善差分のみ下の style -->
+
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+
+  <style>
+    /* サンプル撮影用: 固定ヘッダーを枠内で見せる */
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    body { padding-top: 0 !important; }
+    .fixed-header { position: relative !important; }
+    .sample-frame { width: 390px; overflow: hidden; background: #fff; }
+    .sample-badge {
+      position: absolute; z-index: 2000; top: 4px; right: 4px;
+      background: #e6f0ff; color: #2255a2; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a9c4f5;
+    }
+
+/* O2 案A: ラベル短縮＋最小タップ高（nowrap）。操作列の文字切れを防ぐ */
+.site-nav .left > a:not(.site-logo-link),
+.site-nav .right { display: none !important; }
+.site-nav { flex-wrap: nowrap !important; }
+#onboardingCard, .pkOnboarding__title, #partyRecommend, .pkFilterBar {
+  display: none !important;
+}
+/* 撮影フレーミング: O2は操作CTAの見せ方が主題。密度列は枠外クリップ防止のため非表示（H2とは別） */
+.pkTable .pk-col--stats,
+.pkTable th.pk-col--stats,
+.pkTable .pk-col--evolution,
+.pkTable th.pk-col--evolution,
+.pkTable .pk-col--type,
+.pkTable th.pk-col--type { display: none !important; }
+.site-current-game {
+  max-width: 7.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pkTable td.pk-col--regional-dex,
+.pkTable td.pk-col--name,
+.pkTable td.pk-col--total {
+  white-space: nowrap;
+}
+.pkTable td.pk-col--actions .btn,
+.pkTable td.pk-col--actions button.btn {
+  min-height: 44px;
+  white-space: nowrap;
+  max-width: none;
+  overflow: visible;
+  box-sizing: border-box;
+  padding-inline: 12px;
+}
+.sample-bottom-tabs {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  border-top: 1px solid var(--gray-200, #e0e0e0);
+  background: #fff;
+}
+.sample-bottom-tabs a {
+  text-align: center; padding: 10px 4px; font-size: 0.875rem;
+  text-decoration: none; color: inherit; border-top: 2px solid transparent;
+}
+.sample-bottom-tabs a[aria-current="page"] {
+  color: var(--brand-color, #1d4ed8); font-weight: 700;
+  border-top-color: var(--brand-color, #1d4ed8);
+}
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">O2案A（短いCTA）</span>
+    <header class="site-header fixed-header">
+        <nav class="site-nav">
+        <div class="left">
+            <button type="button" class="hamburger" id="siteDrawerToggle" aria-label="メニューを開く" aria-controls="siteDrawer" aria-expanded="false" data-drawer-toggle="">
+                <span class="hamburger-icon" aria-hidden="true">☰</span>
+            </button>
+            <a href="http://127.0.0.1:5002/RGBP/partyBox" class="site-logo-link" aria-label="MyPokedex トップ">
+                <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+            </a>
+            <span class="site-current-game" data-current-game-key="RGBP" aria-label="選択中のゲーム: 赤・緑・青・ピカチュウ">赤・緑・青・ピカチュウ</span>
+            <a href="http://127.0.0.1:5002/RGBP/partyBox" data-nav-party-box="">パーティ＆ボックス</a>
+            <a href="http://127.0.0.1:5002/RGBP/dex" class="tab-gap" data-nav-dex="">図鑑</a>
+        </div>
+        <div class="right">
+            <a href="http://127.0.0.1:5002/settings/game" class="tab-gap">設定</a>
+            <span class="user-name">ai-user</span>
+        </div>
+        </nav>
+    </header>
+    <main class="container">
+      <h1 style="font-size:1.25rem;margin:12px 0 8px;">パーティ＆ボックス</h1>
+      <table class="pkTable pkTable-sticky">
+        <thead>
+          <tr>
+            <th class="pk-col pk-col--regional-dex"><span class="th-label">地方図鑑 No</span></th>
+            <th class="pk-col pk-col--name"><span class="th-label">名称</span></th>
+            <th class="pk-col pk-col--type">タイプ</th>
+            <th class="pk-col pk-col--stats">種族値 (HP/攻/防/特攻/特防/速)</th>
+            <th class="pk-col pk-col--total"><span class="th-label">合計</span></th>
+            <th class="pk-col pk-col--evolution"><span class="th-label">進化先（条件）</span></th>
+            <th class="pk-col pk-col--actions">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="is-odd">
+            <td class="pk-col pk-col--regional-dex" title="カントー 図鑑 No 1" aria-label="カントー 図鑑 No 1">1</td>
+            <td class="pk-col pk-col--name">
+              <span class="pkNameWrap">
+                <button type="button" class="miniIconButton js-icon-preview" data-full-url="/assets/pokemon/full/1.png" data-icon-label="フシギダネ" aria-label="フシギダネ の画像を拡大表示">
+                  <span class="miniIconWrap">
+                    <img src="http://127.0.0.1:5002/assets/pokemon/mini/1.png" class="miniIcon" alt="フシギダネ" width="40" height="40" loading="lazy" decoding="async">
+                  </span>
+                </button>
+                <span class="pkNameText">フシギダネ</span>
+              </span>
+            </td>
+            <td class="pk-col pk-col--type">くさ/どく</td>
+            <td class="pk-col pk-col--stats">45/49/49/65/65/45</td>
+            <td class="pk-col pk-col--total">318</td>
+            <td class="pk-col pk-col--evolution"></td>
+            <td class="pk-col pk-col--actions">
+              <form method="post" action="http://127.0.0.1:5002/RGBP/partyBox/party/backToBox" class="jsRegForm" data-confirm="ボックスへ戻します：フシギダネ / 全国図鑑No 1">
+                <button type="submit" class="btn btn--primary" aria-label="ボックスへ戻す：フシギダネ / 全国図鑑No 1" title="ボックスへ戻す：フシギダネ / 全国図鑑No 1">戻す</button>
+              </form>
+            </td>
+          </tr>
+          <tr class="is-even">
+            <td class="pk-col pk-col--regional-dex" title="カントー 図鑑 No 4" aria-label="カントー 図鑑 No 4">4</td>
+            <td class="pk-col pk-col--name">
+              <span class="pkNameWrap">
+                <button type="button" class="miniIconButton js-icon-preview" data-full-url="/assets/pokemon/full/4.png" data-icon-label="ヒトカゲ" aria-label="ヒトカゲ の画像を拡大表示">
+                  <span class="miniIconWrap">
+                    <img src="http://127.0.0.1:5002/assets/pokemon/mini/4.png" class="miniIcon" alt="ヒトカゲ" width="40" height="40" loading="lazy" decoding="async">
+                  </span>
+                </button>
+                <span class="pkNameText">ヒトカゲ</span>
+              </span>
+            </td>
+            <td class="pk-col pk-col--type">ほのお</td>
+            <td class="pk-col pk-col--stats">39/52/43/60/50/65</td>
+            <td class="pk-col pk-col--total">309</td>
+            <td class="pk-col pk-col--evolution"></td>
+            <td class="pk-col pk-col--actions">
+              <form method="post" action="http://127.0.0.1:5002/RGBP/partyBox/party/backToBox" class="jsRegForm" data-confirm="ボックスへ戻します：ヒトカゲ / 全国図鑑No 4">
+                <button type="submit" class="btn btn--primary" aria-label="ボックスへ戻す：ヒトカゲ / 全国図鑑No 4" title="ボックスへ戻す：ヒトカゲ / 全国図鑑No 4">戻す</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+    <nav class="sample-bottom-tabs" aria-label="主要ナビ">
+      <a href="#" aria-current="page">パーティ</a>
+      <a href="#">図鑑</a>
+      <a href="#">設定</a>
+    </nav>
+  </div>
+</body>
+</html>

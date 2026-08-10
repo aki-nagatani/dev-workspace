@@ -46,7 +46,7 @@ description: >-
 4. **検証・ユーザー報告の前に**、当該リポジトリ直下で **`docker compose restart <サービス名>`** を**ターミナルから実行**する（例: **`docker compose restart app`**）。**失敗した場合**は、**ユーザー報告にエラー要約 1 行**を書く。
 5. **複数リポ**で同じセッションに触れた場合は、**Python を変えた各リポ**でそれぞれ必要なら再起動する。
 
-6. **`ai-spec-check-local`**（**`dump_spec_import_preview.py`**）で続けて検証するときは、**Docker 起動時**かつ **ブラウザ操作が絡む前**に上記 **restart** を済ませる（**`ai-spec-check-local` SKILL** の **「見逃し禁止」**）。**ユーザーへの確認だけで代用しない**。
+6. **`ai-spec-check-virtual`**／**`ai-spec-import`** で続けて検証するときは、**Docker 起動時**かつ **プレビュー実行前**に上記 **restart** を済ませる（**`local-docker-python-restart`**・**FishTrack AGENTS**）。**ユーザーへの確認だけで代用しない**。
 
 **手順の提示だけで終えない**（**Docker 起動時**はエージェントがターミナルで実行する）。
 

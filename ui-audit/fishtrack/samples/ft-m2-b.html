@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>FT-M2 案B — 写真｜データの横長カード</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: max-content;
+      background: #fff;
+    }
+    .sample-frame {
+      position: relative;
+      width: 390px;
+      padding: 10px 12px 14px;
+      background: #fff;
+      box-sizing: border-box;
+    }
+    .sample-badge {
+      position: absolute;
+      z-index: 2000;
+      top: 8px;
+      right: 12px;
+      background: #e6f0ff;
+      color: #2255a2;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #a9c4f5;
+    }
+    .sample-note {
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 1.45;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 6px;
+    }
+    .sample-block {
+      margin: 0 0 12px;
+      padding: 10px;
+      border: 1px dashed #c5cae9;
+      border-radius: 8px;
+    }
+    .sample-block h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      color: #37474f;
+    }
+    .sample-meta {
+      margin: 8px 0 0;
+      font-size: 11px;
+      color: #607d8b;
+      line-height: 1.45;
+    }
+    .sample-block .catch-card-grid {
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+    }
+    .sample-block .catch-card__body {
+      padding: 0.75rem 0.85rem 0.85rem;
+      gap: 0.45rem;
+    }
+    .sample-block .catch-card__details {
+      gap: 0.2rem;
+    }
+    /*
+      案B 差分のみ: 写真（左）とデータ（右）の横並び横長カード。
+      写真なしは左帯に短いプレースホルダ。
+    */
+    .sample-after .catch-card {
+      display: grid;
+      grid-template-columns: 7.75rem minmax(0, 1fr);
+      align-items: stretch;
+    }
+    .sample-after .catch-card__thumb {
+      aspect-ratio: auto;
+      min-height: 100%;
+      align-self: stretch;
+      border-right: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .sample-after .catch-card__thumb-img-wrap,
+    .sample-after .catch-card__thumb-placeholder {
+      min-height: 6.75rem;
+      height: 100%;
+    }
+    .sample-after .catch-card__thumb img {
+      object-fit: cover;
+    }
+    .sample-after .catch-card__body {
+      padding: 0.65rem 0.75rem 0.7rem;
+      gap: 0.3rem;
+      align-content: center;
+    }
+    .sample-after .catch-card__title {
+      font-size: 0.98rem;
+    }
+    .sample-after .catch-card__size {
+      font-size: 1.15rem;
+    }
+    .sample-after .catch-card__meta {
+      font-size: 0.78rem;
+      gap: 0.35rem;
+    }
+    .sample-after .catch-card__details {
+      font-size: 0.8rem;
+    }
+    .sample-after .catch-card--no-photo .catch-card__thumb {
+      display: grid;
+      place-items: center;
+      background: rgba(148, 163, 184, 0.12);
+    }
+    .sample-after .catch-card--no-photo .catch-card__thumb-placeholder {
+      min-height: 0;
+      font-size: 0.72rem;
+      writing-mode: horizontal-tb;
+      text-align: center;
+      padding: 0.35rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">FT-M2案B</span>
+    <p class="sample-note">
+      <strong>下の「変更後」だけが案B</strong>（写真｜データの横長カード）。
+      写真は本番 S3 のサムネ（th）をローカル資産化して使用。監査メタは製品UIに出さない。
+    </p>
+
+    <div class="sample-block" aria-label="変更前">
+      <h3>変更前（現状）— 上下並び</h3>
+      <div class="catch-card-grid">
+        <article class="catch-card" aria-label="ラージマウスバス の釣果（写真あり）">
+          <div class="catch-card__thumb">
+            <span class="catch-card__thumb-img-wrap">
+              <img
+                src="photos/catch-84-th.jpg"
+                alt="ラージマウスバス / 41.5cm"
+              >
+            </span>
+          </div>
+          <div class="catch-card__body">
+            <div class="catch-card__meta">
+              <span>2026-08-02</span>
+              <span>05:30</span>
+            </div>
+            <h3 class="catch-card__title">ラージマウスバス</h3>
+            <p class="catch-card__size">41.5cm</p>
+            <dl class="catch-card__details">
+              <div>
+                <dt>フィールド</dt>
+                <dd>戸面原ダム</dd>
+              </div>
+              <div>
+                <dt>写真</dt>
+                <dd>1枚</dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+      </div>
+      <p class="sample-meta">
+        ▲ 写真が上・データが下の縦積み。1件あたりの縦占有が大きい。
+      </p>
+    </div>
+
+    <div class="sample-block sample-after" aria-label="変更後">
+      <h3>変更後（案B）— 左右並びの横長カード</h3>
+      <div class="catch-card-grid">
+        <article class="catch-card" aria-label="ラージマウスバス の釣果（横長・写真あり）">
+          <div class="catch-card__thumb">
+            <span class="catch-card__thumb-img-wrap">
+              <img
+                src="photos/catch-84-th.jpg"
+                alt="ラージマウスバス / 41.5cm"
+              >
+            </span>
+          </div>
+          <div class="catch-card__body">
+            <div class="catch-card__meta">
+              <span>2026-08-02</span>
+              <span>05:30</span>
+            </div>
+            <h3 class="catch-card__title">ラージマウスバス</h3>
+            <p class="catch-card__size">41.5cm</p>
+            <dl class="catch-card__details">
+              <div>
+                <dt>フィールド</dt>
+                <dd>戸面原ダム</dd>
+              </div>
+              <div>
+                <dt>写真</dt>
+                <dd>1枚</dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="catch-card" aria-label="ラージマウスバス の釣果（横長・写真あり）">
+          <div class="catch-card__thumb">
+            <span class="catch-card__thumb-img-wrap">
+              <img
+                src="photos/catch-82-th.jpg"
+                alt="ラージマウスバス / 35.5cm"
+              >
+            </span>
+          </div>
+          <div class="catch-card__body">
+            <div class="catch-card__meta">
+              <span>2026-08-02</span>
+              <span>05:17</span>
+            </div>
+            <h3 class="catch-card__title">ラージマウスバス</h3>
+            <p class="catch-card__size">35.5cm</p>
+            <dl class="catch-card__details">
+              <div>
+                <dt>フィールド</dt>
+                <dd>戸面原ダム</dd>
+              </div>
+              <div>
+                <dt>写真</dt>
+                <dd>1枚</dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="catch-card catch-card--no-photo" aria-label="ラージマウスバス の釣果（横長・写真なし）">
+          <div class="catch-card__thumb">
+            <span class="catch-card__thumb-placeholder">写真なし</span>
+          </div>
+          <div class="catch-card__body">
+            <div class="catch-card__meta">
+              <span>2026-06-18</span>
+            </div>
+            <h3 class="catch-card__title">ラージマウスバス</h3>
+            <p class="catch-card__size">30.0cm</p>
+            <dl class="catch-card__details">
+              <div>
+                <dt>フィールド</dt>
+                <dd>—</dd>
+              </div>
+              <div>
+                <dt>写真</dt>
+                <dd>0枚</dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+      </div>
+      <p class="sample-meta">
+        ▲ 左に写真・右にデータ。同じ件数でも縦スクロールが短くなる想定。写真なしは左帯のみ。
+      </p>
+    </div>
+  </div>
+</body>
+</html>

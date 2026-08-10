@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>H1 案B — 下タブナビ</title>
+  <!-- 製品 CSS 必須。トークン手書きの近似モック禁止。改善差分のみ下の style -->
+  
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+
+  <style>
+    /* サンプル撮影用: 固定ヘッダーを枠内で見せる */
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    body { padding-top: 0 !important; }
+    .fixed-header { position: relative !important; }
+    .sample-frame { width: 390px; overflow: hidden; background: #fff; }
+    .sample-badge {
+      position: absolute; z-index: 2000; top: 4px; right: 4px;
+      background: #e6f0ff; color: #2255a2; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a9c4f5;
+    }
+    
+.site-nav .left > a:not(.site-logo-link),
+.site-nav .right { display: none !important; }
+.site-nav { flex-wrap: nowrap !important; }
+#onboardingCard { display: none !important; }
+.sample-bottom-tabs {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  border-top: 1px solid var(--gray-200, #e0e0e0);
+  background: #fff;
+}
+.sample-bottom-tabs a {
+  text-align: center; padding: 10px 4px; font-size: 0.875rem;
+  text-decoration: none; color: inherit; border-top: 2px solid transparent;
+}
+.sample-bottom-tabs a[aria-current="page"] {
+  color: var(--brand-color, #1d4ed8); font-weight: 700;
+  border-top-color: var(--brand-color, #1d4ed8);
+}
+
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">案B（製品CSS）</span>
+    <header class="site-header fixed-header">
+        <nav class="site-nav">
+        <div class="left">
+            
+            
+            
+            <button type="button" class="hamburger" id="siteDrawerToggle" aria-label="メニューを開く" aria-controls="siteDrawer" aria-expanded="false" data-drawer-toggle="">
+                <span class="hamburger-icon" aria-hidden="true">☰</span>
+            </button>
+            
+            
+            <a href="http://127.0.0.1:5002/RGBP/partyBox" class="site-logo-link" aria-label="MyPokedex トップ">
+                <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+            </a>
+            
+            
+            
+            
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+            
+            <span class="site-current-game" data-current-game-key="RGBP" aria-label="選択中のゲーム: 赤・緑・青・ピカチュウ">赤・緑・青・ピカチュウ</span>
+            
+            <a href="http://127.0.0.1:5002/RGBP/partyBox" data-nav-party-box="">パーティ＆ボックス</a>
+            <a href="http://127.0.0.1:5002/RGBP/dex" class="tab-gap" data-nav-dex="">図鑑</a>
+            
+            
+        </div>
+        <div class="right">
+            
+            <a href="http://127.0.0.1:5002/settings/game" class="tab-gap">設定</a>
+            
+            <span class="user-name">ai-user</span>
+            <form method="post" action="http://127.0.0.1:5002/auth/logout" class="jsRegForm">
+                <input type="hidden" name="csrf_token" value="Ijk5OGE2NDRmZjQ1NTg0OWI1Yjk5NTY5MTVjNjE5YTc0YmEwMWFjMzIi.anVE-A.Fa72OJ1bEG-xg1JIVbNCrDrhQ2E">
+                <button class="linklike" title="ログアウト" aria-label="ログアウト">ログアウト</button>
+            </form>
+            
+        </div>
+        </nav>
+    </header><main class="container"><h2 class="pkOnboarding__title">MyPokedexの使い方</h2>
+<section id="partyRecommend" class="pkRecommend" data-game-key="RGBP" data-open="0" data-has-proposal="0">
+  <div class="pkRecommend__header">
+    <button type="button" class="pkRecommend__toggle" data-role="reco-toggle" aria-controls="partyRecommendPanel" aria-expanded="false">
+      <span class="pkRecommend__toggleIcon" aria-hidden="true" data-open-icon="">▶</span>
+      <span class="pkRecommend__toggleLabel">弱点攻略パーティ提案</span>
+    </button>
+    <div class="pkRecommend__summary">
+      
+        <span class="pkRecommend__summaryText">タイプを選択して提案を生成</span>
+      
+    </div>
+    
+  </div>
+  <div class="pkRecommend__panel" id="partyRecommendPanel" data-role="reco-panel" hidden="">
+    <form method="post" action="http://127.0.0.1:5002/RGBP/partyBox/party/recommend" class="pkRecommend__form" data-role="recommend-form">
+      <input id="csrf_token" name="csrf_token" type="hidden" value="Ijk5OGE2NDRmZjQ1NTg0OWI1Yjk5NTY5MTVjNjE5YTc0YmEwMWFjMzIi.anVE-A.Fa72OJ1bEG-xg1JIVbNCrDrhQ2E">
+      <input id="scrollY" name="scrollY" type="hidden" value="0">
+      
+        <input id="accordionOpen" name="accordionOpen" type="hidden" value="0">
+      
+      <fieldset class="pkRecommend__fieldset">
+        <legend>敵タイプを選択</legend>
+        
+        
+        <div class="pkRecommend__types">
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="ノーマル" data-role="enemy-type">
+            <span>ノーマル</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="ほのお" data-role="enemy-type">
+            <span>ほのお</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="みず" data-role="enemy-type">
+            <span>みず</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="くさ" data-role="enemy-type">
+            <span>くさ</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="でんき" data-role="enemy-type">
+            <span>でんき</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="こおり" data-role="enemy-type">
+            <span>こおり</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="かくとう" data-role="enemy-type">
+            <span>かくとう</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="どく" data-role="enemy-type">
+            <span>どく</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="じめん" data-role="enemy-type">
+            <span>じめん</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="ひこう" data-role="enemy-type">
+            <span>ひこう</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="エスパー" data-role="enemy-type">
+            <span>エスパー</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="むし" data-role="enemy-type">
+            <span>むし</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="いわ" data-role="enemy-type">
+            <span>いわ</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="ゴースト" data-role="enemy-type">
+            <span>ゴースト</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="ドラゴン" data-role="enemy-type">
+            <span>ドラゴン</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="あく" data-role="enemy-type">
+            <span>あく</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="はがね" data-role="enemy-type">
+            <span>はがね</span>
+          </label>
+          
+          <label class="pkRecommend__type">
+            <input type="checkbox" name="enemyTypes" value="フェアリー" data-role="enemy-type">
+            <span>フェアリー</span>
+          </label>
+          
+        </div>
+      </fieldset>
+      <div class="pkRecommend__actions">
+        <button type="submit" class="btn--primary" data-role="recommend-submit" aria-label="弱点攻略パーティを提案" aria-disabled="true" disabled="">提案を生成</button>
+        <noscript><p class="pkRecommend__noscript">JavaScriptを有効にするとタイプ選択後に提案を生成できます。</p></noscript>
+      </div>
+    </form>
+    <div class="pkRecommend__results">
+      
+      
+      
+      <p class="pkRecommend__empty">提案結果はまだありません。タイプを選択して「提案を生成」を押してください。</p>
+      
+    </div>
+  </div>
+</section>
+<table class="pkTable pkTable-sticky">
+    <thead>
+        <tr>
+
+  
+    
+    
+  
+  <th class="pk-col pk-col--regional-dex" aria-sort="none">
+    
+      <span class="th-label">地方図鑑 No</span>
+    
+  </th>
+
+
+
+
+  
+  
+
+<th class="pk-col pk-col--name" aria-sort="none">
+  
+    <span class="th-label">名称</span>
+  
+</th>
+<th class="pk-col pk-col--type">タイプ</th>
+<th class="pk-col pk-col--stats">種族値 (HP/攻/防/特攻/特防/速)</th>
+
+
+  
+  
+
+<th class="pk-col pk-col--total" aria-sort="none">
+  
+    <span class="th-label">合計</span>
+  
+</th>
+
+  
+  
+    
+    
+  
+  <th class="pk-col pk-col--evolution" aria-sort="none">
+    
+      <span class="th-label">進化先（条件）</span>
+    
+  </th>
+
+<th class="pk-col pk-col--actions">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        
+        
+        <tr class="is-odd">
+            
+
+            
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+                
+                
+                
+                  
+                  
+                  
+                
+                
+                
+                  
+                  
+                  
+                
+                
+                
+                
+                  
+                    
+                  
+                  
+                
+              
+              
+              
+              <td class="pk-col pk-col--regional-dex " title="カントー 図鑑 No 1" aria-label="カントー 図鑑 No 1">カントー 1</td>
+            
+            
+            
+            
+            <td class="pk-col pk-col--name ">
+                <span class="pkNameWrap">
+                    <button type="button" class="miniIconButton js-icon-preview" data-full-url="/assets/pokemon/full/1.png" data-icon-label="フシギダネ" aria-label="フシギダネ の画像を拡大表示">
+                        <span class="miniIconWrap">
+                            <img src="http://127.0.0.1:5002/assets/pokemon/mini/1.png" class="miniIcon" alt="フシギダネ" width="40" height="40" loading="lazy" decoding="async">
+                        </span>
+                    </button>
+                    <span class="pkNameText">フシギダネ</span>
+                </span>
+            </td>
+            <td class="pk-col pk-col--type">くさ/どく</td>
+            <td class="pk-col pk-col--stats">45/49/49/65/65/45</td>
+            <td class="pk-col pk-col--total ">318</td>
+
+            
+            <td class="pk-col pk-col--evolution ">
+                
+                
+                <div class="evoList">
+                    
+                    
+                        
+                            
+                            
+                        
+                        
+                        
+                        
+                        <div class="evoItem">
+                            <div class="evoRow">
+                                
+                                <button type="button" class="miniIconButton js-icon-preview" data-full-url="/assets/pokemon/full/2.png" data-icon-label="フシギソウ" aria-label="フシギソウ の画像を拡大表示">
+                                    <span class="miniIconWrap">
+                                        <img src="http://127.0.0.1:5002/assets/pokemon/mini/2.png" class="miniIcon" alt="フシギソウ" width="40" height="40" loading="lazy" decoding="async">
+                                    </span>
+                                </button>
+                                <span class="evoText"><span class="evoName">フシギソウ</span><span class="evoCond">（Lv.16）</span></span>
+                                
+                                
+                                
+                                    <span class="evo-badge is-unregistered" aria-label="進化先 フシギソウ：未登録" title="進化先 フシギソウ：未登録">
+        —
+    </span>
+                                
+                                
+                                
+                                    
+    
+    <form method="post" action="http://127.0.0.1:5002/RGBP/partyBox/party/evolve" class="jsRegForm ml-6" data-confirm="進化させます：フシギダネ → フシギソウ / 全国図鑑No 2">
+
+        <input id="csrf_token" name="csrf_token" type="hidden" value="Ijk5OGE2NDRmZjQ1NTg0OWI1Yjk5NTY5MTVjNjE5YTc0YmEwMWFjMzIi.anVE-A.Fa72OJ1bEG-xg1JIVbNCrDrhQ2E">
+        <input type="hidden" name="nationalNo" value="1">
+        <input type="hidden" name="toNationalNo" value="2">
+        
+        <button type="submit" class="btn btn--xs btn--primary btn--xs" aria-label="進化：フシギダネ → フシギソウ（全国図鑑No 2）" title="進化：フシギダネ → フシギソウ（全国図鑑No 2）">進化</button>
+    
+</form>
+                                
+                            </div>
+                        </div>
+                    
+                </div>
+                
+            </td>
+            
+
+            
+            <td class="pk-col pk-col--actions">
+                
+                    
+                    
+                        
+                        <form method="post" action="http://127.0.0.1:5002/RGBP/partyBox/party/backToBox" class="jsRegForm" data-confirm="ボックスへ戻します：フシギダネ / 全国図鑑No 1">
+
+                            <input id="csrf_token" name="csrf_token" type="hidden" value="Ijk5OGE2NDRmZjQ1NTg0OWI1Yjk5NTY5MTVjNjE5YTc0YmEwMWFjMzIi.anVE-A.Fa72OJ1bEG-xg1JIVbNCrDrhQ2E">
+                            <input type="hidden" name="nationalNo" value="1">
+                            
+                            <button type="submit" class="btn btn--secondary" aria-label="ボックスへ戻す：フシギダネ / 全国図鑑No 1" title="ボックスへ戻す：フシギダネ / 全国図鑑No 1">ボックスへ戻す</button>
+                        
+</form>
+                    
+                
+            </td>
+            
+
+        </tr>
+        
+    </tbody>
+</table></main>
+<nav class="sample-bottom-tabs" aria-label="主要ナビ">
+  <a href="#" aria-current="page">パーティ</a>
+  <a href="#">図鑑</a>
+  <a href="#">設定</a>
+</nav>
+  </div>
+</body>
+</html>

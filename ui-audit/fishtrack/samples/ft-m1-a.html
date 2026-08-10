@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>FT-M1 案A — 釣行フィルタ折りたたみ</title>
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 390px; padding: 12px; background: #fff; position: relative; font-family: "Segoe UI", "Hiragino Sans", sans-serif; }
+    .sample-badge {
+      position: absolute; top: 6px; right: 6px; z-index: 10;
+      background: #ecfdf5; color: #047857; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a7f3d0;
+    }
+    h1 { font-size: 1.15rem; margin: 8px 0; }
+    details.filter {
+      border: 1px solid #d8dde8; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px;
+    }
+    details.filter summary { cursor: pointer; font-weight: 600; }
+    .row { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+    .row strong { min-width: 4.5em; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">FT-M1案A（フィルタ折りたたみ）</span>
+    <h1>釣行一覧</h1>
+    <details class="filter">
+      <summary>フィルタ</summary>
+      <p style="font-size:12px;color:#5c6578;">日付・フィールド等（展開時のみ表示）</p>
+    </details>
+    <div class="row"><strong>08/01</strong><span>○○湖 / 晴</span></div>
+    <div class="row"><strong>07/20</strong><span>△△川 / 曇</span></div>
+    <div class="row"><strong>07/05</strong><span>□□池 / 雨</span></div>
+  </div>
+</body>
+</html>

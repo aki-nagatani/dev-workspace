@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>フィルタ案A（変更前後・折りたたみ）</title>
+  <!-- 製品 CSS 必須。改善差分のみ下の style -->
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+  <style>
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    body { padding-top: 0 !important; }
+    .sample-frame { width: 390px; overflow: hidden; background: #fff; padding: 8px 10px 16px; }
+    .sample-badge {
+      position: absolute; z-index: 2000; top: 4px; right: 4px;
+      background: #e6f0ff; color: #2255a2; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a9c4f5;
+    }
+    .sample-note {
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 1.45;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 6px;
+    }
+    .sample-block {
+      margin: 0 0 12px;
+      padding: 8px;
+      border: 1px dashed #c5cae9;
+      border-radius: 8px;
+    }
+    .sample-block h3 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      color: #37474f;
+    }
+    .sample-meta {
+      margin: 6px 0 0;
+      font-size: 11px;
+      color: #607d8b;
+    }
+    /* 案A: details 折りたたみ。製品に出す文言は「未登録フィルタ」のみ */
+    details.filter-collapse > summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 6px 0;
+      list-style: none;
+    }
+    details.filter-collapse > summary::-webkit-details-marker { display: none; }
+    details.filter-collapse > summary::before {
+      content: "▶ ";
+      font-size: 11px;
+      color: #546e7a;
+    }
+    details.filter-collapse[open] > summary::before { content: "▼ "; }
+    details.filter-collapse .pkFilterBar { margin-top: 4px; }
+    .table-stub {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #455a64;
+      border-top: 1px solid #eceff1;
+      padding-top: 8px;
+    }
+    .table-stub strong { color: #1f2937; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">案A（変更前後）</span>
+    <p class="sample-note">
+      <strong>現状の製品には閉じた状態はない</strong>（常時展開）。<br>
+      下の「変更後」だけが案A採用後の見た目。<br>
+      メタ注記（閉じた状態が既定など）は製品UI文言にしない。
+    </p>
+
+    <div class="sample-block" aria-label="変更前">
+      <h3>変更前（現状・製品どおり常時展開）</h3>
+      <form class="pkFilterBar" method="get" action="#">
+        <fieldset>
+          <legend>未登録フィルタ（全国）</legend>
+          <label for="onlyUnregist-before" title="全国未登録のみ">
+            <input type="checkbox" id="onlyUnregist-before" name="onlyUnregist" value="1"> 未登録のみ
+          </label>
+          <button type="submit" class="btn--xs" title="未登録フィルタを適用">適用</button>
+        </fieldset>
+      </form>
+      <p class="table-stub"><strong>表</strong>（この下に行が続く）</p>
+      <p class="sample-meta">図鑑・パーティともフィルタ本体が常に見える＝SPで表が下に押し下げられる。</p>
+    </div>
+
+    <div class="sample-block" aria-label="変更後">
+      <h3>変更後（案A・閉じた状態が既定）</h3>
+      <details class="filter-collapse">
+        <summary>未登録フィルタ</summary>
+        <form class="pkFilterBar" method="get" action="#">
+          <fieldset>
+            <legend>未登録フィルタ（全国）</legend>
+            <label for="onlyUnregist-after" title="全国未登録のみ">
+              <input type="checkbox" id="onlyUnregist-after" name="onlyUnregist" value="1"> 未登録のみ
+            </label>
+            <button type="submit" class="btn--xs" title="未登録フィルタを適用">適用</button>
+          </fieldset>
+        </form>
+      </details>
+      <p class="table-stub"><strong>表</strong>（開かなければすぐ見える）</p>
+      <p class="sample-meta">
+        画面に出るのは「▶ 未登録フィルタ」1行のみ。
+        タップで中身を開く。条件適用中は要約バッジ等を別途検討可。
+      </p>
+    </div>
+  </div>
+</body>
+</html>

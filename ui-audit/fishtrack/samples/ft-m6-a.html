@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=960, initial-scale=1">
+  <title>FT-M6 案A — タブ件数なし＋該当 n 件</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/lure_masters.css">
+  <style>
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    .sample-frame { width: 720px; padding: 10px 12px 16px; background: #fff; }
+    .sample-badge {
+      position: absolute; z-index: 2000; top: 8px; right: 12px;
+      background: #e6f0ff; color: #2255a2; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a9c4f5;
+    }
+    .sample-note {
+      margin: 0 0 10px; padding: 8px 10px; font-size: 12px; line-height: 1.45;
+      background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px;
+    }
+    .sample-block {
+      margin: 0 0 12px; padding: 10px; border: 1px dashed #c5cae9; border-radius: 8px;
+    }
+    .sample-block h3 { margin: 0 0 8px; font-size: 13px; color: #37474f; }
+    .sample-meta { margin: 8px 0 0; font-size: 11px; color: #607d8b; line-height: 1.45; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">FT-M6案A</span>
+    <p class="sample-note">
+      <strong>下の「変更後」だけが案A</strong>。
+      タブは種別名のみ。件数は表直前の「該当 n 件」。監査メタは製品UIに出さない。
+    </p>
+    <div class="sample-block" aria-label="変更前">
+      <h3>変更前（現状）</h3>
+      <nav class="switch-nav" aria-label="製品種別">
+        <a class="btn-link is-active" href="#">プラグ（18）</a>
+        <span class="separator">/</span>
+        <a class="btn-link" href="#">ワーム（7）</a>
+      </nav>
+      <p class="sample-meta">▲ タブ「プラグ（18）」だけが見え、表3件とのズレが誤解を招く。</p>
+    </div>
+    <div class="sample-block" aria-label="変更後">
+      <h3>変更後（案A）</h3>
+      <nav class="switch-nav" aria-label="製品種別">
+        <a class="btn-link is-active" href="#">プラグ</a>
+        <span class="separator">/</span>
+        <a class="btn-link" href="#">ワーム</a>
+      </nav>
+      <p class="lure-master-result-count">該当 <strong>3</strong> 件</p>
+      <p class="sample-meta">▲ タブに件数なし。表の規模は「該当 n 件」で示す。</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>{SAMPLE_TITLE}</title>
+  <!--
+    【必須・厳格】改善サンプルは現行プロダクトそのものを使う。
+    - 製品 static CSS を必ず <link>（コメントアウト禁止）
+    - 現行テンプレの HTML（クラス・ロゴ・表・ボタン）を流用する
+    - 変えるのは改善したい箇所だけ（追加 CSS / 最小 DOM）
+    - トークン手書きの近似モック・別ブランド風 UI は禁止
+    - 推奨: 実ページへ改善 CSS を注入してスクショし、同内容を本ファイルへ落とす
+    - body は width:max-content（撮影時の余白焼き付け防止）
+  -->
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: max-content;
+      background: #fff;
+    }
+    /* サンプル枠内で fixed header を見せる */
+    body { padding-top: 0 !important; }
+    .fixed-header { position: relative !important; }
+    .sample-frame { width: 390px; overflow: hidden; background: #fff; }
+    /* === ここから下が改善差分のみ === */
+    {IMPROVEMENT_CSS}
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <!-- 現行 DOM を貼る（header.site-header / main.container / table.pkTable 等） -->
+    {PRODUCT_DOM}
+  </div>
+</body>
+</html>

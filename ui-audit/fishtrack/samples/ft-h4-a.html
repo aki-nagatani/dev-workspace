@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1024, initial-scale=1">
+  <title>FT-H4 案A — ルアー優先列＋列表示</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/lure_masters.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 1000px; padding: 16px; background: #fff; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .table-scroll { overflow-x: auto; max-width: 968px; border: 1px solid #d8dde8; }
+    .ft-table { font-size: 0.8125rem; }
+    .ft-table th, .ft-table td { white-space: nowrap; padding: 6px 8px; }
+    .ft-h1-toolbar { display: flex; gap: 0.5rem; align-items: center; justify-content: flex-end; margin: 0.5rem 0; }
+    .sample-after .ft-table__th--lure-size,
+    .sample-after .ft-table__cell--lure-size,
+    .sample-after .ft-table__th--lure-weight,
+    .sample-after .ft-table__cell--lure-weight,
+    .sample-after .ft-table__th--hooks,
+    .sample-after .ft-table__cell--hooks,
+    .sample-after .ft-table__th--release-year,
+    .sample-after .ft-table__cell--release-year,
+    .sample-after .ft-table__th--list-price,
+    .sample-after .ft-table__cell--list-price,
+    .sample-after .ft-table__th--jan-code,
+    .sample-after .ft-table__cell--jan-code {
+      display: none !important;
+    }
+    .sample-after .ft-table--rod-master-sticky { width: auto !important; min-width: 0 !important; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（1024px 想定）: プラグタブで sticky 左3列＋保有が中間帯を圧迫する問題に対し、
+      既定列を削減して横スクロールと sticky 摩擦を下げる（FT-H1 と同型の列表示）。
+    </p>
+    <p class="sample-block-label">変更前（現状・副次列あり）</p>
+    <div class="sample-before">
+      <div class="table-scroll">
+        <table class="ft-table ft-table--striped ft-table--rod-master-sticky ft-table--lure-master ft-table--lure-master-plug">
+          <thead>
+            <tr>
+              <th class="ft-table__sticky-col ft-table__sticky-col--plug-type">プラグ種別</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--mfr">メーカー</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--model">製品名</th>
+              <th class="ft-table__th--lure-size">全長</th>
+              <th class="ft-table__th--lure-weight">重量</th>
+              <th class="ft-table__th--hooks">フック</th>
+              <th class="ft-table__th--release-year">発売年</th>
+              <th class="ft-table__th--list-price">定価</th>
+              <th class="ft-table__th--jan-code">JAN</th>
+              <th class="ft-table__th--catalog-current">現行</th>
+              <th class="rod-sticky-col--holding">保有</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-odd">
+              <td class="ft-table__sticky-col ft-table__sticky-col--plug-type">ミノー</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--mfr">BUTZ</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--model">SSStrailer</td>
+              <td class="ft-table__cell--lure-size">140mm</td>
+              <td class="ft-table__cell--lure-weight">28g</td>
+              <td class="ft-table__cell--hooks">#4</td>
+              <td class="ft-table__cell--release-year">2024</td>
+              <td class="ft-table__cell--list-price">2,800</td>
+              <td class="ft-table__cell--jan-code">—</td>
+              <td class="ft-table__cell--catalog-current">現行</td>
+              <td class="holding-cell">未保有</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="sample-block-label">変更後（優先列のみ）</p>
+    <div class="sample-after">
+      <div class="ft-h1-toolbar">
+        <button type="button" class="btn btn--ghost btn--sm" aria-label="列のカスタマイズ" title="列のカスタマイズ">⚙</button>
+      </div>
+      <div class="table-scroll">
+        <table class="ft-table ft-table--striped ft-table--rod-master-sticky ft-table--lure-master ft-table--lure-master-plug">
+          <thead>
+            <tr>
+              <th class="ft-table__sticky-col ft-table__sticky-col--plug-type">プラグ種別</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--mfr">メーカー</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--model">製品名</th>
+              <th class="ft-table__th--lure-size">全長</th>
+              <th class="ft-table__th--lure-weight">重量</th>
+              <th class="ft-table__th--hooks">フック</th>
+              <th class="ft-table__th--release-year">発売年</th>
+              <th class="ft-table__th--list-price">定価</th>
+              <th class="ft-table__th--jan-code">JAN</th>
+              <th class="ft-table__th--catalog-current">現行</th>
+              <th class="rod-sticky-col--holding">保有</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-odd">
+              <td class="ft-table__sticky-col ft-table__sticky-col--plug-type">ミノー</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--mfr">BUTZ</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--model">SSStrailer</td>
+              <td class="ft-table__cell--lure-size">140mm</td>
+              <td class="ft-table__cell--lure-weight">28g</td>
+              <td class="ft-table__cell--hooks">#4</td>
+              <td class="ft-table__cell--release-year">2024</td>
+              <td class="ft-table__cell--list-price">2,800</td>
+              <td class="ft-table__cell--jan-code">—</td>
+              <td class="ft-table__cell--catalog-current">現行</td>
+              <td class="holding-cell">未保有</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

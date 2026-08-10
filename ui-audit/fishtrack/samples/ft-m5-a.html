@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=960, initial-scale=1">
+  <title>FT-M5 案A — クリアボタン</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_form_fields.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/lure_masters.css">
+  <style>
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    .sample-frame { width: 720px; padding: 10px 12px 16px; background: #fff; }
+    .sample-badge {
+      position: absolute; z-index: 2000; top: 8px; right: 12px;
+      background: #e6f0ff; color: #2255a2; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a9c4f5;
+    }
+    .sample-note {
+      margin: 0 0 10px; padding: 8px 10px; font-size: 12px; line-height: 1.45;
+      background: #fff8e1; border: 1px solid #ffe082; border-radius: 6px;
+    }
+    .sample-block {
+      margin: 0 0 12px; padding: 10px; border: 1px dashed #c5cae9; border-radius: 8px;
+    }
+    .sample-block h3 { margin: 0 0 8px; font-size: 13px; color: #37474f; }
+    .sample-meta { margin: 8px 0 0; font-size: 11px; color: #607d8b; line-height: 1.45; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">FT-M5案A</span>
+    <p class="sample-note">
+      <strong>下の「変更後」だけが案A</strong>（現状にクリアは無い）。監査メタは製品UIに出さない。
+    </p>
+    <div class="sample-block" aria-label="変更前">
+      <h3>変更前（現状）</h3>
+      <div class="filter-actions">
+        <button type="button" class="btn btn--sm">適用</button>
+      </div>
+      <p class="sample-meta">▲ 適用のみ。解除は各項目を空にして再適用。</p>
+    </div>
+    <div class="sample-block" aria-label="変更後">
+      <h3>変更後（案A）</h3>
+      <div class="filter-actions">
+        <button type="button" class="btn btn--sm">適用</button>
+        <a class="btn btn--ghost btn--sm" href="#">クリア</a>
+      </div>
+      <p class="sample-meta">▲ ロッド／リールと同型。tab=plug のみ残す URL。</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -28,6 +28,7 @@ description: >-
 | `integrated-schedule-update` | 一覧・週次・ガント・[[#タスク詳細]] 三本柱・採番 |
 | `obsidian-cursor-log` | 計画書・**本 SKILL**（`ux-ideation`）変更後のログ |
 | `specification-update` | 採用後に仕様書へ永続記述を移すとき |
+| `ui-audit-html-report` | **画面・操作性の診断成果物**（HTML＋スクショ。**I3** の UI 洗い出し正。Canvas 禁止） |
 
 myrules を厳守して作業してください。
 

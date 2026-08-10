@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-H5 案A — シリーズ sticky 列の拡幅＋折り返し</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 980px; padding: 16px; background: #fff; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .table-scroll { overflow-x: auto; max-width: 948px; border: 1px solid #d8dde8; }
+    .ft-table { font-size: 0.8125rem; }
+    .ft-table th, .ft-table td { padding: 6px 8px; }
+    /* 変更前: 製品既定 10rem + ellipsis（現状再現） */
+    .sample-before .ft-table--rod-master-sticky {
+      --rod-col-series: 10rem;
+    }
+    .sample-before tbody td.ft-table__sticky-col--series {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* 変更後: 13.5rem + 折り返し（sticky 維持） */
+    .sample-after .ft-table--rod-master-sticky {
+      --rod-col-series: 13.5rem;
+    }
+    .sample-after tbody td.ft-table__sticky-col--series {
+      overflow: visible;
+      text-overflow: clip;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.25;
+    }
+    .hl-series {
+      outline: 2px solid #c62828;
+      outline-offset: -2px;
+      background: #ffebee !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用後の想定）: <code>--rod-col-series</code> を約 13.5rem に拡げ、
+      長い系列名はセル内折り返し（または title ツールチップ併用）。左 sticky は維持。カード化は不採用。
+    </p>
+    <p class="sample-block-label">変更前（現状・10rem／ellipsis）</p>
+    <div class="sample-before">
+      <div class="table-scroll">
+        <table class="ft-table ft-table--striped ft-table--rod-master-sticky">
+          <colgroup>
+            <col class="ft-table__col--rod-mfr">
+            <col class="ft-table__col--rod-series">
+            <col class="ft-table__col--rod-model">
+            <col>
+            <col class="ft-table__col--rod-holding">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="ft-table__sticky-col ft-table__sticky-col--mfr">メーカー</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--series hl-series">シリーズ</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--model">モデル</th>
+              <th>長さ</th>
+              <th class="rod-sticky-col--holding">保有</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-odd">
+              <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--series hl-series" title="STEEZ リアルコントロール">STEEZ リアルコントロール</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--model">661MH/MLFB-SV</td>
+              <td>6'6"</td>
+              <td class="holding-cell">未保有</td>
+            </tr>
+            <tr>
+              <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--series hl-series" title="14スピンキャスト／アンダースピン">14スピンキャスト／アンダースピン</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--model">例モデル</td>
+              <td>—</td>
+              <td class="holding-cell">未保有</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="sample-block-label">変更後（13.5rem＋折り返し・sticky 維持）</p>
+    <div class="sample-after">
+      <div class="table-scroll">
+        <table class="ft-table ft-table--striped ft-table--rod-master-sticky">
+          <colgroup>
+            <col class="ft-table__col--rod-mfr">
+            <col class="ft-table__col--rod-series">
+            <col class="ft-table__col--rod-model">
+            <col>
+            <col class="ft-table__col--rod-holding">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="ft-table__sticky-col ft-table__sticky-col--mfr">メーカー</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--series hl-series">シリーズ</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--model">モデル</th>
+              <th>長さ</th>
+              <th class="rod-sticky-col--holding">保有</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-odd">
+              <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--series hl-series" title="STEEZ リアルコントロール">STEEZ リアルコントロール</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--model">661MH/MLFB-SV</td>
+              <td>6'6"</td>
+              <td class="holding-cell">未保有</td>
+            </tr>
+            <tr>
+              <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--series hl-series" title="14スピンキャスト／アンダースピン">14スピンキャスト／アンダースピン</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--model">例モデル</td>
+              <td>—</td>
+              <td class="holding-cell">未保有</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

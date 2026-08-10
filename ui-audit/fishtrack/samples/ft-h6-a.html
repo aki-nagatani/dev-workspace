@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-H6 案A — 技術特性チップ＋折り返し</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 1100px; padding: 16px; background: #fff; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .table-scroll { overflow-x: auto; max-width: 1068px; border: 1px solid #d8dde8; }
+    .ft-table { font-size: 0.8125rem; }
+    .ft-table th, .ft-table td { padding: 6px 8px; }
+    /* 変更前: カンマ連結1行（計測時の極端不足を再現） */
+    .sample-before td.table-memo--technology {
+      white-space: nowrap;
+      max-width: 28rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    /* 変更後: チップ＋複数行・min-width 約20rem */
+    .sample-after .ft-table--reel-master {
+      --ft-table-col-technology-min: 20rem;
+      --reel-col-technology: 20rem;
+    }
+    .sample-after td.table-memo--technology {
+      white-space: normal;
+      min-width: 20rem;
+      max-width: 28rem;
+      word-break: break-word;
+    }
+    .tech-chip {
+      display: inline-block;
+      margin: 0 0.25rem 0.25rem 0;
+      padding: 0.1rem 0.45rem;
+      font-size: 0.72rem;
+      line-height: 1.3;
+      border-radius: 999px;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      color: #1e293b;
+      white-space: nowrap;
+    }
+    .hl-tech {
+      outline: 2px solid #c62828;
+      outline-offset: -2px;
+      background: #ffebee !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用後の想定）: 技術特性をチップ化しセル内で複数行折り返し。列の最小幅は約 20rem。
+      全ラベルを一覧上で読めることを優先（横スクロールは許容）。表形式は維持。
+    </p>
+    <p class="sample-block-label">変更前（現状・カンマ連結／不足）</p>
+    <div class="sample-before">
+      <div class="table-scroll">
+        <table class="ft-table ft-table--striped ft-table--rod-master-sticky ft-table--reel-master">
+          <thead>
+            <tr>
+              <th class="ft-table__sticky-col ft-table__sticky-col--mfr">メーカー</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--series">シリーズ</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--model">モデル</th>
+              <th class="table-memo table-memo--technology ft-table__th--technology hl-tech">技術特性</th>
+              <th class="rod-sticky-col--holding">保有</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-odd">
+              <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--series">STEEZ</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--model">A TW</td>
+              <td class="table-memo table-memo--technology hl-tech" title="HYPER ARMED HOUSING（AL）、HYPER DOUBLE SUPPORT、HYPER TUNED DIGITAL CONTROL、TWS、MAGZ…">
+                HYPER ARMED HOUSING（AL）、HYPER DOUBLE SUPPORT、HYPER TUNED DIGITAL CONTROL、TWS、MAGZ、ZERO ADJUSTER、ATD
+              </td>
+              <td class="holding-cell">未保有</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="sample-block-label">変更後（チップ＋複数行）</p>
+    <div class="sample-after">
+      <div class="table-scroll">
+        <table class="ft-table ft-table--striped ft-table--rod-master-sticky ft-table--reel-master">
+          <thead>
+            <tr>
+              <th class="ft-table__sticky-col ft-table__sticky-col--mfr">メーカー</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--series">シリーズ</th>
+              <th class="ft-table__sticky-col ft-table__sticky-col--model">モデル</th>
+              <th class="table-memo table-memo--technology ft-table__th--technology hl-tech">技術特性</th>
+              <th class="rod-sticky-col--holding">保有</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-odd">
+              <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--series">STEEZ</td>
+              <td class="ft-table__sticky-col ft-table__sticky-col--model">A TW</td>
+              <td class="table-memo table-memo--technology hl-tech">
+                <span class="tech-chip">HYPER ARMED HOUSING（AL）</span>
+                <span class="tech-chip">HYPER DOUBLE SUPPORT</span>
+                <span class="tech-chip">HYPER TUNED DIGITAL CONTROL</span>
+                <span class="tech-chip">TWS</span>
+                <span class="tech-chip">MAGZ</span>
+                <span class="tech-chip">ZERO ADJUSTER</span>
+                <span class="tech-chip">ATD</span>
+              </td>
+              <td class="holding-cell">未保有</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

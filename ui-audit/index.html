@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FishTrack / MyPokedex UI 問題点レポート（2026-08-08）</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --panel: #ffffff;
+      --text: #1a1d24;
+      --muted: #5c6578;
+      --high: #c62828;
+      --med: #b26a00;
+      --low: #1565c0;
+      --done: #2e7d32;
+      --border: #d8dde8;
+      --link: #1565c0;
+      --rec: #e8f5e9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    header {
+      padding: 1.5rem clamp(1rem, 2.5vw, 2.5rem) 1rem;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+    }
+    header h1 { margin: 0 0 0.4rem; font-size: 1.45rem; }
+    header p { margin: 0.25rem 0; color: var(--muted); font-size: 0.95rem; }
+    nav.toc {
+      padding: 1rem clamp(1rem, 2.5vw, 2.5rem);
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+    }
+    nav.toc a { color: var(--link); margin-right: 0.85rem; text-decoration: none; }
+    nav.toc a:hover { text-decoration: underline; }
+    /* ブラウザ幅に追従（狭い固定 max-width で狭くしない） */
+    header,
+    nav.toc,
+    main,
+    footer {
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box;
+    }
+    main {
+      margin: 0;
+      padding: 1rem clamp(1rem, 2.5vw, 2.5rem) 3rem;
+    }
+    .meta {
+      display: grid;
+      gap: 0.35rem;
+      padding: 0.9rem 1rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-size: 0.92rem;
+    }
+    .issue {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.1rem 1.2rem;
+      margin: 1.25rem 0;
+    }
+    .issue h2 {
+      margin: 0 0 0.55rem;
+      font-size: 1.15rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+    .issue h3 {
+      margin: 1.1rem 0 0.45rem;
+      font-size: 1rem;
+      color: #333;
+      border-left: 3px solid var(--link);
+      padding-left: 0.5rem;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      vertical-align: middle;
+    }
+    .sev-high { background: #ffebee; color: var(--high); }
+    .sev-med { background: #fff8e1; color: var(--med); }
+    .sev-low { background: #e3f2fd; color: var(--low); }
+    .status-open { background: #fce4ec; color: #ad1457; }
+    .status-resolved { background: #e8f5e9; color: var(--done); }
+    .issue p { margin: 0.45rem 0; }
+    .issue .label { color: var(--muted); font-size: 0.85rem; }
+    .issue ul { margin: 0.35rem 0 0.5rem 1.2rem; padding: 0; }
+    figure {
+      margin: 0.85rem 0 0.35rem;
+      padding: 0;
+      min-width: 0;
+    }
+    /* レポート内のスクショは「証拠の縮小表示」。原寸拡大禁止（視認性） */
+    figure img {
+      display: block;
+      width: auto;
+      max-width: min(100%, 360px);
+      max-height: 480px;
+      height: auto;
+      object-fit: contain;
+      object-position: top left;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+    figure.pc img,
+    figure.wide img {
+      max-width: min(100%, 880px);
+      max-height: 420px;
+    }
+    figcaption {
+      margin-top: 0.4rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .shots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .shots > figure {
+      flex: 0 1 auto;
+      margin: 0;
+      max-width: 100%;
+    }
+    .shots > figure.pc,
+    .shots > figure.wide {
+      flex: 1 1 100%;
+    }
+    .options {
+      display: grid;
+      gap: 1rem;
+      margin-top: 0.75rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 900px) {
+      .options.two { grid-template-columns: 1fr 1fr; }
+    }
+    .option {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 0.95rem;
+      background: #fafbfd;
+      min-width: 0;
+    }
+    .option figure,
+    .option figure img {
+      width: auto;
+      max-width: min(100%, 360px);
+      max-height: 400px;
+    }
+    .option.recommended { background: var(--rec); border-color: #a5d6a7; }
+    .option.hold { background: #fff8e1; border-color: #ffe082; }
+    .option h4 { margin: 0 0 0.4rem; font-size: 0.98rem; }
+    .option .rec-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--done);
+      background: #c8e6c9;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      margin-left: 0.35rem;
+    }
+    .option .hold-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #ef6c00;
+      background: #ffe0b2;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      margin-left: 0.35rem;
+    }
+    .where {
+      margin: 0.55rem 0 0.75rem;
+      padding: 0.65rem 0.8rem;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 8px;
+      font-size: 0.92rem;
+    }
+    .where ul { margin: 0.35rem 0 0; padding-left: 1.2rem; }
+    .diff-list {
+      margin: 0.4rem 0 0.75rem;
+      padding-left: 1.2rem;
+      font-size: 0.92rem;
+    }
+    table.compare {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 0.6rem 0 0.4rem;
+    }
+    table.compare th,
+    table.compare td {
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.55rem;
+      text-align: left;
+      vertical-align: top;
+      background: #fff;
+    }
+    table.compare th { background: #f0f3f8; }
+    .sample-link { font-size: 0.85rem; }
+    .sample-link a { color: var(--link); }
+
+    nav.toc .toc-group {
+      display: block;
+      margin: 0.35rem 0 0.15rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    nav.toc .toc-row { margin: 0.15rem 0 0.55rem; }
+    .section-title {
+      margin: 2rem 0 0.5rem;
+      font-size: 1.25rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 2px solid var(--border);
+    }
+    #open-issues .section-title { border-bottom-color: #ad1457; }
+    #resolved-issues .section-title { border-bottom-color: var(--done); }
+    .section-lead {
+      margin: 0 0 0.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    footer {
+      margin: 0;
+      padding: 0 clamp(1rem, 2.5vw, 2.5rem) 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .badge-prod {
+      background: #eef2ff; color: #3730a3;
+    }
+    .badge-prod-ft {
+      background: #ecfdf5; color: #047857;
+    }
+    .toc-group { display:inline-block; margin:0.35rem 0.5rem 0.15rem 0; color:var(--muted); font-size:0.8rem; font-weight:700; }
+    .toc-row { display:flex; flex-wrap:wrap; gap:0.35rem 0.75rem; margin-bottom:0.35rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>FishTrack / MyPokedex UI 問題点レポート</h1>
+    <p>共有レポート（dev-workspace/ui-audit）。MyPokedex :5002 · FishTrack :5001／各 local AI アカウント</p>
+    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 再診日: 2026-08-08（JST）</p>
+    <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
+    <p>改善サンプルはローカル製品（CSS・ロゴ・コンポーネント）をそのまま使い、改善箇所だけを差分修正したものである。</p>
+  </header>
+
+    <nav class="toc" aria-label="目次">
+    <a href="#summary">サマリー</a>
+    <a href="#open-issues">未解決</a>
+    <a href="#resolved-issues">解決済み</a>
+    <a href="#gallery">ギャラリー</a>
+    <span class="toc-group">未解決 MyPokedex</span>
+    <div class="toc-row">
+      <a href="#mp-h4">MP-H4</a>
+    </div>
+    <span class="toc-group">未解決 FishTrack</span>
+    <div class="toc-row">
+      <a href="#ft-h5">FT-H5</a>
+      <a href="#ft-h6">FT-H6</a>
+      <a href="#ft-m8">FT-M8</a>
+    </div>
+    <span class="toc-group">解決済み MyPokedex</span>
+    <div class="toc-row">
+      <a href="#mp-h1">MP-H1</a>
+      <a href="#mp-h2">MP-H2</a>
+      <a href="#mp-h3">MP-H3</a>
+      <a href="#mp-o1">MP-O1</a>
+      <a href="#mp-o2">MP-O2</a>
+      <a href="#mp-o3">MP-O3</a>
+      <a href="#mp-m-drawer">MPドロワー</a>
+      <a href="#mp-m-coverage">MPカバレッジ</a>
+      <a href="#mp-m-filter">MPフィルタ</a>
+      <a href="#mp-m-onboard">MPオンボード</a>
+    </div>
+    <span class="toc-group">解決済み FishTrack</span>
+    <div class="toc-row">
+      <a href="#ft-h1">FT-H1</a>
+      <a href="#ft-h3">FT-H3</a>
+      <a href="#ft-h4">FT-H4</a>
+      <a href="#ft-h2">FT-H2</a>
+      <a href="#ft-m1">FT-M1</a>
+      <a href="#ft-m2">FT-M2</a>
+      <a href="#ft-m3">FT-M3</a>
+      <a href="#ft-m4">FT-M4</a>
+      <a href="#ft-m5">FT-M5</a>
+      <a href="#ft-m6">FT-M6</a>
+      <a href="#ft-m7">FT-M7</a>
+    </div>
+  </nav>
+<main>
+    <section id="summary" class="meta">
+      <div><strong>対象</strong>: MyPokedex・FishTrack の<strong>全画面</strong>（両製品同時診断。片方限定は明示時のみ）</div>
+      <div><strong>範囲</strong>: ログイン後のユーザー向け画面一式（SP／PC）。管理画面は依頼時に含む</div>
+      <div><strong>スクショ例（抜粋）</strong>: MP — partyBox・dex 等／FT — dashboard・catch・trip・field-area・rod-models・lure-masters（プラグフィルタ）等（網羅対象は上記全画面）</div>
+      <div><strong>観点</strong>: 表＋sticky の幅依存・横スクロール、レイアウト、CTA／フィルタ等の実操作</div>
+      <div><strong>成果物</strong>: 本 HTML + PNG + <code>samples/</code> 改善モック</div>
+      <div><strong>備考</strong>: 未解決／解決済みを分離。<strong>2026-08-08</strong>:
+        FT-H1／H3／H4 は案A（列のカスタマイズ）を製品実装し <strong>RESOLVED</strong>（解決済み節）。
+        再診で MP 退行なし。FT 釣行／フィールド等は PC 1280 で概ね収まり。
+        <strong>2026-08-08 列幅診断（一般/管理者・PC1440）</strong>で OPEN 追加:
+        FT-H5／H6／M8・MP-H4（列幅不足・余白過多）。</div>
+    </section>
+
+    <section id="open-issues" aria-labelledby="open-issues-title">
+      <h2 id="open-issues-title" class="section-title">未解決の課題</h2>
+      <p class="section-lead">案の選択・実装待ち。
+        <strong>2026-08-08 列幅診断（一般/管理者・PC1440）</strong>で追加:
+        <a href="#ft-h5">FT-H5</a>・<a href="#ft-h6">FT-H6</a>・<a href="#ft-m8">FT-M8</a>・<a href="#mp-h4">MP-H4</a>。
+        H1／H3／H4 等は解決済み節。</p>
+
+<!-- ===== OPEN: 列幅診断 2026-08-08 ===== -->
+
+    <article class="issue" id="ft-h5">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H5 — シリーズ sticky 列が狭すぎる
+      </h2>
+      <p class="label">画面: PC <code>/tackle/rod-models/</code>・<code>/tackle/reel-models/</code>（一般／管理者とも同一 CSS）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> ロッドを探す・リールを探す（マスタ一覧表）</li>
+          <li><strong>位置:</strong> 左 sticky の「シリーズ」列（メーカーとモデルの間）</li>
+          <li><strong>セレクタ／変数:</strong>
+            <code>.ft-table__sticky-col--series</code> /
+            <code>--rod-col-series: 10rem</code>（≈160px）</li>
+          <li><strong>対象外:</strong> モデル列・保有 sticky・SP カード表示</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        固定幅 10rem では長い系列名が ellipsis で欠ける。
+        計測（PC1440）: rod series slack ≈ <strong>−37</strong>（need 197 / thW 160、例: 「STEEZ リアルコントロール」）、
+        reel series slack ≈ <strong>−99</strong>（need 259 / thW 160）。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-rod-series-tight.png" alt="ロッドマスタ シリーズ列が狭い">
+          <figcaption>pc-rod-series-tight.png — ▲ シリーズ列（赤枠）。「STEEZ リアルコ…」と欠ける</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>系列名は識別の要。ellipsis だと同系列の見分けが難しい</li>
+        <li>sticky 固定のため横スクロールしても幅は増えず、読める幅が常に足りない</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — シリーズ列拡幅＋折り返し（sticky 維持） <span class="rec-tag">推奨</span></h4>
+          <p><code>--rod-col-series</code> を約 <strong>13–14rem</strong>（例: 13.5rem）に拡げ、
+            セル内折り返し（または title ツールチップ併用）。左 sticky は維持。カード化は不採用。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-h5-a.html">fishtrack/samples/ft-h5-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="wide">
+            <img src="fishtrack/sample-ft-h5-a.png" alt="FT-H5 案A">
+            <figcaption>sample-ft-h5-a.png — ▲ 上＝10rem／ellipsis、下＝13.5rem＋折り返し</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="ft-h6">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H6 — リール「技術特性」列が全表示時に極端に不足
+      </h2>
+      <p class="label">画面: PC <code>/tackle/reel-models/</code>（技術特性列を表示したとき）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> リールを探す（列のカスタマイズで「技術特性」ON）</li>
+          <li><strong>位置:</strong> 表中段の「技術特性」列（カンマ連結ラベル）</li>
+          <li><strong>セレクタ／変数:</strong>
+            <code>th/td.table-memo--technology</code> /
+            <code>--ft-table-col-technology-min</code>（実測 thW ≈448）</li>
+          <li><strong>対象外:</strong> ロッド技術特性（件数・長さが異なる）、保有一覧の別表</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        全列表示時の計測: technology thW <strong>448</strong> / need ≈ <strong>1753</strong> /
+        slack ≈ <strong>−1305</strong>（カンマ連結の長文ラベル）。一覧上で全文が読めない。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-reel-tech-tight.png" alt="リール技術特性列が不足">
+          <figcaption>pc-reel-tech-tight.png — ▲ 技術特性列（赤枠）。長文が列幅に収まらない</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>技術特性は比較・選定の根拠。不足幅が大きいと実質「見えない列」になる</li>
+        <li>横スクロールしても nowrap／固定 min では全文表示に届かない</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p>案A／案Bの違い: <strong>一覧上で全ラベルを読むか</strong>（A）vs
+        <strong>行高を抑えスキャン優先し詳細へ逃がすか</strong>（B）。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — チップ＋複数行折り返し <span class="rec-tag">推奨</span></h4>
+          <p>ラベルをチップ化しセル内で折り返し。列 min-width 約 <strong>20rem</strong>。
+            横スクロールは許容。メリット: 一覧で全文可読。デメリット: 行高が増える。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-h6-a.html">fishtrack/samples/ft-h6-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure>
+            <img src="fishtrack/sample-ft-h6-a.png" alt="FT-H6 案A">
+            <figcaption>sample-ft-h6-a.png — ▲ 下の変更後はチップ複数行</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — truncate＋title＋詳細リンク</h4>
+          <p>一覧は truncate（title に全文）＋「詳細」リンク。
+            メリット: 行高低・スキャン向き。デメリット: 一覧だけでは全ラベル不可読。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-h6-b.html">fishtrack/samples/ft-h6-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure>
+            <img src="fishtrack/sample-ft-h6-b.png" alt="FT-H6 案B">
+            <figcaption>sample-ft-h6-b.png — ▲ 下の変更後は truncate＋詳細</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="ft-m8">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-M8 — 一般ユーザの保有列がまだ広い
+      </h2>
+      <p class="label">画面: PC ロッド／リール／ルアーマスタ（ai-user）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/tackle/rod-models/</code>・<code>/tackle/reel-models/</code>・<code>/lure-masters/</code></li>
+          <li><strong>位置:</strong> 右 sticky「保有」列（ステータスのみの一般ユーザ表示）</li>
+          <li><strong>セレクタ／変数:</strong>
+            <code>--rod-col-holding: 6.75rem</code>（≈108px）。
+            管理者は <code>--admin-holding: 8.75rem</code>（編集 UI あり・概ね妥当）</li>
+          <li><strong>対象外:</strong> 管理者保有列の編集コントロール幅</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        一般ユーザ計測: holding thW ≈108 / need ≈44（ステータスのみ）→ slack ≈ <strong>+64〜</strong>。
+        余白が多く、他列（シリーズ等）の窮屈さと対照的。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-rod-holding-user-wide.png" alt="一般ユーザ保有列が広い">
+          <figcaption>pc-rod-holding-user-wide.png — ▲ 保有列（橙枠）。「—／保有中」に対して余白過多</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>一般表示はステータス短文のみで幅が余り、表の有効スキャン幅を浪費する</li>
+        <li>シリーズ等の不足列と組み合わせると、優先すべき列に幅が回らない</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 一般保有列を約 5–5.5rem に縮小 <span class="rec-tag">推奨</span></h4>
+          <p><code>--rod-col-holding</code> を約 <strong>5.25rem</strong> 程度へ。
+            管理者クラス（<code>--admin-holding: 8.75rem</code>）は維持。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-m8-a.html">fishtrack/samples/ft-m8-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="wide">
+            <img src="fishtrack/sample-ft-m8-a.png" alt="FT-M8 案A">
+            <figcaption>sample-ft-m8-a.png — ▲ 上＝6.75rem、下＝5.25rem</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="mp-h4">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod">MyPokedex</span>
+        MP-H4 — 図鑑表の操作列(actions)が不足
+      </h2>
+      <p class="label">画面: PC MyPokedex 図鑑（RGBP）<code>/RGBP/dex/rgbp</code></p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> カントー図鑑（RGBP）PC 表</li>
+          <li><strong>位置:</strong> 表右端の「操作」列（登録＋追加／その他／HOME登録 等）</li>
+          <li><strong>セレクタ:</strong> <code>.pkTable .pk-col--actions</code>
+            （現状 min-width 140px・幅 17%、実測 thW ≈157）</li>
+          <li><strong>対象外:</strong> partyBox／全国図鑑（当該計測では actions slack 正）、SP 操作列（O2 RESOLVED）</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        PC1440 計測: actions slack ≈ <strong>−97</strong>（thW 157 / need ≈254、
+        例: 「登録＋追加 その他 HOME登録」）。ボタンが列幅に収まらず折り返し・窮屈になる。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="mypokedex/pc-dex-actions-tight.png" alt="図鑑操作列が不足">
+          <figcaption>pc-dex-actions-tight.png — ▲ 操作列（赤枠）。複数 CTA が列幅不足</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>図鑑の主操作（登録・HOME 等）が押しにくく、誤タップや見落としの原因になる</li>
+        <li>表形式は維持すべき（カード化は比較目的を壊す）ため、操作列側で解く必要がある</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 操作列拡幅＋コンパクトボタン <span class="rec-tag">推奨</span></h4>
+          <p><code>.pk-col--actions</code> の min-width／割合を広げ、ボタン padding／font をコンパクト化。
+            表形式は維持。</p>
+          <p class="sample-link">サンプル:
+            <a href="mypokedex/samples/mp-h4-a.html">mypokedex/samples/mp-h4-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="wide">
+            <img src="mypokedex/sample-mp-h4-a.png" alt="MP-H4 案A">
+            <figcaption>sample-mp-h4-a.png — ▲ 上＝不足、下＝拡幅＋コンパクト</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+<!-- O3 / drawer / filter / onboard moved to resolved -->
+
+<!-- coverage resolved — moved from open-issues -->
+
+    </section>
+
+    <section id="resolved-issues" aria-labelledby="resolved-issues-title">
+      <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
+      <p class="section-lead">再診断済み。改善前スクショとアフターを残す。</p>
+
+    <article class="issue" id="ft-h1">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H1 — ロッドマスタ表の横スクロール過多（案A 採用）
+      </h2>
+      <p class="label">画面: PC <code>/tackle/rod-models/</code>（表形式は維持。SP≤767 は既にカード表示のため本課題の主戦場外）</p>
+      <p><strong>採用:</strong> 案A — 優先列＋「列のカスタマイズ」トグル（2026-08-08）。リール／ルアー／マイタックル詳細も同方針。</p>
+      <p><strong>再診断:</strong> 2026-08-08 ローカル PC — 「列のカスタマイズ」表示・副次列既定非表示・sticky 維持を確認。</p>
+
+      <h3>対象箇所</h3>
+      <ul>
+        <li><strong>URL／画面:</strong> PC「ロッドを探す」一覧表</li>
+        <li><strong>位置:</strong> フィルタ直下の <code>.master-list-table-wrap</code> → <code>.table-scroll</code> 内テーブル</li>
+        <li><strong>セレクタ:</strong> <code>table.ft-table--rod-master-sticky</code>（左 sticky: <code>.ft-table__sticky-col--mfr|series|model</code>／右 sticky: <code>.rod-sticky-col--holding</code>）</li>
+        <li><strong>対象外:</strong> SP カード一覧（<code>.master-model-cards</code>）、リール／ルアーマスタ表（別 ID で扱う）</li>
+      </ul>
+
+      <h3>事象</h3>
+      <p>
+        2026-08-08 再計測（PC 1280）: 列 <strong>19</strong>、
+        <code>scrollWidth</code> 2566 / <code>clientWidth</code> 1119 →
+        横オーバーフロー約 <strong>1447px</strong>（ビューポート約 1.3 個分）。
+        左3列 sticky・右「保有」sticky は<strong>既に実装済み</strong>だが、中間スペック列が多く
+        初期ビューで比較・スキャンの到達コストが高い。
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/ft-pc-rods-h1-before.png" alt="PC ロッド表の横スクロール（再計測）">
+          <figcaption>ft-pc-rods-h1-before.png — ▲ 表下のスクロールバー。初期は全長／継数付近まで。技術特性・定価・JAN・保有は右へ</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/ft-pc-rods.png" alt="PC ロッド表（過去スクショ）">
+          <figcaption>ft-pc-rods.png — 過去観測（参考）</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か（深掘り）</h3>
+      <ul>
+        <li><strong>本質は「保有が見えない」ではない</strong>（右 sticky 済み）。中間列過多による<strong>比較スキャンの摩擦</strong>が主因。</li>
+        <li>技術特性列は幅が大きい（約 240px）。ブランク／カーボン／JAN 等は一覧比較の頻度が相対的に低い。</li>
+        <li><code>colgroup</code> は sticky 用に一部のみクラス化、<code>&lt;col span="14"&gt;</code> で中間を一括。列の出し分け実装時は
+          <strong>tbody への <code>ft-table__cell--*</code> 付与</strong>が必要（現状 th 中心。display:none だけでは幅が縮まない）。</li>
+        <li>カード化は画面目的（表での列比較）を壊すため<strong>不採用</strong>。</li>
+      </ul>
+
+      <h3>改善策（複数案）</h3>
+      <p>いずれも表形式維持・既存 sticky 維持。優先列セット案:
+        メーカー／シリーズ／モデル／ジャンル／全長／パワー／アクション／現行／保有（9列）。
+        実ページ注入計測ではオーバーフロー <strong>1447→約317px</strong>（案A/B相当）。案C要約では約208px。</p>
+
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>観点</th>
+            <th>案A 列のカスタマイズ</th>
+            <th>案B 簡易／詳細</th>
+            <th>案C スペック要約</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>操作コスト</td>
+            <td>列ごとの調整可（やや重い）</td>
+            <td>1クリック切替（軽い）</td>
+            <td>追加UIほぼなし</td>
+          </tr>
+          <tr>
+            <td>柔軟性</td>
+            <td>高（ユーザーが列選択）</td>
+            <td>中（2セット固定）</td>
+            <td>低（一覧から副次を外す）</td>
+          </tr>
+          <tr>
+            <td>列ソート／比較</td>
+            <td>表示中列は維持</td>
+            <td>簡易でも主要列は維持</td>
+            <td>要約列では単項目ソートが弱い</td>
+          </tr>
+          <tr>
+            <td>実装量</td>
+            <td>中〜大（永続化・セルクラス）</td>
+            <td>中（query/view＋CSS）</td>
+            <td>中（セル合成＋詳細誘導）</td>
+          </tr>
+          <tr>
+            <td>メリット</td>
+            <td>用途に合わせた最適化</td>
+            <td>既存「簡易／詳細」パターンと揃う</td>
+            <td>列数を最も削れる</td>
+          </tr>
+          <tr>
+            <td>デメリット</td>
+            <td>UI・状態管理が増える</td>
+            <td>中間の好みに合わせにくい</td>
+            <td>一覧で副次比較しづらい</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 優先列＋「列のカスタマイズ」トグル <span class="rec-tag">推奨</span></h4>
+          <p>既定は優先9列。副次はチェックで追加。左／右 sticky は現状維持。柔軟性が高く、監査の推奨方針と一致。</p>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-h1-a.html">fishtrack/samples/ft-h1-a.html</a>（上＝変更前／下＝変更後）</p>
+          <figure>
+            <img src="fishtrack/sample-ft-h1-a.png" alt="FT-H1 案A（実ページ注入）">
+            <figcaption>sample-ft-h1-a.png — ▲ 列のカスタマイズパネル＋優先列のみ。実ページ注入スクショ</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 簡易／詳細ビュー切替</h4>
+          <p>マイタックルと同様の2モード。操作は最も単純。列単位の細かい調整は不可。</p>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-h1-b.html">fishtrack/samples/ft-h1-b.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-h1-b.png" alt="FT-H1 案B（実ページ注入）">
+            <figcaption>sample-ft-h1-b.png — ▲「簡易｜詳細」トグル（簡易＝優先列）</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案C — スペック要約列＋詳細誘導</h4>
+          <p>全長・パワー・アクション・継数を1セルに要約。副次は詳細画面へ。密度は最良だが一覧比較の粒度は落ちる。</p>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-h1-c.html">fishtrack/samples/ft-h1-c.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-h1-c.png" alt="FT-H1 案C（実ページ注入）">
+            <figcaption>sample-ft-h1-c.png — ▲「スペック」要約列（6'4&quot; · L · XF ＋継数）</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 案A を製品反映（共通 JS）。関連 <a href="#ft-h3">FT-H3</a>／<a href="#ft-h4">FT-H4</a> も同リリース。</p>
+      <p><strong>再診追記（2026-08-08）:</strong> 1024px でも overflow≈1682・sticky crowding。SP 390 はカード化で表非表示を再確認。</p>
+    </article>
+    <article class="issue" id="ft-h3">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H3 — リールマスタ表の横スクロール過多（案A 採用）
+      </h2>
+      <p class="label">画面: PC <code>/tackle/reel-models/</code>（表形式は維持。SP はカード）</p>
+      <p><strong>採用:</strong> 案A — FT-H1 と同型の優先列＋列のカスタマイズ（2026-08-08）。</p>
+      <p><strong>再診断:</strong> 2026-08-08 ローカル PC — 「列のカスタマイズ」ツールバーと優先列既定を確認。</p>
+
+      <h3>対象箇所</h3>
+      <ul>
+        <li><strong>URL／画面:</strong> PC「リールを探す」一覧表</li>
+        <li><strong>位置:</strong> <code>.master-list-table-wrap</code> → <code>.table-scroll</code></li>
+        <li><strong>セレクタ:</strong> <code>table.ft-table--rod-master-sticky.ft-table--reel-master</code>（左 sticky メーカー／シリーズ／モデル、右保有）</li>
+        <li><strong>対象外:</strong> ロッド（<a href="#ft-h1">FT-H1</a>）、ルアー（<a href="#ft-h4">FT-H4</a>）、SP カード</li>
+      </ul>
+
+      <h3>事象</h3>
+      <p>
+        2026-08-08 全画面再診: 列 <strong>23</strong>、PC 1280 で overflow 約 <strong>1849px</strong>
+       （ロッド FT-H1 の 1426px より大）。左 sticky 幅約 545px。1440px でも overflow≈1689。
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/ft-pc-reels-h3-before.png" alt="PC リールマスタ表の横スクロール">
+          <figcaption>ft-pc-reels-h3-before.png — ▲ PC1280。表下スクロールバーと多数列</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>ロッドと同型の「中間スペック列過多」。比較スキャンの到達コストが高い</li>
+        <li>sticky はあるが、初期ビューで主要スペックと保有の両立が難しい</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>案A（推奨）:</strong> FT-H1 と同型の優先列＋「列のカスタマイズ」トグル（実装はロッドと共通化推奨）。カード化は不採用。</p>
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 優先列＋列のカスタマイズ <span class="rec-tag">推奨</span></h4>
+          <p>FT-H1 案A と同じ操作モデル。ロッド／リールで UI・永続化を共通化できる。</p>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-h3-a.html">fishtrack/samples/ft-h3-a.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-h3-a.png" alt="FT-H3 案A">
+            <figcaption>sample-ft-h3-a.png — ▲ 上＝変更前／下＝変更後（優先列）</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 簡易／詳細</h4>
+          <p>FT-H1 案B と同型。実装は軽いが列単位調整は不可。</p>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 案A を FT-H1 と同時反映。</p>
+    </article>
+    <article class="issue" id="ft-h4">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H4 — ルアーマスタ表：中幅で sticky が中間帯を圧迫（案A 採用）
+      </h2>
+      <p class="label">画面: Tablet〜狭 PC <code>/lure-masters</code>（特に <code>?tab=plug</code>）</p>
+      <p><strong>採用:</strong> 案A — 優先列＋列のカスタマイズ（2026-08-08）。H1/H3 と共通実装。</p>
+      <p><strong>再診断:</strong> 2026-08-08 ローカル — プラグ／ワームで「列のカスタマイズ」と優先列既定を確認。</p>
+
+      <h3>対象箇所</h3>
+      <ul>
+        <li><strong>URL／画面:</strong> ルアーを探す（worm／plug タブ）</li>
+        <li><strong>位置:</strong> sticky 左列（プラグは種別＋メーカー＋製品、ワームはメーカー＋製品）＋右保有</li>
+        <li><strong>セレクタ:</strong> <code>.ft-table--lure-master.ft-table--rod-master-sticky</code> の <code>.ft-table__sticky-col--*</code></li>
+        <li><strong>対象外:</strong> SP≤767 カード表示、ロッド／リールの列数問題（H1/H3）</li>
+      </ul>
+
+      <h3>事象</h3>
+      <p>
+        プラグタブ計測: sticky 左幅約 <strong>533px</strong>。768px で freeMid≈<strong>0</strong>・overflow≈949（HIGH）。
+        1024px で freeMid≈160・overflow≈704（HIGH）。1280px でも overflow≈448（MED）。
+        ワームは sticky 2列（≈417px）で 768 が同様に crowding。
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/ft-tab-lures-plug-h4-before.png" alt="1024px ルアープラグ sticky 圧迫">
+          <figcaption>ft-tab-lures-plug-h4-before.png — ▲ 1024幅。左 sticky が広く中間スペックがほぼ見えない</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/ft-tab768-lures-plug-h4.png" alt="768px ルアープラグ sticky 圧迫">
+          <figcaption>ft-tab768-lures-plug-h4.png — ▲ 768幅。freeMid≈0</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>列数そのものより、<strong>sticky 帯がビューポートを食う</strong>ことが主因（ロッド H1 と観点が異なる）</li>
+        <li>横スクロールしても識別列は残るが、中間スペックの可視領域が極端に狭い</li>
+        <li>ノート PC／ウィンドウ分割（≈1000px）で実害が出やすい</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <table class="compare">
+        <thead>
+          <tr><th>観点</th><th>案A 優先列</th><th>案B sticky 縮小／カード境界</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>主効果</td><td>横スクロール量↓</td><td>中間帯の幅を直接確保</td></tr>
+          <tr><td>メリット</td><td>H1/H3 と操作共通</td><td>タブレット特有の crowding に直撃</td></tr>
+          <tr><td>デメリット</td><td>sticky 幅自体は残りうる</td><td>比較列の sticky 体験が変わる</td></tr>
+        </tbody>
+      </table>
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 優先列＋列のカスタマイズ <span class="rec-tag">推奨</span></h4>
+          <p>既定列を識別＋現行＋保有＋必要最小スペックに。H1/H3 と共通実装しやすい。</p>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-h4-a.html">fishtrack/samples/ft-h4-a.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-h4-a.png" alt="FT-H4 案A">
+            <figcaption>sample-ft-h4-a.png — ▲ 上＝変更前／下＝優先列</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — sticky を製品名のみ／カード境界を ≤1023 に</h4>
+          <p>中幅の crowding を構造的に解消。表を残すなら sticky 1列化、切替ならカード拡大。</p>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-h4-b.html">fishtrack/samples/ft-h4-b.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-h4-b.png" alt="FT-H4 案B">
+            <figcaption>sample-ft-h4-b.png — ▲ sticky 縮小とカード例</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 案A を製品反映（列のカスタマイズで中間スペック列を既定オフ）。</p>
+    </article>
+    <article class="issue" id="ft-m3">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-M3 — マイフィールド SP の主ボタンが窮屈（案A 採用）
+      </h2>
+      <p class="label">画面: SP <code>/field-area/list</code></p>
+      <p><strong>採用:</strong> 案A — 縦積み CTA（主＝フィールド新規追加、副＝パブリックフィールド一覧）（2026-08-08）。</p>
+      <p><strong>再診断:</strong> 2026-08-08 ローカル SP 390 —
+        <code>flex-direction:column</code>、両ボタン幅約 313px・主が上を確認。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>主CTA2つが横並びで狭く、誤タップ・視認性の問題があった。</p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/ft-sp-fields.png" alt="SP フィールド CTA（改善前）">
+          <figcaption>ft-sp-fields.png — 改善前</figcaption>
+        </figure>
+      </div>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>filter-actions--stack-sm</code> で狭幅は縦積み・全幅</li>
+        <li>DOM は主→副。広幅は <code>row-reverse</code> で副｜主の横並びを維持</li>
+      </ul>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/ft-sp-fields-m3-after.png" alt="SP マイフィールド CTA 縦積み後">
+          <figcaption>ft-sp-fields-m3-after.png — 改善後（縦積み）</figcaption>
+        </figure>
+      </div>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 縦積みCTA <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-m3-a.html">fishtrack/samples/ft-m3-a.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-m3-a.png" alt="FT-M3 案A">
+            <figcaption>sample-ft-m3-a.png</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="ft-m1">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-M1 — 釣行一覧 SP でフィルタが画面を占有（案A 採用）
+      </h2>
+      <p class="label">画面: SP/PC <code>/trip/</code></p>
+      <p><strong>採用:</strong> 案A — 折りたたみフィルタ（<code>ft-filter-collapse</code>。未適用は初期閉じ、適用中は初期オープン）（2026-08-08）。</p>
+      <p><strong>再診断:</strong> 2026-08-08 ローカル SP 390 —
+        フィルタ要約のみ表示、<code>open=false</code>／パネル <code>display:none</code>、表がビューポート上部付近に見えることを確認。展開で日付・セレクト再表示。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>日付・セレクトが縦積みで、表は下端にわずかしか見えなかった。</p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/ft-sp-trips.png" alt="SP 釣行フィルタ占有（改善前）">
+          <figcaption>ft-sp-trips.png — 改善前</figcaption>
+        </figure>
+      </div>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li>釣行一覧に既存の <code>ft-filter-collapse</code>／<code>ft_filter_collapse.js</code> を適用</li>
+        <li>他一覧と同様、適用中のみ初期オープン＋「適用中」バッジ</li>
+      </ul>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/ft-sp-trips-m1-after.png" alt="SP 釣行一覧フィルタ折りたたみ後">
+          <figcaption>ft-sp-trips-m1-after.png — 改善後（フィルタ閉じ・表が見える）</figcaption>
+        </figure>
+      </div>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 折りたたみフィルタ <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-m1-a.html">fishtrack/samples/ft-m1-a.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-m1-a.png" alt="FT-M1 案A">
+            <figcaption>sample-ft-m1-a.png</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="ft-h2">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H2 — ページ主CTAの右端切れ（誤検知）
+      </h2>
+      <p class="label">画面: PC /tackle/rod-models/ 見出し行</p>
+      <p><strong>判定:</strong> 誤検知（2026-08-08）。通常 PC 幅では文字切れしない。製品変更なし。</p>
+      <p><strong>再診断:</strong> Cursor ブラウザで
+        <code>Emulation.clearDeviceMetricsOverride</code> 後、幅 1280 および実パネル幅（約 937）で計測。
+        「新しいロッドを登録」は全文表示、<code>overflowClip=0</code>（親 <code>.card-header</code> 内に収まる）。
+        ユーザー実ブラウザでも切れないことを確認。</p>
+
+      <h3>事象（監査時スクショ）</h3>
+      <p>初期監査の <code>ft-pc-rods.png</code> では CTA が「新し」まで見切れていた。</p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/ft-pc-rods.png" alt="監査時の主CTA切れ（誤検知根拠）">
+          <figcaption>ft-pc-rods.png — 監査時（狭い実効幅／残存エミュ疑い）</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題ではなかったか</h3>
+      <ul>
+        <li>製品 CSS の恒常的な右端クリップではない</li>
+        <li>Cursor ブラウザのビューポート幅指定・SP エミュレーション残存で、PC 診断スクショが狭く見えた可能性が高い</li>
+      </ul>
+
+      <h3>実施した改善</h3>
+      <p>なし（誤検知クローズ）。再診スクショのみ残す。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-rods-h2-recheck.png" alt="PC 1280 再診で CTA 全文">
+          <figcaption>
+            ft-pc-rods-h2-recheck.png —
+            ▲ 1280 幅で「新しいロッドを登録」全文（overflow なし）
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="options">
+        <div class="option">
+          <h4>案A — CTA折り返し（未実施）</h4>
+          <p class="sample-link">参考サンプル:
+            <a href="fishtrack/samples/ft-h2-a.html">fishtrack/samples/ft-h2-a.html</a>
+            （誤検知のため採用・実装しない）</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="ft-m2">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-M2 — 釣果カードの縦占有が大きい（案B 採用）
+      </h2>
+      <p class="label">画面: SP/PC <code>/catch/</code> · <code>/dashboard</code> · 釣行詳細の紐づく釣果</p>
+      <p><strong>採用:</strong> 案B — 写真｜データの左右並び横長カード（PC／スマホ共通。ダッシュボード含む）（2026-08-08）。</p>
+      <p><strong>再診断:</strong> 2026-08-08 ローカル —
+        SP ダッシュボード／釣果一覧・PC 釣果一覧で <code>display:grid</code> 横並びを確認。写真なしは左帯。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>写真とデータが上下並びで縦占有が大きく、一覧スキャン効率が低かった。</p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/ft-sp-catches.png" alt="SP 釣果カード（改善前）">
+          <figcaption>ft-sp-catches.png — 改善前（上下並び）</figcaption>
+        </figure>
+      </div>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>.catch-card:has(&gt; .catch-card__thumb)</code> を左右グリッド化</li>
+        <li>グリッド最小幅を <code>20rem</code> に調整</li>
+        <li>写真なしは <code>catch-card--no-photo</code></li>
+      </ul>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/ft-sp-dashboard-catch-cards-m2-after.png" alt="SP ダッシュボード横長カード">
+          <figcaption>ft-sp-dashboard-catch-cards-m2-after.png — ▲ 最近の釣果が横長</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/ft-sp-catches-m2-after.png" alt="SP 釣果一覧横長カード">
+          <figcaption>ft-sp-catches-m2-after.png — ▲ 釣果一覧 SP</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-catches-m2-after.png" alt="PC 釣果一覧横長カード">
+          <figcaption>ft-pc-catches-m2-after.png — ▲ 釣果一覧 PC</figcaption>
+        </figure>
+      </div>
+
+      <div class="options">
+        <div class="option hold">
+          <h4>案A — コンパクトカード <span class="hold-tag">保留</span></h4>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-m2-a.html">fishtrack/samples/ft-m2-a.html</a></p>
+        </div>
+        <div class="option recommended">
+          <h4>案B — 横長カード（写真｜データ） <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-m2-b.html">fishtrack/samples/ft-m2-b.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-m2-b.png" alt="FT-M2 案B">
+            <figcaption>sample-ft-m2-b.png — 採用前サンプル（本番写真）</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="ft-m4">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-M4 — 釣果一覧 PC グリッドの右端クリップ（案A 採用）
+      </h2>
+      <p class="label">画面: PC /catch/</p>
+      <p><strong>採用:</strong> 案A — <code>auto-fill</code> +
+        <code>minmax(min(100%, 13.75rem), 1fr)</code> の可変グリッド（2026-08-08）。</p>
+      <p><strong>再診断:</strong> 2026-08-08 ローカル PC 1280×900 —
+        4 列表示でも右端オーバーフローなし。カード全体がビュー内に収まる。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>カード列の右端がビューポート端で切れる。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-catches.png" alt="PC 釣果グリッド（改善前）">
+          <figcaption>
+            ft-pc-catches.png —
+            ▲ 改善前。右端カードがクリップ
+          </figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>末尾カードへの到達・件数把握が阻害される。</p>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>.catch-card-grid</code>:
+          <code>repeat(auto-fill, minmax(min(100%, 13.75rem), 1fr))</code>
+          + <code>width:100%</code></li>
+        <li><code>.catch-card</code> に <code>min-width:0</code>、
+          <code>dd</code> に <code>overflow-wrap:anywhere</code></li>
+        <li>仕様（<code>05_ui_ux.md</code>）に PC 可変グリッドを追記</li>
+      </ul>
+
+      <h3>再診断（アフター）</h3>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-catches-m4-after.png" alt="可変グリッドで右端クリップなし">
+          <figcaption>
+            ft-pc-catches-m4-after.png —
+            ▲ 幅に応じて列数が収まり、右端が切れない
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 可変グリッド <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-m4-a.html">fishtrack/samples/ft-m4-a.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-m4-a.png" alt="FT-M4 案A">
+            <figcaption>sample-ft-m4-a.png — 参考モック（実装後はアフターを正とする）</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="ft-m5">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-M5 — ルアーマスタ一覧にフィルタ「クリア」が無い（案A 採用）
+      </h2>
+      <p class="label">画面: PC/SP <code>/lure-masters?tab=plug</code>（ワームも同型）</p>
+      <p>関連: <a href="#ft-m6">FT-M6</a>・<a href="#ft-m7">FT-M7</a></p>
+      <p><strong>採用:</strong> 案A — ロッド／リールと同型の <code>btn--ghost btn--sm</code>「クリア」を
+        <code>.filter-actions</code> に追加。<code>tab</code> のみ残す URL（2026-08-08）。</p>
+      <p><strong>再診断:</strong> 2026-08-08 ローカル —
+        プラグ種別フィルタ適用時に「適用」横に「クリア」があり、遷移先は <code>?tab=plug</code> のみ。</p>
+
+      <h3>対象箇所（必須）</h3>
+      <ul>
+        <li><strong>URL</strong>: <code>/lure-masters?tab=plug</code></li>
+        <li><strong>位置</strong>: <code>details.ft-filter-collapse</code> 内の <code>.filter-actions</code></li>
+        <li><strong>部品</strong>: 旧「適用」ボタンのみ（クリアリンク無し）</li>
+        <li><strong>対象外</strong>: タブ件数（<a href="#ft-m6">M6</a>）、メーカー候補（<a href="#ft-m7">M7</a>）</li>
+      </ul>
+
+      <h3>事象（改善前）</h3>
+      <p>ロッド／リールマスタ・釣果／釣行一覧など他画面にある「クリア」が、ルアーマスタ一覧のフィルタには無い。解除は各項目を空にして「適用」する必要がある。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-lure-masters-plug-filter-minnow.png" alt="適用のみでクリア無し">
+          <figcaption>
+            ft-pc-lure-masters-plug-filter-minnow.png —
+            ▲ 改善前。フィルタ行右端が「適用」のみ（クリア無し）
+          </figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>他マスタとの操作感不一致。条件解除の到達コストが高い。</p>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>lure_masters_list.html</code> の <code>.filter-actions</code> に
+          <code>btn--ghost btn--sm</code>「クリア」を追加</li>
+        <li>リンク先は <code>url_for(..., tab=tab)</code>（メーカー・種別・キーワード・現行のみ・並びを解除）</li>
+        <li>仕様（<code>05_ui_ux.md</code>）にクリア挙動を追記</li>
+      </ul>
+
+      <h3>再診断（アフター）</h3>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-lure-masters-m5-after.png" alt="適用横にクリアあり">
+          <figcaption>
+            ft-pc-lure-masters-m5-after.png —
+            ▲ 「適用」横に「クリア」。href は tab のみ
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — クリア追加 <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-m5-a.html">fishtrack/samples/ft-m5-a.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-m5-a.png" alt="FT-M5 案A">
+            <figcaption>sample-ft-m5-a.png — 上:現状／下:クリアあり（実装後はアフターを正とする）</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="ft-m6">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-M6 — タブ件数とフィルタ後の表件数が食い違う（案A 採用）
+      </h2>
+      <p class="label">画面: PC/SP <code>/lure-masters?tab=plug</code></p>
+      <p>関連: <a href="#ft-m5">FT-M5</a>・<a href="#ft-m7">FT-M7</a></p>
+      <p><strong>採用:</strong> 案A — <code>switch-nav</code> から括弧付き件数を外し「プラグ」「ワーム」のみ。
+        あわせて表直前に件数を表示（未フィルタ「全 n 件」／フィルタ中「該当 n 件」）（2026-08-08）。</p>
+      <p><strong>再診断:</strong> 2026-08-08 ローカル —
+        タブは件数なし。ミノーフィルタ時に「該当 3 件」を確認。</p>
+
+      <h3>対象箇所（必須）</h3>
+      <ul>
+        <li><strong>URL</strong>: <code>/lure-masters?tab=plug</code>（ワームタブも同型）</li>
+        <li><strong>位置</strong>: <code>nav.switch-nav</code> の種別名ラベル</li>
+        <li><strong>部品</strong>: 旧 <code>プラグ（{{ plug_count }}）</code> / <code>ワーム（{{ worm_count }}）</code></li>
+        <li><strong>対象外</strong>: クリア（<a href="#ft-m5">M5</a>）、メーカー候補（<a href="#ft-m7">M7</a>）。
+          マスタ新規画面の「マスタ登録件数（全件）」は維持</li>
+      </ul>
+
+      <h3>事象（改善前）</h3>
+      <p>フィルタで表が3件でも、タブは常に「プラグ（18）」（カタログ全件）。件数の意味が表と食い違う。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-lure-masters-plug-filter-minnow.png" alt="タブ18・表3件（改善前）">
+          <figcaption>
+            ft-pc-lure-masters-plug-filter-minnow.png —
+            ▲ 改善前。タブ「プラグ（18）」／表はミノー3件
+          </figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>「今見えている件数」と誤解しやすい。括弧件数自体がタブの役割に不要。</p>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>lure_masters_list.html</code> の切替ラベルを「プラグ」「ワーム」のみに変更</li>
+        <li>表直前に <code>.lure-master-result-count</code>（フィルタ中は「該当 n 件」、未適用は「全 n 件」）</li>
+        <li>仕様（<code>05_ui_ux.md</code>）: 一覧タブに登録件数を出さず、件数は表直前で示す</li>
+      </ul>
+
+      <h3>再診断（アフター）</h3>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-lure-masters-m6-after.png" alt="タブ件数なし・該当3件">
+          <figcaption>
+            ft-pc-lure-masters-m6-after.png —
+            ▲ タブは「プラグ」「ワーム」のみ。表直前に「該当 3 件」
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — タブ件数なし＋該当 n 件 <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="fishtrack/samples/ft-m6-a.html">fishtrack/samples/ft-m6-a.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-m6-a.png" alt="FT-M6 案A">
+            <figcaption>sample-ft-m6-a.png — 上:現状（件数付きタブ）／下:件数なし＋該当 n 件</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="ft-m7">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-M7 — メーカーとカテゴリ系プルダウンが相互連動しない（案A 採用）
+      </h2>
+      <p class="label">複数画面（下記）。主観測はルアーマスタ・プラグ</p>
+      <p>関連: <a href="#ft-m5">FT-M5</a>・<a href="#ft-m6">FT-M6</a></p>
+      <p><strong>採用:</strong> 案A — 独立カテゴリのプルダウン同士をサーバ側で双方向に絞る（2026-08-08）。</p>
+      <p><strong>再診断:</strong> 2026-08-08 ローカル —
+        <code>plugType=spinnerbait</code> 時メーカー候補は EVERGREEN のみ（DAIWA 非表示）。
+        <code>manufacturerId=DAIWA</code> 時プラグ種別からスピナーベイトが消える。
+        ロッドマスタ <code>genre=bait</code> でもメーカー候補が絞られることを確認。</p>
+
+      <h3>対象箇所（必須）</h3>
+      <ul>
+        <li><strong>同型（メーカー↔プラグ種別）</strong>
+          <ul>
+            <li><code>/lure-masters?tab=plug</code> — <code>#manufacturerId</code>・<code>#plugType</code></li>
+            <li><code>/tackle/</code>（保有・プラグ）— <code>#holding-filter-manufacturer</code>・<code>#holding-filter-plug-type</code></li>
+          </ul>
+        </li>
+        <li><strong>近い同型（メーカー↔ジャンル／リール種別）</strong>
+          <ul>
+            <li>ロッド／リール<strong>マスタ</strong>・<strong>保有</strong> — 双方向に統一</li>
+          </ul>
+        </li>
+        <li><strong>対象外</strong>: 釣行／釣果のフィールド→エリア。メーカー→シリーズ。ワームマスタ（種別 select なし）</li>
+      </ul>
+
+      <h3>事象（改善前）</h3>
+      <p>カテゴリ同士の候補が独立、または片方向のみ。組み合わせで0件になりやすい。</p>
+      <p>主観測（ルアーマスタ）: スピナーベイト＋DAIWA → 空。EVERGREENのみヒット。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-lure-masters-plug-filter-empty.png" alt="種別＋メーカーで空結果（改善前）">
+          <figcaption>
+            ft-pc-lure-masters-plug-filter-empty.png —
+            ▲ 改善前。スピナーベイトでも DAIWA が候補に残っていた
+          </figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>空結果に迷いやすい。片方向だけの連動では、先に選んだ側で同種の問題が残る。</p>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li>マスタ: <code>_manufacturers_with_models(..., plug_type/genre/reel_type)</code> と
+          <code>lure_plug_type_filter_choices</code> / <code>rod_genre_filter_labels</code> / <code>reel_type_filter_labels</code></li>
+        <li>保有: <code>holding_filter_manufacturers(..., plug_type=)</code> と
+          <code>holding_filter_plug_types</code> / <code>holding_filter_genres</code> / <code>holding_filter_reel_types</code></li>
+        <li>select 変更時の GET 再読込（既存 <code>filter_auto_apply.js</code>）で候補が更新される</li>
+      </ul>
+
+      <h3>再診断（アフター）</h3>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-lure-masters-m7-after-type.png" alt="種別選択後メーカーが絞られる">
+          <figcaption>
+            ft-pc-lure-masters-m7-after-type.png —
+            ▲ スピナーベイト選択後。メーカーは EVERGREEN のみ
+          </figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/ft-pc-lure-masters-m7-after-mfg.png" alt="メーカー選択後種別が絞られる">
+          <figcaption>
+            ft-pc-lure-masters-m7-after-mfg.png —
+            ▲ DAIWA 選択後。プラグ種別からスピナーベイトが消える
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — カテゴリ同士を双方向連動 <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル（ルアーマスタ想定）: <a href="fishtrack/samples/ft-m7-a.html">fishtrack/samples/ft-m7-a.html</a></p>
+          <figure>
+            <img src="fishtrack/sample-ft-m7-a.png" alt="FT-M7 案A 双方向">
+            <figcaption>sample-ft-m7-a.png — 上:現状（非連動）／下:双方向連動</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+<!-- onboard resolved -->
+    <article class="issue" id="mp-m-onboard">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span> オンボーディングが進捗後も残る（案A 採用）
+      </h2>
+      <p class="label">画面: パーティ＆ボックス・図鑑・設定</p>
+      <p><strong>採用:</strong> 案A — 完了で非表示・再表示は設定から（2026-08-07）。</p>
+      <p><strong>再診断:</strong> 2026-08-07 ローカル —
+        完了条件（ゲーム利用可・Regist・Party/Box）満たすと
+        <code>#onboardingCard</code> を出さない。設定の「使い方を再表示」で一時表示。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>ゲーム選択・図鑑登録・パーティ利用が進んでも「MyPokedexの使い方」が消えにくかった。</p>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sample-onboard-a.png" alt="案A。完了後はカード非表示">
+          <figcaption>sample-onboard-a.png — 完了後の非表示イメージ</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>完了済みユーザーに不要な導線が残り、ノイズになる。</p>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>is_onboarding_complete</code>: ゲーム利用可（設定未作成含む）＋Regist＋Party/Box</li>
+        <li>テンプレは <code>show_onboarding</code> のときのみカード描画</li>
+        <li>設定「使い方を再表示」→ セッション強制表示／閉じるで解除</li>
+      </ul>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 完了で非表示 <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/onboard-a.html">samples/onboard-a.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-onboard-a.png" alt="オンボーディング案A">
+            <figcaption>sample-onboard-a.png</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+<!-- coverage resolved -->
+<!-- filter resolved -->
+    <article class="issue" id="mp-m-filter">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span> フィルタが常時展開（案A 採用）
+      </h2>
+      <p class="label">画面: 図鑑（全国／地方）・パーティ＆ボックス</p>
+      <p><strong>採用:</strong> 案A — 折りたたみ・未適用時は閉じる（2026-08-07）。</p>
+      <p><strong>再診断:</strong> 2026-08-07 ローカル —
+        <code>/national-dex</code>・<code>/RGBP/partyBox</code> で
+        <code>details.pkFilterCollapse</code> が閉じた状態（条件適用中は open）。
+        アフター: <code>sp-dex-filter-after.png</code>。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>未登録フィルタ・ボックスフィルタが常時展開し、SP で表の可視行が減っていた。</p>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sp-partybox.png" alt="改善前。ボックスフィルタ常時展開">
+          <figcaption>改善前 sp-partybox.png</figcaption>
+        </figure>
+        <figure>
+          <img src="mypokedex/sp-dex-filter-after.png" alt="改善後。未登録フィルタが閉じた1行">
+          <figcaption>改善後 sp-dex-filter-after.png — ▶ 未登録フィルタ</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>フィルタ未使用時でも縦スペースを奪う。</p>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>dex.html</code> / <code>partyBox.html</code>:
+          <code>details.pkFilterCollapse</code> で包む。サマリは製品文言のみ</li>
+        <li>未適用時は閉じる。条件適用中のみ <code>open</code></li>
+        <li><code>app.css</code>: 折りたたみサマリの見た目</li>
+      </ul>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 折りたたみフィルタ <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/filter-a.html">samples/filter-a.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-filter-a.png" alt="フィルタ案A 変更前後">
+            <figcaption>sample-filter-a.png</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <article class="issue" id="mp-m-coverage">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span> タイプカバレッジ表示の誤アフォーダンス（案A 採用）
+      </h2>
+      <p class="label">画面: /RGBP/partyBox（他ゲームの partyBox も同型）</p>
+      <p><strong>採用:</strong> 案A — 枠なし・flex密度維持（2026-08-07）。</p>
+      <p><strong>再診断:</strong> 2026-08-07 ローカル — <code>.pkCoverage__row</code> は flex-wrap。
+        件数テキストに枠・背景・角丸なし（表示専用）。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>
+        タイプ別カバー件数（例: <code>みず:1</code>）が角丸ピル＋枠線で並び、
+        ボタン／トグルのように見えるがタップしても何も起きない。
+      </p>
+      <div class="where">
+        <strong>対象箇所（指差し）</strong>
+        <ul>
+          <li>URL: <code>/&lt;gameKey&gt;/partyBox</code></li>
+          <li>位置: 「弱点攻略パーティ提案」直下〜パーティ表直前</li>
+          <li>部品: <code>section.pkCoverage</code> 内の <code>.pkBadge</code></li>
+          <li>関連: <code>.pkRecommend__badgeRow .pkBadge</code></li>
+          <li><strong>対象外</strong>: <code>.pkRecommend__type</code>（操作可能）</li>
+        </ul>
+      </div>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sp-partybox-suggest.png" alt="改善前。タイプ件数ピル列">
+          <figcaption>改善前 sp-partybox-suggest.png</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>押せそうで押せない見た目は、学習コストと不信感を生む。</p>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>app.css</code>: <code>.pkCoverage__row</code> を flex-wrap に正す。カバレッジ／提案件数から枠・背景・角丸を除去。増減は文字色</li>
+        <li><code>partyBox.html</code>: カバレッジ行の inline flex を廃止。<code>role="list"</code>／<code>listitem</code></li>
+      </ul>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 枠なし・flex密度維持 <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/coverage-a.html">samples/coverage-a.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-coverage-a.png" alt="カバレッジ案A。上下とも flex-wrap。下だけ枠なし">
+            <figcaption>sample-coverage-a.png — 変更前後対比</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+<!-- drawer resolved -->
+    <article class="issue" id="mp-m-drawer">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span> ドロワーで同一ラベルがゲームごとに重複（案A 採用）
+      </h2>
+      <p class="label">画面: ナビゲーションドロワー</p>
+      <p><strong>採用:</strong> 案A — 現在ゲームのみ第二階層を DOM に載せる（2026-08-07）。</p>
+      <p><strong>再診断:</strong> 2026-08-07 ローカル — <code>/RGBP/partyBox</code> ドロワーで
+        <code>.drawer-features</code> は1件のみ。非カレントはゲーム見出しリンクのみ。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>各ゲーム見出しの下に「パーティ＆ボックス」「図鑑」が並び、スクロールが長い。</p>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sp-drawer.png" alt="SP ナビゲーションドロワー">
+          <figcaption>改善前 sp-drawer.png</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>同一文言の繰り返しでスキャンしにくく、目的ゲーム以外のリンクまで視線コストがかかる。</p>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>_layout.html</code>: <code>.drawer-features</code> は現在ゲームのみ描画</li>
+        <li>非カレントはゲーム見出し（<code>.drawer-game-link</code>）クリックで切替</li>
+      </ul>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — ゲーム見出しで折りたたみ <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/drawer-a.html">samples/drawer-a.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-drawer-a.png" alt="ドロワー案A">
+            <figcaption>sample-drawer-a.png</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+<!-- O3 resolved -->
+    <article class="issue" id="mp-o3">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span> O3 — 図鑑DOMに大量のインタラクティブ要素（案A 採用）
+      </h2>
+      <p class="label">画面: 地方図鑑 / 全国図鑑</p>
+      <p><strong>採用:</strong> 案A — 表示中ページの表のみ DOM に載せる（2026-08-07）。</p>
+      <p><strong>再診断:</strong> 2026-08-07 ローカル確認 — <code>/RGBP/dex/rgbp</code> は
+        <code>#tabNational</code> なし・表1枚（151行）／
+        <code>/national-dex</code> は地方パネルなし・表1枚（1025行）。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>地方図鑑ページでも非表示の全国表（全件ボタン付き）を同居させており、インタラクティブ要素が数千規模になっていた。</p>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>初期描画・フォーカス移動・スクリーンリーダーの負荷が大きい</li>
+        <li>見えていない表のボタンまで DOM に載り、保守・デバッグも重い</li>
+      </ul>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>dex.html</code>: <code>curMode</code> に応じて全国 or アクティブ地方の表のみ描画</li>
+        <li>地方図鑑ルート: <code>nationalList</code> 構築を廃止</li>
+        <li>全国図鑑ルート: 空の地方セクション用 <code>gameTabs</code> を廃止</li>
+      </ul>
+
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — タブでDOM削減 <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/o3-a.html">samples/o3-a.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-o3-a.png" alt="O3 案A サンプル">
+            <figcaption>sample-o3-a.png</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+<!-- H1 -->
+    <article class="issue" id="mp-h1">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span> H1 — SP でヘッダーが二重化し縦を食う（案B 採用）
+      </h2>
+      <p class="label">画面: SP /RGBP/partyBox · /RGBP/dex/rgbp</p>
+      <p><strong>採用:</strong> 案B — 下タブナビ（2026-08-07）。</p>
+      <p><strong>再診断:</strong> 2026-08-07 実装後スクショで解決確認（ヘッダー短縮＋下タブ表示）。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>ハンバーガー＋ロゴ行の下に、パーティ／図鑑／設定／ログアウトが縦積みで残り、ファーストビューの大半をヘッダーが占有する。</p>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sp-partybox.png" alt="SP パーティ＆ボックス。二重ヘッダーと狭い操作列">
+          <figcaption>改善前 sp-partybox.png — 二重ヘッダー + 操作ボタンの縦伸び</figcaption>
+        </figure>
+        <figure>
+          <img src="mypokedex/sp-dex.png" alt="SP 図鑑。二重ヘッダーと狭い表">
+          <figcaption>改善前 sp-dex.png — 図鑑でも同様</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>コンテンツ（パーティ枠・表）がファーストビューに入りにくく、毎回スクロールが必要</li>
+        <li>ナビと操作列が縦に競合し、到達コストと誤タップリスクが上がる</li>
+        <li>SP 向け情報密度として、ヘッダー比率が高すぎる</li>
+      </ul>
+
+      <h3>改善策（案を選択）</h3>
+      <p>トップナビの縦占有を減らし、本文をすぐ見せる。以下2案から選択。</p>
+      <table class="compare">
+        <thead>
+          <tr><th>観点</th><th>案A ハンバーガー集約</th><th>案B 下タブナビ（採用）</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>違い</th>
+            <td>現行に近く、2行目ナビをドロワーへ移す</td>
+            <td>主要3遷移を画面下タブに常時表示</td>
+          </tr>
+          <tr>
+            <th>メリット</th>
+            <td>実装が軽い／PCパターンとの差分が小さい</td>
+            <td>親指到達が良い／主要画面の発見性が高い</td>
+          </tr>
+          <tr>
+            <th>デメリット</th>
+            <td>設定・図鑑が1タップ奥になる</td>
+            <td>下端を常時占有／既存ドロワー設計と二重化しやすい</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>採用決定:</strong> 案B（ユーザー選択 2026-08-07）。推奨だった案Aは不採用。</p>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li>SP（≤768px）: ヘッダーはハンバーガー＋ロゴ＋ゲーム名のみ。主要遷移は下タブ（パーティ／図鑑／設定）</li>
+        <li>PC: 現行ヘッダー維持、下タブ非表示</li>
+        <li>ログアウトはドロワー末尾（`.drawer-account`）にも配置（SP でヘッダー右が隠れるため）</li>
+      </ul>
+
+      <h3>再診断（改善後）</h3>
+      <p>ローカル SP（390×844）で再撮影。ヘッダー二重化は解消し、下タブで主要遷移可能。</p>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sp-partybox-after.png" alt="SP パーティ改善後。短縮ヘッダーと下タブ">
+          <figcaption>改善後 sp-partybox-after.png — ヘッダー短縮 + 下タブ</figcaption>
+        </figure>
+        <figure>
+          <img src="mypokedex/sp-dex-after.png" alt="SP 図鑑改善後。短縮ヘッダーと下タブ">
+          <figcaption>改善後 sp-dex-after.png — 図鑑でも下タブ current</figcaption>
+        </figure>
+      </div>
+
+      <div class="options two">
+        <div class="option">
+          <h4>案A — ハンバーガーに集約（不採用）</h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/h1-a.html">samples/h1-a.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-h1-a.png" alt="H1 案A サンプル">
+            <figcaption>sample-h1-a.png — ヘッダー1行＋本文即表示</figcaption>
+          </figure>
+        </div>
+        <div class="option recommended">
+          <h4>案B — 下タブナビ <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/h1-b.html">samples/h1-b.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-h1-b.png" alt="H1 案B サンプル">
+            <figcaption>sample-h1-b.png — 上はロゴ＋ゲーム、下にタブ</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+<!-- H2 resolved -->
+    <article class="issue" id="mp-h2">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span> H2 — SP で表が窮屈で一覧スキャンしにくい（案A 採用）
+      </h2>
+      <p class="label">画面: SP 図鑑・パーティの表（操作CTAは <a href="#mp-o2">O2</a>）</p>
+      <p><strong>採用:</strong> 案A — 図鑑 SP で<strong>合計列のみ</strong>追加非表示。パーティ＆ボックスは列構成を維持（2026-08-07）。</p>
+      <p><strong>追加（同日）:</strong> SP（≤480px）で進化先列の<strong>ミニ画像のみ非表示</strong>（名前・条件・バッジ・進化ボタンは維持。図鑑／パーティ共通）。</p>
+      <p><strong>再診断:</strong> 2026-08-07 SP 図鑑で合計列・進化先画像の非表示を確認。</p>
+
+      <h3>事象（改善前）</h3>
+      <p>既存の種族値／全国 No 非表示後も、図鑑では合計＋進化＋操作が並び狭幅で窮屈だった。</p>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sp-dex-o2-after.png" alt="改善前相当（O2後・合計あり）">
+          <figcaption>改善前相当 sp-dex-o2-after.png — 合計列あり</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>図鑑 SP で比較の核でない合計が幅を食い、スキャンしにくい</li>
+        <li>パーティは合計が編成比較に有用なため、図鑑と同じ列隠しは不適切</li>
+      </ul>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li><code>dex.html</code> に <code>body_class=page-dex</code></li>
+        <li><code>app-mobile.css</code>（≤480px）: <code>.page-dex .pk-col--total { display: none }</code></li>
+        <li>パーティ＆ボックスの合計・進化<strong>列</strong>は変更なし</li>
+        <li>追加: <code>.pk-col--evolution .miniIconButton { display: none }</code>（SP・全表）</li>
+      </ul>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sp-dex-h2-after.png" alt="SP 図鑑改善後（合計非表示）">
+          <figcaption>改善後 sp-dex-h2-after.png — 合計なし（初期）</figcaption>
+        </figure>
+        <figure>
+          <img src="mypokedex/sp-dex-h2-evo-after.png" alt="SP 図鑑改善後（進化画像も非表示）">
+          <figcaption>改善後 sp-dex-h2-evo-after.png — 合計なし＋進化先画像なし</figcaption>
+        </figure>
+      </div>
+
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 図鑑の合計のみ非表示 <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/h2-a.html">samples/h2-a.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-h2-a.png" alt="H2 案A サンプル">
+            <figcaption>sample-h2-a.png</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 横スクロール＋sticky（不採用）</h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/h2-b.html">samples/h2-b.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-h2-b.png" alt="H2 案B サンプル">
+            <figcaption>sample-h2-b.png</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+<!-- H3 -->
+    <article class="issue" id="mp-h3">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span> H3 — 空のボックスでも thead だけ残る
+      </h2>
+      <p class="label">画面: PC /RGBP/partyBox（ボックス 0）</p>
+
+      <h3>事象（改善前）</h3>
+      <p>件数 0 でもソート可能な見出し行だけが残り、空状態の説明が弱い。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="mypokedex/pc-partybox.png" alt="PC パーティ＆ボックス。空ボックスの thead のみ">
+          <figcaption>改善前 pc-partybox.png — 空 thead</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>「何もない」ことが伝わりにくく、壊れているように見える</li>
+        <li>空の見出し行への誤タップ・余白の無駄</li>
+        <li>次アクション（図鑑から追加）への導線がない</li>
+      </ul>
+
+      <h3>改善策（案を選択）</h3>
+      <table class="compare">
+        <thead>
+          <tr><th>観点</th><th>案A 空メッセージのみ（採用）</th><th>案B 折りたたみ見出し</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>違い</th>
+            <td>0件時は thead を出さずメッセージ＋導線</td>
+            <td>列定義を details 内に残し、既定は閉じる</td>
+          </tr>
+          <tr>
+            <th>メリット</th>
+            <td>意図が明確／実装が単純</td>
+            <td>列構成を確認したい上級者にも対応</td>
+          </tr>
+          <tr>
+            <th>デメリット</th>
+            <td>列ヘッダを見たい用途には弱い</td>
+            <td>UIがやや複雑／空状態の説明が弱くなりうる</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>採用決定:</strong> 案A（ユーザー選択 2026-08-07）。推奨どおり。</p>
+
+      <h3>実施した改善</h3>
+      <ul>
+        <li>件数 0 のとき `#boxTable` に `pkTable` を出さない（`.pkEmptyBox`）</li>
+        <li>未フィルタ空: 「ボックスにポケモンはいません。」＋「図鑑から追加する」</li>
+        <li>フィルタで 0 件: 「条件に一致するポケモンはいません。」</li>
+      </ul>
+
+      <h3>再診断（改善後）</h3>
+      <p>ローカル PC（1280×900）で `/RGBP/partyBox` を再撮影。空 thead は消え、メッセージと図鑑導線が表示される。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="mypokedex/pc-partybox-after.png" alt="PC 改善後。空ボックスメッセージと図鑑リンク">
+          <figcaption>改善後 pc-partybox-after.png — 空メッセージ＋図鑑導線</figcaption>
+        </figure>
+      </div>
+
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 空状態メッセージのみ <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/h3-a.html">samples/h3-a.html</a></p>
+          <figure class="wide">
+            <img src="mypokedex/sample-h3-a.png" alt="H3 案A サンプル">
+            <figcaption>sample-h3-a.png</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 折りたたみ見出し（不採用）</h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/h3-b.html">samples/h3-b.html</a></p>
+          <figure class="wide">
+            <img src="mypokedex/sample-h3-b.png" alt="H3 案B サンプル">
+            <figcaption>sample-h3-b.png — 既定は閉じた状態</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+<!-- O1 resolved -->
+    <article class="issue" id="mp-o1">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span> O1 — 「登録して追加」の発見性（実装済み）
+      </h2>
+      <p class="label">画面: SP/PC 図鑑操作列</p>
+      <h3>事象（改善前）</h3>
+      <p>主CTAが埋もれ、地方図鑑登録と並んで発見しにくかった。</p>
+      <h3>何が問題だったか</h3>
+      <p>最頻操作の発見性が低く、到達まで迷う。</p>
+      <h3>実施した改善</h3>
+      <p>主CTAを先頭に、「カントー登録」は「その他」へ退避済み。長文CTAは <a href="#mp-o2">O2</a>、表密度は <a href="#mp-h2">H2</a>（いずれも RESOLVED）。</p>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sp-dex-more.png" alt="SP 図鑑。主CTAとその他メニュー開">
+          <figcaption>sp-dex-more.png — 主CTA + 「その他」</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="mypokedex/pc-dex.png" alt="PC 図鑑操作列">
+          <figcaption>pc-dex.png — PC でも主CTA先頭</figcaption>
+        </figure>
+      </div>
+    </article>
+
+<!-- O2 resolved -->
+    <article class="issue" id="mp-o2">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span> O2 — SP 操作列の高いCTAと誤タップ（案A 採用）
+      </h2>
+      <p class="label">画面: SP 図鑑・パーティの操作列（表全体の窮屈さは <a href="#mp-h2">H2</a>）</p>
+      <p><strong>採用:</strong> 案A — 短いCTAラベル（2026-08-07 実装）。</p>
+      <p><strong>再診断:</strong> 2026-08-07。ユーザー判定により <strong>RESOLVED</strong>。</p>
+
+      <h3>制約（目的）</h3>
+      <p>
+        <a href="#mp-h2">H2</a> と同様、この画面の目的は<strong>ポケモンのデータを比較すること</strong>である。
+        そのため<strong>表形式は最低限維持する</strong>。
+        操作列の改善も<strong>表構造の内側</strong>で行い、カード化など表を捨てる案は<strong>不採用</strong>。
+      </p>
+
+      <h3>事象（改善前）</h3>
+      <p>主CTAラベルが多行折り返しし、行高が極端に増える。隣接操作と干渉しやすい。</p>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sp-partybox.png" alt="SP パーティの高い戻すボタン（改善前）">
+          <figcaption>改善前 sp-partybox.png — 「ボックスへ戻す」の縦伸び</figcaption>
+        </figure>
+        <figure>
+          <img src="mypokedex/sp-dex.png" alt="SP 図鑑の高い主CTA（改善前）">
+          <figcaption>改善前 sp-dex.png — 操作列ラベルの折り返し</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>高いボタンが隣接操作と干渉し、誤タップしやすい</li>
+        <li>長文ラベルが折り返し前提になり、操作の意味が読み取りにくい</li>
+        <li>1操作あたりの縦占有が大きく、一覧効率をさらに落とす</li>
+      </ul>
+
+      <h3>実施した改善</h3>
+      <p>
+        案Aの短ラベルを製品に反映。
+        表示＝登録＋追加／BOX追加／図鑑登録・解除／HOME登録・解除／その他／ボックスへ／パーティ追加／ボックスから削除／進化。
+        確認ダイアログと aria/title は従来の詳細文言を維持。
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="mypokedex/sp-dex-o2-after.png" alt="SP 図鑑短ラベル後">
+          <figcaption>改善後 sp-dex-o2-after.png — 短ラベル反映</figcaption>
+        </figure>
+        <figure>
+          <img src="mypokedex/sp-partybox-o2-after.png" alt="SP パーティ短ラベル後">
+          <figcaption>改善後 sp-partybox-o2-after.png — 「ボックスへ」短縮</figcaption>
+        </figure>
+      </div>
+      <p>関連の表密度・スキャン性は <a href="#mp-h2">H2</a>（RESOLVED）で扱う。</p>
+
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 短いCTA＋最小タップ高 <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/o2-a.html">samples/o2-a.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-o2-a.png" alt="O2 案A サンプル">
+            <figcaption>sample-o2-a.png — 表維持・短縮ラベル</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 操作列内で主CTA全幅（不採用）</h4>
+          <p class="sample-link">サンプル: <a href="mypokedex/samples/o2-b.html">samples/o2-b.html</a></p>
+          <figure>
+            <img src="mypokedex/sample-o2-b.png" alt="O2 案B サンプル">
+            <figcaption>sample-o2-b.png</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+    </section>
+
+    <section id="gallery">
+      <h2 style="font-size:1.2rem;margin-top:2rem;">全スクショ（現状・改善前）</h2>
+      <div class="shots">
+        <figure><img src="mypokedex/sp-partybox.png" alt=""><figcaption>sp-partybox.png</figcaption></figure>
+        <figure><img src="mypokedex/sp-partybox-suggest.png" alt=""><figcaption>sp-partybox-suggest.png</figcaption></figure>
+        <figure><img src="mypokedex/sp-dex.png" alt=""><figcaption>sp-dex.png</figcaption></figure>
+        <figure><img src="mypokedex/sp-dex-more.png" alt=""><figcaption>sp-dex-more.png</figcaption></figure>
+        <figure><img src="mypokedex/sp-drawer.png" alt=""><figcaption>sp-drawer.png</figcaption></figure>
+        <figure class="pc"><img src="mypokedex/pc-partybox.png" alt=""><figcaption>pc-partybox.png</figcaption></figure>
+        <figure class="pc"><img src="mypokedex/pc-dex.png" alt=""><figcaption>pc-dex.png</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/ft-pc-lure-masters-plug-filter-minnow.png" alt=""><figcaption>ft-pc-lure-masters-plug-filter-minnow.png（FT-M5/M6）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/ft-pc-lure-masters-m5-after.png" alt=""><figcaption>ft-pc-lure-masters-m5-after.png（FT-M5 アフター）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/ft-pc-lure-masters-plug-filter-empty.png" alt=""><figcaption>ft-pc-lure-masters-plug-filter-empty.png（FT-M7）</figcaption></figure>
+      </div>
+      <h2 style="font-size:1.2rem;margin-top:2rem;">再診断（改善後）</h2>
+      <div class="shots">
+        <figure><img src="mypokedex/sp-partybox-after.png" alt=""><figcaption>sp-partybox-after.png（H1）</figcaption></figure>
+        <figure><img src="mypokedex/sp-dex-after.png" alt=""><figcaption>sp-dex-after.png（H1）</figcaption></figure>
+        <figure><img src="mypokedex/sp-dex-o2-after.png" alt=""><figcaption>sp-dex-o2-after.png（O2）</figcaption></figure>
+        <figure><img src="mypokedex/sp-partybox-o2-after.png" alt=""><figcaption>sp-partybox-o2-after.png（O2）</figcaption></figure>
+        <figure><img src="mypokedex/sp-dex-h2-after.png" alt=""><figcaption>sp-dex-h2-after.png（H2・合計非表示）</figcaption></figure>
+        <figure><img src="mypokedex/sp-dex-h2-evo-after.png" alt=""><figcaption>sp-dex-h2-evo-after.png（H2・進化画像非表示）</figcaption></figure>
+        <figure class="pc"><img src="mypokedex/pc-partybox-after.png" alt=""><figcaption>pc-partybox-after.png（H3）</figcaption></figure>
+      </div>
+      <h2 style="font-size:1.2rem;margin-top:2rem;">改善サンプル画像</h2>
+      <div class="shots">
+        <figure><img src="mypokedex/sample-h1-a.png" alt=""><figcaption>sample-h1-a.png</figcaption></figure>
+        <figure><img src="mypokedex/sample-h1-b.png" alt=""><figcaption>sample-h1-b.png</figcaption></figure>
+        <figure><img src="mypokedex/sample-h2-a.png" alt=""><figcaption>sample-h2-a.png</figcaption></figure>
+        <figure><img src="mypokedex/sample-h2-b.png" alt=""><figcaption>sample-h2-b.png</figcaption></figure>
+        <figure><img src="mypokedex/sample-o2-a.png" alt=""><figcaption>sample-o2-a.png</figcaption></figure>
+        <figure><img src="mypokedex/sample-o2-b.png" alt=""><figcaption>sample-o2-b.png</figcaption></figure>
+        <figure class="wide"><img src="mypokedex/sample-h3-a.png" alt=""><figcaption>sample-h3-a.png</figcaption></figure>
+        <figure class="wide"><img src="mypokedex/sample-h3-b.png" alt=""><figcaption>sample-h3-b.png</figcaption></figure>
+        <figure><img src="mypokedex/sample-o3-a.png" alt=""><figcaption>sample-o3-a.png</figcaption></figure>
+        <figure><img src="mypokedex/sample-drawer-a.png" alt=""><figcaption>sample-drawer-a.png</figcaption></figure>
+        <figure><img src="mypokedex/sample-filter-a.png" alt=""><figcaption>sample-filter-a.png</figcaption></figure>
+        <figure><img src="mypokedex/sample-onboard-a.png" alt=""><figcaption>sample-onboard-a.png</figcaption></figure>
+        <figure><img src="mypokedex/sample-coverage-a.png" alt=""><figcaption>sample-coverage-a.png</figcaption></figure>
+        <figure><img src="fishtrack/sample-ft-m5-a.png" alt=""><figcaption>sample-ft-m5-a.png（FT-M5）</figcaption></figure>
+        <figure><img src="fishtrack/sample-ft-m6-a.png" alt=""><figcaption>sample-ft-m6-a.png（FT-M6）</figcaption></figure>
+        <figure><img src="fishtrack/sample-ft-m7-a.png" alt=""><figcaption>sample-ft-m7-a.png（FT-M7）</figcaption></figure>
+      </div>
+    </section>
+  </main></main>
+
+  <footer>
+    <p>生成: Cursor エージェント（ローカルブラウザ検証） / 配置: dev-workspace/ui-audit/（FishTrack / MyPokedex 共有・常に最新化）</p>
+    <p>正本 SKILL: ui-audit-html-report（dev-workspace/ui-audit 共有。両製品の<strong>全画面</strong>を同時診断。未解決／解決済み分離。実装後は再診断してから RESOLVED）。Canvas / temp / Obsidian / 日付フォルダは使わない。</p>
+  </footer>
+</body>
+</html>

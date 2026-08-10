@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>オンボーディング案A</title>
+  <!-- 製品 CSS 必須。トークン手書きの近似モック禁止。改善差分のみ下の style -->
+  
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+
+  <style>
+    /* サンプル撮影用: 固定ヘッダーを枠内で見せる */
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    body { padding-top: 0 !important; }
+    .fixed-header { position: relative !important; }
+    .sample-frame { width: 390px; overflow: hidden; background: #fff; }
+    .sample-badge {
+      position: absolute; z-index: 2000; top: 4px; right: 4px;
+      background: #e6f0ff; color: #2255a2; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a9c4f5;
+    }
+    #onboardingCard{display:none}
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">案A（製品CSS）</span>
+    <header class="site-header fixed-header">
+        <nav class="site-nav">
+        <div class="left">
+            
+            
+            
+            <button type="button" class="hamburger" id="siteDrawerToggle" aria-label="メニューを開く" aria-controls="siteDrawer" aria-expanded="false" data-drawer-toggle="">
+                <span class="hamburger-icon" aria-hidden="true">☰</span>
+            </button>
+            
+            
+            <a href="http://127.0.0.1:5002/RGBP/partyBox" class="site-logo-link" aria-label="MyPokedex トップ">
+                <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+            </a>
+            
+            
+            
+            
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+            
+            <span class="site-current-game" data-current-game-key="RGBP" aria-label="選択中のゲーム: 赤・緑・青・ピカチュウ">赤・緑・青・ピカチュウ</span>
+            
+            <a href="http://127.0.0.1:5002/RGBP/partyBox" data-nav-party-box="">パーティ＆ボックス</a>
+            <a href="http://127.0.0.1:5002/RGBP/dex" class="tab-gap" data-nav-dex="">図鑑</a>
+            
+            
+        </div>
+        <div class="right">
+            
+            <a href="http://127.0.0.1:5002/settings/game" class="tab-gap">設定</a>
+            
+            <span class="user-name">ai-user</span>
+            <form method="post" action="http://127.0.0.1:5002/auth/logout" class="jsRegForm">
+                <input type="hidden" name="csrf_token" value="Ijk5OGE2NDRmZjQ1NTg0OWI1Yjk5NTY5MTVjNjE5YTc0YmEwMWFjMzIi.anVE-g.U5mKTktgl3VMM3kVXaHBGceXU2c">
+                <button class="linklike" title="ログアウト" aria-label="ログアウト">ログアウト</button>
+            </form>
+            
+        </div>
+        </nav>
+    </header><main class="container">
+<div class="toast-area" style="position:static">
+  <div class="toast success">使い方ガイドは完了条件を満たしたため非表示（再表示は設定から）</div>
+</div>
+<h2>パーティー <span class="pkBadge">1/6</span></h2>
+</main>
+  </div>
+</body>
+</html>

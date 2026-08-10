@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>MP-H4 案A — 図鑑操作列の拡幅＋コンパクトボタン</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    body { padding-top: 0 !important; }
+    .sample-frame { width: 1100px; padding: 16px; background: #fff; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .table-scroll { overflow-x: auto; max-width: 1068px; border: 1px solid #d8dde8; }
+    /* 変更前: 製品既定 min-width 140px / 17%（不足再現） */
+    .sample-before .pkTable .pk-col--actions {
+      width: 17%;
+      min-width: 140px;
+    }
+    .sample-before td.pk-col--actions {
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    /* 変更後: 拡幅＋コンパクト */
+    .sample-after .pkTable .pk-col--actions {
+      width: 22%;
+      min-width: 260px;
+    }
+    .sample-after td.pk-col--actions {
+      white-space: normal;
+    }
+    .sample-after td.pk-col--actions .btn,
+    .sample-after td.pk-col--actions button.btn {
+      padding: 0.2rem 0.45rem;
+      font-size: 0.75rem;
+      line-height: 1.2;
+      margin-right: 0.25rem;
+      margin-bottom: 0.2rem;
+    }
+    .hl-actions {
+      outline: 2px solid #c62828;
+      outline-offset: -2px;
+      background: #ffebee !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用後の想定）: PC 図鑑の操作列（<code>.pk-col--actions</code>）を拡幅し、
+      ボタンをコンパクト化して「登録＋追加／その他／HOME登録」等が枠内に収まるようにする。表形式は維持。
+    </p>
+    <p class="sample-block-label">変更前（現状・操作列不足）</p>
+    <div class="sample-before">
+      <div class="table-scroll">
+        <table class="pkTable">
+          <thead>
+            <tr>
+              <th class="pk-col pk-col--regional-dex">#</th>
+              <th class="pk-col pk-col--name">名前</th>
+              <th class="pk-col pk-col--type">タイプ</th>
+              <th class="pk-col pk-col--total">合計</th>
+              <th class="pk-col pk-col--actions hl-actions">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-odd">
+              <td class="pk-col pk-col--regional-dex">001</td>
+              <td class="pk-col pk-col--name">フシギダネ</td>
+              <td class="pk-col pk-col--type">くさ／どく</td>
+              <td class="pk-col pk-col--total">318</td>
+              <td class="pk-col pk-col--actions hl-actions">
+                <button type="button" class="btn btn--primary btn--xs">登録＋追加</button>
+                <button type="button" class="btn btn--ghost btn--xs">その他</button>
+                <button type="button" class="btn btn--ghost btn--xs">HOME登録</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="sample-block-label">変更後（操作列拡幅＋コンパクトボタン）</p>
+    <div class="sample-after">
+      <div class="table-scroll">
+        <table class="pkTable">
+          <thead>
+            <tr>
+              <th class="pk-col pk-col--regional-dex">#</th>
+              <th class="pk-col pk-col--name">名前</th>
+              <th class="pk-col pk-col--type">タイプ</th>
+              <th class="pk-col pk-col--total">合計</th>
+              <th class="pk-col pk-col--actions hl-actions">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="is-odd">
+              <td class="pk-col pk-col--regional-dex">001</td>
+              <td class="pk-col pk-col--name">フシギダネ</td>
+              <td class="pk-col pk-col--type">くさ／どく</td>
+              <td class="pk-col pk-col--total">318</td>
+              <td class="pk-col pk-col--actions hl-actions">
+                <button type="button" class="btn btn--primary btn--xs">登録＋追加</button>
+                <button type="button" class="btn btn--ghost btn--xs">その他</button>
+                <button type="button" class="btn btn--ghost btn--xs">HOME登録</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

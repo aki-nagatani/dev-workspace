@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>H3 案B — 折りたたみ見出し</title>
+  <!-- 製品 CSS 必須。トークン手書きの近似モック禁止。改善差分のみ下の style -->
+  
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+
+  <style>
+    /* サンプル撮影用: 固定ヘッダーを枠内で見せる */
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    body { padding-top: 0 !important; }
+    .fixed-header { position: relative !important; }
+    .sample-frame { width: 390px; overflow: hidden; background: #fff; }
+    .sample-badge {
+      position: absolute; z-index: 2000; top: 4px; right: 4px;
+      background: #e6f0ff; color: #2255a2; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a9c4f5;
+    }
+    
+.sample-empty-box details { margin-top: 8px; }
+
+.sample-empty-message { display: none; }
+.sample-empty-box details { border: 1px solid var(--gray-200,#e0e0e0); border-radius: 6px; padding: 8px 12px; }
+
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">案B（製品CSS）</span>
+    <header class="site-header fixed-header">
+        <nav class="site-nav">
+        <div class="left">
+            
+            
+            
+            <button type="button" class="hamburger" id="siteDrawerToggle" aria-label="メニューを開く" aria-controls="siteDrawer" aria-expanded="false" data-drawer-toggle="">
+                <span class="hamburger-icon" aria-hidden="true">☰</span>
+            </button>
+            
+            
+            <a href="http://127.0.0.1:5002/RGBP/partyBox" class="site-logo-link" aria-label="MyPokedex トップ">
+                <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+            </a>
+            
+            
+            
+            
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+                
+            
+            
+            <span class="site-current-game" data-current-game-key="RGBP" aria-label="選択中のゲーム: 赤・緑・青・ピカチュウ">赤・緑・青・ピカチュウ</span>
+            
+            <a href="http://127.0.0.1:5002/RGBP/partyBox" data-nav-party-box="">パーティ＆ボックス</a>
+            <a href="http://127.0.0.1:5002/RGBP/dex" class="tab-gap" data-nav-dex="">図鑑</a>
+            
+            
+        </div>
+        <div class="right">
+            
+            <a href="http://127.0.0.1:5002/settings/game" class="tab-gap">設定</a>
+            
+            <span class="user-name">ai-user</span>
+            <form method="post" action="http://127.0.0.1:5002/auth/logout" class="jsRegForm">
+                <input type="hidden" name="csrf_token" value="Ijk5OGE2NDRmZjQ1NTg0OWI1Yjk5NTY5MTVjNjE5YTc0YmEwMWFjMzIi.anVE-g.U5mKTktgl3VMM3kVXaHBGceXU2c">
+                <button class="linklike" title="ログアウト" aria-label="ログアウト">ログアウト</button>
+            </form>
+            
+        </div>
+        </nav>
+    </header><main class="container"><div class="sample-empty-box"><details open><summary>ボックス 0（空・列見出しを表示）</summary><table class="pkTable"><thead>
+        <tr>
+
+  
+    
+    
+  
+  <th class="pk-col pk-col--regional-dex" aria-sort="none">
+    
+      <span class="th-label">地方図鑑 No</span>
+    
+  </th>
+
+
+
+
+  
+  
+
+<th class="pk-col pk-col--name" aria-sort="none">
+  
+    <span class="th-label">名称</span>
+  
+</th>
+<th class="pk-col pk-col--type">タイプ</th>
+<th class="pk-col pk-col--stats">種族値 (HP/攻/防/特攻/特防/速)</th>
+
+
+  
+  
+
+<th class="pk-col pk-col--total" aria-sort="none">
+  
+    <span class="th-label">合計</span>
+  
+</th>
+
+  
+  
+    
+    
+  
+  <th class="pk-col pk-col--evolution" aria-sort="none">
+    
+      <span class="th-label">進化先（条件）</span>
+    
+  </th>
+
+<th class="pk-col pk-col--actions">操作</th>
+        </tr>
+    </thead><tbody></tbody></table></details></div></main>
+  </div>
+</body>
+</html>

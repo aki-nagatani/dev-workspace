@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>カバレッジ案A（変更前後・密度維持）</title>
+  <!-- 製品 CSS 必須。改善差分のみ下の style -->
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+  <style>
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    body { padding-top: 0 !important; }
+    .sample-frame { width: 390px; overflow: hidden; background: #fff; padding: 8px 10px 16px; }
+    .sample-badge {
+      position: absolute; z-index: 2000; top: 4px; right: 4px;
+      background: #e6f0ff; color: #2255a2; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a9c4f5;
+    }
+    .sample-note {
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 1.45;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 6px;
+    }
+    .sample-block {
+      margin: 0 0 12px;
+      padding: 8px;
+      border: 1px dashed #c5cae9;
+      border-radius: 8px;
+    }
+    .sample-block h3 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      color: #37474f;
+    }
+    .sample-meta {
+      margin: 4px 0 0;
+      font-size: 11px;
+      color: #607d8b;
+    }
+    /*
+      実画面は partyBox.html の inline:
+      style="display: flex; flex-wrap: wrap; gap: 6px;"
+      （app.css の grid 定義は inline に負けて効いていない）
+      案A: ボタン風だけ外し、flex-wrap＋内容幅ピルの密度は維持。
+    */
+    .pkCoverage--static .pkBadge {
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      cursor: default;
+      pointer-events: none;
+    }
+    .pkCoverage--static .pkBadge.is-missing {
+      opacity: 0.55;
+      color: #6b7280;
+    }
+    .pkCoverage--static .pkBadge:not(.is-missing) {
+      font-weight: 600;
+      color: #1f2937;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">案A（flex密度維持）</span>
+    <p class="sample-note">
+      対象: <code>.pkCoverage</code>。<br>
+      実レイアウトは<strong>4列グリッドではない</strong>。
+      テンプレ inline の <code>display:flex; flex-wrap</code> で、
+      内容幅のピルが折り返す（SP ではおおよそ 5〜6 個／行）。
+      案Aは枠だけ外し、この折り返し密度を落とさない。
+    </p>
+
+    <div class="sample-block" aria-label="変更前">
+      <h3>変更前（ピル＝タップできそう）</h3>
+      <section aria-label="タイプカバレッジ" class="pkCoverage" style="margin: 8px 0 12px 0;">
+        <div class="pkCoverage__row" style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <span class="pkBadge is-missing" title="ノーマル：—">ノーマル：—</span>
+          <span class="pkBadge is-missing" title="ほのお：—">ほのお：—</span>
+          <span class="pkBadge" title="みず：1">みず：1</span>
+          <span class="pkBadge" title="くさ：1">くさ：1</span>
+          <span class="pkBadge is-missing" title="でんき：—">でんき：—</span>
+          <span class="pkBadge is-missing" title="こおり：—">こおり：—</span>
+          <span class="pkBadge is-missing" title="かくとう：—">かくとう：—</span>
+          <span class="pkBadge is-missing" title="どく：—">どく：—</span>
+          <span class="pkBadge" title="じめん：1">じめん：1</span>
+          <span class="pkBadge is-missing" title="ひこう：—">ひこう：—</span>
+          <span class="pkBadge is-missing" title="エスパー：—">エスパー：—</span>
+          <span class="pkBadge is-missing" title="むし：—">むし：—</span>
+          <span class="pkBadge" title="いわ：1">いわ：1</span>
+          <span class="pkBadge is-missing" title="ゴースト：—">ゴースト：—</span>
+          <span class="pkBadge is-missing" title="ドラゴン：—">ドラゴン：—</span>
+          <span class="pkBadge is-missing" title="あく：—">あく：—</span>
+          <span class="pkBadge is-missing" title="はがね：—">はがね：—</span>
+          <span class="pkBadge" title="フェアリー：1">フェアリー：1</span>
+        </div>
+      </section>
+      <p class="sample-meta">実画面どおり flex-wrap（内容幅で折り返し）</p>
+    </div>
+
+    <div class="sample-block" aria-label="変更後">
+      <h3>変更後（案A・枠なし／同じ flex）</h3>
+      <section aria-label="タイプカバレッジ（表示のみ）" class="pkCoverage pkCoverage--static" style="margin: 8px 0 12px 0;">
+        <div class="pkCoverage__row" role="list" style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <span class="pkBadge is-missing" role="listitem" title="ノーマル：—">ノーマル：—</span>
+          <span class="pkBadge is-missing" role="listitem" title="ほのお：—">ほのお：—</span>
+          <span class="pkBadge" role="listitem" title="みず：1">みず：1</span>
+          <span class="pkBadge" role="listitem" title="くさ：1">くさ：1</span>
+          <span class="pkBadge is-missing" role="listitem" title="でんき：—">でんき：—</span>
+          <span class="pkBadge is-missing" role="listitem" title="こおり：—">こおり：—</span>
+          <span class="pkBadge is-missing" role="listitem" title="かくとう：—">かくとう：—</span>
+          <span class="pkBadge is-missing" role="listitem" title="どく：—">どく：—</span>
+          <span class="pkBadge" role="listitem" title="じめん：1">じめん：1</span>
+          <span class="pkBadge is-missing" role="listitem" title="ひこう：—">ひこう：—</span>
+          <span class="pkBadge is-missing" role="listitem" title="エスパー：—">エスパー：—</span>
+          <span class="pkBadge is-missing" role="listitem" title="むし：—">むし：—</span>
+          <span class="pkBadge" role="listitem" title="いわ：1">いわ：1</span>
+          <span class="pkBadge is-missing" role="listitem" title="ゴースト：—">ゴースト：—</span>
+          <span class="pkBadge is-missing" role="listitem" title="ドラゴン：—">ドラゴン：—</span>
+          <span class="pkBadge is-missing" role="listitem" title="あく：—">あく：—</span>
+          <span class="pkBadge is-missing" role="listitem" title="はがね：—">はがね：—</span>
+          <span class="pkBadge" role="listitem" title="フェアリー：1">フェアリー：1</span>
+        </div>
+      </section>
+      <p class="sample-meta">同じ flex-wrap。変わるのは枠・背景・角丸のみ</p>
+    </div>
+  </div>
+</body>
+</html>

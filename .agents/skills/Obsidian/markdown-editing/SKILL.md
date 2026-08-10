@@ -181,7 +181,7 @@ Obsidian vault・CursorLog・仕様書など**日本語を含む `.md`** は **B
 
 **ドメイン別の補足**（一般ルールに加えて守る）:
 
-- **FishTrack 突合ノート**（`ai-spec-notes`）: データ正本として装飾を抑える。行別表・混同禁止の書き方などは **`spec-import-make-csv` SKILL「Markdown 装飾」**。
+- **FishTrack 突合ノート**（`ai-spec-notes`）: データ正本として装飾を抑える。行別表・混同禁止の書き方などは **`spec-import-notes` SKILL「Markdown 装飾」**。
 - **照合レポート**（**`<系列名>_ai_report.md`**）: レポート構成・§3 記号の使い方は **`ai-spec-check-report` SKILL §9**。
 
 ## 更新履歴

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>ドロワー案A</title>
+  <!-- 製品 CSS 必須。トークン手書きの近似モック禁止。改善差分のみ下の style -->
+  
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+<link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+
+  <style>
+    /* サンプル撮影用: 固定ヘッダーを枠内で見せる */
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    body { padding-top: 0 !important; }
+    .fixed-header { position: relative !important; }
+    .sample-frame { width: 390px; overflow: hidden; background: #fff; }
+    .sample-badge {
+      position: absolute; z-index: 2000; top: 4px; right: 4px;
+      background: #e6f0ff; color: #2255a2; font-size: 11px;
+      padding: 2px 8px; border-radius: 999px; border: 1px solid #a9c4f5;
+    }
+    
+.site-drawer { position: relative !important; transform: none !important; height: auto; box-shadow: none; width: 280px; }
+.drawer-game:not(.is-current-game) .drawer-features { display: none; }
+.drawer-game:not(.is-current-game)::after { content: ''; }
+/* 改善: 非カレントは折りたたみ表示風 */
+.drawer-game:not(.is-current-game) > .drawer-game-link { opacity: 0.85; }
+
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <span class="sample-badge">案A（製品CSS）</span>
+    <nav id="siteDrawer" class="site-drawer is-open" aria-hidden="false" aria-label="ナビゲーション" data-drawer="">
+        <ul class="drawer-tree">
+            
+            <li class="drawer-game is-current-game">
+                <a class="drawer-game-link" href="http://127.0.0.1:5002/RGBP/partyBox" data-drawer-game="RGBP" aria-current="page">
+                    赤・緑・青・ピカチュウ
+                </a>
+                <ul class="drawer-features">
+                    <li>
+                        <a href="http://127.0.0.1:5002/RGBP/partyBox">パーティ＆ボックス</a>
+                    </li>
+                    <li>
+                        <a href="http://127.0.0.1:5002/RGBP/dex">図鑑</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="drawer-game">
+                <a class="drawer-game-link" href="/GSC/partyBox" data-drawer-game="GSC">
+                    金・銀・クリスタル
+                </a>
+                <ul class="drawer-features">
+                    <li>
+                        <a href="/GSC/partyBox">パーティ＆ボックス</a>
+                    </li>
+                    <li>
+                        <a href="/GSC/dex">図鑑</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="drawer-game">
+                <a class="drawer-game-link" href="/FRLG/partyBox" data-drawer-game="FRLG">
+                    ファイアレッド・リーフグリーン
+                </a>
+                <ul class="drawer-features">
+                    <li>
+                        <a href="/FRLG/partyBox">パーティ＆ボックス</a>
+                    </li>
+                    <li>
+                        <a href="/FRLG/dex">図鑑</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="drawer-game">
+                <a class="drawer-game-link" href="/SWSH/partyBox" data-drawer-game="SWSH">
+                    ソード・シールド
+                </a>
+                <ul class="drawer-features">
+                    <li>
+                        <a href="/SWSH/partyBox">パーティ＆ボックス</a>
+                    </li>
+                    <li>
+                        <a href="/SWSH/dex">図鑑</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="drawer-game">
+                <a class="drawer-game-link" href="/LA/partyBox" data-drawer-game="LA">
+                    レジェンズ アルセウス
+                </a>
+                <ul class="drawer-features">
+                    <li>
+                        <a href="/LA/partyBox">パーティ＆ボックス</a>
+                    </li>
+                    <li>
+                        <a href="/LA/dex">図鑑</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="drawer-game">
+                <a class="drawer-game-link" href="/SV/partyBox" data-drawer-game="SV">
+                    スカーレット・バイオレット
+                </a>
+                <ul class="drawer-features">
+                    <li>
+                        <a href="/SV/partyBox">パーティ＆ボックス</a>
+                    </li>
+                    <li>
+                        <a href="/SV/dex">図鑑</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="drawer-game">
+                <a class="drawer-game-link" href="/Z-A/partyBox" data-drawer-game="Z-A">
+                    レジェンズ Z-A
+                </a>
+                <ul class="drawer-features">
+                    <li>
+                        <a href="/Z-A/partyBox">パーティ＆ボックス</a>
+                    </li>
+                    <li>
+                        <a href="/Z-A/dex">図鑑</a>
+                    </li>
+                </ul>
+            </li>
+            
+            <li class="drawer-national">
+                <a href="/national-dex" data-drawer-national-dex="">Pokémon HOME</a>
+            </li>
+        </ul>
+    </nav>
+  </div>
+</body>
+</html>

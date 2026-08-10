@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 置換: {PRODUCT} UI 問題点レポート（{YYYY-MM-DD}） -->
+  <title>{PRODUCT} UI 問題点レポート（{YYYY-MM-DD}）</title>
+  <style>
+    /*
+      ui-audit-html-report 正テンプレ CSS。
+      変更時は本ファイルを更新し、**dev-workspace/ui-audit/index.html** へ反映する。
+      製品リポ直下の ui-audit/ は正本にしない（FishTrack / MyPokedex 共有）。
+    */
+    :root {
+      --bg: #f5f6f8;
+      --panel: #ffffff;
+      --text: #1a1d24;
+      --muted: #5c6578;
+      --high: #c62828;
+      --med: #b26a00;
+      --low: #1565c0;
+      --done: #2e7d32;
+      --border: #d8dde8;
+      --link: #1565c0;
+      --rec: #e8f5e9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    header {
+      padding: 1.5rem clamp(1rem, 2.5vw, 2.5rem) 1rem;
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+    }
+    header h1 { margin: 0 0 0.4rem; font-size: 1.45rem; }
+    header p { margin: 0.25rem 0; color: var(--muted); font-size: 0.95rem; }
+    nav.toc {
+      padding: 1rem clamp(1rem, 2.5vw, 2.5rem);
+      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+    }
+    nav.toc a { color: var(--link); margin-right: 0.85rem; text-decoration: none; }
+    nav.toc a:hover { text-decoration: underline; }
+    /* ブラウザ幅に追従（狭い固定 max-width 禁止） */
+    header,
+    nav.toc,
+    main,
+    footer {
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box;
+    }
+    main {
+      margin: 0;
+      padding: 1rem clamp(1rem, 2.5vw, 2.5rem) 3rem;
+    }
+    .meta {
+      display: grid;
+      gap: 0.35rem;
+      padding: 0.9rem 1rem;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-size: 0.92rem;
+    }
+    .issue {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.1rem 1.2rem;
+      margin: 1.25rem 0;
+    }
+    .issue h2 {
+      margin: 0 0 0.55rem;
+      font-size: 1.15rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+    .issue h3 {
+      margin: 1.1rem 0 0.45rem;
+      font-size: 1rem;
+      color: #333;
+      border-left: 3px solid var(--link);
+      padding-left: 0.5rem;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      vertical-align: middle;
+    }
+    .sev-high { background: #ffebee; color: var(--high); }
+    .sev-med { background: #fff8e1; color: var(--med); }
+    .sev-low { background: #e3f2fd; color: var(--low); }
+    .status-open { background: #fce4ec; color: #ad1457; }
+    .status-resolved { background: #e8f5e9; color: var(--done); }
+    .issue p { margin: 0.45rem 0; }
+    .issue .label { color: var(--muted); font-size: 0.85rem; }
+    .issue ul { margin: 0.35rem 0 0.5rem 1.2rem; padding: 0; }
+    figure {
+      margin: 0.85rem 0 0.35rem;
+      padding: 0;
+      min-width: 0;
+    }
+    /* スクショは証拠の縮小表示（原寸拡大禁止） */
+    figure img {
+      display: block;
+      width: auto;
+      max-width: min(100%, 360px);
+      max-height: 480px;
+      height: auto;
+      object-fit: contain;
+      object-position: top left;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+    figure.pc img,
+    figure.wide img {
+      max-width: min(100%, 880px);
+      max-height: 420px;
+    }
+    figcaption {
+      margin-top: 0.4rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    .shots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .shots > figure {
+      flex: 0 1 auto;
+      margin: 0;
+      max-width: 100%;
+    }
+    .shots > figure.pc,
+    .shots > figure.wide {
+      flex: 1 1 100%;
+    }
+    .options {
+      display: grid;
+      gap: 1rem;
+      margin-top: 0.75rem;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 900px) {
+      .options.two { grid-template-columns: 1fr 1fr; }
+    }
+    .option {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 0.95rem;
+      background: #fafbfd;
+      min-width: 0;
+    }
+    .option figure,
+    .option figure img {
+      width: auto;
+      max-width: min(100%, 360px);
+      max-height: 400px;
+    }
+    .option.recommended { background: var(--rec); border-color: #a5d6a7; }
+    .option.hold { background: #fff8e1; border-color: #ffe082; }
+    .option h4 { margin: 0 0 0.4rem; font-size: 0.98rem; }
+    .option .rec-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--done);
+      background: #c8e6c9;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      margin-left: 0.35rem;
+    }
+    .option .hold-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #ef6c00;
+      background: #ffe0b2;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      margin-left: 0.35rem;
+    }
+    .where {
+      margin: 0.55rem 0 0.75rem;
+      padding: 0.65rem 0.8rem;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 8px;
+      font-size: 0.92rem;
+    }
+    .where ul { margin: 0.35rem 0 0; padding-left: 1.2rem; }
+    .diff-list {
+      margin: 0.4rem 0 0.75rem;
+      padding-left: 1.2rem;
+      font-size: 0.92rem;
+    }
+    table.compare {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 0.6rem 0 0.4rem;
+    }
+    table.compare th,
+    table.compare td {
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.55rem;
+      text-align: left;
+      vertical-align: top;
+      background: #fff;
+    }
+    table.compare th { background: #f0f3f8; }
+    .sample-link { font-size: 0.85rem; }
+    .sample-link a { color: var(--link); }
+    nav.toc .toc-group {
+      display: block;
+      margin: 0.35rem 0 0.15rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    nav.toc .toc-row { margin: 0.15rem 0 0.55rem; }
+    .section-title {
+      margin: 2rem 0 0.5rem;
+      font-size: 1.25rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 2px solid var(--border);
+    }
+    #open-issues .section-title { border-bottom-color: #ad1457; }
+    #resolved-issues .section-title { border-bottom-color: var(--done); }
+    .section-lead {
+      margin: 0 0 0.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    footer {
+      margin: 0;
+      padding: 0 clamp(1rem, 2.5vw, 2.5rem) 2rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    /* テンプレ説明（成果物では削除可） */
+    .template-note {
+      margin: 1rem 0;
+      padding: 0.75rem 1rem;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{PRODUCT} UI 問題点レポート</h1>
+    <p>ローカル Docker（{BASE_URL}）／アカウント: {AI_ACCOUNT}</p>
+    <p>ビューポート: SP {SP_VP} · PC {PC_VP} · 取得日: {YYYY-MM-DD}（JST）</p>
+    <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
+    <p>改善サンプルは現行プロダクト（CSS・ロゴ・コンポーネント）をそのまま使い、改善箇所だけを差分修正する。近似モック禁止。</p>
+  </header>
+
+  <nav class="toc" aria-label="目次">
+    <a href="#summary">サマリー</a>
+    <a href="#open-issues">未解決</a>
+    <a href="#resolved-issues">解決済み</a>
+    <a href="#gallery">ギャラリー</a>
+    <span class="toc-group">未解決</span>
+    <div class="toc-row">
+      <a href="#issue-id">ISSUE_ID</a>
+      <!-- OPEN が増えたらここに追加 -->
+    </div>
+    <span class="toc-group">解決済み</span>
+    <div class="toc-row">
+      <a href="#resolved-id">RESOLVED_ID</a>
+      <!-- RESOLVED が増えたらここに追加 -->
+    </div>
+  </nav>
+
+  <main>
+    <p class="template-note">
+      使い方: 本ファイルを <code>dev-workspace/ui-audit/index.html</code> へコピーし、
+      <code>{…}</code> と下の雛形を実データで置換する。CSS は原則そのまま使う。
+      <strong>正本は dev-workspace のみ</strong>（FishTrack／MyPokedex 直下の <code>ui-audit/</code> は作らない）。
+      <strong>未解決（#open-issues）と解決済み（#resolved-issues）は必ず分離</strong>する。
+      この黄色い注意枠は成果物では削除してよい。
+    </p>
+
+    <section id="summary" class="meta">
+      <div><strong>対象</strong>: MyPokedex・FishTrack の<strong>全画面</strong>（両製品同時診断）</div>
+      <div><strong>スクショ例（任意）</strong>: {SCREENS}</div>
+      <div><strong>観点</strong>: {VIEWPOINTS}</div>
+      <div><strong>成果物</strong>: 本 HTML + PNG + <code>samples/</code></div>
+      <div><strong>備考</strong>: {NOTES}</div>
+    </section>
+
+    <section id="open-issues" aria-labelledby="open-issues-title">
+      <h2 id="open-issues-title" class="section-title">未解決の課題</h2>
+      <p class="section-lead">案の選択・実装待ち。</p>
+
+    <!-- ===== OPEN（複数案）の雛形 ===== -->
+    <article class="issue" id="issue-id">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <!-- sev-med / sev-low も可 -->
+        <span class="badge status-open">OPEN</span>
+        ISSUE_ID — {TITLE}
+      </h2>
+      <p class="label">画面: {SCREEN_DETAIL}</p>
+
+      <h3>事象</h3>
+      <p>{WHAT_HAPPENED}</p>
+      <div class="shots">
+        <figure>
+          <img src="{CURRENT_SHOT}.png" alt="{ALT}">
+          <figcaption>現状 {CURRENT_SHOT}.png</figcaption>
+        </figure>
+        <!-- PC は class="pc"、横長は class="wide" -->
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>{USER_IMPACT_1}</li>
+        <li>{USER_IMPACT_2}</li>
+      </ul>
+
+      <h3>改善策（案を選択）</h3>
+      <p>{IMPROVEMENT_INTRO}</p>
+      <table class="compare">
+        <thead>
+          <tr><th>観点</th><th>案A</th><th>案B</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>違い</th>
+            <td>{DIFF_A}</td>
+            <td>{DIFF_B}</td>
+          </tr>
+          <tr>
+            <th>メリット</th>
+            <td>{PRO_A}</td>
+            <td>{PRO_B}</td>
+          </tr>
+          <tr>
+            <th>デメリット</th>
+            <td>{CON_A}</td>
+            <td>{CON_B}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>推奨:</strong> {RECOMMENDATION}</p>
+
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — {OPTION_A_TITLE} <span class="rec-tag">推奨</span></h4>
+          <p class="sample-link">サンプル: <a href="samples/{id}-a.html">samples/{id}-a.html</a></p>
+          <figure>
+            <img src="sample-{id}-a.png" alt="案A サンプル">
+            <figcaption>sample-{id}-a.png</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — {OPTION_B_TITLE}</h4>
+          <p class="sample-link">サンプル: <a href="samples/{id}-b.html">samples/{id}-b.html</a></p>
+          <figure>
+            <img src="sample-{id}-b.png" alt="案B サンプル">
+            <figcaption>sample-{id}-b.png</figcaption>
+          </figure>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== OPEN（案1つのみ）の雛形 =====
+    <article class="issue" id="issue-single">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        ID — タイトル
+      </h2>
+      <p class="label">画面: …</p>
+      <h3>事象</h3>
+      <p>…</p>
+      <div class="shots">…</div>
+      <h3>何が問題か</h3>
+      <ul><li>…</li></ul>
+      <h3>改善策</h3>
+      <p><strong>案A:</strong> …</p>
+      <div class="option recommended">
+        <h4>案A — …</h4>
+        <p class="sample-link">サンプル: <a href="samples/….html">…</a></p>
+        <figure><img src="sample-….png" alt=""><figcaption>…</figcaption></figure>
+      </div>
+    </article>
+    -->
+    </section>
+
+    <section id="resolved-issues" aria-labelledby="resolved-issues-title">
+      <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
+      <p class="section-lead">再診断済み。改善前スクショとアフターを残す。</p>
+
+    <!-- ===== RESOLVED の雛形（実装後の再診断＋アフタースクショ必須） =====
+    <article class="issue" id="resolved-id">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        ID — タイトル（再診断済み）
+      </h2>
+      <p><strong>再診断:</strong> YYYY-MM-DD 実装後スクショで解決確認。</p>
+      <h3>事象（改善前）</h3>
+      <p>…</p>
+      <div class="shots">（改善前 PNG。上書きしない）</div>
+      <h3>何が問題だったか</h3>
+      <p>…</p>
+      <h3>実施した改善</h3>
+      <p>…</p>
+      <h3>再診断（改善後）</h3>
+      <div class="shots">（{viewport}-{screen}-after.png）</div>
+    </article>
+    -->
+    </section>
+
+    <section id="gallery">
+      <h2 style="font-size:1.2rem;margin-top:2rem;">全スクショ（現状・改善前）</h2>
+      <div class="shots">
+        <!-- <figure><img src="….png" alt=""><figcaption>….png</figcaption></figure> -->
+      </div>
+      <h2 style="font-size:1.2rem;margin-top:2rem;">再診断（改善後）</h2>
+      <div class="shots">
+        <!-- <figure><img src="…-after.png" alt=""><figcaption>…-after.png</figcaption></figure> -->
+      </div>
+      <h2 style="font-size:1.2rem;margin-top:2rem;">改善サンプル画像</h2>
+      <div class="shots">
+        <!-- <figure><img src="sample-….png" alt=""><figcaption>sample-….png</figcaption></figure> -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>生成: Cursor エージェント（ローカルブラウザ検証） / 配置: <code>dev-workspace/ui-audit/</code>（常に最新化）</p>
+    <p>正本 SKILL: ui-audit-html-report（実装後は再診断してから RESOLVED）。テンプレ: report-template.html</p>
+  </footer>
+</body>
+</html>
