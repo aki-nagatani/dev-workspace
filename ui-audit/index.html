@@ -275,18 +275,9 @@
     <a href="#open-issues">未解決</a>
     <a href="#resolved-issues">解決済み</a>
     <a href="#gallery">ギャラリー</a>
-    <span class="toc-group">未解決 MyPokedex</span>
-    <div class="toc-row">
-      <a href="#mp-h4">MP-H4</a>
-    </div>
-    <span class="toc-group">未解決 FishTrack</span>
-    <div class="toc-row">
-      <a href="#ft-h5">FT-H5</a>
-      <a href="#ft-h6">FT-H6</a>
-      <a href="#ft-m8">FT-M8</a>
-    </div>
     <span class="toc-group">解決済み MyPokedex</span>
     <div class="toc-row">
+      <a href="#mp-h4">MP-H4</a>
       <a href="#mp-h1">MP-H1</a>
       <a href="#mp-h2">MP-H2</a>
       <a href="#mp-h3">MP-H3</a>
@@ -300,6 +291,9 @@
     </div>
     <span class="toc-group">解決済み FishTrack</span>
     <div class="toc-row">
+      <a href="#ft-m8">FT-M8</a>
+      <a href="#ft-h6">FT-H6</a>
+      <a href="#ft-h5">FT-H5</a>
       <a href="#ft-h1">FT-H1</a>
       <a href="#ft-h3">FT-H3</a>
       <a href="#ft-h4">FT-H4</a>
@@ -324,105 +318,200 @@
         FT-H1／H3／H4 は案A（列のカスタマイズ）を製品実装し <strong>RESOLVED</strong>（解決済み節）。
         再診で MP 退行なし。FT 釣行／フィールド等は PC 1280 で概ね収まり。
         <strong>2026-08-08 列幅診断（一般/管理者・PC1440）</strong>で OPEN 追加:
-        FT-H5／H6／M8・MP-H4（列幅不足・余白過多）。</div>
+        FT-H5／H6／M8・MP-H4（列幅不足・余白過多）。
+        <strong>2026-08-11</strong>: FT-H5 案A（シリーズ列 13.5rem＋折り返し）・
+        FT-H6 案A（技術特性チップ＋複数行）・
+        FT-M8 案A（一般保有列 5.25rem）を製品実装し <strong>RESOLVED</strong>。
+        <strong>2026-08-12</strong>: MP-H4 案A（操作列 22%／min 260px＋コンパクト）を製品実装し
+        <strong>RESOLVED</strong>。未解決の列幅診断はなし。</div>
     </section>
 
     <section id="open-issues" aria-labelledby="open-issues-title">
       <h2 id="open-issues-title" class="section-title">未解決の課題</h2>
-      <p class="section-lead">案の選択・実装待ち。
-        <strong>2026-08-08 列幅診断（一般/管理者・PC1440）</strong>で追加:
-        <a href="#ft-h5">FT-H5</a>・<a href="#ft-h6">FT-H6</a>・<a href="#ft-m8">FT-M8</a>・<a href="#mp-h4">MP-H4</a>。
-        H1／H3／H4 等は解決済み節。</p>
+      <p class="section-lead">現時点で未解決の課題はありません。
+        2026-08-08 列幅診断の OPEN（FT-H5／H6／M8・MP-H4）はすべて解決済み節へ移動済み。</p>
 
-<!-- ===== OPEN: 列幅診断 2026-08-08 ===== -->
+<!-- ===== OPEN: empty ===== -->
 
-    <article class="issue" id="ft-h5">
+    </section>
+
+    <section id="resolved-issues" aria-labelledby="resolved-issues-title">
+      <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
+      <p class="section-lead">再診断済み。改善前スクショとアフターを残す。</p>
+
+    <article class="issue" id="mp-h4">
       <h2>
         <span class="badge sev-high">HIGH</span>
-        <span class="badge status-open">OPEN</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-H5 — シリーズ sticky 列が狭すぎる
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span>
+        MP-H4 — 図鑑表の操作列(actions)が不足（案A 採用）
       </h2>
-      <p class="label">画面: PC <code>/tackle/rod-models/</code>・<code>/tackle/reel-models/</code>（一般／管理者とも同一 CSS）</p>
+      <p class="label">画面: PC MyPokedex 図鑑（RGBP）<code>/RGBP/dex/rgbp</code></p>
+      <p><strong>採用:</strong> 案A — <code>.pk-col--actions</code> を <strong>幅 22%・min-width 260px</strong>、
+        ボタン／「その他」summary をコンパクト化。表形式は維持（2026-08-12）。
+        先行の部分実装（HOME解除を「その他」へ）は維持。</p>
+      <p><strong>再診断:</strong> 2026-08-12 ローカル PC1440 —
+        th/td ≈277px・minWidth 260px・need ≈121・slack ≈ <strong>+156</strong>（不足解消）。</p>
 
       <h3>対象箇所</h3>
       <div class="where">
         <ul>
-          <li><strong>URL／画面:</strong> ロッドを探す・リールを探す（マスタ一覧表）</li>
-          <li><strong>位置:</strong> 左 sticky の「シリーズ」列（メーカーとモデルの間）</li>
+          <li><strong>URL／画面:</strong> カントー図鑑（RGBP）PC 表（他ゲーム図鑑も同一 CSS）</li>
+          <li><strong>位置:</strong> 表右端の「操作」列（登録＋追加／HOME登録／その他）</li>
           <li><strong>セレクタ／変数:</strong>
-            <code>.ft-table__sticky-col--series</code> /
-            <code>--rod-col-series: 10rem</code>（≈160px）</li>
-          <li><strong>対象外:</strong> モデル列・保有 sticky・SP カード表示</li>
+            <code>.pkTable .pk-col--actions</code>（幅 22%・min-width 260px）</li>
+          <li><strong>対象外:</strong> SP 操作列（O2 RESOLVED・縦積み維持）</li>
         </ul>
       </div>
 
-      <h3>事象</h3>
+      <h3>事象（改善前）</h3>
       <p>
-        固定幅 10rem では長い系列名が ellipsis で欠ける。
-        計測（PC1440）: rod series slack ≈ <strong>−37</strong>（need 197 / thW 160、例: 「STEEZ リアルコントロール」）、
-        reel series slack ≈ <strong>−99</strong>（need 259 / thW 160）。
+        PC1440 計測: actions slack ≈ <strong>−97</strong>（thW 157 / need ≈254、
+        例: 「登録＋追加 その他 HOME登録」）。ボタンが列幅に収まらず折り返し・窮屈になる。
       </p>
       <div class="shots">
         <figure class="pc">
-          <img src="fishtrack/pc-rod-series-tight.png" alt="ロッドマスタ シリーズ列が狭い">
-          <figcaption>pc-rod-series-tight.png — ▲ シリーズ列（赤枠）。「STEEZ リアルコ…」と欠ける</figcaption>
+          <img src="mypokedex/pc-dex-actions-tight.png" alt="図鑑操作列が不足（改善前）">
+          <figcaption>pc-dex-actions-tight.png — ▲ 改善前。操作列（赤枠）。複数 CTA が列幅不足</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="mypokedex/pc-dex-actions-after.png" alt="図鑑操作列（改善後）">
+          <figcaption>pc-dex-actions-after.png — ▲ 改善後。拡幅＋コンパクトで枠内に収まる</figcaption>
         </figure>
       </div>
 
       <h3>何が問題か</h3>
       <ul>
-        <li>系列名は識別の要。ellipsis だと同系列の見分けが難しい</li>
-        <li>sticky 固定のため横スクロールしても幅は増えず、読める幅が常に足りない</li>
+        <li>図鑑の主操作（登録・HOME 等）が押しにくく、誤タップや見落としの原因になる</li>
+        <li>表形式は維持すべき（カード化は比較目的を壊す）ため、操作列側で解く必要がある</li>
       </ul>
 
       <h3>改善策</h3>
       <div class="options">
         <div class="option recommended">
-          <h4>案A — シリーズ列拡幅＋折り返し（sticky 維持） <span class="rec-tag">推奨</span></h4>
-          <p><code>--rod-col-series</code> を約 <strong>13–14rem</strong>（例: 13.5rem）に拡げ、
-            セル内折り返し（または title ツールチップ併用）。左 sticky は維持。カード化は不採用。</p>
+          <h4>案A — 操作列拡幅＋コンパクトボタン <span class="rec-tag">採用</span></h4>
+          <p><code>.pk-col--actions</code> の min-width／割合を広げ、ボタン padding／font をコンパクト化。
+            表形式は維持。</p>
           <p class="sample-link">サンプル:
-            <a href="fishtrack/samples/ft-h5-a.html">fishtrack/samples/ft-h5-a.html</a>
+            <a href="mypokedex/samples/mp-h4-a.html">mypokedex/samples/mp-h4-a.html</a>
             （上＝変更前／下＝変更後）</p>
           <figure class="wide">
-            <img src="fishtrack/sample-ft-h5-a.png" alt="FT-H5 案A">
-            <figcaption>sample-ft-h5-a.png — ▲ 上＝10rem／ellipsis、下＝13.5rem＋折り返し</figcaption>
+            <img src="mypokedex/sample-mp-h4-a.png" alt="MP-H4 案A">
+            <figcaption>sample-mp-h4-a.png — ▲ 上＝不足、下＝拡幅＋コンパクト</figcaption>
           </figure>
         </div>
       </div>
+      <p><strong>実装:</strong> <code>app.css</code>。仕様 <code>05_ui_ux.md</code>・計画 P64 同期済み。</p>
+    </article>
+
+    <article class="issue" id="ft-m8">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-M8 — 一般ユーザの保有列がまだ広い（案A 採用）
+      </h2>
+      <p class="label">画面: PC ロッド／リール／ルアーマスタ（ai-user）</p>
+      <p><strong>採用:</strong> 案A — <code>--rod-col-holding: 5.25rem</code>（一般）。
+        管理者 <code>.ft-table--rod-master-sticky--admin-holding</code> の
+        <strong>8.75rem</strong> は維持（2026-08-11）。</p>
+      <p><strong>再診断:</strong> 2026-08-11 ローカル PC1440・ai-user —
+        holding 変数 5.25rem・th/td ≈84px・管理者クラスなしをロッド一覧で確認。</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/tackle/rod-models/</code>・<code>/tackle/reel-models/</code>・<code>/lure-masters/</code></li>
+          <li><strong>位置:</strong> 右 sticky「保有」列（ステータスのみの一般ユーザ表示）</li>
+          <li><strong>セレクタ／変数:</strong>
+            <code>--rod-col-holding: 5.25rem</code>（≈84px）。
+            管理者は同変数を <code>8.75rem</code> に上書き</li>
+          <li><strong>対象外:</strong> 管理者保有列の編集コントロール幅</li>
+        </ul>
+      </div>
+
+      <h3>事象（改善前）</h3>
+      <p>
+        一般ユーザ計測: holding thW ≈108 / need ≈44（ステータスのみ）→ slack ≈ <strong>+64〜</strong>。
+        余白が多く、他列（シリーズ等）の窮屈さと対照的。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-rod-holding-user-wide.png" alt="一般ユーザ保有列が広い（改善前）">
+          <figcaption>pc-rod-holding-user-wide.png — ▲ 改善前。保有列（橙枠）。「—／保有中」に対して余白過多</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-rod-holding-user-after.png" alt="一般ユーザ保有列（改善後）">
+          <figcaption>pc-rod-holding-user-after.png — ▲ 改善後。5.25rem。「保有中」が列幅に収まり余白が減った</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li>一般表示はステータス短文のみで幅が余り、表の有効スキャン幅を浪費する</li>
+        <li>シリーズ等の不足列と組み合わせると、優先すべき列に幅が回らない</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 一般保有列を約 5–5.5rem に縮小 <span class="rec-tag">採用</span></h4>
+          <p><code>--rod-col-holding</code> を <strong>5.25rem</strong> へ。
+            管理者クラス（<code>8.75rem</code>）は維持。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-m8-a.html">fishtrack/samples/ft-m8-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="wide">
+            <img src="fishtrack/sample-ft-m8-a.png" alt="FT-M8 案A">
+            <figcaption>sample-ft-m8-a.png — ▲ 上＝6.75rem、下＝5.25rem</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> <code>tackle_models_list.css</code> の
+        <code>--rod-col-holding</code>。仕様 <code>05_ui_ux.md</code> 同期済み。</p>
     </article>
 
     <article class="issue" id="ft-h6">
       <h2>
         <span class="badge sev-high">HIGH</span>
-        <span class="badge status-open">OPEN</span>
+        <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
-        FT-H6 — リール「技術特性」列が全表示時に極端に不足
+        FT-H6 — リール「技術特性」列が全表示時に極端に不足（案A 採用）
       </h2>
       <p class="label">画面: PC <code>/tackle/reel-models/</code>（技術特性列を表示したとき）</p>
+      <p><strong>採用:</strong> 案A — ラベルを <code>.tech-chip</code> 化しセル内複数行折り返し。
+        列幅 <code>--ft-table-col-technology-min/max</code> = <strong>20rem / 28rem</strong>。
+        横スクロール許容。カード化は不採用（2026-08-11）。</p>
+      <p><strong>再診断:</strong> 2026-08-11 ローカル PC1440 —
+        技術特性セル幅 320px・チップ複数行・全文表示（切り詰めなし）を確認。</p>
 
       <h3>対象箇所</h3>
       <div class="where">
         <ul>
           <li><strong>URL／画面:</strong> リールを探す（列のカスタマイズで「技術特性」ON）</li>
-          <li><strong>位置:</strong> 表中段の「技術特性」列（カンマ連結ラベル）</li>
+          <li><strong>位置:</strong> 表中段の「技術特性」列</li>
           <li><strong>セレクタ／変数:</strong>
             <code>th/td.table-memo--technology</code> /
-            <code>--ft-table-col-technology-min</code>（実測 thW ≈448）</li>
-          <li><strong>対象外:</strong> ロッド技術特性（件数・長さが異なる）、保有一覧の別表</li>
+            <code>.tech-chip</code> /
+            <code>--ft-table-col-technology-min: 20rem</code></li>
+          <li><strong>対象外:</strong> ロッド技術特性、保有一覧の別表</li>
         </ul>
       </div>
 
-      <h3>事象</h3>
+      <h3>事象（改善前）</h3>
       <p>
         全列表示時の計測: technology thW <strong>448</strong> / need ≈ <strong>1753</strong> /
         slack ≈ <strong>−1305</strong>（カンマ連結の長文ラベル）。一覧上で全文が読めない。
       </p>
       <div class="shots">
         <figure class="pc">
-          <img src="fishtrack/pc-reel-tech-tight.png" alt="リール技術特性列が不足">
-          <figcaption>pc-reel-tech-tight.png — ▲ 技術特性列（赤枠）。長文が列幅に収まらない</figcaption>
+          <img src="fishtrack/pc-reel-tech-tight.png" alt="リール技術特性列が不足（改善前）">
+          <figcaption>pc-reel-tech-tight.png — ▲ 改善前。技術特性列（赤枠）。長文が列幅に収まらない</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-reel-tech-after.png" alt="リール技術特性チップ（改善後）">
+          <figcaption>pc-reel-tech-after.png — ▲ 改善後。チップ複数行（赤枠は再診ハイライト）</figcaption>
         </figure>
       </div>
 
@@ -461,129 +550,73 @@
           </figure>
         </div>
       </div>
+      <p><strong>実装:</strong> Jinja／<code>tackle_models_list.js</code> でチップ描画、
+        CSS 列幅 20–28rem。仕様 <code>05_ui_ux.md</code> 同期済み。</p>
     </article>
 
-    <article class="issue" id="ft-m8">
-      <h2>
-        <span class="badge sev-med">MED</span>
-        <span class="badge status-open">OPEN</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-M8 — 一般ユーザの保有列がまだ広い
-      </h2>
-      <p class="label">画面: PC ロッド／リール／ルアーマスタ（ai-user）</p>
-
-      <h3>対象箇所</h3>
-      <div class="where">
-        <ul>
-          <li><strong>URL／画面:</strong>
-            <code>/tackle/rod-models/</code>・<code>/tackle/reel-models/</code>・<code>/lure-masters/</code></li>
-          <li><strong>位置:</strong> 右 sticky「保有」列（ステータスのみの一般ユーザ表示）</li>
-          <li><strong>セレクタ／変数:</strong>
-            <code>--rod-col-holding: 6.75rem</code>（≈108px）。
-            管理者は <code>--admin-holding: 8.75rem</code>（編集 UI あり・概ね妥当）</li>
-          <li><strong>対象外:</strong> 管理者保有列の編集コントロール幅</li>
-        </ul>
-      </div>
-
-      <h3>事象</h3>
-      <p>
-        一般ユーザ計測: holding thW ≈108 / need ≈44（ステータスのみ）→ slack ≈ <strong>+64〜</strong>。
-        余白が多く、他列（シリーズ等）の窮屈さと対照的。
-      </p>
-      <div class="shots">
-        <figure class="pc">
-          <img src="fishtrack/pc-rod-holding-user-wide.png" alt="一般ユーザ保有列が広い">
-          <figcaption>pc-rod-holding-user-wide.png — ▲ 保有列（橙枠）。「—／保有中」に対して余白過多</figcaption>
-        </figure>
-      </div>
-
-      <h3>何が問題か</h3>
-      <ul>
-        <li>一般表示はステータス短文のみで幅が余り、表の有効スキャン幅を浪費する</li>
-        <li>シリーズ等の不足列と組み合わせると、優先すべき列に幅が回らない</li>
-      </ul>
-
-      <h3>改善策</h3>
-      <div class="options">
-        <div class="option recommended">
-          <h4>案A — 一般保有列を約 5–5.5rem に縮小 <span class="rec-tag">推奨</span></h4>
-          <p><code>--rod-col-holding</code> を約 <strong>5.25rem</strong> 程度へ。
-            管理者クラス（<code>--admin-holding: 8.75rem</code>）は維持。</p>
-          <p class="sample-link">サンプル:
-            <a href="fishtrack/samples/ft-m8-a.html">fishtrack/samples/ft-m8-a.html</a>
-            （上＝変更前／下＝変更後）</p>
-          <figure class="wide">
-            <img src="fishtrack/sample-ft-m8-a.png" alt="FT-M8 案A">
-            <figcaption>sample-ft-m8-a.png — ▲ 上＝6.75rem、下＝5.25rem</figcaption>
-          </figure>
-        </div>
-      </div>
-    </article>
-
-    <article class="issue" id="mp-h4">
+    <article class="issue" id="ft-h5">
       <h2>
         <span class="badge sev-high">HIGH</span>
-        <span class="badge status-open">OPEN</span>
-        <span class="badge badge-prod">MyPokedex</span>
-        MP-H4 — 図鑑表の操作列(actions)が不足
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H5 — シリーズ sticky 列が狭すぎる（案A 採用）
       </h2>
-      <p class="label">画面: PC MyPokedex 図鑑（RGBP）<code>/RGBP/dex/rgbp</code></p>
+      <p class="label">画面: PC <code>/tackle/rod-models/</code>・<code>/tackle/reel-models/</code>（一般／管理者とも同一 CSS）</p>
+      <p><strong>採用:</strong> 案A — <code>--rod-col-series: 13.5rem</code>＋セル内折り返し＋
+        <code>title</code> ツールチップ（テンプレ／API 行再描画）。左 sticky 維持。カード化は不採用（2026-08-11）。</p>
+      <p><strong>再診断:</strong> 2026-08-11 ローカル PC1440 —
+        シリーズ列幅 ≈216px、長い系列名は折り返し・切れなし、sticky 維持をロッド／リールで確認。</p>
 
       <h3>対象箇所</h3>
       <div class="where">
         <ul>
-          <li><strong>URL／画面:</strong> カントー図鑑（RGBP）PC 表</li>
-          <li><strong>位置:</strong> 表右端の「操作」列（登録＋追加／その他／HOME登録 等）</li>
-          <li><strong>セレクタ:</strong> <code>.pkTable .pk-col--actions</code>
-            （現状 min-width 140px・幅 17%、実測 thW ≈157）</li>
-          <li><strong>対象外:</strong> partyBox／全国図鑑（当該計測では actions slack 正）、SP 操作列（O2 RESOLVED）</li>
+          <li><strong>URL／画面:</strong> ロッドを探す・リールを探す（マスタ一覧表）</li>
+          <li><strong>位置:</strong> 左 sticky の「シリーズ」列（メーカーとモデルの間）</li>
+          <li><strong>セレクタ／変数:</strong>
+            <code>.ft-table__sticky-col--series</code> /
+            <code>--rod-col-series: 13.5rem</code>（≈216px）</li>
+          <li><strong>対象外:</strong> モデル列・保有 sticky・SP カード表示</li>
         </ul>
       </div>
 
       <h3>事象</h3>
       <p>
-        PC1440 計測: actions slack ≈ <strong>−97</strong>（thW 157 / need ≈254、
-        例: 「登録＋追加 その他 HOME登録」）。ボタンが列幅に収まらず折り返し・窮屈になる。
+        固定幅 10rem では長い系列名が ellipsis で欠ける。
+        計測（PC1440・改善前）: rod series slack ≈ <strong>−37</strong>（need 197 / thW 160、例: 「STEEZ リアルコントロール」）、
+        reel series slack ≈ <strong>−99</strong>（need 259 / thW 160）。
       </p>
       <div class="shots">
         <figure class="pc">
-          <img src="mypokedex/pc-dex-actions-tight.png" alt="図鑑操作列が不足">
-          <figcaption>pc-dex-actions-tight.png — ▲ 操作列（赤枠）。複数 CTA が列幅不足</figcaption>
+          <img src="fishtrack/pc-rod-series-tight.png" alt="ロッドマスタ シリーズ列が狭い">
+          <figcaption>pc-rod-series-tight.png — ▲ 改善前。シリーズ列（赤枠）。「STEEZ リアルコ…」と欠ける</figcaption>
         </figure>
       </div>
 
       <h3>何が問題か</h3>
       <ul>
-        <li>図鑑の主操作（登録・HOME 等）が押しにくく、誤タップや見落としの原因になる</li>
-        <li>表形式は維持すべき（カード化は比較目的を壊す）ため、操作列側で解く必要がある</li>
+        <li>系列名は識別の要。ellipsis だと同系列の見分けが難しい</li>
+        <li>sticky 固定のため横スクロールしても幅は増えず、読める幅が常に足りない</li>
       </ul>
 
       <h3>改善策</h3>
       <div class="options">
         <div class="option recommended">
-          <h4>案A — 操作列拡幅＋コンパクトボタン <span class="rec-tag">推奨</span></h4>
-          <p><code>.pk-col--actions</code> の min-width／割合を広げ、ボタン padding／font をコンパクト化。
-            表形式は維持。</p>
+          <h4>案A — シリーズ列拡幅＋折り返し（sticky 維持） <span class="rec-tag">推奨</span></h4>
+          <p><code>--rod-col-series</code> を約 <strong>13–14rem</strong>（例: 13.5rem）に拡げ、
+            セル内折り返し（または title ツールチップ併用）。左 sticky は維持。カード化は不採用。</p>
           <p class="sample-link">サンプル:
-            <a href="mypokedex/samples/mp-h4-a.html">mypokedex/samples/mp-h4-a.html</a>
+            <a href="fishtrack/samples/ft-h5-a.html">fishtrack/samples/ft-h5-a.html</a>
             （上＝変更前／下＝変更後）</p>
           <figure class="wide">
-            <img src="mypokedex/sample-mp-h4-a.png" alt="MP-H4 案A">
-            <figcaption>sample-mp-h4-a.png — ▲ 上＝不足、下＝拡幅＋コンパクト</figcaption>
+            <img src="fishtrack/sample-ft-h5-a.png" alt="FT-H5 案A">
+            <figcaption>sample-ft-h5-a.png — ▲ 上＝10rem／ellipsis、下＝13.5rem＋折り返し</figcaption>
           </figure>
         </div>
       </div>
+      <p><strong>実装:</strong> CSS（幅・折り返し）・Jinja <code>title</code>・
+        <code>tackle_models_list.js</code> の API 行再描画でも <code>title</code> を付与。仕様
+        <code>05_ui_ux.md</code> 同期済み。</p>
     </article>
-
-<!-- O3 / drawer / filter / onboard moved to resolved -->
-
-<!-- coverage resolved — moved from open-issues -->
-
-    </section>
-
-    <section id="resolved-issues" aria-labelledby="resolved-issues-title">
-      <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
-      <p class="section-lead">再診断済み。改善前スクショとアフターを残す。</p>
 
     <article class="issue" id="ft-h1">
       <h2>
