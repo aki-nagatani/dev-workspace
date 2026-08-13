@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O8 案A — ホームに記録CTAを置く</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .home-dashboard__section-header {
+      display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;
+    }
+    .hl-new { outline: 2px solid #2e7d32; outline-offset: 2px; background: #e8f5e9; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（推奨・採用後の想定）: ホーム各節のヘッダーに
+      <strong>釣果を追加／釣行を追加</strong>を主CTAとして置く。
+      「一覧へ」は副次のまま残す。
+    </p>
+    <p class="sample-block-label">変更前（現状・一覧へだけ）</p>
+    <section class="card home-dashboard__section">
+      <div class="home-dashboard__section-header">
+        <h2>最近の釣果</h2>
+        <a class="btn btn--sm btn--secondary" href="#">釣果一覧へ</a>
+      </div>
+    </section>
+    <p class="sample-block-label">変更後（記録CTAを追加）</p>
+    <section class="card home-dashboard__section">
+      <div class="home-dashboard__section-header">
+        <h2>最近の釣果</h2>
+        <div class="filter-actions">
+          <a class="btn btn--sm hl-new" href="#">釣果を追加</a>
+          <a class="btn btn--sm btn--secondary" href="#">釣果一覧へ</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

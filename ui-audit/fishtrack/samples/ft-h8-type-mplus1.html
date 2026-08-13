@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1120, initial-scale=1">
+  <title>FT-H8 書体 — M PLUS 1</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/landing.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/public_layout.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@400;600;700&amp;display=swap">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 1120px; padding: 16px; background: #fff; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b;
+      margin: 14px 0 6px; letter-spacing: 0.02em;
+    }
+    .layout-a .ft-lp-body { min-height: 0; background: var(--color-bg); }
+    .layout-a .ft-lp-hero {
+      position: static; min-height: 0; max-width: 1120px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center;
+      padding: 28px 20px 12px;
+    }
+    .layout-a .ft-lp-hero__media,
+    .layout-a .ft-lp-hero__media picture {
+      position: static; inset: auto; width: 100%; height: auto;
+      border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-card); order: 2;
+    }
+    .layout-a .ft-lp-hero__img { height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+    .layout-a .ft-lp-hero__overlay { background: none; min-height: 0; align-items: center; order: 1; }
+    .layout-a .ft-lp-hero__copy { padding: 0; max-width: none; margin: 0; }
+    .layout-a .ft-lp-hero__title {
+      color: var(--color-text); font-weight: 700; font-size: 1.75rem; text-shadow: none;
+    }
+    .layout-a .ft-lp-hero__lead { color: var(--color-text-muted); }
+    .layout-a .ft-lp-hero__cta .ft-lp-btn--primary { box-shadow: none; }
+    .layout-a .ft-lp-hero__cta .ft-lp-btn--ghost {
+      color: var(--color-accent); border-color: rgba(37, 99, 235, 0.35); background: transparent;
+    }
+    .layout-a .ft-lp-story { padding: 20px; }
+    .layout-a .ft-lp-story__title { font-weight: 700; }
+
+    .sample-after .ft-lp-body {
+      font-family: "M PLUS 1", sans-serif;
+    }
+    .sample-after .ft-lp-hero__title,
+    .sample-after .ft-lp-story__title {
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      レイアウトは案Aのまま。差は書体だけ。ゴシック系。
+      上は現行のシステムゴシック。下は全体 M PLUS 1（かなは幾何学寄り。Noto／Zen Kaku より現代的）。
+      製品実装時はアプリ全体。CSP は self ホストが必要。
+    </p>
+    <p class="sample-block-label">変更前（案A＋現行の字）</p>
+    <div class="sample-before layout-a">
+      <div class="ft-lp-body ft-lp-body--no-header">
+        <header class="ft-site-header ft-site-header--public">
+          <div class="ft-site-header__bar">
+            <h1 class="site-brand">
+              <a class="site-brand__link" href="http://127.0.0.1:5001/" aria-label="FishTrack トップ">
+                <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+                <span class="site-brand__text sr-only">FishTrack</span>
+              </a>
+            </h1>
+          </div>
+        </header>
+        <main class="ft-lp-main">
+          <section class="ft-lp-hero" aria-labelledby="title-before">
+            <div class="ft-lp-hero__media">
+              <img class="ft-lp-hero__img" src="http://127.0.0.1:5001/static/img/lp/hero-generated-20260325-jp-v3.webp" alt="" width="1376" height="768">
+            </div>
+            <div class="ft-lp-hero__overlay">
+              <div class="ft-lp-hero__copy">
+                <h1 id="title-before" class="ft-lp-hero__title">バスフィッシングの記録を、次の判断に。</h1>
+                <p class="ft-lp-hero__lead">釣行・釣果・タックルを自分用に残し、次の釣行の判断に使う。日本でバスフィッシングをする個人向けです。無料枠は広告表示あり。</p>
+                <div class="ft-lp-hero__cta">
+                  <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/register">無料で新規登録</a>
+                  <a class="ft-lp-btn ft-lp-btn--ghost ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/login">ログイン</a>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ft-lp-story ft-lp-story--alt">
+            <div class="ft-lp-story__inner">
+              <div class="ft-lp-story__text">
+                <h2 class="ft-lp-story__title">釣行前 — フィールドと気象を整える</h2>
+                <p class="ft-lp-story__body">行き先のフィールドや水位を、これまでの釣行記録と照らし合わせて確認できます。</p>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <p class="sample-block-label">変更後（案A＋M PLUS 1）</p>
+    <div class="sample-after layout-a">
+      <div class="ft-lp-body ft-lp-body--no-header">
+        <header class="ft-site-header ft-site-header--public">
+          <div class="ft-site-header__bar">
+            <h1 class="site-brand">
+              <a class="site-brand__link" href="http://127.0.0.1:5001/" aria-label="FishTrack トップ">
+                <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+                <span class="site-brand__text sr-only">FishTrack</span>
+              </a>
+            </h1>
+          </div>
+        </header>
+        <main class="ft-lp-main">
+          <section class="ft-lp-hero" aria-labelledby="title-after">
+            <div class="ft-lp-hero__media">
+              <img class="ft-lp-hero__img" src="http://127.0.0.1:5001/static/img/lp/hero-generated-20260325-jp-v3.webp" alt="" width="1376" height="768">
+            </div>
+            <div class="ft-lp-hero__overlay">
+              <div class="ft-lp-hero__copy">
+                <h1 id="title-after" class="ft-lp-hero__title">バスフィッシングの記録を、次の判断に。</h1>
+                <p class="ft-lp-hero__lead">釣行・釣果・タックルを自分用に残し、次の釣行の判断に使う。日本でバスフィッシングをする個人向けです。無料枠は広告表示あり。</p>
+                <div class="ft-lp-hero__cta">
+                  <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/register">無料で新規登録</a>
+                  <a class="ft-lp-btn ft-lp-btn--ghost ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/login">ログイン</a>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ft-lp-story ft-lp-story--alt">
+            <div class="ft-lp-story__inner">
+              <div class="ft-lp-story__text">
+                <h2 class="ft-lp-story__title">釣行前 — フィールドと気象を整える</h2>
+                <p class="ft-lp-story__body">行き先のフィールドや水位を、これまでの釣行記録と照らし合わせて確認できます。</p>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

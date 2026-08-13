@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O1 案B — 主ルアー／トレーラーを内訳表示</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 920px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .ft-table { width: 100%; background: #fff; }
+    .hl-miss { background: #ffebee !important; }
+    .hl-ok { background: #e8f5e9 !important; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定）: 合算（合計）に加え、詳細画面で
+      「主ルアーとしての釣果」「トレーラーとしての釣果」を内訳表示。
+      一覧の列増は避け、詳細のみ内訳（一覧は合計＝案Aと同じ）。
+    </p>
+    <p class="sample-block-label">変更前（現状・役割の区別も合算も無し）</p>
+    <div class="sample-before card" style="padding:1rem;">
+      <table class="ft-table ft-table--striped">
+        <thead>
+          <tr><th>指標</th><th>値</th></tr>
+        </thead>
+        <tbody>
+          <tr class="hl-miss"><td>釣果数（合計）</td><td>0</td></tr>
+          <tr class="hl-miss"><td>うち主ルアー</td><td>（非表示）</td></tr>
+          <tr class="hl-miss"><td>うちトレーラー</td><td>（非表示）</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="sample-block-label">変更後（合計＋役割内訳）</p>
+    <div class="sample-after card" style="padding:1rem;">
+      <table class="ft-table ft-table--striped">
+        <thead>
+          <tr><th>指標</th><th>値</th></tr>
+        </thead>
+        <tbody>
+          <tr class="hl-ok"><td>釣果数（合計）</td><td>1</td></tr>
+          <tr class="hl-ok"><td>うち主ルアー</td><td>0</td></tr>
+          <tr class="hl-ok"><td>うちトレーラー</td><td>1（最大 40.0 cm）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

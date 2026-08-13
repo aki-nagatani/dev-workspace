@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O9 案B — 必須印だけ付ける</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .catch-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 0.75rem; }
+    .required-mark { color: #c62828; font-weight: 700; }
+    .hl-new { outline: 2px solid #2e7d32; outline-offset: 2px; background: #e8f5e9; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定）: フォームの長さは維持し、保存に必要な項目にだけ
+      <span class="required-mark">*</span> と「必須」を付ける。折りたたみはしない（学習コスト最小）。
+    </p>
+    <p class="sample-block-label">変更前（現状・印なし）</p>
+    <div class="card">
+      <div class="catch-form-grid">
+        <div><label>日付</label><input class="input" type="date"></div>
+        <div><label>フィールド</label><select class="input"><option>選択してください</option></select></div>
+        <div><label>サイズ(cm)</label><input class="input" type="number"></div>
+        <div><label>ロッド</label><select class="input"><option>未設定</option></select></div>
+      </div>
+    </div>
+    <p class="sample-block-label">変更後（必須印のみ）</p>
+    <div class="card hl-new">
+      <div class="catch-form-grid">
+        <div><label>日付 <span class="required-mark">*</span></label><input class="input" type="date"></div>
+        <div><label>フィールド <span class="required-mark">*</span></label><select class="input"><option>選択してください</option></select></div>
+        <div><label>サイズ(cm)</label><input class="input" type="number"></div>
+        <div><label>ロッド</label><select class="input"><option>未設定</option></select></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

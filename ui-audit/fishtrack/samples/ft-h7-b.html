@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-H7 案B — BEST5 順位付き縦リスト</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    /* 案B 差分: 縦1列＋左に大きな順位（製品未実装） */
+    .sample-after .catch-card-grid--ranked {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .sample-after .catch-rank-row {
+      display: grid;
+      grid-template-columns: 2.75rem minmax(0, 1fr);
+      gap: 0.65rem;
+      align-items: stretch;
+    }
+    .sample-after .catch-rank-row__num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #1e3a5f;
+      line-height: 1;
+    }
+    .sample-after .catch-rank-row--1 .catch-rank-row__num {
+      color: #9a7b0a;
+      font-size: 1.7rem;
+    }
+    .sample-after .catch-rank-row--1 .catch-card {
+      border-color: rgba(180, 130, 20, 0.55);
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定）: BEST5 だけ縦1列のランキング行にし、左に大きな順位数字。
+      1位の発見性は高いが、ダッシュボード縦占有が増える。カード本体 DOM は現行流用。
+    </p>
+    <p class="sample-block-label">変更前（現状・グリッド・順位なし）</p>
+    <div class="sample-before">
+      <section class="card home-dashboard__section" aria-label="2026 BEST5">
+        <div class="home-dashboard__section-header">
+          <h2>2026 BEST5</h2>
+          <a class="btn btn--sm btn--secondary" href="#">釣果一覧へ</a>
+        </div>
+        <div class="catch-card-grid">
+          <article class="catch-card catch-card--no-photo">
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-07-01</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">52.0cm</p>
+            </div>
+          </article>
+          <article class="catch-card catch-card--no-photo">
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-06-12</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">48.5cm</p>
+            </div>
+          </article>
+          <article class="catch-card catch-card--no-photo">
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-05-03</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">45.0cm</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+    <p class="sample-block-label">変更後（縦リスト＋大順位）</p>
+    <div class="sample-after">
+      <section class="card home-dashboard__section" aria-label="2026 BEST5">
+        <div class="home-dashboard__section-header">
+          <h2>2026 BEST5</h2>
+          <a class="btn btn--sm btn--secondary" href="#">釣果一覧へ</a>
+        </div>
+        <div class="catch-card-grid catch-card-grid--ranked" role="list">
+          <div class="catch-rank-row catch-rank-row--1" role="listitem">
+            <span class="catch-rank-row__num" aria-label="1位">1</span>
+            <article class="catch-card catch-card--no-photo">
+              <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+              <div class="catch-card__body">
+                <div class="catch-card__meta"><span>2026-07-01</span></div>
+                <h3 class="catch-card__title">ラージマウスバス</h3>
+                <p class="catch-card__size">52.0cm</p>
+              </div>
+            </article>
+          </div>
+          <div class="catch-rank-row" role="listitem">
+            <span class="catch-rank-row__num" aria-label="2位">2</span>
+            <article class="catch-card catch-card--no-photo">
+              <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+              <div class="catch-card__body">
+                <div class="catch-card__meta"><span>2026-06-12</span></div>
+                <h3 class="catch-card__title">ラージマウスバス</h3>
+                <p class="catch-card__size">48.5cm</p>
+              </div>
+            </article>
+          </div>
+          <div class="catch-rank-row" role="listitem">
+            <span class="catch-rank-row__num" aria-label="3位">3</span>
+            <article class="catch-card catch-card--no-photo">
+              <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+              <div class="catch-card__body">
+                <div class="catch-card__meta"><span>2026-05-03</span></div>
+                <h3 class="catch-card__title">ラージマウスバス</h3>
+                <p class="catch-card__size">45.0cm</p>
+              </div>
+            </article>
+          </div>
+          <div class="catch-rank-row" role="listitem">
+            <span class="catch-rank-row__num" aria-label="4位">4</span>
+            <article class="catch-card catch-card--no-photo">
+              <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+              <div class="catch-card__body">
+                <div class="catch-card__meta"><span>2026-04-18</span></div>
+                <h3 class="catch-card__title">ラージマウスバス</h3>
+                <p class="catch-card__size">41.2cm</p>
+              </div>
+            </article>
+          </div>
+          <div class="catch-rank-row" role="listitem">
+            <span class="catch-rank-row__num" aria-label="5位">5</span>
+            <article class="catch-card catch-card--no-photo">
+              <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+              <div class="catch-card__body">
+                <div class="catch-card__meta"><span>2026-02-28</span></div>
+                <h3 class="catch-card__title">ラージマウスバス</h3>
+                <p class="catch-card__size">25.0cm</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

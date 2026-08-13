@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O16 案A — またがる都道府県をチップ＋追加セレクトに</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_form_fields.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .card { background: #fff; padding: 12px 16px; border-radius: 8px; }
+    .field-prefecture-extras .filter-chips { display: flex; margin: 8px 0 10px; }
+    .filter-chip.is-pin { font-weight: 600; }
+    .field-prefecture-extras__add { margin: 0; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（推奨・採用後の想定）: 47件のチェックボックスをやめ、
+      選択中だけをフィルタチップで見せ、追加は地方グループ付きセレクトにする。
+    </p>
+    <p class="sample-block-label">変更前（現状・全都道府県のチェックボックス）</p>
+    <div class="card">
+      <fieldset class="field-prefecture-extras" data-field-prefecture-extras>
+        <legend class="field-prefecture-extras__legend">またがる都道府県（任意）</legend>
+        <p class="hint">ピンの都道府県は必ず含み、チェックを外せません。ピンを別の県へ移すと、元の県は自動では残りません。</p>
+        <div class="field-prefecture-extras__grid">
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 北海道</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 青森県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 岩手県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 宮城県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 秋田県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 山形県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 福島県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 茨城県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 栃木県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 群馬県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 埼玉県</label>
+          <label class="field-prefecture-extras__item is-pin"><input type="checkbox" checked disabled> 千葉県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 東京都</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 神奈川県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 新潟県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 富山県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 石川県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 福井県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 山梨県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 長野県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 岐阜県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 静岡県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 愛知県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 三重県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 滋賀県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 京都府</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 大阪府</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 兵庫県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 奈良県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 和歌山県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 鳥取県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 島根県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 岡山県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 広島県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 山口県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 徳島県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 香川県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 愛媛県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 高知県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 福岡県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 佐賀県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 長崎県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 熊本県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 大分県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 宮崎県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 鹿児島県</label>
+          <label class="field-prefecture-extras__item"><input type="checkbox"> 沖縄県</label>
+        </div>
+      </fieldset>
+    </div>
+    <p class="sample-block-label">変更後（選択中チップ＋都道府県を追加）</p>
+    <div class="card">
+      <fieldset class="field-prefecture-extras" data-field-prefecture-extras>
+        <legend class="field-prefecture-extras__legend">またがる都道府県（任意）</legend>
+        <p class="hint">ピンの都道府県は必ず含み、外せません。ピンを別の県へ移すと、元の県は自動では残りません。</p>
+        <div class="filter-chips is-active" aria-label="選択中の都道府県">
+          <span class="filter-chip is-pin">
+            <span class="filter-chip__label">千葉県（ピン）</span>
+          </span>
+          <span class="filter-chip">
+            <span class="filter-chip__label">茨城県</span>
+            <button type="button" class="filter-chip__remove" aria-label="茨城県 を削除">×</button>
+          </span>
+        </div>
+        <p class="field-prefecture-extras__add">
+          <label for="extra-prefecture-add">都道府県を追加</label>
+          <select id="extra-prefecture-add" aria-label="都道府県を追加">
+            <option value="" selected>選択してください</option>
+            <optgroup label="北海道・東北">
+              <option>北海道</option><option>青森県</option><option>岩手県</option>
+            </optgroup>
+            <optgroup label="関東">
+              <option>茨城県</option><option>栃木県</option><option>群馬県</option>
+              <option>埼玉県</option><option>東京都</option><option>神奈川県</option>
+            </optgroup>
+            <optgroup label="中部">
+              <option>新潟県</option><option>長野県</option><option>静岡県</option>
+            </optgroup>
+            <optgroup label="近畿">
+              <option>大阪府</option><option>兵庫県</option>
+            </optgroup>
+            <optgroup label="九州・沖縄">
+              <option>福岡県</option><option>沖縄県</option>
+            </optgroup>
+          </select>
+        </p>
+        <input type="hidden" name="extraPrefecture" value="千葉県">
+        <input type="hidden" name="extraPrefecture" value="茨城県">
+      </fieldset>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O8 案B — ホーム先頭に記録バー</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .home-dashboard__section-header {
+      display: flex; justify-content: space-between; align-items: center; gap: 0.75rem;
+    }
+    .hl-new { outline: 2px solid #2e7d32; outline-offset: 2px; background: #e8f5e9; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定）: ホーム最上部に記録用の1行バーを置き、
+      釣果／釣行の追加をまとめる。各節の「一覧へ」は現状維持。
+    </p>
+    <p class="sample-block-label">変更前（現状）</p>
+    <section class="card home-dashboard__section">
+      <div class="home-dashboard__section-header">
+        <h2>最近の釣果</h2>
+        <a class="btn btn--sm btn--secondary" href="#">釣果一覧へ</a>
+      </div>
+    </section>
+    <p class="sample-block-label">変更後（先頭に記録バー）</p>
+    <section class="card hl-new">
+      <div class="home-dashboard__section-header">
+        <p class="hint" style="margin:0">今日の記録</p>
+        <div class="filter-actions">
+          <a class="btn btn--sm" href="#">釣果を追加</a>
+          <a class="btn btn--sm btn--secondary" href="#">釣行を追加</a>
+        </div>
+      </div>
+    </section>
+    <section class="card home-dashboard__section">
+      <div class="home-dashboard__section-header">
+        <h2>最近の釣果</h2>
+        <a class="btn btn--sm btn--secondary" href="#">釣果一覧へ</a>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

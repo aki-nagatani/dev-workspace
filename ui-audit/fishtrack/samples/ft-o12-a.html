@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O12 案A — ユーザー一覧を先に・検索を付ける</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 900px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .stat-card { min-height: 120px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; margin: 8px 0; }
+    .hl-new { outline: 2px solid #2e7d32; outline-offset: 2px; background: #e8f5e9; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（推奨・採用後の想定）: ユーザー一覧とメール検索をページ先頭に置く。
+      空の統計カードは折りたたみ（データが無いときは閉じた状態）。
+    </p>
+    <p class="sample-block-label">変更前（現状・空チャートが一覧より先）</p>
+    <section class="card">
+      <h2>ユーザー管理</h2>
+      <h3>統計情報</h3>
+      <p class="text-muted">統計データがまだありません。</p>
+      <div class="stat-card"><h4>新規ユーザー数（日次）</h4></div>
+      <div class="stat-card"><h4>アクティブユーザー数（週次）</h4></div>
+      <h3>ユーザー一覧</h3>
+      <p class="hint">（この下にようやく表）</p>
+    </section>
+    <p class="sample-block-label">変更後（一覧＋検索が先）</p>
+    <section class="card">
+      <h2>ユーザー管理</h2>
+      <div class="filter-grid hl-new">
+        <div>
+          <label for="u-q">メール／ID</label>
+          <input id="u-q" class="input" type="search" placeholder="検索">
+        </div>
+      </div>
+      <h3>ユーザー一覧</h3>
+      <table class="ft-table"><thead><tr><th>ID</th><th>メール</th><th>操作</th></tr></thead>
+        <tbody><tr><td>1</td><td>ai-admin@local.fishtrack</td><td>削除</td></tr></tbody>
+      </table>
+      <details>
+        <summary>統計情報</summary>
+        <p class="text-muted">統計データがまだありません。</p>
+      </details>
+    </section>
+  </div>
+</body>
+</html>

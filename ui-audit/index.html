@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FishTrack / MyPokedex UI 問題点レポート（2026-08-08）</title>
+  <title>FishTrack / MyPokedex UI 問題点レポート（2026-08-13）</title>
   <style>
     :root {
       --bg: #f5f6f8;
@@ -167,6 +167,11 @@
       max-width: min(100%, 360px);
       max-height: 400px;
     }
+    .option figure.pc img,
+    .option figure.wide img {
+      max-width: min(100%, 880px);
+      max-height: 420px;
+    }
     .option.recommended { background: var(--rec); border-color: #a5d6a7; }
     .option.hold { background: #fff8e1; border-color: #ffe082; }
     .option h4 { margin: 0 0 0.4rem; font-size: 0.98rem; }
@@ -244,6 +249,37 @@
       color: var(--muted);
       font-size: 0.9rem;
     }
+    #resolved-issues article.issue {
+      padding: 0.55rem 0.9rem 0.65rem;
+    }
+    #resolved-issues article.issue details > summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    #resolved-issues article.issue details > summary::-webkit-details-marker {
+      display: none;
+    }
+    #resolved-issues article.issue details > summary::before {
+      content: "";
+      flex: 0 0 0.55rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      margin-top: 0.5rem;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(-45deg);
+    }
+    #resolved-issues article.issue details[open] > summary::before {
+      margin-top: 0.4rem;
+      transform: rotate(45deg);
+    }
+    #resolved-issues article.issue details > summary h2 {
+      margin: 0;
+      flex: 1 1 auto;
+    }
     footer {
       margin: 0;
       padding: 0 clamp(1rem, 2.5vw, 2.5rem) 2rem;
@@ -265,8 +301,8 @@
   <header>
     <h1>FishTrack / MyPokedex UI 問題点レポート</h1>
     <p>共有レポート（dev-workspace/ui-audit）。MyPokedex :5002 · FishTrack :5001／各 local AI アカウント</p>
-    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 再診日: 2026-08-08（JST）</p>
-    <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
+    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 再診日: 2026-08-13（JST・FishTrack 全体）</p>
+    <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。解決済みはアコーディオン（既定クローズ）。解決から1ヶ月経過した課題はレポートから削除する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
     <p>改善サンプルはローカル製品（CSS・ロゴ・コンポーネント）をそのまま使い、改善箇所だけを差分修正したものである。</p>
   </header>
 
@@ -275,8 +311,24 @@
     <a href="#open-issues">未解決</a>
     <a href="#resolved-issues">解決済み</a>
     <a href="#gallery">ギャラリー</a>
+    <span class="toc-group">未解決 FishTrack</span>
+    <div class="toc-row">
+      <a href="#ft-h8">FT-H8</a>
+      <a href="#ft-o13">FT-O13</a>
+      <a href="#ft-o12">FT-O12</a>
+      <a href="#ft-o10">FT-O10</a>
+      <a href="#ft-o9">FT-O9</a>
+      <a href="#ft-o8">FT-O8</a>
+      <a href="#ft-o6">FT-O6</a>
+      <a href="#ft-o4">FT-O4</a>
+      <a href="#ft-o3">FT-O3</a>
+      <a href="#ft-o2">FT-O2</a>
+      <a href="#ft-o1">FT-O1</a>
+      <a href="#ft-h7">FT-H7</a>
+    </div>
     <span class="toc-group">解決済み MyPokedex</span>
     <div class="toc-row">
+      <a href="#mp-o4">MP-O4</a>
       <a href="#mp-h4">MP-H4</a>
       <a href="#mp-h1">MP-H1</a>
       <a href="#mp-h2">MP-H2</a>
@@ -291,6 +343,11 @@
     </div>
     <span class="toc-group">解決済み FishTrack</span>
     <div class="toc-row">
+      <a href="#ft-o14">FT-O14</a>
+      <a href="#ft-o15">FT-O15</a>
+      <a href="#ft-o16">FT-O16</a>
+      <a href="#ft-o7">FT-O7</a>
+      <a href="#ft-o5">FT-O5</a>
       <a href="#ft-m8">FT-M8</a>
       <a href="#ft-h6">FT-H6</a>
       <a href="#ft-h5">FT-H5</a>
@@ -312,40 +369,1673 @@
       <div><strong>対象</strong>: MyPokedex・FishTrack の<strong>全画面</strong>（両製品同時診断。片方限定は明示時のみ）</div>
       <div><strong>範囲</strong>: ログイン後のユーザー向け画面一式（SP／PC）。管理画面は依頼時に含む</div>
       <div><strong>スクショ例（抜粋）</strong>: MP — partyBox・dex 等／FT — dashboard・catch・trip・field-area・rod-models・lure-masters（プラグフィルタ）等（網羅対象は上記全画面）</div>
-      <div><strong>観点</strong>: 表＋sticky の幅依存・横スクロール、レイアウト、CTA／フィルタ等の実操作</div>
+      <div><strong>観点</strong>: 中核は操作性・視認性・初回ユーザー（迷わないか）・管理者の管理しやすさ。
+        併せて導線・主CTA・空状態・必須／任意・表密度・フィルタ・誤アフォーダンス・一貫性・危険操作・フィードバック・SP/PC・a11y。
+        正本は <code>ui-audit-html-report</code> SKILL「診断観点」。</div>
       <div><strong>成果物</strong>: 本 HTML + PNG + <code>samples/</code> 改善モック</div>
-      <div><strong>備考</strong>: 未解決／解決済みを分離。<strong>2026-08-08</strong>:
-        FT-H1／H3／H4 は案A（列のカスタマイズ）を製品実装し <strong>RESOLVED</strong>（解決済み節）。
-        再診で MP 退行なし。FT 釣行／フィールド等は PC 1280 で概ね収まり。
-        <strong>2026-08-08 列幅診断（一般/管理者・PC1440）</strong>で OPEN 追加:
-        FT-H5／H6／M8・MP-H4（列幅不足・余白過多）。
-        <strong>2026-08-11</strong>: FT-H5 案A（シリーズ列 13.5rem＋折り返し）・
-        FT-H6 案A（技術特性チップ＋複数行）・
-        FT-M8 案A（一般保有列 5.25rem）を製品実装し <strong>RESOLVED</strong>。
-        <strong>2026-08-12</strong>: MP-H4 案A（操作列 22%／min 260px＋コンパクト）を製品実装し
-        <strong>RESOLVED</strong>。未解決の列幅診断はなし。</div>
+      <div><strong>備考</strong>: 未解決／解決済みを分離。解決済みはアコーディオン（既定クローズ）。
+        解決から1ヶ月経過した課題は HTML から削除。個別課題の経緯は各 article。</div>
     </section>
 
     <section id="open-issues" aria-labelledby="open-issues-title">
       <h2 id="open-issues-title" class="section-title">未解決の課題</h2>
-      <p class="section-lead">現時点で未解決の課題はありません。
-        2026-08-08 列幅診断の OPEN（FT-H5／H6／M8・MP-H4）はすべて解決済み節へ移動済み。</p>
+      <p class="section-lead">OPEN 12件（FT-H8／FT-O13／FT-O12／FT-O10／FT-O9／FT-O8／FT-O6／FT-O4／FT-O3／FT-O2／FT-O1／FT-H7）。</p>
 
-<!-- ===== OPEN: empty ===== -->
+    <article class="issue" id="ft-h8">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H8 — 未ログイン LP では登録前に何ができてどう便利かが分からない
+      </h2>
+      <p class="label">画面: 未ログイン ランディング（PC）。旧 FT-H9／FT-H10 を 2026-08-13 に本 ID へ統合</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>http://localhost:5001/</code>（未ログイン時。ログイン済みは
+            <code>/dashboard</code> へ飛ぶ）</li>
+          <li><strong>位置:</strong> ヒーロー
+            <code>.ft-lp-hero</code>（キャッチ＋リード1段落＋登録／ログイン、
+            全幅写真＋<code>.ft-lp-hero__overlay</code>）、
+            ストーリー3段（各見出し＋本文1段落＋生成写真）、
+            締め <code>.ft-lp-cta-band</code>。
+            機能一覧・向き・始め方の節が無い</li>
+          <li><strong>対象外:</strong> ログイン後画面そのもの。MyPokedex LP。
+            管理者 UI（未ログイン公開面のため対象外）</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        会員登録してログインするまで、FishTrack で何ができてどう便利かが分からない。
+        本文はキーメッセージ1段落と雰囲気寄りのストーリー3段だけ。
+        画像は生成の釣り風景で、登録後のホーム／水位／釣果が1枚も出ない。
+        レイアウトも汎用生成 LP の定番（全幅写真＋暗転白抜き、左右交互3段、グラデ締め CTA）。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-lp-current.png"
+               alt="現行 LP ヒーロー。キャッチと登録ボタンだけ">
+          <figcaption>pc-lp-current.png — ▲ ヒーローはキャッチと CTA。機能の説明も実画面も無い</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-lp-stories.png"
+               alt="現行 LP ストーリー。見出しと本文1段落と生成写真">
+          <figcaption>pc-lp-stories.png — ▲ ストーリーも1段落＋風景写真。できることの一覧が無い</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>初回ユーザー:</strong> 登録のコストを払う前に、価値も中身の画面も確認できない</li>
+        <li><strong>導線・IA:</strong> 公開面は LP だけなので、ここが機能の唯一の説明場所</li>
+        <li><strong>主CTA:</strong> 登録ボタンは目立つが、押す理由（何ができるか）が弱い</li>
+        <li><strong>視認性:</strong> スキャンできる機能の塊が無く、証拠となる UI も隣に無い</li>
+        <li><strong>管理者:</strong> 未ログイン公開面のため対象外</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p>1件の LP 課題。サンプル
+        <code>ft-h8.html</code> は完成版相当の単一 LP（同一ページに変更前は置かない）。
+        変更前は上の現状スクショ。変更後は下の完成版サンプル。
+        LP は製品説明に加え<strong>宣伝も担う</strong>。分量を短く抑えることは目的ではない。
+        <strong>現行ドラフトは1本</strong>（案Eの骨格＋案Fの実写）。案A〜Fの比較提示は終了。
+        先頭ヒーローはブラウザの幅・高さを 100% 使うフルブリード
+        （製品 <code>main</code> の padding は打ち消す。紫／青グラデは使わない）。
+        コピーは左寄せ・縦中央の白文字。
+        釣行前は湖面写真と水位画面を横並び（画面は中身が見える位置にクロップ）。
+        現場／帰宅後は現場写真＋登録画面、積み込み写真＋釣行一覧。
+        機能は2列。各カードに写真または実画面を置き、空カードを伸ばさない。
+        締めは白地＋主ボタン。
+        ページの長さは情報と画像の大きさで決める（余白で伸ばさない）。
+        FishTrack のボタン・M PLUS 2・アクセント <code>#2563EB</code> で組む。
+        ヒーロー上の公開ヘッダーは白透過ロゴとページ内ナビ
+        （釣行前／記録／機能／使い始め）と右端の「無料で新規登録」。
+        （<code>fishtrack-logo-white.png</code>。現行マークのインクを白にしたもの）。
+        スクロール後のソリッドは製品の濃色ロゴと本文色ナビ。
+        スタイルは <code>ft-h8.css</code>、ヘッダーの透過／ソリッド切替は <code>ft-h8.js</code>。</p>
+      <div class="options">
+        <div class="option recommended">
+          <h4>現行ドラフト <span class="rec-tag">ブラッシュアップ中</span></h4>
+          <p>Reading: バス釣り個人向けの製品 LP。既存トークンを保ち、実写で空気を出し、画面で中身を証明する。
+            見出し・本文・実画面を大きく置き、空の余白で伸ばさない。
+            ヒーロー以外は写真が空気、画面が証拠。等幅3カード、紫グラデ暗転、左右交互3段は使わない。
+            CTA ラベルはページ全体で「無料で新規登録」「ログイン」。
+            ヘッダーから紹介節へスクロールできる。
+            以降の指摘はこの HTML を直して進める。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-h8.html">fishtrack/samples/ft-h8.html</a>
+            （完成版相当。CSS/JS 分離。対比は上の現状スクショ）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-h8.png" alt="現行ドラフト。ビューポート全面のヒーロー">
+            <figcaption>sample-ft-h8.png — ▲ 完成版相当。写真がブラウザ幅・高さいっぱい。コピーは左・縦中央。ヘッダーは白透過ロゴとページ内ナビ</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-h8-story.png" alt="現行ドラフト。釣行前の写真と水位画面">
+            <figcaption>sample-ft-h8-story.png — ▲ 完成版相当。左が湖面、右が水位画面の中身</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-h8-features.png" alt="現行ドラフト。機能2列。各カードに画像">
+            <figcaption>sample-ft-h8-features.png — ▲ 完成版相当。2列。空カードを伸ばさず、写真または画面を置く</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p id="ft-h9">検討過程の案A〜F（<a href="fishtrack/samples/ft-h8-a.html">a</a>／
+        <a href="fishtrack/samples/ft-h8-b.html">b</a>／
+        <a href="fishtrack/samples/ft-h8-c.html">c</a>／
+        <a href="fishtrack/samples/ft-h8-d.html">d</a>／
+        <a href="fishtrack/samples/ft-h8-e.html">e</a>／
+        <a href="fishtrack/samples/ft-h8-f.html">f</a>）と
+        旧実画面サンプル（<a href="fishtrack/samples/ft-h9-a.html">ft-h9-a.html</a>／
+        <a href="fishtrack/samples/ft-h9-b.html">ft-h9-b.html</a>）と
+        <span id="ft-h10">旧説明サンプル</span>
+        （<a href="fishtrack/samples/ft-h10-a.html">ft-h10-a.html</a>／
+        <a href="fishtrack/samples/ft-h10-b.html">ft-h10-b.html</a>）は残置。
+        判断の正は <code>ft-h8.html</code>。</p>
+      <h4>書体 — 採用済み</h4>
+      <p><strong>M PLUS 2</strong> をアプリ全体（<code>--font-sans</code>）で自己ホスト済み。
+        Google Fonts CDN は CSP で不可。Inter / Poppins / Montserrat は使わない。
+        検討過程のサンプルは
+        <a href="fishtrack/samples/ft-h8-type-mplus2.html">ft-h8-type-mplus2.html</a>。</p>
+      <p><strong>実装:</strong> 書体済み。製品 LP は現行ドラフト（<code>ft-h8.html</code>）のブラッシュアップ中。未着手。</p>
+    </article>
+
+    <article class="issue" id="ft-o13">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O13 — フィールド依頼レビューで承認／見送り行の操作が「—」
+      </h2>
+      <p class="label">画面: 管理者 フィールド依頼レビュー（PC）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/fishtrack/admin/field-request/list</code>
+            （<code>admin/field_request_list.html</code>）</li>
+          <li><strong>位置:</strong> 表の「操作」列。審査待ちだけ
+            <code>details.ft-admin-fr</code>（承認・見送り）。
+            承認／見送り済みはセルが「—」のみ</li>
+          <li><strong>対象外:</strong> 一般ユーザーの
+            <code>/fishtrack/field-request/list</code>（<a href="#ft-o10">FT-O10</a>）、
+            行内の承認フォームそのものの複雑さ</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        状況フィルタを「すべて」にすると、承認・見送り済みの行は操作列が
+        <strong>「—」だけ</strong>で、依頼内容（座標・名称・依頼者メモ）を
+        一覧から開き直せない。審査待ちだけ行内 <code>details</code> がある。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-admin-field-request-empty.png"
+               alt="管理者フィールド依頼レビューの操作列がダッシュ">
+          <figcaption>pc-admin-field-request-empty.png — ▲ 操作列が「—」。詳細へのリンクがない</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>監査:</strong> 過去依頼の根拠を後から確認できない（誤承認の見直しが困難）</li>
+        <li><strong>一貫性:</strong> マイフィールド一覧は行から詳細へ行けるのに、管理者レビューだけ行き止まり</li>
+        <li><strong>到達:</strong> 審査待ち以外は URL 直打ち以外に詳細がない</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong>。案A／案Bの違い:
+        <strong>操作列に常時「詳細」リンクを置くか</strong>（A）vs
+        <strong>行クリックで詳細へ行き操作列を廃止するか</strong>（B）。
+        どちらも審査待ちの承認 UI は詳細画面へ集約する想定。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 全行に詳細リンク <span class="rec-tag">推奨</span></h4>
+          <p>状況に関わらず操作列に「詳細」を置く。
+            メリット: アフォーダンスが明示的。デメリット: 列は残る。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o13-a.html">fishtrack/samples/ft-o13-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o13-a.png" alt="FT-O13 案A">
+            <figcaption>sample-ft-o13-a.png — ▲ 下の変更後は全行に「詳細」</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 行クリックで詳細</h4>
+          <p>マイフィールド一覧と同じく行全体をクリック。操作列の「—」は廃止。
+            メリット: 列が減り密度が上がる。
+            デメリット: クリック可能だと分かりにくい（ヒント文が必要）。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o13-b.html">fishtrack/samples/ft-o13-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o13-b.png" alt="FT-O13 案B">
+            <figcaption>sample-ft-o13-b.png — ▲ 下の変更後は行が詳細へ（操作列なし）</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。</p>
+    </article>
+
+    <article class="issue" id="ft-o12">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O12 — ユーザー管理で空の統計カードが一覧を押し下げ、検索がない
+      </h2>
+      <p class="label">画面: 管理者 ユーザー管理（PC）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/fishtrack/admin/users</code>
+            （<code>admin/user_list.html</code>）</li>
+          <li><strong>位置:</strong> 先頭の
+            <code>.admin-stats-section</code>（空でも
+            <code>.stat-card</code>＋canvas を表示）の下に
+            <code>.admin-users-section</code> の表。検索 UI なし</li>
+          <li><strong>対象外:</strong> 統計グラフ自体の有無（データがあるときの可視化は有用）</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        ローカル等で集計が空でも「新規ユーザー数（日次）」「アクティブユーザー数（週次）」の
+        <strong>大きな空カード</strong>が先に出る。ユーザー一覧はスクロール先。
+        メール／ID の検索がなく、列が多い表は横スクロールになる。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-admin-users-no-search.png"
+               alt="ユーザー管理の空統計カード">
+          <figcaption>pc-admin-users-no-search.png — ▲ 空チャートが一覧より先。検索欄なし</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>管理:</strong> 日常作業（特定ユーザーを探す・削除）が一覧到達まで遅れる</li>
+        <li><strong>空状態:</strong> 「データがありません」と空カードが二重で縦を食う</li>
+        <li><strong>スケール:</strong> ユーザー増後に検索がないと表走査しかない</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong>。案A／案Bの違い:
+        <strong>一覧＋検索を先頭に上げ空統計を折りたたむか</strong>（A）vs
+        <strong>並びは維持し空カードだけ出さないか</strong>（B）。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 一覧と検索を先に <span class="rec-tag">推奨</span></h4>
+          <p>メール／ID 検索とユーザー表をページ先頭。空の統計は折りたたみ。
+            メリット: 管理の主作業がファーストビュー。
+            デメリット: 統計を毎日見る運用なら1クリック増。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o12-a.html">fishtrack/samples/ft-o12-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o12-a.png" alt="FT-O12 案A">
+            <figcaption>sample-ft-o12-a.png — ▲ 下の変更後は検索＋一覧が先、統計は折りたたみ</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 空カードを出さないだけ</h4>
+          <p>並びは現状のまま、データが無いときは1行説明のみ。検索は付けない。
+            メリット: 変更最小。デメリット: 検索欠如は残る。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o12-b.html">fishtrack/samples/ft-o12-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o12-b.png" alt="FT-O12 案B">
+            <figcaption>sample-ft-o12-b.png — ▲ 下の変更後は空カードなし（検索は未追加）</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。</p>
+    </article>
+
+    <article class="issue" id="ft-o10">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O10 — フィールド追加依頼がナビにもマイフィールドにも無い
+      </h2>
+      <p class="label">画面: マイフィールド／フィールド追加依頼一覧（一般ユーザー）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/fishtrack/field</code>（マイフィールド、
+            <code>field_area/list.html</code> の
+            <code>.card-header .filter-actions</code>）と
+            <code>/fishtrack/field-request/list</code>（直打ちで到達）</li>
+          <li><strong>位置:</strong> ヘッダーは「フィールド新規追加」「パブリックフィールド一覧」のみ。
+            グローバルナビにも依頼リンクなし</li>
+          <li><strong>対象外:</strong> パブリック一覧をヘッダーへ出す話（<a href="#ft-o6">FT-O6</a>）、
+            管理者の依頼レビュー（<a href="#ft-o13">FT-O13</a>）</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        パブリック化の依頼画面は存在するが、マイフィールドからもナビからも
+        <strong>リンクが無い</strong>。初回ユーザーは URL を知らないと使えない。
+        依頼一覧を開くと「自分の依頼」と分かるが、入口が孤立している。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-my-fields-header-no-request.png"
+               alt="マイフィールドヘッダーに依頼ボタンが無い">
+          <figcaption>pc-my-fields-header-no-request.png — ▲ 新規追加とパブリック一覧のみ</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-field-request-orphan.png"
+               alt="フィールド追加依頼画面（直打ち）">
+          <figcaption>pc-field-request-orphan.png — ▲ 画面自体はあるが導線が無い</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>発見性:</strong> 機能があっても入口が無いと使われない</li>
+        <li><strong>初回:</strong> 「自分のフィールドを公開したい」ときに新規追加と依頼の違いが分からない</li>
+        <li><strong>運用:</strong> 管理者レビュー（O13）の前提である依頼が一般側から届きにくい</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong>。案A／案Bの違い:
+        <strong>ヘッダーに依頼ボタンを足すか</strong>（A）vs
+        <strong>見出し下の説明リンクだけにするか</strong>（B）。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — マイフィールドに依頼ボタン <span class="rec-tag">推奨</span></h4>
+          <p>既存の「フィールド新規追加」「パブリック一覧」の横に
+            「フィールド追加依頼」を置く。
+            メリット: 同系統の操作が並ぶ。デメリット: ヘッダーボタンが1つ増える。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o10-a.html">fishtrack/samples/ft-o10-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o10-a.png" alt="FT-O10 案A">
+            <figcaption>sample-ft-o10-a.png — ▲ 下の変更後に「フィールド追加依頼」</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 説明リンクで誘導</h4>
+          <p>ボタンは増やさず、見出し下に短い説明＋リンク。
+            メリット: ヘッダー密度を維持。デメリット: スキャンで落ちやすい。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o10-b.html">fishtrack/samples/ft-o10-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o10-b.png" alt="FT-O10 案B">
+            <figcaption>sample-ft-o10-b.png — ▲ 下の変更後は説明文リンク</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。関連: <a href="#ft-o6">FT-O6</a>。</p>
+    </article>
+
+    <article class="issue" id="ft-o9">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O9 — 釣果登録が長く、必須項目が分からない
+      </h2>
+      <p class="label">画面: 釣果の追加／編集（PC）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/fishtrack/catch/new</code>
+            （<code>catch/form.html</code>、
+            <code>#catch-form</code>／<code>.catch-form-section</code>）</li>
+          <li><strong>位置:</strong> 「日時・場所」「魚種・計測・環境」「タックル」が
+            同列のセクションとして縦に続く。ラベルに必須印なし</li>
+          <li><strong>対象外:</strong> 写真ステップ（任意のまま先頭でよい）、
+            ホームからの到達（<a href="#ft-o8">FT-O8</a>）</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        保存に必要な日付・フィールドと、後からでもよいタックル・位置・メモが
+        <strong>同じ視覚的重み</strong>で並ぶ。必須の印がなく、初回は
+        「全部埋めないと送れない」ように見える。フォームが長い。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-catch-new-form-long.png"
+               alt="釣果登録フォームが長い">
+          <figcaption>pc-catch-new-form-long.png — ▲ 必須印なし。タックル等が同列</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>初回:</strong> 最短で記録する経路が見えない（離脱・未保存）</li>
+        <li><strong>誤操作:</strong> 任意項目を必須と誤解して入力コストが上がる</li>
+        <li><strong>視認:</strong> 長い1画面で「今どこまで必須か」が分からない</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong>。案A／案Bの違い:
+        <strong>必須印に加え任意を折りたたむか</strong>（A）vs
+        <strong>必須印だけ付けて長さは維持するか</strong>（B）。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 必須印＋任意は折りたたみ <span class="rec-tag">推奨</span></h4>
+          <p>日付・フィールド等に <code>*</code>。タックル・位置・メモは
+            <code>details</code>（任意）。写真は任意のまま先頭。
+            メリット: 初回の最短経路が短い。
+            デメリット: タックルを毎回書く人は1クリック増。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o9-a.html">fishtrack/samples/ft-o9-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o9-a.png" alt="FT-O9 案A">
+            <figcaption>sample-ft-o9-a.png — ▲ 下の変更後は必須印とタックル折りたたみ</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 必須印だけ</h4>
+          <p>フォームの長さは維持し、保存に必要な項目にだけ印を付ける。
+            メリット: 学習コスト最小。デメリット: 縦の長さは残る。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o9-b.html">fishtrack/samples/ft-o9-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o9-b.png" alt="FT-O9 案B">
+            <figcaption>sample-ft-o9-b.png — ▲ 下の変更後は必須印のみ（折りたたみなし）</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。</p>
+    </article>
+
+    <article class="issue" id="ft-o8">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O8 — ホームにデータがあるとき記録CTAが無く「一覧へ」だけ
+      </h2>
+      <p class="label">画面: ホーム（ログイン後）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> ホーム
+            （<code>home.html</code>、
+            <code>.home-dashboard__section-header</code>）</li>
+          <li><strong>位置:</strong> 「最近の釣果」「最近の釣行」等の見出し右。
+            データがあるときは「釣果一覧へ」「釣行一覧へ」のみ。
+            空のときだけ本文に「釣果を追加」リンク</li>
+          <li><strong>対象外:</strong> 釣果一覧画面の「釣果を追加」（そこにはある）、
+            BEST5 の順位表示（<a href="#ft-h7">FT-H7</a>）</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        一度記録するとホームの主CTAが<strong>閲覧（一覧へ）だけ</strong>になる。
+        日常の「もう1件記録する」はヘッダーや一覧を経由する必要がある。
+        空状態では追加リンクが出るため、データ有無で行動の入口が逆転している。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-dashboard-no-add-cta.png"
+               alt="ホームに釣果を追加ボタンが無い">
+          <figcaption>pc-dashboard-no-add-cta.png — ▲ 節ヘッダーは「一覧へ」のみ</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>主目的:</strong> 釣行ログのホームなのに、継続記録より閲覧が先に見える</li>
+        <li><strong>初回以降:</strong> 使い始めてから記録が遠くなる（オンボードと逆）</li>
+        <li><strong>一貫性:</strong> 一覧画面には追加ボタンがあるのにホームには無い</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong>。案A／案Bの違い:
+        <strong>各節ヘッダーに記録CTAを足すか</strong>（A）vs
+        <strong>ホーム先頭に記録バーを1本置くか</strong>（B）。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 節ヘッダーに記録CTA <span class="rec-tag">推奨</span></h4>
+          <p>「最近の釣果」に「釣果を追加」、「最近の釣行」に「釣行を追加」。
+            「一覧へ」は副次のまま。
+            メリット: 見ている節の次アクションが近い。
+            デメリット: ヘッダーボタンが節ごとに増える。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o8-a.html">fishtrack/samples/ft-o8-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o8-a.png" alt="FT-O8 案A">
+            <figcaption>sample-ft-o8-a.png — ▲ 下の変更後は「釣果を追加」が主CTA</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 先頭に記録バー</h4>
+          <p>ホーム最上部に釣果／釣行の追加をまとめた1行。各節の「一覧へ」は現状維持。
+            メリット: 記録入口が1か所。デメリット: スクロール後の節からは遠い。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o8-b.html">fishtrack/samples/ft-o8-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o8-b.png" alt="FT-O8 案B">
+            <figcaption>sample-ft-o8-b.png — ▲ 下の変更後は先頭の記録バー</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。</p>
+    </article>
+
+    <article class="issue" id="ft-o6">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O6 — グローバルヘッダーがフラット同列でスキャンしづらい
+      </h2>
+      <p class="label">画面: 全画面共通ヘッダー（PC 横並び／SP ドロワー）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> ログイン後の全ページ共通
+            <code>partials/site_header.html</code>（
+            <code>.ft-site-header</code>／<code>#ftSiteNav.ft-site-nav</code>）</li>
+          <li><strong>位置:</strong> ブランド下のグローバルナビ一式
+            （ホーム〜水位・アカウント領域。管理者メニュー含む）</li>
+          <li><strong>部品:</strong> フラットな <code>&lt;a&gt;</code> 群＋
+            <code>details.ft-nav-tackle</code>。現在地用の
+            <code>aria-current</code>／active クラスは無し</li>
+          <li><strong>対象外:</strong> 「タックルを探す」内のプラグ／ワーム同居は
+            <a href="#ft-o2">FT-O2</a>（本 ID はヘッダー全体の IA／スキャン性）</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        到達自体は可能だが、<strong>今の形は「使いやすい」とは言い切れない</strong>。
+        記録（釣果・釣行・マイ*）／探す（タックル）／参照（水位）が
+        <strong>同じ重みのフラット同列</strong>で並び、視線の区画がない。
+        現在ページの視覚的手がかりがなく、PC では折返しでアカウント行が離れ、
+        SP ドロワーも長い同列リストになる。
+        <code>/public-fields</code>（パブリックフィールド）はヘッダーに無く、
+        他画面からの到達頼み。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-header-nav-current.png"
+               alt="PC ヘッダー現状（タックルを探す展開）">
+          <figcaption>pc-header-nav-current.png — ▲ PC: フラット同列＋ドロップダウン。現在地なし</figcaption>
+        </figure>
+        <figure class="sp">
+          <img src="fishtrack/sp-header-drawer-current.png"
+               alt="SP ドロワー現状">
+          <figcaption>sp-header-drawer-current.png — ▲ SP: 長いフラット一覧。ホームに current 表示なし</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>スキャン性:</strong> カテゴリ混在の同列リストは、目的リンクを探すコストが高い（特に SP）</li>
+        <li><strong>現在地:</strong> 「今どこにいるか」がヘッダーから読めず、迷子・重複遷移が増えやすい</li>
+        <li><strong>発見性:</strong> パブリックフィールドなど参照系の入口がヘッダーに無く、水位と並ぶ期待とずれる</li>
+        <li><strong>密度:</strong> 設定／ログアウトがコンテンツナビと同列で競合し、折返し時に階層が崩れて見える</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong>。案A／案Bの違い:
+        <strong>記録／探す／参照のグループ化まで踏み込むか</strong>（A）vs
+        <strong>フラットを維持して現在地＋アカウント集約に留めるか</strong>（B）。
+        FT-O2（プラグ／ワーム分離）はどちらの案とも併用可。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 記録／探す／参照グループ＋現在地 <span class="rec-tag">推奨</span></h4>
+          <p>ナビを意味グループで区画し、現在地（
+            <code>aria-current=&quot;page&quot;</code>）を付与。
+            参照に水位＋パブリックフィールド。アカウントは右側メニューへ。
+            メリット: スキャンと発見性が上がる。
+            デメリット: 見た目・DOM の変更量が大きい（学習コストあり）。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o6-a.html">fishtrack/samples/ft-o6-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o6-a.png" alt="FT-O6 案A">
+            <figcaption>sample-ft-o6-a.png — ▲ 上＝フラット／下＝記録・探す・参照＋現在地</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — フラット維持＋現在地とアカウント集約</h4>
+          <p>構造は現状のまま、現在地表示とアカウントメニュー（設定／ログアウト）を追加。
+            パブリックフィールドを水位隣に追加。並びは利用頻度寄りに微調整。
+            メリット: 変更が小さく学習コストが低い。
+            デメリット: IA の混在は残る（スキャン改善は限定的）。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o6-b.html">fishtrack/samples/ft-o6-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o6-b.png" alt="FT-O6 案B">
+            <figcaption>sample-ft-o6-b.png — ▲ 上＝現状／下＝現在地＋アカウント集約</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。
+        <code>site_header.html</code>／
+        <code>site_header_drawer.css</code>／ナビ active 判定を同一リリースで揃える想定。
+        関連: <a href="#ft-o2">FT-O2</a>。</p>
+    </article>
+
+    <article class="issue" id="ft-o4">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O4 — 管理者向けに水位未対応のパブリックフィールドが見えない／対象外にできない
+      </h2>
+      <p class="label">画面: 水位データ <code>/water-level</code>・パブリックフィールド一覧 <code>/public-fields</code>（管理者運用）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/water-level</code>（対応済みカードのみ）、
+            <code>/public-fields</code>（水位列・フィルタ）</li>
+          <li><strong>判定:</strong>
+            <code>Field.water_level_source_type</code> ＋観測所／レンタル店コード
+            （一覧バッジは
+            <code>obs_ofc_cd/obs_obs_cd</code> または
+            <code>rental_boat_shop_id</code>）</li>
+          <li><strong>欠落:</strong> 「水位データが公開されていない」と管理者が判断した
+            <strong>対象外</strong>フラグ／見た目が無い</li>
+          <li><strong>対象外（本診断の範囲外）:</strong> 一般ユーザーの水位カード閲覧 UX、FT-O3 の鮮度表示</li>
+        </ul>
+      </div>
+      <p><strong>表示対象（2026-08-13 確認）:</strong>
+        水位列・水位対応フィルタは<strong>管理者限定ではない</strong>。
+        <code>/public-fields</code> は <code>@require_access_level("limited")</code> で、
+        ログイン済み一般ユーザーにも同じ列が出る（<code>is_admin</code> 分岐なし）。
+        列の値は「対応」バッジか「-」。
+        <strong>案Bをそのまま入れると</strong>未対応／対象外バッジ＋進捗バーが
+        limited 全員に見える。運用専用にするなら案A、または案Bに管理者ゲートが必要。
+        採用待ち（本セッションでは実装しない）。</p>
+
+      <h3>事象</h3>
+      <p>
+        理想は「パブリック Field は原則すべて水位対応」。しかし現状:
+      </p>
+      <ul>
+        <li><code>/water-level</code> は<strong>ソース設定済み</strong>だけを並べ、未対応パブリックは画面に出ない</li>
+        <li><code>/public-fields</code> は水位列が「対応」か「-」のみで、要対応の強調が弱い</li>
+        <li>公開水位が無いフィールドを管理者が<strong>ギャップから除外</strong>する状態・見た目が無い</li>
+      </ul>
+      <p>
+        ローカル実測（2026-08-13）: パブリック 9 件中 対応 5／未対応 4
+        （霞ヶ浦・テスト・あああ・chizu-field など）。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-water-level-list-covered-only.png"
+               alt="水位一覧は対応済みのみ">
+          <figcaption>pc-water-level-list-covered-only.png — ▲ 水位画面は対応済みカードのみ（未対応ギャップ非表示）</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-public-fields-no-water.png"
+               alt="パブリック一覧の水位列がハイフン">
+          <figcaption>pc-public-fields-no-water.png — ▲ 水位対応=なし。水位列は「-」のみ（対象外区分なし）</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>運用ギャップ:</strong> 「全パブリックを水位対応に近づける」目標の進捗が見えない</li>
+        <li><strong>誤った未対応扱い:</strong> 公開データが無いフィールドも「要対応」と区別できず、作業リストが濁る</li>
+        <li><strong>場所の分散:</strong> 水位画面とパブリック一覧で情報が分断され、管理者の到達コストが高い</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong>。案A／案Bの違い:
+        <strong>水位画面に管理者専用カバレッジを置くか</strong>（A）vs
+        <strong>パブリック一覧の水位列を強化するか</strong>（B）。
+        いずれも「公開なしとして除外」→薄く取消線の<strong>対象外</strong>見た目が必須。
+        実装時は Field に除外フラグ（例:
+        <code>water_level_unavailable</code>）を追加する想定。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 水位画面の管理者カバレッジ <span class="rec-tag">推奨</span></h4>
+          <p><code>/water-level</code> 下部に要対応／対象外パネル。
+            メリット: 水位運用の文脈でギャップを一気に処理できる。
+            デメリット: 管理者専用 DOM が増える。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o4-a.html">fishtrack/samples/ft-o4-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o4-a.png" alt="FT-O4 案A">
+            <figcaption>sample-ft-o4-a.png — ▲ 上＝対応のみ／下＝要対応＋対象外（取消線）</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — パブリック一覧の水位状態強化</h4>
+          <p>水位列を 対応／未対応／対象外バッジ＋進捗バー。
+            メリット: 既存一覧を拡張するだけ。
+            デメリット: 水位運用の導線が一覧側に寄る。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o4-b.html">fishtrack/samples/ft-o4-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o4-b.png" alt="FT-O4 案B">
+            <figcaption>sample-ft-o4-b.png — ▲ 上＝「-」／下＝未対応バッジ＋対象外行</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。採用待ち。
+        水位列は limited 全員に出るため、案Bを一般向けに出すかは要判断。</p>
+    </article>
+
+    <article class="issue" id="ft-o3">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O3 — 水位一覧で更新の古いフィールドが鮮度の新しいものと同見た目
+      </h2>
+      <p class="label">画面: 水位データ一覧 <code>/water-level</code></p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> <code>/water-level</code>（水位データ一覧）</li>
+          <li><strong>位置:</strong> マップ下のリザーバーカードグリッド
+            <code>.water-level-cards</code>／各
+            <code>.water-level-card</code></li>
+          <li><strong>部品:</strong> 水位値
+            <code>.water-level-card__level</code>・観測日
+            <code>.water-level-card__date</code>
+            （日付は表示されるが鮮度の視覚差なし）</li>
+          <li><strong>並び:</strong> フィールド名順（
+            <code>_get_water_level_fields</code> の
+            <code>order_by(Field.name)</code>）。鮮度ソートなし</li>
+          <li><strong>対象外:</strong> 水位詳細グラフ、フィールドマップのピン見た目</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        観測日が古いフィールドも、直近更新のフィールドと<strong>同じカード見た目・同じ強調</strong>で並ぶ。
+        日付は小さなテキストとして出るだけで、「いま使える水位か」が一覧上で伝わらない。
+        ローカル実測（ai-user・2026-08-13）: 亀山湖の最新観測は
+        <strong>2026-07-29</strong>（約15日前）だが、通常カードと同型。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-water-level-list-stale-same.png"
+               alt="水位一覧で古い観測日も通常カード">
+          <figcaption>pc-water-level-list-stale-same.png — ▲ 亀山湖 2026-07-29。鮮度バッジ・弱め表示・グループ分けなし</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>信頼感:</strong> 古い水位が「現在の状態」と同列に見え、判断を誤らせうる</li>
+        <li><strong>発見性:</strong> 日付を読み比べないと古さが分からない（フィールド増えるほど顕著）</li>
+        <li><strong>並びの不自然さ:</strong> 名前順のため、古いカードが新しいカードと視覚的にも位置的にも混在する</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong>。案A／案Bの違い:
+        <strong>カード内の視覚で鮮度を示すか</strong>（A）vs
+        <strong>一覧を鮮度グループに分けるか</strong>（B）。
+        閾値は例として<strong>7日</strong>（バッチ日次想定。確定は実装時）。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 古いカードを弱める <span class="rec-tag">推奨</span></h4>
+          <p><code>water-level-card--stale</code> で薄く・破線枠・
+            「更新が古い」バッジ・相対日数。並びは維持でも可。
+            メリット: グリッド密度を保ちつつ一目で分かる。
+            デメリット: 閾値設計が必要。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o3-a.html">fishtrack/samples/ft-o3-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o3-a.png" alt="FT-O3 案A">
+            <figcaption>sample-ft-o3-a.png — ▲ 上＝同見た目／下＝古いカード弱め＋バッジ</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 鮮度でグループ分け</h4>
+          <p>「最近の更新」「しばらく更新なし」に分割し、古いグループを見出しで明示。
+            メリット: 混在感が解消される。
+            デメリット: 縦スクロール・見出しが増える。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o3-b.html">fishtrack/samples/ft-o3-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o3-b.png" alt="FT-O3 案B">
+            <figcaption>sample-ft-o3-b.png — ▲ 上＝混在／下＝最近／しばらく更新なし</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。
+        テンプレ <code>water_level/list.html</code> と
+        <code>water_level.css</code>。鮮度判定は
+        <code>latest_observed_date</code> 基準。</p>
+    </article>
+
+    <article class="issue" id="ft-o2">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O2 — 「タックルを探す」でプラグとワームが「ルアー」1本に同居
+      </h2>
+      <p class="label">画面: 全画面共通ヘッダー（PC ドロップダウン／SP ドロワー）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> 全ページ共通ヘッダー
+            <code>partials/site_header.html</code></li>
+          <li><strong>位置:</strong> 「タックルを探す」ドロップダウン内の
+            「ルアーを探す」1 リンク（ロッド／リールと同列）</li>
+          <li><strong>遷移先:</strong> <code>/lure-masters</code>
+            （着地後にページ内 <code>switch-nav</code> でプラグ／ワーム切替。既定はセッションまたはワーム）</li>
+          <li><strong>対象外:</strong> マイタックル側のプラグ／ワーム一覧、ロッド／リールを探す自体</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        ロッド・リールはヘッダーから種別ごとに直接入れるのに対し、
+        プラグとワームは「ルアーを探す」1 本にまとめられ、
+        <strong>着地後のタブ切替まで種別が選べない</strong>。
+        「ワームだけ見たい／プラグだけ見たい」意図がヘッダー段階で表現できない。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-header-tackle-search-dropdown.png"
+               alt="タックルを探すドロップダウン（ルアー1本）">
+          <figcaption>pc-header-tackle-search-dropdown.png — ▲ 「ルアーを探す」がロッド／リールと同列の単一入口</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-lure-masters-plug-worm-tabs.png"
+               alt="ルアーマスタ着地後のプラグ／ワームタブ">
+          <figcaption>pc-lure-masters-plug-worm-tabs.png — ▲ 種別分岐は着地後のタブまで後回し</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>発見性:</strong> プラグとワームは運用上別カテゴリなのに、入口ラベルが「ルアー」一括で意図が伝わりにくい</li>
+        <li><strong>到達コスト:</strong> 目的の種別へ行くのに「ルアー」→タブ切替の 2 段階が必要（ロッド／リールは 1 段階）</li>
+        <li><strong>一貫性:</strong> タックル探索の粒度がロッド／リールとルアーで揃っていない</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong>。案A／案Bの違い:
+        <strong>ドロップダウンをロッド／リールと同列の 4 項目にするか</strong>（A）vs
+        <strong>「ルアー」語彙を残して入れ子にするか</strong>（B）。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — プラグ／ワームを同列分離 <span class="rec-tag">推奨</span></h4>
+          <p>「ルアーを探す」を廃止し、「プラグを探す」「ワームを探す」をロッド／リールと同列に置く。
+            直リンクは <code>/lure-masters?tab=plug|worm</code>。
+            メリット: 1 クリックで種別確定・他タックルと粒度一致。
+            デメリット: ドロップダウン項目が 1 増える。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o2-a.html">fishtrack/samples/ft-o2-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o2-a.png" alt="FT-O2 案A">
+            <figcaption>sample-ft-o2-a.png — ▲ 上＝ルアー1本／下＝プラグ・ワーム分離</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — ルアー配下に入れ子</h4>
+          <p>「ルアー」ラベルは残し、直下にプラグ／ワームのサブリンクをインデント表示。
+            メリット: 「ルアー」語彙を維持。
+            デメリット: 階層が増え、SP ドロワーではさらに縦に伸びる。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o2-b.html">fishtrack/samples/ft-o2-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o2-b.png" alt="FT-O2 案B">
+            <figcaption>sample-ft-o2-b.png — ▲ 上＝単一リンク／下＝ルアー配下に入れ子</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。
+        <code>site_header.html</code> のドロップダウン／SP ドロワーと、
+        <code>/lure-masters</code> の <code>tab</code> クエリ初期化を同一リリースで揃える想定。</p>
+    </article>
+
+    <article class="issue" id="ft-h7">
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H7 — ホーム BEST5 に順位表示がなく 1 位が分かりづらい
+      </h2>
+      <p class="label">画面: PC FishTrack ホーム <code>/dashboard</code>（年次 BEST5／ALL TIME BEST5）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> <code>/dashboard</code>（ホーム）</li>
+          <li><strong>位置:</strong> 「最近の釣行」の下 — <code>{{ year }} BEST5</code> と
+            <code>ALL TIME BEST5</code> の各セクション</li>
+          <li><strong>部品:</strong> <code>.home-dashboard__section</code> 内の
+            <code>.catch-card-grid</code> ／
+            <code>partials/_home_catch_card_grid.html</code></li>
+          <li><strong>対象外:</strong> 「最近の釣果」カード（同パーシャルだがランキングではない）、
+            釣果一覧ページ</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        BEST5 見出しはあるが、カードは「最近の釣果」と同型で<strong>順位バッジ・番号・1位強調がない</strong>。
+        ソート順（サイズ降順）だけに依存するため、グリッド並びではどれが 1 位か一目で分からない。
+        ローカル AI 環境ではサイズ付き釣果が少なく 1 件表示でも、構造上の問題は同じ。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-dashboard-best5-before.png" alt="ダッシュボード BEST5（現状）">
+          <figcaption>pc-dashboard-best5-before.png — ▲ 2026／ALL TIME BEST5。順位表記なし・通常釣果カードと同型</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>発見性:</strong> 「BEST5」なのにランキング感がなく、1 位の達成感・比較が弱い</li>
+        <li><strong>認知コスト:</strong> サイズ数値をカードごとに見比べないと順位が確定しない</li>
+        <li><strong>一貫性:</strong> セクション目的（ランキング）と UI（平列カード）が不一致で味気ない</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong>。案A／案Bの違い: <strong>グリッド密度を維持してバッジで順位を示すか</strong>（A）vs
+        <strong>縦リスト＋大順位で視線誘導を最大化するか</strong>（B）。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 順位バッジ＋1位強調 <span class="rec-tag">推奨</span></h4>
+          <p>既存 <code>catch-card</code> グリッド維持。各カードに <code>#1</code>〜<code>#5</code>。
+            1 位のみ枠・サイズ色を軽く強調。メリット: 縦占有を増やさない。
+            デメリット: 多列時は数字がやや小さい。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-h7-a.html">fishtrack/samples/ft-h7-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-h7-a.png" alt="FT-H7 案A">
+            <figcaption>sample-ft-h7-a.png — ▲ 上＝順位なし／下＝#1〜#5 バッジ＋1位強調</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 縦リスト＋大順位</h4>
+          <p>BEST5 だけ縦1列。左に大きな順位数字。メリット: 1位の発見性が最大。
+            デメリット: ホームのスクロール量が増える。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-h7-b.html">fishtrack/samples/ft-h7-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-h7-b.png" alt="FT-H7 案B">
+            <figcaption>sample-ft-h7-b.png — ▲ 上＝グリッド現状／下＝左大数字の縦ランキング</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。採用案が決まれば
+        <code>home.html</code>／パーシャルに順位 DOM、CSS は
+        <code>fishtrack_tail.css</code> 想定。</p>
+    </article>
+
+    <article class="issue" id="ft-o1">
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O1 — ルアー釣果サマリにトレーラー使用分が含まれない
+      </h2>
+      <p class="label">画面: マイタックル ワーム／プラグ一覧・製品詳細（釣果サマリ）</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/tackle/?kind=worm|plug</code>、
+            <code>/tackle/worm/product/&lt;id&gt;</code>・
+            <code>/tackle/plug/product/&lt;id&gt;</code></li>
+          <li><strong>位置:</strong> 一覧の釣果数／最大・平均サイズ列、詳細の「釣果サマリ」カード</li>
+          <li><strong>集計:</strong>
+            <code>batch_catch_summaries_for_lure_inventories</code>／
+            <code>lure_product_catch_detail</code>／
+            <code>_load_catches_for_lure_inventories</code>
+            （いずれも <code>Catch.lure_inventory_id</code> のみ）</li>
+          <li><strong>関連:</strong> 釣果一覧の
+            <code>?lureInventoryId=</code> 絞り込みも同様に
+            <code>trailer_inventory_id</code> を見ない（一覧リンクからもトレーラー釣果が欠ける）</li>
+          <li><strong>対象外:</strong> ロッド／リール保有サマリ、フィールド／エリアサマリ</li>
+        </ul>
+      </div>
+
+      <h3>事象</h3>
+      <p>
+        釣果にワームを<strong>トレーラー</strong>（<code>trailer_inventory_id</code>）として記録しても、
+        当該ワームの釣果サマリは <code>lure_inventory_id</code>（主ルアー）一致のみ集計するため
+        <strong>件数 0・サイズ —</strong> のままになる。
+        ローカル実測（ai-user）: Catch #41 は主ルアー=Dゾーンフライ、トレーラー=STEEZ クアッドフォーゼ
+        （シナモンブルーフレーク）・40.0cm。ワーム製品詳細の釣果サマリは <strong>0</strong>。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-worm-product-trailer-summary-zero.png"
+               alt="ワーム製品詳細の釣果サマリが0">
+          <figcaption>pc-worm-product-trailer-summary-zero.png — ▲ シナモンブルーフレーク保有ありだが釣果サマリ 0</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-worm-list-summary-cols.png"
+               alt="ワーム一覧でも釣果数が0">
+          <figcaption>pc-worm-list-summary-cols.png — ▲ 一覧行も釣果数 0（アクセシビリティ上も 0 / — / —）</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>実績の欠落:</strong> スピナーベイト等＋トレーラー運用の実績がワーム側から消える</li>
+        <li><strong>誤解:</strong> UI 上「使っていない」に見え、並べ替え（釣果が多い順）でも不利</li>
+        <li><strong>一貫性:</strong> 釣果詳細ではトレーラー行を表示するのに、サマリ集計だけ無視する</li>
+      </ul>
+
+      <h3>改善策</h3>
+      <p><strong>推奨: 案A</strong> — 集計キーを
+        <code>lure_inventory_id OR trailer_inventory_id</code> に変更（同一 Catch の二重計上なし）。
+        一覧・製品詳細・カラー別・内訳を同じ定義に揃える。</p>
+      <p><strong>案B</strong> — 案A の合計に加え、製品詳細だけ「主ルアー／トレーラー」内訳を表示。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — トレーラーを合算 <span class="rec-tag">推奨</span></h4>
+          <p>メリット: 実装が集計条件の拡張で済む・一覧密度を維持。
+            デメリット: 役割の内訳は見えない。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o1-a.html">fishtrack/samples/ft-o1-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o1-a.png" alt="FT-O1 案A">
+            <figcaption>sample-ft-o1-a.png — ▲ 上＝0件／下＝トレーラー合算で 1・40.0cm</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 合計＋役割内訳</h4>
+          <p>メリット: 主／トレーラーの貢献が分かる。
+            デメリット: 詳細 UI が増える（一覧は案Aと同値でよい）。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o1-b.html">fishtrack/samples/ft-o1-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o1-b.png" alt="FT-O1 案B">
+            <figcaption>sample-ft-o1-b.png — ▲ 上＝内訳なし0／下＝合計1＋トレーラー1</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> 未着手（診断のみ）。正本は
+        <code>tackle_catch_summary.py</code>。釣果一覧フィルタの OR 拡張も同一リリース推奨。</p>
+    </article>
 
     </section>
 
     <section id="resolved-issues" aria-labelledby="resolved-issues-title">
       <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
-      <p class="section-lead">再診断済み。改善前スクショとアフターを残す。</p>
+      <p class="section-lead">再診断済み。各課題はアコーディオン（既定クローズ）。解決日から1ヶ月経過した課題は削除する。</p>
 
-    <article class="issue" id="mp-h4">
+    <article class="issue" id="mp-o4" data-resolved-on="2026-08-13">
+      <details>
+      <summary>
+      <h2>
+        <span class="badge sev-low">LOW</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span>
+        MP-O4 — 管理者ユーザー一覧だけ前へ／次へのページング（案A 採用）
+      </h2>
+      </summary>
+      <p class="label">画面: 管理者 ユーザー管理（PC／SP）</p>
+      <p><strong>採用:</strong> 案A — 番号リンク＋全件数＋件/ページ（2026-08-13）。</p>
+      <p><strong>再診断:</strong> 2026-08-13 ローカル
+        <code>/admin/users?q=pager&amp;sort=created_at&amp;dir=desc&amp;perPage=10</code>・ai-admin。
+        番号 1／2／3（2 が <code>aria-current</code>）、全 25 件、件/ページ（10）。
+        ページ移動で検索・ソートを保持。件数 20 に変えると <code>page=1</code>。
+        狭幅では番号と件数が折り返す。図鑑は全件表示のまま（対象外）。</p>
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/admin/users</code>
+            （<code>admin/users.html</code>）。既定 50 件/ページ。許可 10／20／50／100</li>
+          <li><strong>位置（改善後）:</strong> 表下
+            <code>nav.pk-pagination</code>
+            （番号リンク／全 N 件／件/ページ）</li>
+          <li><strong>対象外:</strong> 図鑑・パーティ＆ボックス・設定は
+            <strong>全件の表表示でページャー無し</strong>（件数が多い画面でもスクロール）。
+            ページング UI の欠如ではなく設計</li>
+        </ul>
+      </div>
+      <h3>事象（改善前）</h3>
+      <p>
+        MyPokedex でページング部品があるのは管理者ユーザー一覧だけ。
+        前へ／次へと「1 / 3」テキストで、番号ジャンプも件数切替もなかった。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="mypokedex/pc-mp-dex-no-pager.png"
+               alt="図鑑は全件表示でページャーなし">
+          <figcaption>pc-mp-dex-no-pager.png — ▲ 図鑑は全件 pkTable（ページング対象外）</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="mypokedex/sample-mp-o4-a.png"
+               alt="MP-O4 案Aの変更前が現状の前へ次へ">
+          <figcaption>sample-mp-o4-a.png 上段 — ▲ 改善前相当の前へ／次へ（製品 CSS）</figcaption>
+        </figure>
+      </div>
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>管理者の管理しやすさ:</strong> ユーザーが 50 件を超えると中間ページへ届かない</li>
+        <li><strong>視認性:</strong> リンクが未スタイルで、他の <code>.btn</code> と揃っていない</li>
+        <li><strong>操作性:</strong> 図鑑側にページャーが無いこと自体は問題ではない（全件スキャンが主目的）</li>
+      </ul>
+      <h3>実施した改善</h3>
+      <p>案Aを製品実装。
+        <code>numbered_pagination</code> マクロと
+        <code>pagination_per_page.js</code>。
+        許可件数は FishTrack と同じ 10／20／50／100。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="mypokedex/pc-admin-users-pagination-after.png"
+               alt="管理者ユーザー一覧の番号型ページング（改善後・PC）">
+          <figcaption>pc-admin-users-pagination-after.png — ▲ 改善後。番号 1／2／3＋全 25 件＋件/ページ</figcaption>
+        </figure>
+        <figure class="sp">
+          <img src="mypokedex/sp-admin-users-pagination-after.png"
+               alt="管理者ユーザー一覧の番号型ページング（改善後・SP）">
+          <figcaption>sp-admin-users-pagination-after.png — ▲ 改善後。狭幅では番号と件数が折り返す</figcaption>
+        </figure>
+      </div>
+      <h3>改善策</h3>
+      <p>案A（採用）。図鑑・パーティは全件のまま変えない。</p>
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 番号＋全件数＋件/ページ <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル:
+            <a href="mypokedex/samples/mp-o4-a.html">mypokedex/samples/mp-o4-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="mypokedex/sample-mp-o4-a.png" alt="MP-O4 案A">
+            <figcaption>sample-mp-o4-a.png — ▲ 下の変更後は番号ボタン＋全件数</figcaption>
+          </figure>
+        </div>
+      </div>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o14" data-resolved-on="2026-08-13">
+      <details>
+      <summary>
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O14 — パブリックフィールド一覧のページングが標準と違う（案A 採用）
+      </h2>
+      </summary>
+      <p class="label">画面: パブリックフィールド一覧（PC／SP）</p>
+      <p><strong>採用:</strong> 案A — 標準の番号型（番号＋全件数＋件/ページ）を
+        <code>macros/pagination.html</code> の共通部品にし、他一覧にも適用（2026-08-13）。</p>
+      <p><strong>再診断:</strong> 2026-08-13 ローカル
+        <code>/public-fields?perPage=1</code>・ai-admin —
+        箇条書き ul なし。番号 1／2／3／…／9、全 9 件、件/ページ（選択 1）。
+        釣果 <code>/catch/?perPage=1</code> も番号＋全件数＋件/ページ。MP-O4 は対象外。</p>
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> <code>/public-fields</code>
+            （<code>field_area/public_fields_list.html</code>）</li>
+          <li><strong>位置（改善後）:</strong>
+            <code>nav.pagination</code> の番号リンク／全 N 件／件/ページ</li>
+          <li><strong>対象外:</strong> MyPokedex MP-O4。マイフィールド・ルアーマスタ・水位・マスタ系はページャー無し</li>
+        </ul>
+      </div>
+      <h3>事象（改善前）</h3>
+      <p>
+        パブリックフィールド一覧だけ、ページングが未スタイルの
+        <code>&lt;ul&gt;</code> 箇条書きになり、「1 / 9 ページ（9件）」と「次へ」だけが出ていた。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-public-fields-pagination.png"
+               alt="パブリックフィールド一覧のページングが箇条書き">
+          <figcaption>pc-public-fields-pagination.png — ▲ 改善前。黒点の ul と「1 / 9 ページ（9件）」</figcaption>
+        </figure>
+      </div>
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>一貫性:</strong> 同類の一覧なのにページング部品が別物（中核: 操作性・視認性）</li>
+        <li><strong>視認性:</strong> 既定のリスト点がページ番号に見え、未完成に見える</li>
+        <li><strong>初回ユーザー:</strong> 中間ページへ飛べず、件数/ページも無い</li>
+      </ul>
+      <h3>実施した改善</h3>
+      <p>案Aを製品実装。共通マクロ <code>numbered_pagination</code> と
+        <code>pagination_per_page.js</code>。パブリックフィールドに加え、
+        釣果／釣行／マイタックル／依頼一覧／ロッド・リール探すへ適用。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-public-fields-pagination-after.png"
+               alt="パブリックフィールド一覧の番号型ページング（改善後）">
+          <figcaption>pc-public-fields-pagination-after.png — ▲ 改善後。番号＋全 9 件＋件/ページ</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-catch-pagination-after.png"
+               alt="釣果一覧の番号型ページング（改善後）">
+          <figcaption>pc-catch-pagination-after.png — ▲ 改善後。釣果も番号＋全件数＋件/ページ</figcaption>
+        </figure>
+      </div>
+      <h3>改善策</h3>
+      <p>案A（採用）／案B の違いは番号＋全件数＋件/ページにするか、前へ／次へをボタン化するだけか。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 標準の番号型に揃える <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o14-a.html">fishtrack/samples/ft-o14-a.html</a></p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o14-a.png" alt="FT-O14 案A">
+            <figcaption>sample-ft-o14-a.png — ▲ 下の変更後は番号＋全件数＋件/ページ</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 前へ／次へをボタン化するだけ</h4>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o14-b.html">fishtrack/samples/ft-o14-b.html</a></p>
+        </div>
+      </div>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o15" data-resolved-on="2026-08-13">
+      <details>
+      <summary>
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O15 — フィールド依頼一覧も前へ／次へだけで番号ジャンプできない（案A 採用）
+      </h2>
+      </summary>
+      <p class="label">画面: フィールド追加依頼（一般）／フィールド依頼レビュー（管理者）</p>
+      <p><strong>採用:</strong> 案A — FT-O14 と同じ番号型共通部品（番号＋全件数＋件/ページ）（2026-08-13）。</p>
+      <p><strong>再診断:</strong> 2026-08-13 ローカル
+        <code>/admin/field-request/list?perPage=1</code>・ai-admin —
+        番号 1〜5、全 5 件、件/ページ（選択 1）。一般一覧は ai-admin に依頼が無くページャー非表示。</p>
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/field-request/list</code>／
+            <code>/admin/field-request/list</code></li>
+          <li><strong>位置（改善後）:</strong>
+            <code>nav.pagination</code> の番号＋全件数＋件/ページ</li>
+        </ul>
+      </div>
+      <h3>事象（改善前）</h3>
+      <p>依頼一覧は「1 / 5」と「次へ」だけで、中間ページへ直接行けなかった。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-admin-field-request-pagination.png"
+               alt="管理者フィールド依頼の前へ次へページング">
+          <figcaption>pc-admin-field-request-pagination.png — ▲ 改善前。「1 / 5」と青い「次へ」</figcaption>
+        </figure>
+      </div>
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>操作性:</strong> 審査件数が多いと中間ページへ届かない</li>
+        <li><strong>一貫性:</strong> ロッド／釣行とページングが違う（中核: 管理者の管理しやすさ）</li>
+      </ul>
+      <h3>実施した改善</h3>
+      <p>案Aを製品実装。一般／管理者とも <code>components/_pagination.html</code>。
+        件/ページも共通 UI として載せた（<code>perPage</code> 上限 100）。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-admin-field-request-pagination-after.png"
+               alt="管理者フィールド依頼の番号型ページング（改善後）">
+          <figcaption>pc-admin-field-request-pagination-after.png — ▲ 改善後。番号 1〜5＋全 5 件＋件/ページ</figcaption>
+        </figure>
+      </div>
+      <h3>改善策</h3>
+      <div class="options">
+        <div class="option recommended">
+          <h4>案A — 番号＋全件数 <span class="rec-tag">採用</span></h4>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o15-a.html">fishtrack/samples/ft-o15-a.html</a></p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o15-a.png" alt="FT-O15 案A">
+            <figcaption>sample-ft-o15-a.png — ▲ 下の変更後は番号＋全件数</figcaption>
+          </figure>
+        </div>
+      </div>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o16" data-resolved-on="2026-08-13">
+      <details>
+      <summary>
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O16 — またがる都道府県が47件チェックボックスで使いづらい（案A 採用）
+      </h2>
+      </summary>
+      <p class="label">画面: フィールド編集（PC／SP）</p>
+      <p><strong>採用:</strong> 案A — 選択中は <code>.filter-chip</code>、追加は
+        <code>prefecture_select</code> と同じ地方 optgroup。ピンは × なし（2026-08-13）。</p>
+      <p><strong>再診断:</strong> 2026-08-13 ローカル
+        <code>/field-area/field/1/edit</code>（亀山湖）・ai-admin —
+        チェックボックス 0・グリッドなし。チップは「千葉県（ピン）」のみ（×なし）。
+        追加セレクトは 7 地方 optgroup。千葉県 option は disabled。
+        fieldset 高さ PC 約 258px／SP 390×844 で約 282px（改善前は SP で画面の半分以上）。</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/field-area/field/&lt;id&gt;/edit</code>
+            （<code>field_area/field_form.html</code>・
+            <code>mode == 'edit'</code> のみ）</li>
+          <li><strong>位置:</strong> 公開範囲の直下
+            <code>fieldset.field-prefecture-extras</code>
+            「またがる都道府県（任意）」</li>
+          <li><strong>セレクタ（改善後）:</strong>
+            <code>[data-extra-prefecture-chips]</code>／
+            <code>#extra-prefecture-add</code>／
+            hidden <code>name="extraPrefecture"</code></li>
+          <li><strong>対象外:</strong> 新規作成（複数県は編集でのみ足す）。
+            一覧の都道府県絞り込み
+            <code>prefecture_select</code>（1件選択・FT-O5 で地方順済み）。
+            MyPokedex に都道府県の複数選択 UI はない</li>
+        </ul>
+      </div>
+
+      <h3>事象（改善前）</h3>
+      <p>
+        複数県の入力が、北海道から沖縄までの
+        <strong>47件チェックボックスを常時展開</strong>していた。
+        ピン県以外を1〜2件足すだけなのに、隣県を探すために長いグリッドをスキャンしていた。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-field-edit-prefecture-extras.png"
+               alt="フィールド編集で全都道府県のチェックボックス（改善前）">
+          <figcaption>pc-field-edit-prefecture-extras.png — ▲ 改善前。またがる都道府県が47件グリッド</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-field-edit-prefecture-extras.png"
+               alt="SPでも全都道府県チェックボックス（改善前）">
+          <figcaption>sp-field-edit-prefecture-extras.png — ▲ 改善前。SP でも同じ長いリスト</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>操作性:</strong> 隣県を足すのに47件から探す（中核: 操作性）</li>
+        <li><strong>視認性:</strong> 選択中（ピン1件）より未選択の壁が大きい</li>
+        <li><strong>初回ユーザー:</strong> 任意項目なのに必須の公開範囲より目立つ</li>
+        <li><strong>管理者:</strong> パブリック編集でも同じ部品。県を跨ぐ湖のメンテが遅い</li>
+      </ul>
+
+      <h3>実施した改善</h3>
+      <p>案Aを製品実装。選択中はフィルタチップ（ピンは外せない）、追加は地方 optgroup セレクト。
+        送信は hidden <code>extraPrefecture</code>。ピン移動は
+        <code>field_form_prefectures.js</code> がチップを張り替える。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-field-edit-prefecture-extras-after.png"
+               alt="フィールド編集のまたがる都道府県（改善後・PC）">
+          <figcaption>pc-field-edit-prefecture-extras-after.png — ▲ 改善後。千葉県（ピン）チップ＋追加セレクト</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-field-edit-prefecture-extras-after.png"
+               alt="フィールド編集のまたがる都道府県（改善後・SP）">
+          <figcaption>sp-field-edit-prefecture-extras-after.png — ▲ 改善後。SP でもチップ＋セレクトのみ</figcaption>
+        </figure>
+      </div>
+
+      <h3>改善策</h3>
+      <p>案A／案Bの違い:
+        <strong>選択中だけ見せてセレクトで足すか</strong>（A）vs
+        <strong>チェックボックスを地方の折りたたみに分けるか</strong>（B）。
+        どちらもピン県は外せない。地方グループは FT-O5 と同じ
+        <code>PREFECTURE_REGIONS</code> を使う。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — チップ＋追加セレクト <span class="rec-tag">採用</span></h4>
+          <p>選択中は既存の <code>.filter-chip</code>、追加は
+            <code>prefecture_select</code> と同じ optgroup。
+            メリット: 47件を常時出さない。デメリット: 一括チェックはできない
+            （複数県は通常2〜3件なので許容）。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o16-a.html">fishtrack/samples/ft-o16-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o16-a.png" alt="FT-O16 案A">
+            <figcaption>sample-ft-o16-a.png — ▲ 下の変更後はチップ＋都道府県を追加</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — 地方ごとに折りたたむ</h4>
+          <p>チェックボックスは残し、ピンの地方だけ開く。
+            メリット: 既存のチェック操作のまま。デメリット: 開くとまたグリッドになる。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o16-b.html">fishtrack/samples/ft-o16-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o16-b.png" alt="FT-O16 案B">
+            <figcaption>sample-ft-o16-b.png — ▲ 下の変更後は関東だけ開いている</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> <code>field_form.html</code>／
+        <code>field_form_prefectures.js</code>／
+        <code>fishtrack_tail.css</code>。仕様 <code>05_ui_ux.md</code> 同期済み。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o7" data-resolved-on="2026-08-13">
+      <details>
+      <summary>
+      <h2>
+        <span class="badge sev-low">LOW</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O7 — ヘッダー常時のユーザー名表示は必須ではない（案A 採用）
+      </h2>
+      </summary>
+      <p class="label">画面: 全画面共通ヘッダー（PC／SP ドロワー）</p>
+      <p><strong>採用:</strong> 案A — <code>.nav-user</code> を削除。設定／ログアウトは残す。
+        表示名の確認は設定画面の「ログイン中」メール（2026-08-13）。</p>
+      <p><strong>再診断:</strong> 2026-08-13 ローカル PC1440・SP 390×844・ai-admin —
+        ヘッダー／ドロワーにユーザー名なし。設定・ログアウトは残存。
+        <code>/settings</code> に「ログイン中: ai-admin@local.fishtrack」。</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> ログイン後の全ページ共通
+            <code>partials/site_header.html</code></li>
+          <li><strong>位置:</strong> グローバルナビ右寄り〜折返し行の
+            <code>span.nav-user</code>（改善前は「メールローカル部 さん」）</li>
+          <li><strong>対象外:</strong> ヘッダー全体 IA（<a href="#ft-o6">FT-O6</a>）</li>
+        </ul>
+      </div>
+
+      <h3>事象（改善前）</h3>
+      <p>
+        ヘッダーに常時「ai-user さん」等が出るが、<strong>クリックできず操作にも使えない</strong>。
+        PC ではナビ折返しの2行目を占有していた。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-header-username-current.png"
+               alt="ヘッダーのユーザー名（改善前）">
+          <figcaption>pc-header-username-current.png — ▲ 改善前。赤枠の「ai-user さん」は非インタラクティブ</figcaption>
+        </figure>
+        <figure class="sp">
+          <img src="fishtrack/sp-header-drawer-current.png"
+               alt="SP ドロワーのユーザー名（改善前）">
+          <figcaption>sp-header-drawer-current.png — ▲ 改善前。SP でも区切り下に同文言</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>価値:</strong> 常時表示の必要性が低い（確認したいときは設定で足りる）</li>
+        <li><strong>操作:</strong> リンクに見えても押せない「死んだテキスト」</li>
+        <li><strong>密度:</strong> 狭いヘッダー／SP ドロワーを消費し、FT-O6 を悪化させる</li>
+      </ul>
+
+      <h3>実施した改善</h3>
+      <p><code>site_header.html</code> から <code>.nav-user</code> を削除。
+        CSS の <code>.nav-user</code> 規則も削除。
+        設定画面アカウント節に「ログイン中: <strong>email</strong>」を追加。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-header-username-after.png"
+               alt="ヘッダー（ユーザー名なし）">
+          <figcaption>pc-header-username-after.png — ▲ 改善後 PC。ユーザー名なし。設定・ログアウトは残る</figcaption>
+        </figure>
+        <figure class="sp">
+          <img src="fishtrack/sp-header-drawer-after.png"
+               alt="SP ドロワー（ユーザー名なし）">
+          <figcaption>sp-header-drawer-after.png — ▲ 改善後 SP。区切り下は設定／ログアウトのみ</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-settings-login-email-after.png"
+               alt="設定画面のログイン中メール">
+          <figcaption>pc-settings-login-email-after.png — ▲ 設定。表示名確認はここ</figcaption>
+        </figure>
+      </div>
+
+      <h3>改善策</h3>
+      <p>案A／案Bの違い:
+        <strong>ユーザー名をヘッダーから完全に外すか</strong>（A）vs
+        <strong>アカウントメニューの開閉ラベルとしてだけ残すか</strong>（B）。</p>
+      <div class="options two">
+        <div class="option recommended">
+          <h4>案A — 常時ユーザー名を削除 <span class="rec-tag">採用</span></h4>
+          <p><code>.nav-user</code> を削除。設定／ログアウトは残す。
+            表示名の確認は設定画面。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o7-a.html">fishtrack/samples/ft-o7-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o7-a.png" alt="FT-O7 案A">
+            <figcaption>sample-ft-o7-a.png — ▲ 上＝ユーザー名あり／下＝なし（設定・ログアウトのみ）</figcaption>
+          </figure>
+        </div>
+        <div class="option">
+          <h4>案B — アカウントメニューのラベルにする</h4>
+          <p>単独の死んだテキストは廃止し、ユーザー名を
+            <code>details</code> summary のラベルにする（不採用）。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o7-b.html">fishtrack/samples/ft-o7-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o7-b.png" alt="FT-O7 案B">
+            <figcaption>sample-ft-o7-b.png — ▲ 上＝死んだテキスト／下＝メニューラベル化</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> <code>site_header.html</code>／
+        <code>fishtrack.css</code>／<code>site_header_drawer.css</code>／
+        <code>settings.html</code>。仕様 <code>05_ui_ux.md</code> 同期済み。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o5" data-resolved-on="2026-08-13">
+      <details>
+      <summary>
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O5 — 都道府県プルダウンが Unicode 文字列順で地理順になっていない（案B 採用）
+      </h2>
+      </summary>
+      <p class="label">画面: パブリックフィールド／マイフィールド／水位／おすすめ 等の都道府県絞り込み</p>
+      <p><strong>採用:</strong> 案B — JIS 北→南＋地方 <code>optgroup</code>（関東など）。
+        未知 location は末尾グループ「その他（都道府県以外の所在地）」（2026-08-13）。</p>
+      <p><strong>再診断:</strong> 2026-08-13 ローカル <code>/public-fields</code>・ai-admin —
+        CDP で <code>#public-field-prefecture</code> が
+        <code>&lt;optgroup label="関東"&gt;</code>
+        茨城県→千葉県→神奈川県、続けて
+        「その他（都道府県以外の所在地）」に水際の散歩道。
+        a11y の options も同順（すべて／茨城／千葉／神奈川／水際の散歩道）。</p>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>部品:</strong> 各画面の
+            <code>&lt;select name="prefecture"&gt;</code>（例:
+            <code>#public-field-prefecture</code>）</li>
+          <li><strong>正:</strong>
+            <code>fishtrack.utils.prefecture</code> の
+            <code>prefecture_filter_choices</code>／
+            <code>group_prefecture_locations</code></li>
+          <li><strong>対象外:</strong> location に都道府県以外が入るデータ品質自体の掃除</li>
+        </ul>
+      </div>
+
+      <h3>事象（改善前）</h3>
+      <p>
+        選択肢は Python <code>sorted()</code> の Unicode 順。
+        ローカル実測: <strong>千葉県 → 水際の散歩道 → 神奈川県 → 茨城県</strong>。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-public-fields-prefecture-order.png"
+               alt="都道府県プルダウンが Unicode 順（改善前）">
+          <figcaption>pc-public-fields-prefecture-order.png — ▲ 改善前。千葉→水際→神奈川→茨城</figcaption>
+        </figure>
+      </div>
+
+      <h3>何が問題か</h3>
+      <ul>
+        <li><strong>発見性:</strong> 地理の期待（北→南）と一致せず、目的の県を探しにくい</li>
+        <li><strong>一貫性:</strong> フォールバックは北→南なのに、データあり時だけ Unicode 順</li>
+      </ul>
+
+      <h3>実施した改善</h3>
+      <p>共通ヘルパで JIS 北→南＋地方 optgroup。
+        マイフィールド／パブリック／水位／おすすめを同一マクロ
+        <code>prefecture_select.html</code> に揃えた。
+        水位の所在地候補はフィルタ前の集合から算出（絞り込み後に1県だけになる不具合も解消）。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-public-fields-prefecture-order-after.png"
+               alt="パブリックフィールドの都道府県フィルタ（改善後）">
+          <figcaption>pc-public-fields-prefecture-order-after.png — ▲ 改善後。閉じた select（中身は CDP で optgroup 確認）</figcaption>
+        </figure>
+      </div>
+
+      <h3>改善策</h3>
+      <p>案A／案Bの違い:
+        <strong>フラットな北→南</strong>（A）vs
+        <strong>地方 optgroup を足す</strong>（B）。並びの正はどちらも JIS 北→南。</p>
+      <div class="options two">
+        <div class="option">
+          <h4>案A — JIS 北→南に統一</h4>
+          <p>存在する都道府県だけを北→南で出す。未知 location は末尾（不採用）。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o5-a.html">fishtrack/samples/ft-o5-a.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o5-a.png" alt="FT-O5 案A">
+            <figcaption>sample-ft-o5-a.png — ▲ 上＝Unicode 順／下＝茨城→千葉→神奈川</figcaption>
+          </figure>
+        </div>
+        <div class="option recommended">
+          <h4>案B — 地方 optgroup ＋北→南 <span class="rec-tag">採用</span></h4>
+          <p>案Aの並びに <code>optgroup</code>（関東など）を付与。</p>
+          <p class="sample-link">サンプル:
+            <a href="fishtrack/samples/ft-o5-b.html">fishtrack/samples/ft-o5-b.html</a>
+            （上＝変更前／下＝変更後）</p>
+          <figure class="pc">
+            <img src="fishtrack/sample-ft-o5-b.png" alt="FT-O5 案B">
+            <figcaption>sample-ft-o5-b.png — ▲ 上＝フラット Unicode／下＝関東グループ</figcaption>
+          </figure>
+        </div>
+      </div>
+      <p><strong>実装:</strong> <code>utils/prefecture.py</code>／
+        <code>macros/prefecture_select.html</code>。仕様 <code>05_ui_ux.md</code> 同期済み。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="mp-h4" data-resolved-on="2026-08-12">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span>
         MP-H4 — 図鑑表の操作列(actions)が不足（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: PC MyPokedex 図鑑（RGBP）<code>/RGBP/dex/rgbp</code></p>
       <p><strong>採用:</strong> 案A — <code>.pk-col--actions</code> を <strong>幅 22%・min-width 260px</strong>、
         ボタン／「その他」summary をコンパクト化。表形式は維持（2026-08-12）。
@@ -402,15 +2092,19 @@
         </div>
       </div>
       <p><strong>実装:</strong> <code>app.css</code>。仕様 <code>05_ui_ux.md</code>・計画 P64 同期済み。</p>
+      </details>
     </article>
 
-    <article class="issue" id="ft-m8">
+    <article class="issue" id="ft-m8" data-resolved-on="2026-08-11">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-M8 — 一般ユーザの保有列がまだ広い（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: PC ロッド／リール／ルアーマスタ（ai-user）</p>
       <p><strong>採用:</strong> 案A — <code>--rod-col-holding: 5.25rem</code>（一般）。
         管理者 <code>.ft-table--rod-master-sticky--admin-holding</code> の
@@ -470,15 +2164,19 @@
       </div>
       <p><strong>実装:</strong> <code>tackle_models_list.css</code> の
         <code>--rod-col-holding</code>。仕様 <code>05_ui_ux.md</code> 同期済み。</p>
+      </details>
     </article>
 
-    <article class="issue" id="ft-h6">
+    <article class="issue" id="ft-h6" data-resolved-on="2026-08-11">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-H6 — リール「技術特性」列が全表示時に極端に不足（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: PC <code>/tackle/reel-models/</code>（技術特性列を表示したとき）</p>
       <p><strong>採用:</strong> 案A — ラベルを <code>.tech-chip</code> 化しセル内複数行折り返し。
         列幅 <code>--ft-table-col-technology-min/max</code> = <strong>20rem / 28rem</strong>。
@@ -552,15 +2250,19 @@
       </div>
       <p><strong>実装:</strong> Jinja／<code>tackle_models_list.js</code> でチップ描画、
         CSS 列幅 20–28rem。仕様 <code>05_ui_ux.md</code> 同期済み。</p>
+      </details>
     </article>
 
-    <article class="issue" id="ft-h5">
+    <article class="issue" id="ft-h5" data-resolved-on="2026-08-11">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-H5 — シリーズ sticky 列が狭すぎる（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: PC <code>/tackle/rod-models/</code>・<code>/tackle/reel-models/</code>（一般／管理者とも同一 CSS）</p>
       <p><strong>採用:</strong> 案A — <code>--rod-col-series: 13.5rem</code>＋セル内折り返し＋
         <code>title</code> ツールチップ（テンプレ／API 行再描画）。左 sticky 維持。カード化は不採用（2026-08-11）。</p>
@@ -616,15 +2318,19 @@
       <p><strong>実装:</strong> CSS（幅・折り返し）・Jinja <code>title</code>・
         <code>tackle_models_list.js</code> の API 行再描画でも <code>title</code> を付与。仕様
         <code>05_ui_ux.md</code> 同期済み。</p>
+      </details>
     </article>
 
-    <article class="issue" id="ft-h1">
+    <article class="issue" id="ft-h1" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-H1 — ロッドマスタ表の横スクロール過多（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: PC <code>/tackle/rod-models/</code>（表形式は維持。SP≤767 は既にカード表示のため本課題の主戦場外）</p>
       <p><strong>採用:</strong> 案A — 優先列＋「列のカスタマイズ」トグル（2026-08-08）。リール／ルアー／マイタックル詳細も同方針。</p>
       <p><strong>再診断:</strong> 2026-08-08 ローカル PC — 「列のカスタマイズ」表示・副次列既定非表示・sticky 維持を確認。</p>
@@ -750,14 +2456,18 @@
       </div>
       <p><strong>実装:</strong> 案A を製品反映（共通 JS）。関連 <a href="#ft-h3">FT-H3</a>／<a href="#ft-h4">FT-H4</a> も同リリース。</p>
       <p><strong>再診追記（2026-08-08）:</strong> 1024px でも overflow≈1682・sticky crowding。SP 390 はカード化で表非表示を再確認。</p>
+      </details>
     </article>
-    <article class="issue" id="ft-h3">
+    <article class="issue" id="ft-h3" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-H3 — リールマスタ表の横スクロール過多（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: PC <code>/tackle/reel-models/</code>（表形式は維持。SP はカード）</p>
       <p><strong>採用:</strong> 案A — FT-H1 と同型の優先列＋列のカスタマイズ（2026-08-08）。</p>
       <p><strong>再診断:</strong> 2026-08-08 ローカル PC — 「列のカスタマイズ」ツールバーと優先列既定を確認。</p>
@@ -806,14 +2516,18 @@
         </div>
       </div>
       <p><strong>実装:</strong> 案A を FT-H1 と同時反映。</p>
+      </details>
     </article>
-    <article class="issue" id="ft-h4">
+    <article class="issue" id="ft-h4" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-H4 — ルアーマスタ表：中幅で sticky が中間帯を圧迫（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: Tablet〜狭 PC <code>/lure-masters</code>（特に <code>?tab=plug</code>）</p>
       <p><strong>採用:</strong> 案A — 優先列＋列のカスタマイズ（2026-08-08）。H1/H3 と共通実装。</p>
       <p><strong>再診断:</strong> 2026-08-08 ローカル — プラグ／ワームで「列のカスタマイズ」と優先列既定を確認。</p>
@@ -882,14 +2596,18 @@
         </div>
       </div>
       <p><strong>実装:</strong> 案A を製品反映（列のカスタマイズで中間スペック列を既定オフ）。</p>
+      </details>
     </article>
-    <article class="issue" id="ft-m3">
+    <article class="issue" id="ft-m3" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-M3 — マイフィールド SP の主ボタンが窮屈（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: SP <code>/field-area/list</code></p>
       <p><strong>採用:</strong> 案A — 縦積み CTA（主＝フィールド新規追加、副＝パブリックフィールド一覧）（2026-08-08）。</p>
       <p><strong>再診断:</strong> 2026-08-08 ローカル SP 390 —
@@ -926,15 +2644,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
-    <article class="issue" id="ft-m1">
+    <article class="issue" id="ft-m1" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-M1 — 釣行一覧 SP でフィルタが画面を占有（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: SP/PC <code>/trip/</code></p>
       <p><strong>採用:</strong> 案A — 折りたたみフィルタ（<code>ft-filter-collapse</code>。未適用は初期閉じ、適用中は初期オープン）（2026-08-08）。</p>
       <p><strong>再診断:</strong> 2026-08-08 ローカル SP 390 —
@@ -971,15 +2693,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
-    <article class="issue" id="ft-h2">
+    <article class="issue" id="ft-h2" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-H2 — ページ主CTAの右端切れ（誤検知）
       </h2>
+      </summary>
       <p class="label">画面: PC /tackle/rod-models/ 見出し行</p>
       <p><strong>判定:</strong> 誤検知（2026-08-08）。通常 PC 幅では文字切れしない。製品変更なし。</p>
       <p><strong>再診断:</strong> Cursor ブラウザで
@@ -1022,15 +2748,19 @@
             （誤検知のため採用・実装しない）</p>
         </div>
       </div>
+      </details>
     </article>
 
-    <article class="issue" id="ft-m2">
+    <article class="issue" id="ft-m2" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-M2 — 釣果カードの縦占有が大きい（案B 採用）
       </h2>
+      </summary>
       <p class="label">画面: SP/PC <code>/catch/</code> · <code>/dashboard</code> · 釣行詳細の紐づく釣果</p>
       <p><strong>採用:</strong> 案B — 写真｜データの左右並び横長カード（PC／スマホ共通。ダッシュボード含む）（2026-08-08）。</p>
       <p><strong>再診断:</strong> 2026-08-08 ローカル —
@@ -1080,15 +2810,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
-    <article class="issue" id="ft-m4">
+    <article class="issue" id="ft-m4" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-M4 — 釣果一覧 PC グリッドの右端クリップ（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: PC /catch/</p>
       <p><strong>採用:</strong> 案A — <code>auto-fill</code> +
         <code>minmax(min(100%, 13.75rem), 1fr)</code> の可変グリッド（2026-08-08）。</p>
@@ -1142,15 +2876,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
-    <article class="issue" id="ft-m5">
+    <article class="issue" id="ft-m5" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-M5 — ルアーマスタ一覧にフィルタ「クリア」が無い（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: PC/SP <code>/lure-masters?tab=plug</code>（ワームも同型）</p>
       <p>関連: <a href="#ft-m6">FT-M6</a>・<a href="#ft-m7">FT-M7</a></p>
       <p><strong>採用:</strong> 案A — ロッド／リールと同型の <code>btn--ghost btn--sm</code>「クリア」を
@@ -1210,15 +2948,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
-    <article class="issue" id="ft-m6">
+    <article class="issue" id="ft-m6" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-M6 — タブ件数とフィルタ後の表件数が食い違う（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: PC/SP <code>/lure-masters?tab=plug</code></p>
       <p>関連: <a href="#ft-m5">FT-M5</a>・<a href="#ft-m7">FT-M7</a></p>
       <p><strong>採用:</strong> 案A — <code>switch-nav</code> から括弧付き件数を外し「プラグ」「ワーム」のみ。
@@ -1278,15 +3020,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
-    <article class="issue" id="ft-m7">
+    <article class="issue" id="ft-m7" data-resolved-on="2026-08-08">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-M7 — メーカーとカテゴリ系プルダウンが相互連動しない（案A 採用）
       </h2>
+      </summary>
       <p class="label">複数画面（下記）。主観測はルアーマスタ・プラグ</p>
       <p>関連: <a href="#ft-m5">FT-M5</a>・<a href="#ft-m6">FT-M6</a></p>
       <p><strong>採用:</strong> 案A — 独立カテゴリのプルダウン同士をサーバ側で双方向に絞る（2026-08-08）。</p>
@@ -1364,15 +3110,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
 <!-- onboard resolved -->
-    <article class="issue" id="mp-m-onboard">
+    <article class="issue" id="mp-m-onboard" data-resolved-on="2026-08-07">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span> オンボーディングが進捗後も残る（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: パーティ＆ボックス・図鑑・設定</p>
       <p><strong>採用:</strong> 案A — 完了で非表示・再表示は設定から（2026-08-07）。</p>
       <p><strong>再診断:</strong> 2026-08-07 ローカル —
@@ -1408,16 +3158,20 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
 <!-- coverage resolved -->
 <!-- filter resolved -->
-    <article class="issue" id="mp-m-filter">
+    <article class="issue" id="mp-m-filter" data-resolved-on="2026-08-07">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span> フィルタが常時展開（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: 図鑑（全国／地方）・パーティ＆ボックス</p>
       <p><strong>採用:</strong> 案A — 折りたたみ・未適用時は閉じる（2026-08-07）。</p>
       <p><strong>再診断:</strong> 2026-08-07 ローカル —
@@ -1459,14 +3213,18 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
-    <article class="issue" id="mp-m-coverage">
+    <article class="issue" id="mp-m-coverage" data-resolved-on="2026-08-07">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span> タイプカバレッジ表示の誤アフォーダンス（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: /RGBP/partyBox（他ゲームの partyBox も同型）</p>
       <p><strong>採用:</strong> 案A — 枠なし・flex密度維持（2026-08-07）。</p>
       <p><strong>再診断:</strong> 2026-08-07 ローカル — <code>.pkCoverage__row</code> は flex-wrap。
@@ -1513,15 +3271,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
 <!-- drawer resolved -->
-    <article class="issue" id="mp-m-drawer">
+    <article class="issue" id="mp-m-drawer" data-resolved-on="2026-08-07">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-med">MED</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span> ドロワーで同一ラベルがゲームごとに重複（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: ナビゲーションドロワー</p>
       <p><strong>採用:</strong> 案A — 現在ゲームのみ第二階層を DOM に載せる（2026-08-07）。</p>
       <p><strong>再診断:</strong> 2026-08-07 ローカル — <code>/RGBP/partyBox</code> ドロワーで
@@ -1555,15 +3317,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
 <!-- O3 resolved -->
-    <article class="issue" id="mp-o3">
+    <article class="issue" id="mp-o3" data-resolved-on="2026-08-07">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span> O3 — 図鑑DOMに大量のインタラクティブ要素（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: 地方図鑑 / 全国図鑑</p>
       <p><strong>採用:</strong> 案A — 表示中ページの表のみ DOM に載せる（2026-08-07）。</p>
       <p><strong>再診断:</strong> 2026-08-07 ローカル確認 — <code>/RGBP/dex/rgbp</code> は
@@ -1596,15 +3362,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
 <!-- H1 -->
-    <article class="issue" id="mp-h1">
+    <article class="issue" id="mp-h1" data-resolved-on="2026-08-07">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span> H1 — SP でヘッダーが二重化し縦を食う（案B 採用）
       </h2>
+      </summary>
       <p class="label">画面: SP /RGBP/partyBox · /RGBP/dex/rgbp</p>
       <p><strong>採用:</strong> 案B — 下タブナビ（2026-08-07）。</p>
       <p><strong>再診断:</strong> 2026-08-07 実装後スクショで解決確認（ヘッダー短縮＋下タブ表示）。</p>
@@ -1693,15 +3463,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
 <!-- H2 resolved -->
-    <article class="issue" id="mp-h2">
+    <article class="issue" id="mp-h2" data-resolved-on="2026-08-07">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span> H2 — SP で表が窮屈で一覧スキャンしにくい（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: SP 図鑑・パーティの表（操作CTAは <a href="#mp-o2">O2</a>）</p>
       <p><strong>採用:</strong> 案A — 図鑑 SP で<strong>合計列のみ</strong>追加非表示。パーティ＆ボックスは列構成を維持（2026-08-07）。</p>
       <p><strong>追加（同日）:</strong> SP（≤480px）で進化先列の<strong>ミニ画像のみ非表示</strong>（名前・条件・バッジ・進化ボタンは維持。図鑑／パーティ共通）。</p>
@@ -1758,15 +3532,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
 <!-- H3 -->
-    <article class="issue" id="mp-h3">
+    <article class="issue" id="mp-h3" data-resolved-on="2026-08-07">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span> H3 — 空のボックスでも thead だけ残る
       </h2>
+      </summary>
       <p class="label">画面: PC /RGBP/partyBox（ボックス 0）</p>
 
       <h3>事象（改善前）</h3>
@@ -1844,15 +3622,19 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
 
 <!-- O1 resolved -->
-    <article class="issue" id="mp-o1">
+    <article class="issue" id="mp-o1" data-resolved-on="2026-08-07">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span> O1 — 「登録して追加」の発見性（実装済み）
       </h2>
+      </summary>
       <p class="label">画面: SP/PC 図鑑操作列</p>
       <h3>事象（改善前）</h3>
       <p>主CTAが埋もれ、地方図鑑登録と並んで発見しにくかった。</p>
@@ -1870,15 +3652,19 @@
           <figcaption>pc-dex.png — PC でも主CTA先頭</figcaption>
         </figure>
       </div>
+      </details>
     </article>
 
 <!-- O2 resolved -->
-    <article class="issue" id="mp-o2">
+    <article class="issue" id="mp-o2" data-resolved-on="2026-08-07">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod">MyPokedex</span> O2 — SP 操作列の高いCTAと誤タップ（案A 採用）
       </h2>
+      </summary>
       <p class="label">画面: SP 図鑑・パーティの操作列（表全体の窮屈さは <a href="#mp-h2">H2</a>）</p>
       <p><strong>採用:</strong> 案A — 短いCTAラベル（2026-08-07 実装）。</p>
       <p><strong>再診断:</strong> 2026-08-07。ユーザー判定により <strong>RESOLVED</strong>。</p>
@@ -1946,6 +3732,7 @@
           </figure>
         </div>
       </div>
+      </details>
     </article>
     </section>
 
@@ -1972,6 +3759,15 @@
         <figure><img src="mypokedex/sp-dex-h2-after.png" alt=""><figcaption>sp-dex-h2-after.png（H2・合計非表示）</figcaption></figure>
         <figure><img src="mypokedex/sp-dex-h2-evo-after.png" alt=""><figcaption>sp-dex-h2-evo-after.png（H2・進化画像非表示）</figcaption></figure>
         <figure class="pc"><img src="mypokedex/pc-partybox-after.png" alt=""><figcaption>pc-partybox-after.png（H3）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-header-username-after.png" alt=""><figcaption>pc-header-username-after.png（FT-O7）</figcaption></figure>
+        <figure><img src="fishtrack/sp-header-drawer-after.png" alt=""><figcaption>sp-header-drawer-after.png（FT-O7）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-settings-login-email-after.png" alt=""><figcaption>pc-settings-login-email-after.png（FT-O7）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-public-fields-prefecture-order-after.png" alt=""><figcaption>pc-public-fields-prefecture-order-after.png（FT-O5）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-public-fields-pagination-after.png" alt=""><figcaption>pc-public-fields-pagination-after.png（FT-O14）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-catch-pagination-after.png" alt=""><figcaption>pc-catch-pagination-after.png（FT-O14 共通UI）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-admin-field-request-pagination-after.png" alt=""><figcaption>pc-admin-field-request-pagination-after.png（FT-O15）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-field-edit-prefecture-extras-after.png" alt=""><figcaption>pc-field-edit-prefecture-extras-after.png（FT-O16）</figcaption></figure>
+        <figure><img src="fishtrack/sp-field-edit-prefecture-extras-after.png" alt=""><figcaption>sp-field-edit-prefecture-extras-after.png（FT-O16）</figcaption></figure>
       </div>
       <h2 style="font-size:1.2rem;margin-top:2rem;">改善サンプル画像</h2>
       <div class="shots">
@@ -1991,13 +3787,31 @@
         <figure><img src="fishtrack/sample-ft-m5-a.png" alt=""><figcaption>sample-ft-m5-a.png（FT-M5）</figcaption></figure>
         <figure><img src="fishtrack/sample-ft-m6-a.png" alt=""><figcaption>sample-ft-m6-a.png（FT-M6）</figcaption></figure>
         <figure><img src="fishtrack/sample-ft-m7-a.png" alt=""><figcaption>sample-ft-m7-a.png（FT-M7）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/sample-ft-o16-a.png" alt=""><figcaption>sample-ft-o16-a.png（FT-O16 案A）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/sample-ft-o16-b.png" alt=""><figcaption>sample-ft-o16-b.png（FT-O16 案B）</figcaption></figure>
       </div>
     </section>
-  </main></main>
+  </main>
 
   <footer>
     <p>生成: Cursor エージェント（ローカルブラウザ検証） / 配置: dev-workspace/ui-audit/（FishTrack / MyPokedex 共有・常に最新化）</p>
-    <p>正本 SKILL: ui-audit-html-report（dev-workspace/ui-audit 共有。両製品の<strong>全画面</strong>を同時診断。未解決／解決済み分離。実装後は再診断してから RESOLVED）。Canvas / temp / Obsidian / 日付フォルダは使わない。</p>
+    <p>正本 SKILL: ui-audit-html-report（dev-workspace/ui-audit 共有。両製品の<strong>全画面</strong>を同時診断。未解決／解決済み分離。解決済みはアコーディオン既定クローズ。解決から1ヶ月で HTML から削除。実装後は再診断してから RESOLVED）。Canvas / temp / Obsidian / 日付フォルダは使わない。</p>
   </footer>
+  <script>
+    (function () {
+      function openResolvedForHash() {
+        var id = (location.hash || "").replace(/^#/, "");
+        if (!id || id === "resolved-issues" || id === "open-issues") return;
+        var el = document.getElementById(id);
+        if (!el) return;
+        var details = el.matches && el.matches("details")
+          ? el
+          : el.querySelector(":scope > details");
+        if (details) details.open = true;
+      }
+      window.addEventListener("hashchange", openResolvedForHash);
+      openResolvedForHash();
+    })();
+  </script>
 </body>
 </html>

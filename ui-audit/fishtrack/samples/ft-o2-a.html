@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O2 案A — ヘッダーでプラグ／ワームを分離</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/site_header_drawer.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 980px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    /* サンプルではドロップダウンを常時開く */
+    .sample-frame details.ft-nav-dropdown { position: relative; }
+    .sample-frame details.ft-nav-dropdown > .ft-nav-dropdown__panel {
+      display: flex !important;
+      position: static;
+      margin-top: 0.5rem;
+      box-shadow: var(--shadow-soft);
+    }
+    .sample-frame .ft-site-nav {
+      display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; align-items: center;
+      background: #fff; padding: 0.65rem 0.85rem; border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.28);
+    }
+    .sample-frame .ft-site-nav > a { text-decoration: none; color: inherit; font-size: 0.9rem; }
+    .hl-lure { outline: 2px solid #c62828; outline-offset: 2px; background: #ffebee; }
+    .hl-split a.hl-new { outline: 2px solid #2e7d32; outline-offset: 2px; background: #e8f5e9; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用後の想定）: 「タックルを探す」配下でロッド／リールと同列に
+      <strong>プラグを探す</strong>・<strong>ワームを探す</strong>を置く
+      （統合の「ルアーを探す」は廃止）。各リンクは
+      <code>/lure-masters?tab=plug|worm</code> へ直リンク。
+    </p>
+    <p class="sample-block-label">変更前（現状・ルアー1本にプラグ／ワームが同居）</p>
+    <div class="sample-before">
+      <nav class="ft-site-nav" aria-label="サンプル変更前">
+        <a href="#">ホーム</a>
+        <a href="#">マイタックル</a>
+        <details class="ft-nav-dropdown ft-nav-tackle" open>
+          <summary class="ft-nav-dropdown__summary">
+            <span class="ft-nav-dropdown__label">タックルを探す</span>
+            <span class="ft-nav-dropdown__caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="ft-nav-dropdown__panel" role="group">
+            <a href="#">ロッドを探す</a>
+            <a href="#">リールを探す</a>
+            <a class="hl-lure" href="#">ルアーを探す</a>
+          </div>
+        </details>
+        <a href="#">水位データ</a>
+      </nav>
+    </div>
+    <p class="sample-block-label">変更後（プラグ／ワームを分離）</p>
+    <div class="sample-after hl-split">
+      <nav class="ft-site-nav" aria-label="サンプル変更後">
+        <a href="#">ホーム</a>
+        <a href="#">マイタックル</a>
+        <details class="ft-nav-dropdown ft-nav-tackle" open>
+          <summary class="ft-nav-dropdown__summary">
+            <span class="ft-nav-dropdown__label">タックルを探す</span>
+            <span class="ft-nav-dropdown__caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="ft-nav-dropdown__panel" role="group">
+            <a href="#">ロッドを探す</a>
+            <a href="#">リールを探す</a>
+            <a class="hl-new" href="#">プラグを探す</a>
+            <a class="hl-new" href="#">ワームを探す</a>
+          </div>
+        </details>
+        <a href="#">水位データ</a>
+      </nav>
+    </div>
+  </div>
+</body>
+</html>

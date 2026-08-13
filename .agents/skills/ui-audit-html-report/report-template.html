@@ -173,6 +173,11 @@
       max-width: min(100%, 360px);
       max-height: 400px;
     }
+    .option figure.pc img,
+    .option figure.wide img {
+      max-width: min(100%, 880px);
+      max-height: 420px;
+    }
     .option.recommended { background: var(--rec); border-color: #a5d6a7; }
     .option.hold { background: #fff8e1; border-color: #ffe082; }
     .option h4 { margin: 0 0 0.4rem; font-size: 0.98rem; }
@@ -249,6 +254,37 @@
       color: var(--muted);
       font-size: 0.9rem;
     }
+    #resolved-issues article.issue {
+      padding: 0.55rem 0.9rem 0.65rem;
+    }
+    #resolved-issues article.issue details > summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    #resolved-issues article.issue details > summary::-webkit-details-marker {
+      display: none;
+    }
+    #resolved-issues article.issue details > summary::before {
+      content: "";
+      flex: 0 0 0.55rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      margin-top: 0.5rem;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(-45deg);
+    }
+    #resolved-issues article.issue details[open] > summary::before {
+      margin-top: 0.4rem;
+      transform: rotate(45deg);
+    }
+    #resolved-issues article.issue details > summary h2 {
+      margin: 0;
+      flex: 1 1 auto;
+    }
     footer {
       margin: 0;
       padding: 0 clamp(1rem, 2.5vw, 2.5rem) 2rem;
@@ -271,7 +307,7 @@
     <h1>{PRODUCT} UI 問題点レポート</h1>
     <p>ローカル Docker（{BASE_URL}）／アカウント: {AI_ACCOUNT}</p>
     <p>ビューポート: SP {SP_VP} · PC {PC_VP} · 取得日: {YYYY-MM-DD}（JST）</p>
-    <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
+    <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。解決済みはアコーディオン（既定クローズ）。解決から1ヶ月経過した課題はレポートから削除する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
     <p>改善サンプルは現行プロダクト（CSS・ロゴ・コンポーネント）をそのまま使い、改善箇所だけを差分修正する。近似モック禁止。</p>
   </header>
 
@@ -304,9 +340,12 @@
     <section id="summary" class="meta">
       <div><strong>対象</strong>: MyPokedex・FishTrack の<strong>全画面</strong>（両製品同時診断）</div>
       <div><strong>スクショ例（任意）</strong>: {SCREENS}</div>
-      <div><strong>観点</strong>: {VIEWPOINTS}</div>
+      <div><strong>観点</strong>: 中核は操作性・視認性・初回ユーザー（迷わないか）・管理者の管理しやすさ。
+        併せて導線・主CTA・空状態・必須／任意・表密度・フィルタ・誤アフォーダンス・一貫性・危険操作・フィードバック・SP/PC・a11y。
+        正本は <code>ui-audit-html-report</code> SKILL「診断観点」。</div>
       <div><strong>成果物</strong>: 本 HTML + PNG + <code>samples/</code></div>
-      <div><strong>備考</strong>: {NOTES}</div>
+      <div><strong>備考</strong>: 未解決／解決済みを分離。解決済みはアコーディオン（既定クローズ）。
+        解決から1ヶ月経過した課題は HTML から削除。個別課題の経緯は各 article。</div>
     </section>
 
     <section id="open-issues" aria-labelledby="open-issues-title">
@@ -411,15 +450,18 @@
 
     <section id="resolved-issues" aria-labelledby="resolved-issues-title">
       <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
-      <p class="section-lead">再診断済み。改善前スクショとアフターを残す。</p>
+      <p class="section-lead">再診断済み。各課題はアコーディオン（既定クローズ）。解決日から1ヶ月経過した課題は削除する。</p>
 
-    <!-- ===== RESOLVED の雛形（実装後の再診断＋アフタースクショ必須） =====
-    <article class="issue" id="resolved-id">
+    <!-- ===== RESOLVED の雛形（実装後の再診断＋アフタースクショ必須。既定クローズ） =====
+    <article class="issue" id="resolved-id" data-resolved-on="YYYY-MM-DD">
+      <details>
+      <summary>
       <h2>
         <span class="badge sev-high">HIGH</span>
         <span class="badge status-resolved">RESOLVED</span>
         ID — タイトル（再診断済み）
       </h2>
+      </summary>
       <p><strong>再診断:</strong> YYYY-MM-DD 実装後スクショで解決確認。</p>
       <h3>事象（改善前）</h3>
       <p>…</p>
@@ -430,6 +472,7 @@
       <p>…</p>
       <h3>再診断（改善後）</h3>
       <div class="shots">（{viewport}-{screen}-after.png）</div>
+      </details>
     </article>
     -->
     </section>
@@ -452,7 +495,23 @@
 
   <footer>
     <p>生成: Cursor エージェント（ローカルブラウザ検証） / 配置: <code>dev-workspace/ui-audit/</code>（常に最新化）</p>
-    <p>正本 SKILL: ui-audit-html-report（実装後は再診断してから RESOLVED）。テンプレ: report-template.html</p>
+    <p>正本 SKILL: ui-audit-html-report（実装後は再診断してから RESOLVED。解決済みはアコーディオン既定クローズ。解決から1ヶ月で HTML から削除）。テンプレ: report-template.html</p>
   </footer>
+  <script>
+    (function () {
+      function openResolvedForHash() {
+        var id = (location.hash || "").replace(/^#/, "");
+        if (!id || id === "resolved-issues" || id === "open-issues") return;
+        var el = document.getElementById(id);
+        if (!el) return;
+        var details = el.matches && el.matches("details")
+          ? el
+          : el.querySelector(":scope > details");
+        if (details) details.open = true;
+      }
+      window.addEventListener("hashchange", openResolvedForHash);
+      openResolvedForHash();
+    })();
+  </script>
 </body>
 </html>

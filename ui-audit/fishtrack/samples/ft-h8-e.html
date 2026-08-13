@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1120, initial-scale=1">
+  <title>FT-H8 案E — taste-skill 通し LP</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/landing.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/public_layout.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 1120px; padding: 16px; background: #fff; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b;
+      margin: 14px 0 6px; letter-spacing: 0.02em;
+    }
+    .sample-before .ft-lp-body,
+    .sample-after .ft-lp-body { min-height: 0; }
+    .sample-before .ft-lp-hero { min-height: 320px; }
+    .sample-before .ft-lp-story { padding: 24px 20px; }
+    .sample-before .ft-lp-cta-band { padding: 32px 20px; }
+
+    .sample-after .ft-lp-body { background: var(--color-bg); }
+    .sample-after .ft-lp-hero {
+      position: static;
+      min-height: 0;
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      gap: 28px;
+      align-items: center;
+      padding: 24px 20px 12px;
+    }
+    .sample-after .ft-lp-hero__media,
+    .sample-after .ft-lp-hero__media picture {
+      position: static;
+      inset: auto;
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      order: 2;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+    }
+    .sample-after .ft-lp-hero__img {
+      height: auto;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: top center;
+    }
+    .sample-after .ft-lp-hero__overlay {
+      background: none;
+      min-height: 0;
+      align-items: center;
+      order: 1;
+    }
+    .sample-after .ft-lp-hero__copy {
+      padding: 0;
+      max-width: none;
+      margin: 0;
+    }
+    .sample-after .ft-lp-hero__title {
+      color: var(--color-text);
+      font-weight: 700;
+      font-size: 2rem;
+      line-height: 1.25;
+      text-shadow: none;
+      margin: 0;
+    }
+    .sample-after .ft-lp-hero__lead {
+      color: var(--color-text-muted);
+      max-width: 36rem;
+      margin: 12px 0 0;
+    }
+    .sample-after .ft-lp-hero__cta { margin-top: 18px; }
+    .sample-after .ft-lp-hero__cta .ft-lp-btn--primary { box-shadow: none; }
+    .sample-after .ft-lp-hero__cta .ft-lp-btn--ghost {
+      color: var(--color-accent);
+      border-color: rgba(37, 99, 235, 0.35);
+      background: transparent;
+    }
+
+    .sample-after .ft-lp-moment {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 8px;
+    }
+    .sample-after .ft-lp-moment__title {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .sample-after .ft-lp-moment__body {
+      margin: 0 0 12px;
+      max-width: 65ch;
+      color: var(--color-text-muted);
+      line-height: 1.65;
+    }
+    .sample-after .ft-lp-moment__list {
+      margin: 0 0 16px;
+      padding-left: 1.2rem;
+      color: var(--color-text);
+      line-height: 1.65;
+    }
+    .sample-after .ft-lp-moment__media {
+      margin: 0;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      box-shadow: var(--shadow-card);
+    }
+    .sample-after .ft-lp-moment__img {
+      display: block;
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .sample-after .ft-lp-pair {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px 20px 8px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+    }
+    .sample-after .ft-lp-pair__cell {
+      margin: 0;
+      padding: 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+    }
+    .sample-after .ft-lp-pair__cell--tint {
+      background: var(--color-accent-soft);
+      border-color: rgba(37, 99, 235, 0.18);
+    }
+    .sample-after .ft-lp-pair__title {
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .sample-after .ft-lp-pair__body {
+      margin: 0 0 12px;
+      color: var(--color-text-muted);
+      line-height: 1.65;
+    }
+    .sample-after .ft-lp-pair__img {
+      display: block;
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      object-position: top center;
+      border-radius: calc(var(--radius-lg) - 4px);
+      border: 1px solid var(--color-border);
+    }
+
+    .sample-after .ft-lp-bento {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 8px;
+    }
+    .sample-after .ft-lp-bento__title {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .sample-after .ft-lp-bento__lead {
+      margin: 0 0 16px;
+      max-width: 65ch;
+      color: var(--color-text-muted);
+      line-height: 1.65;
+    }
+    .sample-after .ft-lp-bento__grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .sample-after .ft-lp-bento__cell {
+      margin: 0;
+      padding: 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .sample-after .ft-lp-bento__cell--wide {
+      grid-column: span 2;
+      box-shadow: var(--shadow-card);
+    }
+    .sample-after .ft-lp-bento__cell--tint {
+      background: var(--color-accent-soft);
+      border-color: rgba(37, 99, 235, 0.18);
+    }
+    .sample-after .ft-lp-bento__cell h3 {
+      margin: 0 0 8px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .sample-after .ft-lp-bento__cell p {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .sample-after .ft-lp-bento__cell img {
+      display: block;
+      width: 100%;
+      height: 180px;
+      margin-top: 12px;
+      object-fit: cover;
+      object-position: top center;
+      border-radius: calc(var(--radius-lg) - 4px);
+      border: 1px solid var(--color-border);
+    }
+
+    .sample-after .ft-lp-fit {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .sample-after .ft-lp-fit h2 {
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .sample-after .ft-lp-fit ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+    }
+
+    .sample-after .ft-lp-start {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 8px;
+    }
+    .sample-after .ft-lp-start__title {
+      margin: 0 0 12px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .sample-after .ft-lp-start__row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      border-top: 1px solid var(--color-border);
+    }
+    .sample-after .ft-lp-start__item {
+      margin: 0;
+      padding: 16px 20px 16px 0;
+    }
+    .sample-after .ft-lp-start__item + .ft-lp-start__item {
+      padding-left: 20px;
+      border-left: 1px solid var(--color-border);
+    }
+    .sample-after .ft-lp-start__item h3 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .sample-after .ft-lp-start__item p {
+      margin: 0;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .sample-after .ft-lp-cta-band {
+      padding: 32px 20px;
+      background: var(--color-surface);
+      color: var(--color-text);
+      text-align: left;
+      border-top: 1px solid var(--color-border, rgba(148, 163, 184, 0.28));
+    }
+    .sample-after .ft-lp-cta-band__inner { margin: 0 auto; max-width: 1120px; }
+    .sample-after .ft-lp-cta-band__title {
+      color: var(--color-text);
+      font-weight: 700;
+      font-size: var(--ft-font-h2, 1.25rem);
+    }
+    .sample-after .ft-lp-cta-band__note { color: var(--color-text-muted); opacity: 1; }
+    .sample-after .ft-lp-cta-band .ft-lp-btn--primary {
+      background: var(--color-accent);
+      color: #fff;
+      border-color: var(--color-accent);
+    }
+    .sample-after .ft-lp-cta-band .ft-lp-btn--ghost {
+      color: var(--color-accent);
+      border-color: rgba(37, 99, 235, 0.35);
+    }
+    .sample-after .ft-lp-cta-band .ft-lp-hero__cta { justify-content: flex-start; }
+
+    @media (max-width: 767px) {
+      .sample-after .ft-lp-hero,
+      .sample-after .ft-lp-pair,
+      .sample-after .ft-lp-bento__grid,
+      .sample-after .ft-lp-fit,
+      .sample-after .ft-lp-start__row {
+        grid-template-columns: 1fr;
+      }
+      .sample-after .ft-lp-bento__cell--wide { grid-column: auto; }
+      .sample-after .ft-lp-start__item + .ft-lp-start__item {
+        padding-left: 0;
+        border-left: 0;
+        border-top: 1px solid var(--color-border);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      採用後の想定。宣伝分量は案Aと同じ。下の変更後はヒーローを分割、釣行前は全幅画面、現場と帰宅後は大きさの違う2枠、できることは画面つきの不揃いグリッド。等幅カードと左右交互3段は使わない。
+    </p>
+
+    <p class="sample-block-label">変更前（現状）</p>
+    <div class="sample-before">
+      <div class="ft-lp-body ft-lp-body--no-header">
+        <header class="ft-site-header ft-site-header--public">
+          <div class="ft-site-header__bar">
+            <h1 class="site-brand">
+              <a class="site-brand__link" href="http://127.0.0.1:5001/" aria-label="FishTrack トップ">
+                <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+                <span class="site-brand__text sr-only">FishTrack</span>
+              </a>
+            </h1>
+          </div>
+        </header>
+        <main class="ft-lp-main">
+          <section class="ft-lp-hero" aria-labelledby="h8e-hero-before">
+            <div class="ft-lp-hero__media">
+              <img class="ft-lp-hero__img" src="http://127.0.0.1:5001/static/img/lp/hero-generated-20260325-jp-v3.jpg" alt="" width="1376" height="768">
+            </div>
+            <div class="ft-lp-hero__overlay">
+              <div class="ft-lp-hero__copy">
+                <h1 id="h8e-hero-before" class="ft-lp-hero__title">バスフィッシングの記録を、次の判断に。</h1>
+                <p class="ft-lp-hero__lead">釣行・釣果・タックルを自分用に残し、次の釣行の判断に使う。日本でバスフィッシングをする個人向けです。無料枠は広告表示あり。</p>
+                <div class="ft-lp-hero__cta">
+                  <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/register">無料で新規登録</a>
+                  <a class="ft-lp-btn ft-lp-btn--ghost ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/login">ログイン</a>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ft-lp-story ft-lp-story--alt">
+            <div class="ft-lp-story__inner">
+              <div class="ft-lp-story__text">
+                <h2 class="ft-lp-story__title">釣行前 — フィールドと気象を整える</h2>
+                <p class="ft-lp-story__body">行き先のフィールドや水位を、これまでの釣行記録と照らし合わせて確認できます。</p>
+              </div>
+              <div class="ft-lp-story__media">
+                <img class="ft-lp-story__img" src="http://127.0.0.1:5001/static/img/lp/prep-generated-20260325.webp" alt="" width="1376" height="768">
+              </div>
+            </div>
+          </section>
+          <section class="ft-lp-cta-band">
+            <div class="ft-lp-cta-band__inner">
+              <h2 class="ft-lp-cta-band__title">さあ、記録をはじめよう</h2>
+              <p class="ft-lp-cta-band__note">無料枠は広告表示あり。登録後、メールアドレスの確認を完了するとご利用いただけます。</p>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <p class="sample-block-label">変更後</p>
+    <div class="sample-after">
+      <div class="ft-lp-body ft-lp-body--no-header">
+        <header class="ft-site-header ft-site-header--public">
+          <div class="ft-site-header__bar">
+            <h1 class="site-brand">
+              <a class="site-brand__link" href="http://127.0.0.1:5001/" aria-label="FishTrack トップ">
+                <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+                <span class="site-brand__text sr-only">FishTrack</span>
+              </a>
+            </h1>
+          </div>
+        </header>
+        <main class="ft-lp-main">
+          <section class="ft-lp-hero" aria-labelledby="h8e-hero-after">
+            <div class="ft-lp-hero__overlay">
+              <div class="ft-lp-hero__copy">
+                <h1 id="h8e-hero-after" class="ft-lp-hero__title">バスフィッシングの記録を、次の判断に。</h1>
+                <p class="ft-lp-hero__lead">釣行・釣果・タックルを自分用に残し、次の判断に使う。無料枠は広告表示あり。</p>
+                <div class="ft-lp-hero__cta">
+                  <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/register">無料で新規登録</a>
+                  <a class="ft-lp-btn ft-lp-btn--ghost ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/login">ログイン</a>
+                </div>
+              </div>
+            </div>
+            <div class="ft-lp-hero__media">
+              <img class="ft-lp-hero__img" src="../ft-pc-home.png" alt="登録後のホーム画面" width="1376" height="768">
+            </div>
+          </section>
+
+          <section class="ft-lp-moment" aria-labelledby="h8e-prep">
+            <h2 id="h8e-prep" class="ft-lp-moment__title">釣行前、フィールドと水位を整える</h2>
+            <p class="ft-lp-moment__body">行き先の水位と、これまでの釣行記録を照らし合わせて、行く前の判断に使えます。</p>
+            <ul class="ft-lp-moment__list">
+              <li>よく行くフィールドの水位を一覧で確認できる</li>
+              <li>過去の釣行・釣果と紐づけて見返せる</li>
+              <li>天候・水温などの環境データとあわせて判断できる</li>
+            </ul>
+            <figure class="ft-lp-moment__media">
+              <img class="ft-lp-moment__img" src="../pc-water-level-list-covered-only.png" alt="水位データ画面">
+            </figure>
+          </section>
+
+          <section class="ft-lp-pair" aria-label="現場と帰宅後">
+            <article class="ft-lp-pair__cell">
+              <h2 class="ft-lp-pair__title">現場、その日の釣果を残す</h2>
+              <p class="ft-lp-pair__body">釣果と写真、時間と場所。スマホからでも入力しやすい導線で、その日の記録を逃さず残せます。使うにはアカウント登録が必要です。</p>
+              <img class="ft-lp-pair__img" src="../pc-catch-new-form-long.png" alt="釣果登録画面">
+            </article>
+            <article class="ft-lp-pair__cell ft-lp-pair__cell--tint">
+              <h2 class="ft-lp-pair__title">帰宅後、一覧で次につなげる</h2>
+              <p class="ft-lp-pair__body">その日の釣行を1件にまとめ、フィールドや日付で見返します。公開タイムラインではありません。</p>
+              <img class="ft-lp-pair__img" src="../ft-pc-trips.png" alt="釣行一覧画面">
+            </article>
+          </section>
+
+          <section class="ft-lp-bento" aria-labelledby="h8e-cando">
+            <h2 id="h8e-cando" class="ft-lp-bento__title">FishTrack でできること</h2>
+            <p class="ft-lp-bento__lead">登録しなくても、ここで機能の範囲が分かります。使うにはアカウントが必要です。</p>
+            <div class="ft-lp-bento__grid">
+              <article class="ft-lp-bento__cell ft-lp-bento__cell--wide">
+                <h3>タックルを残す</h3>
+                <p>ロッド・リール・ルアーの所持を残し、釣果と結び付けられる。</p>
+                <img src="../ft-pc-rods.png" alt="ロッド所持一覧">
+              </article>
+              <article class="ft-lp-bento__cell ft-lp-bento__cell--wide">
+                <h3>タックルを探す</h3>
+                <p>マスタから型番を探して、所持に追加できる。</p>
+                <img src="../ft-pc-lures-plug-1280.png" alt="ルアーマスタ一覧">
+              </article>
+              <article class="ft-lp-bento__cell ft-lp-bento__cell--tint">
+                <h3>釣果を残す</h3>
+                <p>写真・サイズ・フィールド・時刻を1件ずつ残す。</p>
+              </article>
+              <article class="ft-lp-bento__cell">
+                <h3>釣行でまとめる</h3>
+                <p>その日の釣行として記録をまとめ、帰宅後に一覧で振り返る。</p>
+              </article>
+              <article class="ft-lp-bento__cell ft-lp-bento__cell--tint">
+                <h3>水位を見る</h3>
+                <p>よく行くフィールドの水位を見て、行く前の判断に使う。</p>
+              </article>
+              <article class="ft-lp-bento__cell">
+                <h3>フィールドを登録する</h3>
+                <p>よく行く場所をマイフィールドに残し、釣果と紐づける。</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="ft-lp-fit" aria-labelledby="h8e-fit">
+            <div>
+              <h2 id="h8e-fit">向いている使い方</h2>
+              <ul>
+                <li>日本でバスフィッシングをする個人</li>
+                <li>記録を自分用に残して、次の釣行の判断に使いたい</li>
+              </ul>
+            </div>
+            <div>
+              <h2>向いていない使い方</h2>
+              <ul>
+                <li>SNS への投稿が主目的（公開タイムラインではない）</li>
+                <li>全国ランキングや他者との比較が主目的</li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="ft-lp-start" aria-labelledby="h8e-start">
+            <h2 id="h8e-start" class="ft-lp-start__title">使い始め</h2>
+            <div class="ft-lp-start__row">
+              <article class="ft-lp-start__item">
+                <h3>登録する</h3>
+                <p>無料で新規登録。無料枠は広告表示あり。</p>
+              </article>
+              <article class="ft-lp-start__item">
+                <h3>メールを確認する</h3>
+                <p>確認が完了すると、記録を残せるようになります。</p>
+              </article>
+              <article class="ft-lp-start__item">
+                <h3>釣果を1件残す</h3>
+                <p>写真を先に追加すると、日時や場所の入力がしやすいです。</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="ft-lp-cta-band" aria-labelledby="h8e-cta">
+            <div class="ft-lp-cta-band__inner">
+              <h2 id="h8e-cta" class="ft-lp-cta-band__title">自分用の記録を残す</h2>
+              <p class="ft-lp-cta-band__note">無料枠は広告表示あり。登録後、メールアドレスの確認を完了するとご利用いただけます。</p>
+              <div class="ft-lp-hero__cta">
+                <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/register">無料で新規登録</a>
+                <a class="ft-lp-btn ft-lp-btn--ghost ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/login">ログイン</a>
+              </div>
+            </div>
+          </section>
+        </main>
+        <footer class="ft-site-footer ft-site-footer--lp">
+          <div class="ft-site-footer__inner">
+            <nav class="ft-site-footer__nav" aria-label="フッター">
+              <a class="ft-site-footer__link" href="http://127.0.0.1:5001/legal/terms">利用規約</a>
+              <a class="ft-site-footer__link" href="http://127.0.0.1:5001/legal/privacy">プライバシーポリシー</a>
+            </nav>
+            <small class="ft-site-footer__copy">&copy; 2026 FishTrack</small>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O3 案B — 鮮度でグループ分け</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/water_level.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 900px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .sample-frame .card { margin: 0; }
+    /* === 改善差分（案B） === */
+    .sample-after .water-level-group__title {
+      margin: 1rem 0 0.35rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+    .sample-after .water-level-group__title--stale {
+      color: #9a3412;
+    }
+    .sample-after .water-level-group__hint {
+      margin: 0 0 0.5rem;
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+    .sample-after .water-level-group--stale .water-level-card {
+      opacity: 0.7;
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定）: カードを観測日の新しさで並べ替え、
+      「最近の更新」「しばらく更新なし」の2グループに分ける。
+      古いグループは見出しで明示し、カードもやや弱める。
+    </p>
+    <p class="sample-block-label">変更前（現状・名前順などで鮮度が混在）</p>
+    <section class="card sample-before" data-page="water-level-list">
+      <div class="water-level-cards">
+        <article class="water-level-card" role="link" tabindex="0">
+          <h3 class="water-level-card__name">亀山湖</h3>
+          <p class="water-level-card__location">千葉県</p>
+          <div class="water-level-card__meta">
+            <span class="water-level-card__level">-0.4m</span>
+            <span class="water-level-card__date">2026-07-29</span>
+          </div>
+        </article>
+        <article class="water-level-card" role="link" tabindex="0">
+          <h3 class="water-level-card__name">七川ダム</h3>
+          <p class="water-level-card__location">和歌山県</p>
+          <div class="water-level-card__meta">
+            <span class="water-level-card__level">-1.2m</span>
+            <span class="water-level-card__date">2026-08-13</span>
+          </div>
+        </article>
+      </div>
+    </section>
+    <p class="sample-block-label">変更後（鮮度グループ）</p>
+    <section class="card sample-after" data-page="water-level-list">
+      <div class="water-level-group">
+        <h3 class="water-level-group__title">最近の更新</h3>
+        <p class="water-level-group__hint">直近7日以内に観測データがあるフィールド</p>
+        <div class="water-level-cards">
+          <article class="water-level-card" role="link" tabindex="0">
+            <h3 class="water-level-card__name">七川ダム</h3>
+            <p class="water-level-card__location">和歌山県</p>
+            <div class="water-level-card__meta">
+              <span class="water-level-card__level">-1.2m</span>
+              <span class="water-level-card__date">2026-08-13</span>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="water-level-group water-level-group--stale">
+        <h3 class="water-level-group__title water-level-group__title--stale">しばらく更新なし</h3>
+        <p class="water-level-group__hint">観測日が8日以上前のフィールド（データは参照可能）</p>
+        <div class="water-level-cards">
+          <article class="water-level-card" role="link" tabindex="0">
+            <h3 class="water-level-card__name">亀山湖</h3>
+            <p class="water-level-card__location">千葉県</p>
+            <div class="water-level-card__meta">
+              <span class="water-level-card__level">-0.4m</span>
+              <span class="water-level-card__date">2026-07-29</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O4 案B — パブリック一覧で水位状態を強化</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 980px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .sample-frame .card { margin: 0; }
+    .sample-frame .filter-form { margin-bottom: 0.75rem; }
+    /* === 改善差分（案B） === */
+    .wl-progress {
+      margin: 0 0 0.85rem;
+      padding: 0.65rem 0.75rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    .wl-progress__bar {
+      margin-top: 0.4rem; height: 8px; border-radius: 999px; background: #e2e8f0; overflow: hidden;
+    }
+    .wl-progress__fill {
+      height: 100%; width: 56%; background: #2563eb;
+    }
+    .badge--warn {
+      display: inline-block; padding: 0.1rem 0.45rem; border-radius: 999px;
+      background: #ffedd5; color: #9a3412; font-size: 0.75rem; font-weight: 700;
+    }
+    .badge--muted {
+      display: inline-block; padding: 0.1rem 0.45rem; border-radius: 999px;
+      background: #e2e8f0; color: #475569; font-size: 0.75rem; font-weight: 700;
+    }
+    .sample-after tr.is-excluded td {
+      opacity: 0.55;
+      background: #f8fafc;
+    }
+    .sample-after tr.is-excluded .field-area-table__label {
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定）: <code>/public-fields</code> の水位列を
+      「対応／未対応／対象外」の明確なバッジに強化。管理者向けにカバレッジ要約を置き、
+      対象外行は薄く取消線で「ギャップから除外済み」と分かるようにする。
+    </p>
+    <p class="sample-block-label">変更前（現状・水位列は「対応」か「-」のみ）</p>
+    <section class="card sample-before">
+      <h2>パブリックフィールド一覧</h2>
+      <div class="table-scroll">
+        <table class="ft-table ft-table--striped field-area-table">
+          <thead>
+            <tr><th>名称</th><th>所在地</th><th>水位</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="field-area-table__label">霞ヶ浦</span></td>
+              <td>茨城県</td>
+              <td>-</td>
+              <td><a class="btn btn--sm" href="#">詳細</a></td>
+            </tr>
+            <tr>
+              <td><span class="field-area-table__label">亀山湖</span></td>
+              <td>千葉県</td>
+              <td><span class="badge badge--info">対応</span></td>
+              <td><a class="btn btn--sm" href="#">詳細</a></td>
+            </tr>
+            <tr>
+              <td><span class="field-area-table__label">chizu-field</span></td>
+              <td>未設定</td>
+              <td>-</td>
+              <td><a class="btn btn--sm" href="#">詳細</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <p class="sample-block-label">変更後（バッジ＋対象外の見た目＋進捗）</p>
+    <section class="card sample-after">
+      <h2>パブリックフィールド一覧</h2>
+      <div class="wl-progress" aria-label="水位カバレッジ">
+        水位カバレッジ（管理者）: 対応 5 / 要対応 3 / 対象外 1（パブリック 9）
+        <div class="wl-progress__bar" aria-hidden="true"><div class="wl-progress__fill"></div></div>
+      </div>
+      <form class="filter-form" onsubmit="return false;">
+        <div class="filter-grid">
+          <div>
+            <label for="wl-filter">水位対応</label>
+            <select id="wl-filter" aria-label="水位対応で絞り込み">
+              <option>すべて</option>
+              <option>対応</option>
+              <option selected>要対応</option>
+              <option>対象外</option>
+            </select>
+          </div>
+        </div>
+      </form>
+      <div class="table-scroll">
+        <table class="ft-table ft-table--striped field-area-table">
+          <thead>
+            <tr><th>名称</th><th>所在地</th><th>水位</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="field-area-table__label">霞ヶ浦</span></td>
+              <td>茨城県</td>
+              <td><span class="badge--warn">未対応</span></td>
+              <td>
+                <a class="btn btn--sm" href="#">詳細</a>
+                <button type="button" class="btn btn--ghost btn--sm">公開なしとして除外</button>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="field-area-table__label">テスト</span></td>
+              <td>千葉県</td>
+              <td><span class="badge--warn">未対応</span></td>
+              <td>
+                <a class="btn btn--sm" href="#">詳細</a>
+                <button type="button" class="btn btn--ghost btn--sm">公開なしとして除外</button>
+              </td>
+            </tr>
+            <tr class="is-excluded">
+              <td><span class="field-area-table__label">chizu-field</span></td>
+              <td>未設定</td>
+              <td><span class="badge--muted">対象外</span></td>
+              <td>
+                <a class="btn btn--sm" href="#">詳細</a>
+                <button type="button" class="btn btn--ghost btn--sm">除外を解除</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

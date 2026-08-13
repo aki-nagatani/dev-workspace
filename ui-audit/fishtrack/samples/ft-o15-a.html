@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O15 案A — 依頼一覧のページングを標準に揃える</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_pagination.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .card { background: #fff; padding: 12px 16px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（推奨・採用後の想定）: フィールド依頼一覧（一般・管理者）も
+      ロッド／釣行と同じ番号ボタン＋全件数にする。
+    </p>
+    <p class="sample-block-label">変更前（現状・テキスト＋次へボタン）</p>
+    <div class="card">
+      <nav class="pagination" aria-label="ページ送り">
+        <span class="hint">1 / 5</span>
+        <a class="btn" href="#">次へ</a>
+      </nav>
+    </div>
+    <p class="sample-block-label">変更後（番号＋全件数）</p>
+    <div class="card">
+      <nav class="pagination" aria-label="ページ送り">
+        <div class="pagination-pages" role="group" aria-label="ページ番号">
+          <a class="page-link is-active" href="#" aria-current="page">1</a>
+          <a class="page-link" href="#">2</a>
+          <a class="page-link" href="#">3</a>
+          <a class="page-link" href="#">4</a>
+          <a class="page-link" href="#">5</a>
+        </div>
+        <span class="pagination-total">全 5 件</span>
+      </nav>
+    </div>
+  </div>
+</body>
+</html>

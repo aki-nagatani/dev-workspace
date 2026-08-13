@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O5 案A — 都道府県を北→南（JIS）順に</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .sample-frame .card { margin: 0; padding: 1rem; }
+    .sample-frame select {
+      min-width: 280px;
+      font-size: 0.95rem;
+      padding: 0.35rem 0.5rem;
+    }
+    .sample-before select { outline: 2px solid #c62828; outline-offset: 2px; }
+    .sample-after select { outline: 2px solid #2e7d32; outline-offset: 2px; }
+    .order-caption {
+      margin: 0.5rem 0 0; font-size: 0.8rem; color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用後の想定）: 都道府県プルダウンを
+      <strong>JIS X 0401（北→南）</strong>の順で並べる。
+      実装は既存の <code>_PREFECTURE_FALLBACK</code> と同じ並びを正とし、
+      データに存在する都道府県だけをその順で出す（Unicode の
+      <code>sorted()</code> は使わない）。都道府県以外の location は末尾に回すか別課題で除外。
+    </p>
+    <p class="sample-block-label">変更前（現状・Unicode 文字列順）</p>
+    <section class="card sample-before">
+      <label for="pref-before">都道府県</label>
+      <select id="pref-before" size="5" aria-label="変更前の都道府県順">
+        <option>すべて</option>
+        <option>千葉県</option>
+        <option>水際の散歩道</option>
+        <option>神奈川県</option>
+        <option>茨城県</option>
+      </select>
+      <p class="order-caption">千葉 → 水際の散歩道 → 神奈川 → 茨城（地理順ではない）</p>
+    </section>
+    <p class="sample-block-label">変更後（北→南。未知の location は末尾）</p>
+    <section class="card sample-after">
+      <label for="pref-after">都道府県</label>
+      <select id="pref-after" size="5" aria-label="変更後の都道府県順">
+        <option>すべて</option>
+        <option>茨城県</option>
+        <option>千葉県</option>
+        <option>神奈川県</option>
+        <option>水際の散歩道</option>
+      </select>
+      <p class="order-caption">茨城(08) → 千葉(12) → 神奈川(14) → その他</p>
+    </section>
+  </div>
+</body>
+</html>

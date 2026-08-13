@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-H7 案A — BEST5 順位バッジ（グリッド維持）</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 980px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    /* 案A 差分: 順位バッジ＋1位強調（製品未実装） */
+    .sample-after .catch-card {
+      position: relative;
+    }
+    .sample-after .catch-card__rank {
+      position: absolute;
+      top: 0.4rem;
+      left: 0.4rem;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.85rem;
+      height: 1.85rem;
+      padding: 0 0.35rem;
+      border-radius: var(--radius-sm);
+      background: #1e3a5f;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
+      pointer-events: none;
+    }
+    .sample-after .catch-card--rank-1 {
+      border-color: rgba(180, 130, 20, 0.55);
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14);
+    }
+    .sample-after .catch-card--rank-1 .catch-card__rank {
+      min-width: 2.15rem;
+      height: 2.15rem;
+      background: #9a7b0a;
+      font-size: 0.9rem;
+    }
+    .sample-after .catch-card--rank-1 .catch-card__size {
+      color: #9a7b0a;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用後の想定）: 既存 <code>catch-card</code> グリッドを維持し、各カード左上に
+      <code>#1</code>〜<code>#5</code> バッジ。1位のみ枠・サイズ色をわずかに強調。
+      デモデータは順位の視認用（ローカル AI 環境はサイズ付き釣果が少ない場合あり）。
+    </p>
+    <p class="sample-block-label">変更前（現状・順位表記なし・通常釣果カードと同型）</p>
+    <div class="sample-before">
+      <section class="card home-dashboard__section" aria-label="2026 BEST5">
+        <div class="home-dashboard__section-header">
+          <h2>2026 BEST5</h2>
+          <a class="btn btn--sm btn--secondary" href="#">釣果一覧へ</a>
+        </div>
+        <div class="catch-card-grid">
+          <article class="catch-card catch-card--no-photo">
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-07-01</span><span>06:20</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">52.0cm</p>
+              <dl class="catch-card__details"><div><dt>フィールド</dt><dd>三島湖</dd></div></dl>
+            </div>
+          </article>
+          <article class="catch-card catch-card--no-photo">
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-06-12</span><span>07:05</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">48.5cm</p>
+              <dl class="catch-card__details"><div><dt>フィールド</dt><dd>三島湖</dd></div></dl>
+            </div>
+          </article>
+          <article class="catch-card catch-card--no-photo">
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-05-03</span><span>08:10</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">45.0cm</p>
+              <dl class="catch-card__details"><div><dt>フィールド</dt><dd>三島湖</dd></div></dl>
+            </div>
+          </article>
+          <article class="catch-card catch-card--no-photo">
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-04-18</span><span>09:00</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">41.2cm</p>
+              <dl class="catch-card__details"><div><dt>フィールド</dt><dd>三島湖</dd></div></dl>
+            </div>
+          </article>
+          <article class="catch-card catch-card--no-photo">
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-02-28</span><span>07:15</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">25.0cm</p>
+              <dl class="catch-card__details"><div><dt>フィールド</dt><dd>三島湖</dd></div></dl>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+    <p class="sample-block-label">変更後（順位バッジ＋1位強調）</p>
+    <div class="sample-after">
+      <section class="card home-dashboard__section" aria-label="2026 BEST5">
+        <div class="home-dashboard__section-header">
+          <h2>2026 BEST5</h2>
+          <a class="btn btn--sm btn--secondary" href="#">釣果一覧へ</a>
+        </div>
+        <div class="catch-card-grid">
+          <article class="catch-card catch-card--no-photo catch-card--rank-1" aria-label="1位 ラージマウスバス">
+            <span class="catch-card__rank" aria-hidden="true">#1</span>
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-07-01</span><span>06:20</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">52.0cm</p>
+              <dl class="catch-card__details"><div><dt>フィールド</dt><dd>三島湖</dd></div></dl>
+            </div>
+          </article>
+          <article class="catch-card catch-card--no-photo" aria-label="2位 ラージマウスバス">
+            <span class="catch-card__rank" aria-hidden="true">#2</span>
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-06-12</span><span>07:05</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">48.5cm</p>
+              <dl class="catch-card__details"><div><dt>フィールド</dt><dd>三島湖</dd></div></dl>
+            </div>
+          </article>
+          <article class="catch-card catch-card--no-photo" aria-label="3位 ラージマウスバス">
+            <span class="catch-card__rank" aria-hidden="true">#3</span>
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-05-03</span><span>08:10</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">45.0cm</p>
+              <dl class="catch-card__details"><div><dt>フィールド</dt><dd>三島湖</dd></div></dl>
+            </div>
+          </article>
+          <article class="catch-card catch-card--no-photo" aria-label="4位 ラージマウスバス">
+            <span class="catch-card__rank" aria-hidden="true">#4</span>
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-04-18</span><span>09:00</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">41.2cm</p>
+              <dl class="catch-card__details"><div><dt>フィールド</dt><dd>三島湖</dd></div></dl>
+            </div>
+          </article>
+          <article class="catch-card catch-card--no-photo" aria-label="5位 ラージマウスバス">
+            <span class="catch-card__rank" aria-hidden="true">#5</span>
+            <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+            <div class="catch-card__body">
+              <div class="catch-card__meta"><span>2026-02-28</span><span>07:15</span></div>
+              <h3 class="catch-card__title">ラージマウスバス</h3>
+              <p class="catch-card__size">25.0cm</p>
+              <dl class="catch-card__details"><div><dt>フィールド</dt><dd>三島湖</dd></div></dl>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

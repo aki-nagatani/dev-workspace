@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O4 案A — 水位画面の管理者カバレッジパネル</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/water_level.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 960px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .sample-frame .card { margin: 0; }
+    /* === 改善差分（案A・管理者のみ） === */
+    .wl-coverage {
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px dashed rgba(148,163,184,0.55);
+    }
+    .wl-coverage__title { margin: 0 0 0.35rem; font-size: 1.05rem; }
+    .wl-coverage__summary {
+      display: flex; flex-wrap: wrap; gap: 0.5rem 1rem;
+      margin: 0 0 0.85rem; font-size: 0.9rem;
+    }
+    .wl-coverage__summary strong { font-variant-numeric: tabular-nums; }
+    .wl-coverage-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .wl-coverage-table th, .wl-coverage-table td {
+      padding: 0.45rem 0.55rem; border-bottom: 1px solid #e2e8f0; text-align: left;
+    }
+    .wl-coverage-table th { color: #64748b; font-weight: 600; }
+    .wl-coverage__group-title {
+      margin: 1rem 0 0.35rem; font-size: 0.95rem;
+    }
+    .wl-coverage__group-title--need { color: #9a3412; }
+    .wl-coverage__group-title--excluded { color: #64748b; }
+    .wl-coverage__row--excluded td {
+      opacity: 0.62;
+      text-decoration: line-through;
+      background: #f8fafc;
+    }
+    .wl-coverage__row--excluded td:last-child { text-decoration: none; }
+    .badge--warn {
+      display: inline-block; padding: 0.1rem 0.45rem; border-radius: 999px;
+      background: #ffedd5; color: #9a3412; font-size: 0.75rem; font-weight: 700;
+    }
+    .badge--muted {
+      display: inline-block; padding: 0.1rem 0.45rem; border-radius: 999px;
+      background: #e2e8f0; color: #475569; font-size: 0.75rem; font-weight: 700;
+    }
+    .wl-coverage__actions { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .wl-coverage__actions .btn { font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用後の想定・<strong>管理者のみ</strong>）: <code>/water-level</code> 下部に
+      「パブリック水位カバレッジ」パネルを追加。要対応一覧を目立たせ、
+      管理者が「水位データ非公開」と判断したフィールドは
+      <strong>対象外</strong>へ移し薄く取消線表示する（一般ユーザーの水位カードには出さない）。
+    </p>
+    <p class="sample-block-label">変更前（現状・対応済みカードのみ／ギャップが見えない）</p>
+    <section class="card sample-before" data-page="water-level-list">
+      <div class="water-level-list__header"><h2>水位データ</h2></div>
+      <div class="water-level-cards">
+        <article class="water-level-card" role="link" tabindex="0">
+          <h3 class="water-level-card__name">亀山湖</h3>
+          <p class="water-level-card__location">千葉県</p>
+          <div class="water-level-card__meta">
+            <span class="water-level-card__level">-0.4m</span>
+            <span class="water-level-card__date">2026-07-29</span>
+          </div>
+        </article>
+      </div>
+    </section>
+    <p class="sample-block-label">変更後（管理者カバレッジパネル）</p>
+    <section class="card sample-after" data-page="water-level-list">
+      <div class="water-level-list__header"><h2>水位データ</h2></div>
+      <div class="water-level-cards">
+        <article class="water-level-card" role="link" tabindex="0">
+          <h3 class="water-level-card__name">亀山湖</h3>
+          <p class="water-level-card__location">千葉県</p>
+          <div class="water-level-card__meta">
+            <span class="water-level-card__level">-0.4m</span>
+            <span class="water-level-card__date">2026-07-29</span>
+          </div>
+        </article>
+      </div>
+      <aside class="wl-coverage" aria-label="パブリック水位カバレッジ">
+        <h3 class="wl-coverage__title">パブリック水位カバレッジ（管理者）</h3>
+        <p class="wl-coverage__summary">
+          <span>パブリック <strong>9</strong></span>
+          <span>対応 <strong>5</strong></span>
+          <span>要対応 <strong>3</strong></span>
+          <span>対象外 <strong>1</strong></span>
+        </p>
+        <h4 class="wl-coverage__group-title wl-coverage__group-title--need">要対応（水位ソース未設定）</h4>
+        <table class="wl-coverage-table">
+          <thead>
+            <tr><th>名称</th><th>所在地</th><th>状態</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>霞ヶ浦</td><td>茨城県</td>
+              <td><span class="badge--warn">未対応</span></td>
+              <td>
+                <div class="wl-coverage__actions">
+                  <button type="button" class="btn btn--sm">ソース設定</button>
+                  <button type="button" class="btn btn--ghost btn--sm">公開なしとして除外</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>テスト</td><td>千葉県</td>
+              <td><span class="badge--warn">未対応</span></td>
+              <td>
+                <div class="wl-coverage__actions">
+                  <button type="button" class="btn btn--sm">ソース設定</button>
+                  <button type="button" class="btn btn--ghost btn--sm">公開なしとして除外</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h4 class="wl-coverage__group-title wl-coverage__group-title--excluded">対象外（水位データ非公開と判断）</h4>
+        <table class="wl-coverage-table">
+          <thead>
+            <tr><th>名称</th><th>所在地</th><th>状態</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+            <tr class="wl-coverage__row--excluded">
+              <td>chizu-field</td><td>未設定</td>
+              <td><span class="badge--muted">対象外</span></td>
+              <td><button type="button" class="btn btn--ghost btn--sm">除外を解除</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </aside>
+    </section>
+  </div>
+</body>
+</html>

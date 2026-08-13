@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1120, initial-scale=1">
+  <title>FT-H8 案F — 実写風フルブリード</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/landing.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/public_layout.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 1120px; padding: 16px; background: #fff; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b;
+      margin: 14px 0 6px; letter-spacing: 0.02em;
+    }
+    .sample-before .ft-lp-body,
+    .sample-after .ft-lp-body { min-height: 0; }
+    .sample-before .ft-lp-hero { min-height: 320px; }
+    .sample-before .ft-lp-story { padding: 24px 20px; }
+    .sample-before .ft-lp-cta-band { padding: 32px 20px; }
+
+    /* 案F: 写真が主役。角丸 4px、影なし、スクリムは黒のみ。ピル型にしない */
+    .sample-after .ft-lp-body {
+      background: #f3f4f6;
+    }
+    .sample-after .ft-lp-btn {
+      border-radius: 4px;
+    }
+    .sample-after .ft-lp-hero {
+      position: relative;
+      min-height: 100dvh;
+      max-width: none;
+      margin: 0;
+      display: block;
+      padding: 0;
+      overflow: hidden;
+    }
+    .sample-after .ft-lp-hero__media,
+    .sample-after .ft-lp-hero__media picture {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+      box-shadow: none;
+      border: 0;
+      overflow: hidden;
+    }
+    .sample-after .ft-lp-hero__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .sample-after .ft-lp-hero__overlay {
+      position: relative;
+      z-index: 1;
+      min-height: 100dvh;
+      display: flex;
+      align-items: flex-end;
+      background: linear-gradient(
+        to top,
+        rgb(20 24 28 / 0.78) 0%,
+        rgb(20 24 28 / 0.28) 42%,
+        rgb(20 24 28 / 0) 70%
+      );
+    }
+    .sample-after .ft-lp-hero__copy {
+      max-width: 42rem;
+      margin: 0;
+      padding: 0 28px 40px;
+    }
+    .sample-after .ft-lp-hero__title {
+      color: #f4f4f5;
+      font-weight: 700;
+      font-size: 2rem;
+      line-height: 1.25;
+      text-shadow: none;
+      margin: 0;
+    }
+    .sample-after .ft-lp-hero__lead {
+      color: rgb(244 244 245 / 0.92);
+      margin: 12px 0 0;
+      max-width: 36rem;
+    }
+    .sample-after .ft-lp-hero__cta { margin-top: 18px; }
+    .sample-after .ft-lp-hero__cta .ft-lp-btn--primary {
+      box-shadow: none;
+      background: var(--color-accent);
+      color: #fff;
+      border-color: var(--color-accent);
+    }
+    .sample-after .ft-lp-hero__cta .ft-lp-btn--ghost {
+      color: #fff;
+      border-color: rgb(255 255 255 / 0.7);
+      background: rgb(20 24 28 / 0.35);
+    }
+
+    .sample-after .ft-lp-photos {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 36px 20px 12px;
+    }
+    .sample-after .ft-lp-photos__title {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1c1917;
+    }
+    .sample-after .ft-lp-photos__lead {
+      margin: 0 0 20px;
+      max-width: 65ch;
+      color: #57534e;
+      line-height: 1.65;
+    }
+    .sample-after .ft-lp-photos__grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .sample-after .ft-lp-photos__card {
+      margin: 0;
+      background: #fff;
+      border: 1px solid rgb(28 25 23 / 0.12);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: none;
+    }
+    .sample-after .ft-lp-photos__card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+    .sample-after .ft-lp-photos__card h3 {
+      margin: 12px 14px 6px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: #1c1917;
+    }
+    .sample-after .ft-lp-photos__card p {
+      margin: 0 14px 14px;
+      color: #57534e;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .sample-after .ft-lp-band {
+      position: relative;
+      min-height: 420px;
+      margin: 28px 0 0;
+      overflow: hidden;
+    }
+    .sample-after .ft-lp-band img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .sample-after .ft-lp-band__copy {
+      position: relative;
+      z-index: 1;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px;
+      background: linear-gradient(
+        to top,
+        rgb(20 24 28 / 0.72) 0%,
+        rgb(20 24 28 / 0) 58%
+      );
+      color: #f4f4f5;
+    }
+    .sample-after .ft-lp-band__copy h2 {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+    .sample-after .ft-lp-band__copy p {
+      margin: 0;
+      max-width: 40rem;
+      line-height: 1.65;
+      color: rgb(244 244 245 / 0.92);
+    }
+
+    .sample-after .ft-lp-quiet {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 36px 20px 12px;
+    }
+    .sample-after .ft-lp-quiet__title {
+      margin: 0 0 8px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1c1917;
+    }
+    .sample-after .ft-lp-quiet__lead {
+      margin: 0 0 16px;
+      max-width: 65ch;
+      color: #57534e;
+      line-height: 1.65;
+    }
+    .sample-after .ft-lp-quiet__shot {
+      display: block;
+      width: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      object-position: top center;
+      border: 1px solid rgb(28 25 23 / 0.12);
+      border-radius: 4px;
+    }
+    .sample-after .ft-lp-fit {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .sample-after .ft-lp-fit h2 {
+      margin: 0 0 10px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1c1917;
+    }
+    .sample-after .ft-lp-fit ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: #57534e;
+      line-height: 1.7;
+    }
+    .sample-after .ft-lp-start {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 8px;
+    }
+    .sample-after .ft-lp-start__title {
+      margin: 0 0 12px;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1c1917;
+    }
+    .sample-after .ft-lp-start__row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid rgb(28 25 23 / 0.12);
+    }
+    .sample-after .ft-lp-start__item {
+      margin: 0;
+      padding: 16px 20px 16px 0;
+    }
+    .sample-after .ft-lp-start__item + .ft-lp-start__item {
+      padding-left: 20px;
+      border-left: 1px solid rgb(28 25 23 / 0.12);
+    }
+    .sample-after .ft-lp-start__item h3 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: #1c1917;
+    }
+    .sample-after .ft-lp-start__item p {
+      margin: 0;
+      color: #57534e;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .sample-after .ft-lp-cta-band {
+      position: relative;
+      min-height: 360px;
+      padding: 0;
+      background: transparent;
+      text-align: left;
+      border-top: 0;
+      overflow: hidden;
+    }
+    .sample-after .ft-lp-cta-band__bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .sample-after .ft-lp-cta-band__inner {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      max-width: none;
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 32px 28px;
+      background: linear-gradient(
+        to top,
+        rgb(20 24 28 / 0.78) 0%,
+        rgb(20 24 28 / 0) 62%
+      );
+    }
+    .sample-after .ft-lp-cta-band__title {
+      color: #f4f4f5;
+      font-weight: 700;
+      font-size: 1.35rem;
+    }
+    .sample-after .ft-lp-cta-band__note {
+      color: rgb(244 244 245 / 0.9);
+      opacity: 1;
+    }
+    .sample-after .ft-lp-cta-band .ft-lp-btn--primary {
+      background: var(--color-accent);
+      color: #fff;
+      border-color: var(--color-accent);
+      box-shadow: none;
+    }
+    .sample-after .ft-lp-cta-band .ft-lp-btn--ghost {
+      color: #fff;
+      border-color: rgb(255 255 255 / 0.7);
+      background: rgb(20 24 28 / 0.35);
+    }
+    .sample-after .ft-lp-cta-band .ft-lp-hero__cta { justify-content: flex-start; }
+
+    @media (max-width: 767px) {
+      .sample-after .ft-lp-photos__grid,
+      .sample-after .ft-lp-fit,
+      .sample-after .ft-lp-start__row {
+        grid-template-columns: 1fr;
+      }
+      .sample-after .ft-lp-start__item + .ft-lp-start__item {
+        padding-left: 0;
+        border-left: 0;
+        border-top: 1px solid rgb(28 25 23 / 0.12);
+      }
+      .sample-after .ft-lp-hero,
+      .sample-after .ft-lp-hero__overlay {
+        min-height: 100dvh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      採用後の想定。下の変更後は
+      <a href="https://ai-design-7ways.vercel.app/21-photo-immersive.html">photo-immersive</a>
+      の手法。コピーは案Eと同じ。背景と図版を同一現場の実写風写真に置き、CSS は黒スクリムと 4px 角丸に留める。SCROLL ラベルは置かない。
+    </p>
+
+    <p class="sample-block-label">変更前（現状）</p>
+    <div class="sample-before">
+      <div class="ft-lp-body ft-lp-body--no-header">
+        <header class="ft-site-header ft-site-header--public">
+          <div class="ft-site-header__bar">
+            <h1 class="site-brand">
+              <a class="site-brand__link" href="http://127.0.0.1:5001/" aria-label="FishTrack トップ">
+                <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+                <span class="site-brand__text sr-only">FishTrack</span>
+              </a>
+            </h1>
+          </div>
+        </header>
+        <main class="ft-lp-main">
+          <section class="ft-lp-hero" aria-labelledby="h8f-hero-before">
+            <div class="ft-lp-hero__media">
+              <img class="ft-lp-hero__img" src="http://127.0.0.1:5001/static/img/lp/hero-generated-20260325-jp-v3.jpg" alt="" width="1376" height="768">
+            </div>
+            <div class="ft-lp-hero__overlay">
+              <div class="ft-lp-hero__copy">
+                <h1 id="h8f-hero-before" class="ft-lp-hero__title">バスフィッシングの記録を、次の判断に。</h1>
+                <p class="ft-lp-hero__lead">釣行・釣果・タックルを自分用に残し、次の釣行の判断に使う。日本でバスフィッシングをする個人向けです。無料枠は広告表示あり。</p>
+                <div class="ft-lp-hero__cta">
+                  <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/register">無料で新規登録</a>
+                  <a class="ft-lp-btn ft-lp-btn--ghost ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/login">ログイン</a>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="ft-lp-story ft-lp-story--alt">
+            <div class="ft-lp-story__inner">
+              <div class="ft-lp-story__text">
+                <h2 class="ft-lp-story__title">釣行前 — フィールドと気象を整える</h2>
+                <p class="ft-lp-story__body">行き先のフィールドや水位を、これまでの釣行記録と照らし合わせて確認できます。</p>
+              </div>
+              <div class="ft-lp-story__media">
+                <img class="ft-lp-story__img" src="http://127.0.0.1:5001/static/img/lp/prep-generated-20260325.webp" alt="" width="1376" height="768">
+              </div>
+            </div>
+          </section>
+          <section class="ft-lp-cta-band">
+            <div class="ft-lp-cta-band__inner">
+              <h2 class="ft-lp-cta-band__title">さあ、記録をはじめよう</h2>
+              <p class="ft-lp-cta-band__note">無料枠は広告表示あり。登録後、メールアドレスの確認を完了するとご利用いただけます。</p>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <p class="sample-block-label">変更後</p>
+    <div class="sample-after">
+      <div class="ft-lp-body ft-lp-body--no-header">
+        <header class="ft-site-header ft-site-header--public">
+          <div class="ft-site-header__bar">
+            <h1 class="site-brand">
+              <a class="site-brand__link" href="http://127.0.0.1:5001/" aria-label="FishTrack トップ">
+                <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+                <span class="site-brand__text sr-only">FishTrack</span>
+              </a>
+            </h1>
+          </div>
+        </header>
+        <main class="ft-lp-main">
+          <section class="ft-lp-hero" aria-labelledby="h8f-hero-after">
+            <div class="ft-lp-hero__media">
+              <img class="ft-lp-hero__img" src="lp-f-hero.png" alt="日本の山あいの湖。桟橋にバスボートが着いている">
+            </div>
+            <div class="ft-lp-hero__overlay">
+              <div class="ft-lp-hero__copy">
+                <h1 id="h8f-hero-after" class="ft-lp-hero__title">バスフィッシングの記録を、次の判断に。</h1>
+                <p class="ft-lp-hero__lead">釣行・釣果・タックルを自分用に残し、次の判断に使う。無料枠は広告表示あり。</p>
+                <div class="ft-lp-hero__cta">
+                  <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/register">無料で新規登録</a>
+                  <a class="ft-lp-btn ft-lp-btn--ghost ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/login">ログイン</a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="ft-lp-photos" aria-labelledby="h8f-cando">
+            <h2 id="h8f-cando" class="ft-lp-photos__title">FishTrack でできること</h2>
+            <p class="ft-lp-photos__lead">登録しなくても、ここで機能の範囲が分かります。使うにはアカウントが必要です。</p>
+            <div class="ft-lp-photos__grid">
+              <article class="ft-lp-photos__card">
+                <img src="lp-f-catch.png" alt="ボート上でバスのサイズを測っている手元">
+                <h3>釣果を残す</h3>
+                <p>写真・サイズ・フィールド・時刻を1件ずつ残す。</p>
+              </article>
+              <article class="ft-lp-photos__card">
+                <img src="lp-f-water.png" alt="山あいの湖面。行く前の水位を見る場面">
+                <h3>水位を見る</h3>
+                <p>よく行くフィールドの水位を見て、行く前の判断に使う。</p>
+              </article>
+              <article class="ft-lp-photos__card">
+                <img src="lp-f-tackle.png" alt="ボートのデッキに置いたロッドとルアーボックス">
+                <h3>タックルを残す</h3>
+                <p>ロッド・リール・ルアーの所持を残し、釣果と結び付けられる。</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="ft-lp-band" aria-labelledby="h8f-field">
+            <img src="lp-f-field.png" alt="湖上のボートからキャストしている様子">
+            <div class="ft-lp-band__copy">
+              <h2 id="h8f-field">現場、その日の釣果を残す</h2>
+              <p>釣果と写真、時間と場所。スマホからでも入力しやすい導線で、その日の記録を逃さず残せます。</p>
+            </div>
+          </section>
+
+          <section class="ft-lp-quiet" aria-labelledby="h8f-app">
+            <h2 id="h8f-app" class="ft-lp-quiet__title">登録後の画面</h2>
+            <p class="ft-lp-quiet__lead">雰囲気だけでなく、中身のアプリもここで確認できます。ホームから釣果・釣行・水位・タックルへ進めます。</p>
+            <img class="ft-lp-quiet__shot" src="../ft-pc-home.png" alt="登録後のホーム画面">
+          </section>
+
+          <section class="ft-lp-fit" aria-labelledby="h8f-fit">
+            <div>
+              <h2 id="h8f-fit">向いている使い方</h2>
+              <ul>
+                <li>日本でバスフィッシングをする個人</li>
+                <li>記録を自分用に残して、次の釣行の判断に使いたい</li>
+              </ul>
+            </div>
+            <div>
+              <h2>向いていない使い方</h2>
+              <ul>
+                <li>SNS への投稿が主目的（公開タイムラインではない）</li>
+                <li>全国ランキングや他者との比較が主目的</li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="ft-lp-start" aria-labelledby="h8f-start">
+            <h2 id="h8f-start" class="ft-lp-start__title">使い始め</h2>
+            <div class="ft-lp-start__row">
+              <article class="ft-lp-start__item">
+                <h3>登録する</h3>
+                <p>無料で新規登録。無料枠は広告表示あり。</p>
+              </article>
+              <article class="ft-lp-start__item">
+                <h3>メールを確認する</h3>
+                <p>確認が完了すると、記録を残せるようになります。</p>
+              </article>
+              <article class="ft-lp-start__item">
+                <h3>釣果を1件残す</h3>
+                <p>写真を先に追加すると、日時や場所の入力がしやすいです。</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="ft-lp-cta-band" aria-labelledby="h8f-cta">
+            <img class="ft-lp-cta-band__bg" src="lp-f-close.png" alt="湖の桟橋でタックルを車に積み込んでいる">
+            <div class="ft-lp-cta-band__inner">
+              <h2 id="h8f-cta" class="ft-lp-cta-band__title">自分用の記録を残す</h2>
+              <p class="ft-lp-cta-band__note">無料枠は広告表示あり。登録後、メールアドレスの確認を完了するとご利用いただけます。</p>
+              <div class="ft-lp-hero__cta">
+                <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/register">無料で新規登録</a>
+                <a class="ft-lp-btn ft-lp-btn--ghost ft-lp-btn--lg" href="http://127.0.0.1:5001/auth/login">ログイン</a>
+              </div>
+            </div>
+          </section>
+        </main>
+        <footer class="ft-site-footer ft-site-footer--lp">
+          <div class="ft-site-footer__inner">
+            <nav class="ft-site-footer__nav" aria-label="フッター">
+              <a class="ft-site-footer__link" href="http://127.0.0.1:5001/legal/terms">利用規約</a>
+              <a class="ft-site-footer__link" href="http://127.0.0.1:5001/legal/privacy">プライバシーポリシー</a>
+            </nav>
+            <small class="ft-site-footer__copy">&copy; 2026 FishTrack</small>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O1 案A — トレーラー釣果をルアー釣果サマリへ合算</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 920px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin: 0.75rem 0 0;
+    }
+    .summary-card {
+      background: #fff;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 0.9rem;
+      box-shadow: var(--shadow-soft);
+    }
+    .summary-card__label {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+    .summary-card__value {
+      margin: 0.25rem 0 0;
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+    .hl-zero { outline: 2px solid #c62828; outline-offset: 2px; }
+    .hl-fixed { outline: 2px solid #2e7d32; outline-offset: 2px; }
+    .evidence {
+      margin: 0.75rem 0 0;
+      padding: 0.65rem 0.8rem;
+      background: #fff;
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+    .evidence strong { display: inline-block; min-width: 5.5rem; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用後の想定）: ルアー保有／製品の釣果サマリ集計を
+      <code>lure_inventory_id</code> <strong>または</strong>
+      <code>trailer_inventory_id</code> 一致で行う（同一釣果の二重計上なし）。
+      デモはローカル実データ（Catch #41・ワーム STEEZ クアッドフォーゼ）を想定。
+    </p>
+    <p class="sample-block-label">変更前（現状・主ルアーのみ → トレーラー使用が 0 件）</p>
+    <div class="sample-before card" style="padding:1rem;">
+      <h2 style="margin:0 0 0.5rem;font-size:1.1rem;">ワーム詳細 — 釣果サマリ</h2>
+      <p class="evidence">
+        <strong>根拠釣果:</strong> Catch #41 / 40.0cm /
+        ルアー=Dゾーンフライ / <strong>トレーラー=STEEZ クアッドフォーゼ</strong>
+      </p>
+      <div class="summary-cards">
+        <div class="summary-card hl-zero">
+          <p class="summary-card__label">釣果数</p>
+          <p class="summary-card__value">0</p>
+        </div>
+        <div class="summary-card hl-zero">
+          <p class="summary-card__label">最大サイズ</p>
+          <p class="summary-card__value">—</p>
+        </div>
+        <div class="summary-card hl-zero">
+          <p class="summary-card__label">平均サイズ</p>
+          <p class="summary-card__value">—</p>
+        </div>
+      </div>
+    </div>
+    <p class="sample-block-label">変更後（トレーラーも含めて集計）</p>
+    <div class="sample-after card" style="padding:1rem;">
+      <h2 style="margin:0 0 0.5rem;font-size:1.1rem;">ワーム詳細 — 釣果サマリ</h2>
+      <p class="evidence">
+        <strong>集計条件:</strong>
+        <code>OR(lure_inventory_id, trailer_inventory_id)</code>
+        （製品詳細のカラー別も同様）
+      </p>
+      <div class="summary-cards">
+        <div class="summary-card hl-fixed">
+          <p class="summary-card__label">釣果数</p>
+          <p class="summary-card__value">1</p>
+        </div>
+        <div class="summary-card hl-fixed">
+          <p class="summary-card__label">最大サイズ</p>
+          <p class="summary-card__value">40.0 cm</p>
+        </div>
+        <div class="summary-card hl-fixed">
+          <p class="summary-card__label">平均サイズ</p>
+          <p class="summary-card__value">40.0 cm</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

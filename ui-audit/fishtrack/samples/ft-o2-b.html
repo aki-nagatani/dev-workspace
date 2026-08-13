@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O2 案B — ルアー配下にプラグ／ワーム入れ子</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/site_header_drawer.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 980px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .sample-frame details.ft-nav-dropdown > .ft-nav-dropdown__panel {
+      display: flex !important;
+      position: static;
+      margin-top: 0.5rem;
+      box-shadow: var(--shadow-soft);
+      flex-direction: column;
+      align-items: stretch;
+      min-width: 12rem;
+    }
+    .sample-frame .ft-site-nav {
+      display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; align-items: center;
+      background: #fff; padding: 0.65rem 0.85rem; border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.28);
+    }
+    .sample-frame .ft-site-nav > a { text-decoration: none; color: inherit; font-size: 0.9rem; }
+    .lure-sub {
+      margin: 0.15rem 0 0.35rem 0.75rem;
+      padding: 0.35rem 0.5rem;
+      border-left: 3px solid #2563eb;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      background: #f8fafc;
+      border-radius: 0 6px 6px 0;
+    }
+    .lure-sub a { font-size: 0.85rem; text-decoration: none; color: #1e3a5f; }
+    .hl-before { outline: 2px solid #c62828; outline-offset: 2px; }
+    .hl-after { outline: 2px solid #2e7d32; outline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定）: 「ルアーを探す」ラベルは残し、その直下に
+      プラグ／ワームのサブリンクを入れ子表示。項目数は増えるが「ルアー」語彙は維持。
+      SP ドロワーではインデントで階層を示す。
+    </p>
+    <p class="sample-block-label">変更前（現状・単一リンク）</p>
+    <div class="sample-before">
+      <nav class="ft-site-nav" aria-label="サンプル変更前">
+        <details class="ft-nav-dropdown" open>
+          <summary class="ft-nav-dropdown__summary">
+            <span class="ft-nav-dropdown__label">タックルを探す</span>
+            <span class="ft-nav-dropdown__caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="ft-nav-dropdown__panel hl-before" role="group">
+            <a href="#">ロッドを探す</a>
+            <a href="#">リールを探す</a>
+            <a href="#">ルアーを探す</a>
+          </div>
+        </details>
+      </nav>
+    </div>
+    <p class="sample-block-label">変更後（ルアー配下に入れ子）</p>
+    <div class="sample-after">
+      <nav class="ft-site-nav" aria-label="サンプル変更後">
+        <details class="ft-nav-dropdown" open>
+          <summary class="ft-nav-dropdown__summary">
+            <span class="ft-nav-dropdown__label">タックルを探す</span>
+            <span class="ft-nav-dropdown__caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="ft-nav-dropdown__panel hl-after" role="group">
+            <a href="#">ロッドを探す</a>
+            <a href="#">リールを探す</a>
+            <span style="font-size:0.85rem;font-weight:700;padding:0.2rem 0.75rem;color:#64748b;">ルアー</span>
+            <div class="lure-sub">
+              <a href="#">プラグを探す</a>
+              <a href="#">ワームを探す</a>
+            </div>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+</body>
+</html>

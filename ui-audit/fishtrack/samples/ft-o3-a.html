@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O3 案A — 古い水位カードを視覚で弱める</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/water_level.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 900px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .sample-frame .card { margin: 0; }
+    /* === 改善差分（案A） === */
+    .sample-after .water-level-card--stale {
+      opacity: 0.62;
+      background: #f8fafc;
+      border-style: dashed;
+    }
+    .sample-after .water-level-card--stale:hover,
+    .sample-after .water-level-card--stale:focus-visible {
+      opacity: 0.85;
+    }
+    .sample-after .water-level-card__stale-badge {
+      display: inline-block;
+      margin: 0 0 8px;
+      padding: 0.1rem 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #9a3412;
+      background: #ffedd5;
+      border-radius: 4px;
+    }
+    .sample-after .water-level-card--stale .water-level-card__date {
+      color: #9a3412;
+      font-weight: 600;
+    }
+    .sample-after .water-level-card__age {
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用後の想定）: 観測日が閾値（例: 7日）を超えたカードに
+      <code>water-level-card--stale</code> を付与。薄く・破線枠・「更新が古い」バッジ・相対日数で、
+      鮮度の違いが一覧上で分かるようにする（並び順は現状のままでも可）。
+    </p>
+    <p class="sample-block-label">変更前（現状・鮮度が同じ見た目）</p>
+    <section class="card sample-before" data-page="water-level-list">
+      <div class="water-level-cards">
+        <article class="water-level-card" role="link" tabindex="0">
+          <h3 class="water-level-card__name">七川ダム</h3>
+          <p class="water-level-card__location">和歌山県</p>
+          <div class="water-level-card__meta">
+            <span class="water-level-card__level">-1.2m</span>
+            <span class="water-level-card__date">2026-08-13</span>
+          </div>
+        </article>
+        <article class="water-level-card" role="link" tabindex="0">
+          <h3 class="water-level-card__name">亀山湖</h3>
+          <p class="water-level-card__location">千葉県</p>
+          <div class="water-level-card__meta">
+            <span class="water-level-card__level">-0.4m</span>
+            <span class="water-level-card__date">2026-07-29</span>
+          </div>
+        </article>
+      </div>
+    </section>
+    <p class="sample-block-label">変更後（古いカードを弱める）</p>
+    <section class="card sample-after" data-page="water-level-list">
+      <div class="water-level-cards">
+        <article class="water-level-card" role="link" tabindex="0">
+          <h3 class="water-level-card__name">七川ダム</h3>
+          <p class="water-level-card__location">和歌山県</p>
+          <div class="water-level-card__meta">
+            <span class="water-level-card__level">-1.2m</span>
+            <span class="water-level-card__date">2026-08-13</span>
+            <span class="water-level-card__age">本日</span>
+          </div>
+        </article>
+        <article class="water-level-card water-level-card--stale" role="link" tabindex="0">
+          <span class="water-level-card__stale-badge">更新が古い</span>
+          <h3 class="water-level-card__name">亀山湖</h3>
+          <p class="water-level-card__location">千葉県</p>
+          <div class="water-level-card__meta">
+            <span class="water-level-card__level">-0.4m</span>
+            <span class="water-level-card__date">2026-07-29</span>
+            <span class="water-level-card__age">15日前</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

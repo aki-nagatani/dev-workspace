@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O13 案B — 行クリックで詳細</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 860px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .hl-new { outline: 2px solid #2e7d32; outline-offset: 2px; background: #e8f5e9; }
+    tr[role="link"] { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定）: 行全体をクリックで詳細へ（マイフィールド一覧と同じ）。
+      操作列の「—」は廃止。審査待ちの承認 UI は詳細画面へ集約。
+    </p>
+    <p class="sample-block-label">変更前（現状）</p>
+    <table class="ft-table">
+      <thead><tr><th>名称</th><th>状況</th><th>操作</th></tr></thead>
+      <tbody>
+        <tr><td>亀山ダム</td><td>見送り</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p class="sample-block-label">変更後（行が詳細へ）</p>
+    <table class="ft-table">
+      <thead><tr><th>名称</th><th>状況</th></tr></thead>
+      <tbody>
+        <tr class="hl-new" role="link" tabindex="0"><td>亀山ダム</td><td>見送り</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">行をクリックすると依頼詳細を開きます。</p>
+  </div>
+</body>
+</html>

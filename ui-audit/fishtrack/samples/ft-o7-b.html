@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O7 案B — ユーザー名はアカウントメニューのラベルだけ</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/site_header_drawer.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 920px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .sample-frame .ft-site-nav {
+      display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; align-items: center;
+      background: #fff; padding: 0.65rem 0.85rem; border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.28);
+    }
+    .sample-frame .ft-site-nav > a { text-decoration: none; color: inherit; font-size: 0.9rem; }
+    .hl-user {
+      outline: 2px solid #c62828; outline-offset: 2px; background: #ffebee;
+      padding: 0.1rem 0.35rem; border-radius: 4px;
+    }
+    .hl-new { outline: 2px solid #2e7d32; outline-offset: 2px; background: #e8f5e9; }
+    .account-menu summary {
+      list-style: none; cursor: pointer; font-size: 0.9rem;
+    }
+    .account-menu summary::-webkit-details-marker { display: none; }
+    .account-menu__panel {
+      display: flex !important; flex-direction: column; gap: 0.35rem;
+      margin-top: 0.35rem; padding: 0.5rem 0.65rem;
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+      box-shadow: var(--shadow-soft);
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定）: 単独の <code>.nav-user</code> 文言は廃止し、
+      ユーザー名は<strong>アカウントメニューの summary ラベル</strong>としてだけ出す
+      （設定／ログアウトへの入口）。常時の「飾りテキスト」ではなく操作の手がかりにする。
+      （<a href="ft-o6-b.html">FT-O6 案B</a> のアカウント集約と整合）
+    </p>
+    <p class="sample-block-label">変更前（現状・死んだテキスト＋設定＋ログアウトが同列）</p>
+    <div class="sample-before">
+      <nav class="ft-site-nav" aria-label="サンプル変更前">
+        <a href="#">水位データ</a>
+        <span class="nav-spacer"></span>
+        <span class="nav-user hl-user">ai-user さん</span>
+        <a href="#">設定</a>
+        <button type="button">ログアウト</button>
+      </nav>
+    </div>
+    <p class="sample-block-label">変更後（ユーザー名＝メニュー開閉ラベル）</p>
+    <div class="sample-after">
+      <nav class="ft-site-nav" aria-label="サンプル変更後">
+        <a href="#">水位データ</a>
+        <span class="nav-spacer"></span>
+        <details class="account-menu hl-new" open>
+          <summary>ai-user さん ▾</summary>
+          <div class="account-menu__panel">
+            <a href="#">設定</a>
+            <button type="button">ログアウト</button>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+</body>
+</html>

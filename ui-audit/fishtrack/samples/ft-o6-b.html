@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O6 案B — フラット維持＋現在地とアカウント集約</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/site_header_drawer.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 1100px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .sample-frame .ft-site-nav {
+      display: flex; flex-wrap: wrap; gap: 0.35rem 0.75rem; align-items: center;
+      background: #fff; padding: 0.65rem 0.85rem; border-radius: 10px;
+      border: 1px solid rgba(148,163,184,0.28);
+    }
+    .sample-frame .ft-site-nav > a,
+    .sample-frame .ft-site-nav .ft-nav-dropdown__summary {
+      text-decoration: none; color: inherit; font-size: 0.9rem;
+    }
+    .sample-frame details.ft-nav-dropdown { position: relative; }
+    .sample-frame details.ft-nav-dropdown > .ft-nav-dropdown__panel {
+      display: flex !important;
+      position: static;
+      margin-top: 0.5rem;
+      box-shadow: var(--shadow-soft);
+      flex-wrap: wrap;
+      gap: 0.35rem 0.75rem;
+    }
+    .is-current {
+      font-weight: 700;
+      color: #0f4c81 !important;
+      box-shadow: inset 0 -2px 0 #0f4c81;
+    }
+    .hl-new { outline: 2px solid #2e7d32; outline-offset: 2px; background: #e8f5e9; }
+    .hl-move { outline: 2px solid #1565c0; outline-offset: 2px; background: #e3f2fd; }
+    .account-menu summary {
+      list-style: none; cursor: pointer; font-size: 0.9rem;
+    }
+    .account-menu summary::-webkit-details-marker { display: none; }
+    .account-menu__panel {
+      display: flex !important; flex-direction: column; gap: 0.35rem;
+      margin-top: 0.35rem; padding: 0.5rem 0.65rem;
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+      box-shadow: var(--shadow-soft);
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定）: フラット構造は維持しつつ、
+      <strong>現在地表示</strong>と<strong>アカウントメニュー</strong>（設定／ログアウト）を追加。
+      利用頻度の高い「釣果／釣行」をホーム直後に置き、
+      「水位」は参照寄りとして右寄せ気味に。パブリックフィールドは水位の隣に追加。
+      グループ枠は付けない（学習コスト最小）。
+    </p>
+    <p class="sample-block-label">変更前（現状）</p>
+    <div class="sample-before">
+      <nav class="ft-site-nav" aria-label="サンプル変更前">
+        <a href="#">ホーム</a>
+        <a href="#">釣果一覧</a>
+        <a href="#">釣行一覧</a>
+        <a href="#">マイフィールド</a>
+        <a href="#">マイタックル</a>
+        <details class="ft-nav-dropdown ft-nav-tackle" open>
+          <summary class="ft-nav-dropdown__summary">
+            <span class="ft-nav-dropdown__label">タックルを探す</span>
+            <span class="ft-nav-dropdown__caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="ft-nav-dropdown__panel" role="group">
+            <a href="#">ロッドを探す</a>
+            <a href="#">リールを探す</a>
+            <a href="#">ルアーを探す</a>
+          </div>
+        </details>
+        <a href="#">水位データ</a>
+        <span class="nav-spacer"></span>
+        <span class="nav-user">ai-user さん</span>
+        <a href="#">設定</a>
+        <button type="button">ログアウト</button>
+      </nav>
+    </div>
+    <p class="sample-block-label">変更後（現在地＋アカウント集約＋並び微調整）</p>
+    <div class="sample-after">
+      <nav class="ft-site-nav" aria-label="サンプル変更後">
+        <a class="is-current hl-new" href="#" aria-current="page">ホーム</a>
+        <a class="hl-move" href="#">釣果一覧</a>
+        <a class="hl-move" href="#">釣行一覧</a>
+        <a href="#">マイフィールド</a>
+        <a href="#">マイタックル</a>
+        <details class="ft-nav-dropdown ft-nav-tackle" open>
+          <summary class="ft-nav-dropdown__summary">
+            <span class="ft-nav-dropdown__label">タックルを探す</span>
+            <span class="ft-nav-dropdown__caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="ft-nav-dropdown__panel" role="group">
+            <a href="#">ロッドを探す</a>
+            <a href="#">リールを探す</a>
+            <a href="#">ルアーを探す</a>
+          </div>
+        </details>
+        <a class="hl-new" href="#">水位データ</a>
+        <a class="hl-new" href="#">パブリックフィールド</a>
+        <span class="nav-spacer"></span>
+        <details class="account-menu hl-new" open>
+          <summary>ai-user さん ▾</summary>
+          <div class="account-menu__panel">
+            <a href="#">設定</a>
+            <button type="button">ログアウト</button>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </div>
+</body>
+</html>
