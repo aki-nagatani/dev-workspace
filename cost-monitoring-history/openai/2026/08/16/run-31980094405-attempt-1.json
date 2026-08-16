@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "service": "openai",
+  "status": "success",
+  "observed_at_utc": "2026-08-16T23:47:17.763526Z",
+  "observed_at_jst": "2026-08-17T08:47:17.763526+09:00",
+  "workflow": "Cost Monitoring",
+  "ref": "main",
+  "sha": "e1247bf8a0d5751b1918800f7559797094e4c6a9",
+  "run_id": "31980094405",
+  "run_attempt": "1",
+  "summary": {
+    "judgment": "要確認",
+    "period": "2026-08-01〜2026-08-16（比較: 2026-07-01〜2026-07-16）",
+    "total": "$3.34（同期間前月比 -48.4%）",
+    "previous_full_month_total": "$29.58（2026-07-01〜2026-07-31）",
+    "projected_month_total": "$6.48（前月完了月比 -78.1%）",
+    "daily_anomaly": "2026-08-07 が他日の平均の19.3倍（$1.88）"
+  },
+  "report": "【貼るだけ】このメッセージ全文を Cursor に貼る（考えなくてよい・追記不要）\n*OpenAI API コスト監視（当月累計）*\n判定: 要確認（日次異常あり）\n期間: 2026-08-01〜2026-08-16（比較: 2026-07-01〜2026-07-16）\n合計: $3.34（同期間前月比 -48.4%）\n前月の完了月合計: $29.58（2026-07-01〜2026-07-31）\n月末予測: $6.48（前月完了月比 -78.1%）\n日次異常: 2026-08-07 が他日の平均の19.3倍（$1.88）\n-----\n#cost-monitoring-handoff\n【Cursor依頼】\nユーザー作業は貼り付けのみ完了。以降はエージェントが自動継続する。\nSKILL: aws-cost-monitoring\nSKILL path: dev-workspace/.agents/skills/aws-cost-monitoring/SKILL.md\n対象: OpenAI API\n判定: 要確認\n依頼: このSlack通知本文だけを入力として深掘りを開始する。追加質問はせず、SKILLの実行フローに従い原因候補と改善案を日本語で返す。\n調査観点:\n- 判定理由: 日次異常あり\n- Organization Costs の合計増がどの用途か切り分ける\n- FishTrack 管理者の OpenAI 利用量画面でプロダクト内訳を確認する\n- AI補助スペック取込など短期間の集中利用がないか確認する\n成果物:\n- 判定の妥当性（正常に戻せるか／要継続監視か）\n- 原因仮説（確度つき）\n- 優先度付き改善案（実施手順・注意点・概算効果）\n- 次にユーザーが取るべきこと（多くて3件）\n"
+}
