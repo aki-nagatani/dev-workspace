@@ -2,8 +2,13 @@
 
 from __future__ import annotations
 
+import io
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+from pathlib import Path
+import urllib.request
+from urllib.error import HTTPError
+from unittest.mock import MagicMock
 
 from scripts.cost_monitoring import (
     CostPeriod,
@@ -25,6 +30,7 @@ from scripts.report_openai_cost_to_slack import (
     daily_cost_series,
     total_cost,
 )
+import scripts.report_openai_cost_to_slack as openai_report
 
 
 JST = timezone(timedelta(hours=9))
@@ -229,3 +235,182 @@ def test_openai_cost_report_sums_api_buckets_and_daily_series() -> None:
     assert "直近完了月の推移" not in report
     assert "#cost-monitoring-handoff" in report
     assert "対象: OpenAI API" in report
+
+
+def test_fetch_costs_retries_rate_limit_using_retry_after(monkeypatch) -> None:
+    """OpenAI APIの429をRetry-After待機後に再試行し、取得を成功させる。"""
+    rate_limit = HTTPError(
+        openai_report.COSTS_URL,
+        429,
+        "Too Many Requests",
+        {"Retry-After": "0"},
+        None,
+    )
+    response = MagicMock()
+    response.__enter__.return_value = io.StringIO('{"data": []}')
+    response.__exit__.return_value = None
+    urlopen = MagicMock(side_effect=[rate_limit, response])
+    sleep = MagicMock()
+    monkeypatch.setattr(openai_report, "urlopen", urlopen)
+    monkeypatch.setattr(openai_report.time, "sleep", sleep)
+
+    buckets = openai_report.fetch_costs(
+        "test-key",
+        CostPeriod(datetime(2026, 8, 1).date(), datetime(2026, 8, 2).date()),
+    )
+
+    assert buckets == []
+    assert urlopen.call_count == 2
+    sleep.assert_called_once_with(0.0)
+
+
+def test_fetch_costs_does_not_retry_non_retryable_http_errors(monkeypatch) -> None:
+    """認証エラーなど再試行対象外のHTTPエラーはそのまま呼び出し元へ返す。"""
+    unauthorized = HTTPError(
+        openai_report.COSTS_URL,
+        401,
+        "Unauthorized",
+        {},
+        None,
+    )
+    urlopen = MagicMock(side_effect=unauthorized)
+    sleep = MagicMock()
+    monkeypatch.setattr(openai_report, "urlopen", urlopen)
+    monkeypatch.setattr(openai_report.time, "sleep", sleep)
+
+    try:
+        openai_report.fetch_costs(
+            "test-key",
+            CostPeriod(datetime(2026, 8, 1).date(), datetime(2026, 8, 2).date()),
+        )
+    except HTTPError as error:
+        assert error.code == 401
+    else:
+        raise AssertionError("HTTPErrorが送出されていない")
+
+    assert urlopen.call_count == 1
+    sleep.assert_not_called()
+
+
+def test_openai_main_skips_recent_month_requests_mid_month(monkeypatch, capsys) -> None:
+    """月中実行では未使用の直近完了月取得を行わず、API呼出しを3回に抑える。"""
+    windows = monitoring_windows(datetime(2026, 8, 15, 9, tzinfo=JST))
+    requested_periods = []
+
+    def fake_fetch_costs(_api_key, period):
+        requested_periods.append(period)
+        return []
+
+    monkeypatch.setenv("OPENAI_ADMIN_API_KEY", "test-key")
+    monkeypatch.setattr(openai_report, "monitoring_windows", lambda: windows)
+    monkeypatch.setattr(openai_report, "fetch_costs", fake_fetch_costs)
+    monkeypatch.setattr(openai_report, "build_report", lambda *args: "report")
+
+    openai_report.main()
+
+    assert capsys.readouterr().out == "report\n"
+    assert requested_periods == [
+        windows.focus,
+        windows.previous_comparable,
+        windows.previous_full_month,
+    ]
+
+
+def test_openai_main_keeps_recent_month_requests_on_first_day(monkeypatch, capsys) -> None:
+    """月初の完了月レビューでは直近3か月の推移取得を維持する。"""
+    windows = monitoring_windows(datetime(2026, 8, 1, 9, tzinfo=JST))
+    requested_periods = []
+
+    def fake_fetch_costs(_api_key, period):
+        requested_periods.append(period)
+        return []
+
+    monkeypatch.setenv("OPENAI_ADMIN_API_KEY", "test-key")
+    monkeypatch.setattr(openai_report, "monitoring_windows", lambda: windows)
+    monkeypatch.setattr(openai_report, "fetch_costs", fake_fetch_costs)
+    monkeypatch.setattr(openai_report, "build_report", lambda *args: "report")
+
+    openai_report.main()
+
+    assert capsys.readouterr().out == "report\n"
+    assert requested_periods == [
+        windows.focus,
+        *windows.recent_full_months,
+        windows.previous_comparable,
+        windows.previous_full_month,
+    ]
+
+
+def test_retry_delay_uses_exponential_backoff_for_invalid_retry_after() -> None:
+    """Retry-Afterが数値でない場合に指数バックオフへフォールバックする。"""
+    error = HTTPError(openai_report.COSTS_URL, 503, "Unavailable", {"Retry-After": "later"}, None)
+
+    assert openai_report._retry_delay_seconds(error, 2) == 4.0
+
+
+def test_fetch_costs_follows_next_page(monkeypatch) -> None:
+    """Costs APIのページングトークンを次のリクエストへ引き継ぐ。"""
+    first_response = MagicMock()
+    first_response.__enter__.return_value = io.StringIO(
+        '{"data": [{"id": "first"}], "next_page": "next-page"}'
+    )
+    first_response.__exit__.return_value = None
+    second_response = MagicMock()
+    second_response.__enter__.return_value = io.StringIO('{"data": [{"id": "second"}]}')
+    second_response.__exit__.return_value = None
+    urlopen = MagicMock(side_effect=[first_response, second_response])
+    monkeypatch.setattr(openai_report, "urlopen", urlopen)
+
+    buckets = openai_report.fetch_costs(
+        "test-key",
+        CostPeriod(datetime(2026, 8, 1).date(), datetime(2026, 8, 2).date()),
+    )
+
+    assert buckets == [{"id": "first"}, {"id": "second"}]
+    assert "page=next-page" in urlopen.call_args_list[1].args[0].full_url
+
+
+def test_daily_cost_series_skips_bucket_without_start_time() -> None:
+    """開始時刻のないバケットを日次系列へ混入させない。"""
+    assert daily_cost_series([{"results": []}]) == []
+
+
+def test_openai_complete_month_normal_report_includes_average_and_trend() -> None:
+    """完了月の正常レポートでは日次平均と直近月推移を表示する。"""
+    windows = monitoring_windows(datetime(2026, 8, 1, 9, tzinfo=JST))
+    report = build_openai_report(
+        windows,
+        Decimal("3.00"),
+        Decimal("4.00"),
+        Decimal("5.00"),
+        [
+            (period, Decimal("2.00"))
+            for period in windows.recent_full_months
+        ],
+        [("2026-07-01", Decimal("1")), ("2026-07-02", Decimal("1"))],
+    )
+
+    assert "OpenAI API コスト監視（完了月）" in report
+    assert "日次平均" in report
+    assert "直近完了月の推移:" in report
+    assert "内訳確認: FishTrack 管理者の OpenAI 利用量画面" in report
+
+
+def test_module_entrypoint_runs_without_external_network(monkeypatch, capsys) -> None:
+    """モジュール実行時も外部API応答を処理してレポートを標準出力へ出す。"""
+
+    def fake_urlopen(_request, timeout):
+        response = MagicMock()
+        response.__enter__.return_value = io.StringIO('{"data": []}')
+        response.__exit__.return_value = None
+        assert timeout == 30
+        return response
+
+    monkeypatch.setenv("OPENAI_ADMIN_API_KEY", "test-key")
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    source_path = Path("scripts/report_openai_cost_to_slack.py").resolve()
+    namespace = {"__name__": "__main__", "__file__": str(source_path)}
+    exec(compile(source_path.read_text(encoding="utf-8"), str(source_path), "exec"), namespace)
+
+    assert "OpenAI API コスト監視" in capsys.readouterr().out

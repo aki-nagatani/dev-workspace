@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, time
+import time
+from datetime import datetime, time as datetime_time
 from decimal import Decimal
 from typing import Any
+from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -28,6 +30,9 @@ from scripts.cost_monitoring import (
 
 
 COSTS_URL = "https://api.openai.com/v1/organization/costs"
+RETRYABLE_HTTP_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
+MAX_REQUEST_ATTEMPTS = 4
+DEFAULT_RETRY_DELAY_SECONDS = 1.0
 
 
 def _timestamp(value: datetime) -> int:
@@ -35,13 +40,24 @@ def _timestamp(value: datetime) -> int:
     return int(value.timestamp())
 
 
+def _retry_delay_seconds(error: HTTPError, retry_number: int) -> float:
+    """Retry-After を優先し、なければ指数バックオフの待機秒数を返す。"""
+    retry_after = error.headers.get("Retry-After") if error.headers else None
+    if retry_after:
+        try:
+            return max(float(retry_after), 0.0)
+        except ValueError:
+            pass
+    return DEFAULT_RETRY_DELAY_SECONDS * (2**retry_number)
+
+
 def fetch_costs(api_key: str, period: CostPeriod) -> list[dict[str, Any]]:
-    """Organization Costs API から全ページのバケットを取得する。"""
+    """Organization Costs API から全ページのバケットを取得する。429・一時5xxは再試行する。"""
     page: str | None = None
     buckets: list[dict[str, Any]] = []
     while True:
-        start = datetime.combine(period.start, time.min, tzinfo=TOKYO)
-        end = datetime.combine(period.end, time.min, tzinfo=TOKYO)
+        start = datetime.combine(period.start, datetime_time.min, tzinfo=TOKYO)
+        end = datetime.combine(period.end, datetime_time.min, tzinfo=TOKYO)
         query: dict[str, str | int] = {
             "start_time": _timestamp(start),
             "end_time": _timestamp(end),
@@ -53,8 +69,16 @@ def fetch_costs(api_key: str, period: CostPeriod) -> list[dict[str, Any]]:
             f"{COSTS_URL}?{urlencode(query)}",
             headers={"Authorization": f"Bearer {api_key}"},
         )
-        with urlopen(request, timeout=30) as response:  # noqa: S310
-            payload = json.load(response)
+        for retry_number in range(MAX_REQUEST_ATTEMPTS):
+            try:
+                with urlopen(request, timeout=30) as response:  # noqa: S310
+                    payload = json.load(response)
+                break
+            except HTTPError as error:
+                is_last_attempt = retry_number == MAX_REQUEST_ATTEMPTS - 1
+                if error.code not in RETRYABLE_HTTP_STATUS_CODES or is_last_attempt:
+                    raise
+                time.sleep(_retry_delay_seconds(error, retry_number))
         buckets.extend(payload.get("data", []))
         page = payload.get("next_page")
         if not page:
@@ -168,16 +192,20 @@ def main() -> None:
     api_key = os.environ["OPENAI_ADMIN_API_KEY"]
     windows = monitoring_windows()
     current_buckets = fetch_costs(api_key, windows.focus)
-    recent_month_totals = [
-        (period, total_cost(fetch_costs(api_key, period)))
-        for period in windows.recent_full_months
-    ]
+    recent_month_totals: list[tuple[CostPeriod, Decimal]] = []
+    if windows.is_complete_month:
+        recent_month_totals = [
+            (period, total_cost(fetch_costs(api_key, period)))
+            for period in windows.recent_full_months
+        ]
+    previous_total = total_cost(fetch_costs(api_key, windows.previous_comparable))
+    previous_full_month_total = total_cost(fetch_costs(api_key, windows.previous_full_month))
     print(
         build_report(
             windows,
             total_cost(current_buckets),
-            total_cost(fetch_costs(api_key, windows.previous_comparable)),
-            total_cost(fetch_costs(api_key, windows.previous_full_month)),
+            previous_total,
+            previous_full_month_total,
             recent_month_totals,
             daily_cost_series(current_buckets),
         )

@@ -1,0 +1,35 @@
+name: Cursor Usage Reminder
+
+on:
+  schedule:
+    - cron: "0 0 1-31/5 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cursor-usage-reminder:
+    name: Remind Cursor Usage monitoring
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.COST_MONITORING_SLACK_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: python -m pip install requests
+      - name: Notify Cursor Usage reminder
+        run: >-
+          python scripts/send_slack_notification.py
+          "Cursor Usage監視の実行タイミングです。Cursorで
+          cursor-cost-monitoring SKILLを明示的に呼び出し、
+          Cursor内ブラウザで https://cursor.com/dashboard/usage を確認してください。
+          Usage画面の確認後、SKILLの手順で結果を #コスト監視へ通知します。"
+      - name: Notify reminder failure
+        if: ${{ failure() }}
+        run: >-
+          python scripts/send_slack_notification.py
+          "Cursor Usage監視リマインダーの送信に失敗しました。GitHub Actionsの実行ログを確認してください。"

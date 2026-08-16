@@ -75,3 +75,23 @@ GitHub リポジトリ Secrets には、次を設定する。
 
 `report_aws_cost_to_slack.py` と `report_openai_cost_to_slack.py` は、Slack に送る本文を
 標準出力へ書き出す。送信は `send_slack_notification.py` が担当する。
+
+`.github/workflows/cost_monitoring.yml` は、各ジョブのレポート本文と実行メタデータを
+`persist_cost_monitoring_history.py`でJSON化し、Artifact経由で
+`cost-monitoring-history/{service}/YYYY/MM/DD/`へ統合する。
+Artifact自体はジョブ間の受け渡し用で、期限なし保存の正本ではない。
+履歴統合ジョブは新しい履歴をGitへ自動コミット・プッシュする。
+同じ実行IDと試行回数の履歴は上書きされるため、再実行しても重複しない。
+
+履歴にはSlack本文の原文、判定、期間、合計、月末予測または日次平均、
+日次異常などの抽出値を保存する。AWS／OpenAIのAPIキーやSlack Webhookは
+保存しない。
+
+OpenAI Costs API は、429・一時的な5xxに対して `Retry-After` 優先の指数バックオフを行う。
+月中のレポートでは未使用の直近完了月推移を取得せず、API呼出しを最小限にする。
+
+Cursor個人契約のUsage監視はGHAで実額を取得せず、
+`cursor-cost-monitoring` SKILLをCursor内ブラウザから明示的に呼び出す。
+GHAの `cursor_usage_reminder.yml` は、約5日ごとにSKILL呼び出しをSlackへ促すだけである。
+確認結果はObsidianの `Notes/コスト監視履歴.md`へ追記し、Cursorの認証情報や
+Cookieは保存しない。

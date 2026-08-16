@@ -62,6 +62,24 @@ AWS / OpenAI のコストを定期監視し、異常時だけ深掘りして改�
   - 正常時は `【対応不要】` と明示し、handoff ブロックは付けない。
 - OpenAI の通知額は Organization Costs API を正とする。
   プロダクト内の利用量ログは、内訳を調べるときだけ参照する。
+- Cursor 個人契約の Usage 監視は公式 API が使えないため、
+  `cursor-cost-monitoring` SKILLへ分離する。
+  Cursor内ブラウザで画面表示値を確認し、GHAはSKILL呼び出しのリマインダーだけを送る。
+
+### 実行履歴の保存
+
+- AWS／OpenAIの各ジョブは、Slack通知本文と実行メタデータを
+  `persist_cost_monitoring_history.py`でJSON化する。
+- GHAの履歴統合ジョブが、Artifactを
+  `cost-monitoring-history/{service}/YYYY/MM/DD/`へ取り込み、
+  Gitへ自動コミット・プッシュする。
+- Artifactはジョブ間の受け渡し用であり、期限なし保存の正本はGit履歴とする。
+- 同一のWorkflow Run IDと試行回数では同じファイルを上書きし、
+  再実行による履歴の重複を防ぐ。
+- ジョブ失敗時も、取得できたレポート本文または空本文と失敗状態を保存する。
+- APIキー、Slack Webhook、ブラウザ認証情報は履歴に保存しない。
+- Cursor個人契約の実行結果は
+  `Notes/コスト監視履歴.md`へ`cursor-cost-monitoring` SKILLが追記する。
 
 ## 実行フロー（Cursor 深掘り）
 
