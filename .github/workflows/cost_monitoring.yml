@@ -2,7 +2,7 @@ name: Cost Monitoring
 
 on:
   schedule:
-    - cron: "0 0 1,15 * *"
+    - cron: "0 13 1,15 * *"
   workflow_dispatch:
 
 permissions:
