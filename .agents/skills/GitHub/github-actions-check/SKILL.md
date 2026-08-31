@@ -15,7 +15,7 @@ description: GitHub Actionsの完了を待って結果を確認するSKILL。ota
 
 - otayori-naviのプッシュ後
 - FishTrack/MyPokedexのmainブランチへのマージ後（**lint / test**。**deploy は skipped が正常**）
-- 緊急デプロイの待機は各リポ `*_emergency-deploy`（**`workflow_dispatch`**。本 SKILL の push 待ちは使わない）
+- 緊急デプロイの待機は `*_pull-request-emergency` 内の **`workflow_dispatch`**（本 SKILL の push 待ちは使わない）
 - その他、GitHub Actionsが実行される操作の後
 
 ## 実行手順（必須）
@@ -127,13 +127,13 @@ try {
 
 ### FishTrack
 
-- **確認対象**: lint、testジョブ（**push では deploy しない**。本番は毎日 03:00 JST。緊急は `FishTrack_emergency-deploy`）
+- **確認対象**: lint、testジョブ（**push では deploy しない**。本番は毎日 03:00 JST。即時本番は `FishTrack_pull-request-emergency`）
 - **通常の実行時間**: 3-8分
 - **確認URL**: <https://github.com/aki-nagatani/FishTrack/actions>
 
 ### MyPokedex
 
-- **確認対象**: lint、testジョブ（**push では deploy しない**。本番は毎日 03:00 JST。緊急は `MyPokedex_emergency-deploy`）
+- **確認対象**: lint、testジョブ（**push では deploy しない**。本番は毎日 03:00 JST。即時本番は `MyPokedex_pull-request-emergency`）
 - **通常の実行時間**: 3-8分
 - **確認URL**: <https://github.com/aki-nagatani/MyPokedex/actions>
 

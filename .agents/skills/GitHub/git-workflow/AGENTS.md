@@ -10,4 +10,4 @@ Always respond in Japanese when applying this skill.
 
 ## 製品別
 
-- FishTrack / MyPokedex / otayori-navi の**具体手順**は各リポの `*_commit` / `*_pull-request` SKILL を Read
+- FishTrack / MyPokedex / otayori-navi の**具体手順**は各リポの `*_commit` / `*_pull-request` / `*_pull-request-emergency` SKILL を Read

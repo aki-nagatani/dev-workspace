@@ -20,19 +20,19 @@ description: >-
 
 **MyPokedex、FishTrack、otayori-navi の3リポジトリに限り**、`develop` を作業用とし、リリース時のみ `main` へマージする。（`dev-workspace`・`personal-tools` 等は対象外。）
 
-- **`main`**: 本番コードの正。**直接プッシュ禁止**。本番コンテナ差し替えは **毎日 03:00 JST**（緊急は各リポ `*_emergency-deploy`）
+- **`main`**: 本番コードの正。**直接プッシュ禁止**。本番コンテナ差し替えは **毎日 03:00 JST**（緊急は各リポ `*_pull-request-emergency`）
 - **`develop`**: 日常のコミット・プッシュ先
 - **フロー**: 開発は `develop` → リリース時に GitHub で `main` ← `develop` の PR をマージ
 - **例外**: 新規プロジェクトで `develop` が無いときは初回のみ `main` で構築し、準備後 `develop` へ移行
 
 各製品のコミット・PR 手順は **当該リポ** の SKILL が正本:
 
-| 製品 | コミット | PR まで | 緊急デプロイ |
-| --- | --- | --- | --- |
-| FishTrack | `FishTrack_commit` | `FishTrack_pull-request` | `FishTrack_emergency-deploy` |
-| MyPokedex | `MyPokedex_commit` | `MyPokedex_pull-request` | `MyPokedex_emergency-deploy` |
-| otayori-navi | （`otayori-navi_pull-request` 内） | `otayori-navi_pull-request` | — |
-| 複数リポ | — | `commit-all` | — |
+| 製品 | コミット | PR・本番 |
+| --- | --- | --- |
+| FishTrack | `FishTrack_commit` | `FishTrack_pull-request`（定時本番）／`FishTrack_pull-request-emergency`（即時本番） |
+| MyPokedex | `MyPokedex_commit` | `MyPokedex_pull-request`（定時本番）／`MyPokedex_pull-request-emergency`（即時本番） |
+| otayori-navi | （`otayori-navi_pull-request` 内） | `otayori-navi_pull-request` |
+| 複数リポ | — | `commit-all` |
 
 **フィーチャーブランチは新規作成しない**（ユーザー明示時のみ例外）。製品 SKILL は **`develop` 上でコミット・push** を前提とする。
 
@@ -40,7 +40,7 @@ description: >-
 
 - **ユーザーの明示的な許可がない限り、コミット・プッシュを実行しない**
 - 「コミットしてください」等の**明示依頼**がある場合に限りコミット
-- **`*_pull-request` / `*_commit` / `commit-all` は 1 チャット 1 回限り**の依頼
+- **`*_pull-request` / `*_pull-request-emergency` / `*_commit` / `commit-all` は 1 チャット 1 回限り**の依頼
   - **`git commit` 失敗時**: 原因を直し**成功まで**再試行可（未成功の間のみ継続有効）
   - **`git commit` が 1 回成功した時点**で、当該依頼内の**追加の新規コミット**は不可（同一フロー内の push / PR / マージは可）
   - フロー**完了後**は、新たな明示がない限り `git commit` / `git push` しない
@@ -52,7 +52,7 @@ description: >-
 
 **以下のいずれかを実行する直前に、3 項目を自問。1 つでも「YES」と確信できなければ実行しない。**
 
-- 対象: `git commit` / `git push` / `gh pr create` / `gh pr merge` / `gh run watch`
+- 対象: `git commit` / `git push` / `gh pr create` / `gh pr merge` / `gh workflow run` / `gh run watch`
 
 1. **今回のユーザー指示**はコミット系の**明示依頼**か？
 2. その依頼は**今回の修正内容**向けか？（前ターンの `*_pull-request` を暗黙継続していないか）

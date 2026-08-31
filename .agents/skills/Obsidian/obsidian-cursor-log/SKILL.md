@@ -356,7 +356,7 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
 
 #### 製品 PR フローとの関係
 
-- **`FishTrack_pull-request` / `MyPokedex_pull-request` / `otayori-navi_pull-request`** 実行時: CursorLog は**フロー全体完了後に 1 エントリ**（コミット・PR 番号・マージ・CI 結果をまとめる）。
+- **`FishTrack_pull-request` / `FishTrack_pull-request-emergency` / `MyPokedex_pull-request` / `MyPokedex_pull-request-emergency` / `otayori-navi_pull-request`** 実行時: CursorLog は**フロー全体完了後に 1 エントリ**（コミット・PR 番号・マージ・CI 結果をまとめる。緊急版は deploy 成否も含む）。
 - 当該フロー内で **`FishTrack_commit` 等を Read して実行する場合**、commit SKILL の CursorLog 節は**適用しない**（親 SKILL の 1 エントリに委譲）。詳細は各 `*_pull-request` SKILL の「Cursorログ更新」。
 
 ### 🚨 使用AIモデル（毎回確認）の必須手順

@@ -50,8 +50,8 @@ alwaysApply: true
   指摘の反映も **まず既存 SKILL を更新**し、該当 SKILL がなければ **新規 SKILL を作成**する。\
   **myrules に長い手順・チェックリストを追記・複製しない**（横断で短い原則だけを myrules に残す）。
 - **更新先の切り分け**: **該当ワークフロー用 SKILL**（\
-  FishTrack AI スペック照合系・`FishTrack_pull-request`・**`FishTrack_commit`**・**`FishTrack_emergency-deploy`** は **FishTrack** `.agents/skills/`。\
-  **`MyPokedex_pull-request`**・**`MyPokedex_commit`**・**`MyPokedex_emergency-deploy`** は **MyPokedex** `.agents/skills/`。\
+  FishTrack AI スペック照合系・`FishTrack_pull-request`・**`FishTrack_pull-request-emergency`**・**`FishTrack_commit`** は **FishTrack** `.agents/skills/`。\
+  **`MyPokedex_pull-request`**・**`MyPokedex_pull-request-emergency`**・**`MyPokedex_commit`** は **MyPokedex** `.agents/skills/`。\
   **`otayori-navi_pull-request`** は **otayori-navi** `.agents/skills/`。\
   **`commit-all`**・**`commit-message`**・**`github-actions-check`**・**`code-comment-guidelines`**・**`git-workflow`** は **`dev-workspace/.agents/skills/GitHub/`**。\
   **`error-handling-policy`**・**`document-creation-policy`**・**`temp-file-management`**・**`file-size-policy`**・**`frontend-html-template`**・**`datetime-jst`**・**`cursor-ide-browser-position`** は **`dev-workspace/.agents/skills/`**（ルート）。\
