@@ -80,17 +80,18 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
 
 1. **想定テストの網羅**: 追加・変更した振る舞いについて、**その時点で想定できる必要なテスト**を **実装と同時に** 書く（正常系・主要な分岐・境界・既知の回帰）。
 2. **合否確認（途中）**: 関連テストは **`python -m pytest … --no-cov`** 等で green/red を確認してよい。
-3. **変更行 100%（セッション完了・報告前）**: **フル pytest** で **`--cov-report=xml`**
-   （**`--cov-fail-under=0`** で全体 99.02% 未達でも可。各 **`AGENTS.md`**）→ **`bash scripts/diff_cover_gate.sh WORKTREE`**
+3. **変更行 100%（セッション完了・報告前）**: **`coverage.xml` が有効ならフル pytest を省略**し **`bash scripts/diff_cover_gate.sh WORKTREE`** だけ実行する。\
+   **無効・欠落**なら **フル pytest** で **`--cov-report=xml`**（**`--cov-fail-under=0`** 可）してからゲート。\
+   有効条件・完了後も xml を消さないことは **`temp-file-management` SKILL**「coverage.xml」。\
    （**ステージ済み+未ステージ** vs **HEAD**）。**全体 99.02% は必須としない**。
-4. **`--no-cov` のみで「品質完了」とは宣言しない** — diff-cover 用の **`coverage.xml`** が必要。
+4. **`--no-cov` のみで「品質完了」とは宣言しない** — diff-cover 用の **有効な `coverage.xml`** が必要。
 
 #### コミット時（pre-commit・必須）
 
 **コミット**（**`commit-all`**・各 **`*_pull-request`** SKILL 等）の直前は、当該リポの **pre-commit** が次を実行する（エージェントは **フックを `--no-verify` せず通す**）。
 
 1. **全体カバレッジ**: **`--cov-fail-under=99.02`**（具体コマンドは各 **`AGENTS.md`**）。
-2. **変更行カバレッジ**: **`bash scripts/diff_cover_gate.sh HEAD`**（**100%**。事前に **`--cov-report=xml`** で `coverage.xml` を生成）。
+2. **変更行カバレッジ**: **`bash scripts/diff_cover_gate.sh HEAD`**（**100%**。有効な `coverage.xml` が無ければ事前に **`--cov-report=xml`**。フック内 pytest が xml を出す場合はそれに従う）。
 
 不足時は **テスト追加**のみ。閾値引き下げ・`omit` 拡大は禁止（**Obsidian** `DevProject/guidelines/テストカバレッジ方針.md`）。
 

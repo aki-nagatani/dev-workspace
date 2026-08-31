@@ -116,7 +116,7 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
 ### 作業完了時の必須チェックリスト
 
 - [ ] ファイル変更の有無（上記定義）
-- [ ] 触ったリポの **`temp/` が空**（`temp-file-management` SKILL。次回も使うものは `scripts/` 等へ昇格済み）
+- [ ] 触ったリポの **`temp/` が空**（`temp-file-management` SKILL。次回も使うものは `scripts/` 等へ昇格済み。**FishTrack `temp-spec-crawl/` は消さない**）
 - [ ] **当日初回追記時**: Q0 — **`obsidian-cursor-monthly-report`** で前日分を `YYYY-MM 日報.md` に追記済み
 - [ ] CursorLog 更新（本 SKILL の記録手順・日時取得・**同時書き込み対策**）
 - [ ] 追記先が JST 取得日付の `YYYY-MM-DD.md` か、時刻が実時刻か

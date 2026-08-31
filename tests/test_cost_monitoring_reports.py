@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import sys
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from pathlib import Path
@@ -25,6 +26,7 @@ from scripts.cost_monitoring import (
     significant_increases,
 )
 from scripts.report_aws_cost_to_slack import build_report as build_aws_report
+import scripts.report_aws_cost_to_slack as aws_report
 from scripts.report_openai_cost_to_slack import (
     build_report as build_openai_report,
     daily_cost_series,
@@ -198,6 +200,137 @@ def test_aws_complete_month_report_includes_trend_and_movers() -> None:
     assert "SKILL: aws-cost-monitoring" in report
     assert "追加質問はせず" in report
     assert "ユーザー作業は貼り付けのみ完了" in report
+
+
+def test_aws_daily_costs_separate_tax_and_hosted_zone_fixed_charges() -> None:
+    """TaxとHostedZoneだけを固定費として分離し、DNSクエリ費用は残す。"""
+    client = MagicMock()
+    client.get_cost_and_usage.return_value = {
+        "ResultsByTime": [
+            {
+                "TimePeriod": {"Start": "2026-08-01", "End": "2026-08-02"},
+                "Groups": [
+                    {
+                        "Keys": ["Tax", "Tax"],
+                        "Metrics": {"UnblendedCost": {"Amount": "3.33"}},
+                    },
+                    {
+                        "Keys": ["Amazon Route 53", "HostedZone"],
+                        "Metrics": {"UnblendedCost": {"Amount": "1.00"}},
+                    },
+                    {
+                        "Keys": ["Amazon Route 53", "DNS-Queries"],
+                        "Metrics": {"UnblendedCost": {"Amount": "0.20"}},
+                    },
+                    {
+                        "Keys": ["Amazon RDS", "InstanceUsage:db.t3.micro"],
+                        "Metrics": {"UnblendedCost": {"Amount": "0.86"}},
+                    },
+                ],
+            }
+        ]
+    }
+
+    operational, fixed = aws_report.daily_costs_excluding_fixed_charges(
+        client,
+        CostPeriod(datetime(2026, 8, 1).date(), datetime(2026, 8, 2).date()),
+    )
+
+    assert operational == [("2026-08-01", Decimal("1.06"))]
+    assert fixed == [
+        ("2026-08-01", "Tax", Decimal("3.33")),
+        ("2026-08-01", "Amazon Route 53/HostedZone", Decimal("1.00")),
+    ]
+    request = client.get_cost_and_usage.call_args.kwargs
+    assert request["GroupBy"] == [
+        {"Type": "DIMENSION", "Key": "SERVICE"},
+        {"Type": "DIMENSION", "Key": "USAGE_TYPE"},
+    ]
+
+
+def test_aws_report_excludes_fixed_charges_from_daily_judgment() -> None:
+    """月初固定費を除いた日次系列では誤警報せず、固定費だけを明示する。"""
+    windows = monitoring_windows(datetime(2026, 8, 15, 9, tzinfo=JST))
+    report = build_aws_report(
+        windows,
+        {"Amazon RDS": Decimal("13.43"), "Tax": Decimal("3.33")},
+        {"Amazon RDS": Decimal("13.43"), "Tax": Decimal("6.47")},
+        Decimal("31.00"),
+        [],
+        [("2026-08-01", Decimal("2.05")), ("2026-08-02", Decimal("2.05"))],
+        fixed_daily_costs=[
+            ("2026-08-01", "Tax", Decimal("3.33")),
+            ("2026-08-01", "Amazon Route 53/HostedZone", Decimal("1.00")),
+        ],
+    )
+
+    assert "判定: 正常" in report
+    assert "日次異常:" not in report
+    assert "日次固定費（異常判定から除外）" in report
+    assert "$3.33" in report
+    assert "$1.00" in report
+
+
+def test_aws_main_uses_operational_daily_costs_for_judgment(monkeypatch, capsys) -> None:
+    """AWSメイン処理が固定費分離済みの日次系列でレポートを生成する。"""
+    class FakeCostExplorer:
+        def get_cost_and_usage(self, **request):
+            if request["Granularity"] == "DAILY":
+                return {
+                    "ResultsByTime": [
+                        {
+                            "TimePeriod": {"Start": "2026-08-01", "End": "2026-08-02"},
+                            "Groups": [
+                                {
+                                    "Keys": ["Tax", "NoUsageType"],
+                                    "Metrics": {"UnblendedCost": {"Amount": "3.33"}},
+                                },
+                                {
+                                    "Keys": ["Amazon Route 53", "HostedZone"],
+                                    "Metrics": {"UnblendedCost": {"Amount": "1.00"}},
+                                },
+                                {
+                                    "Keys": ["Amazon RDS", "InstanceUsage"],
+                                    "Metrics": {"UnblendedCost": {"Amount": "2.05"}},
+                                },
+                            ],
+                        }
+                    ]
+                }
+            if request.get("GroupBy"):
+                return {
+                    "ResultsByTime": [
+                        {
+                            "Groups": [
+                                {
+                                    "Keys": ["Amazon RDS"],
+                                    "Metrics": {"UnblendedCost": {"Amount": "1.00"}},
+                                }
+                            ]
+                        }
+                    ]
+                }
+            return {
+                "ResultsByTime": [
+                    {"Total": {"UnblendedCost": {"Amount": "1.00"}}}
+                ]
+            }
+
+    class FakeBoto3:
+        def client(self, service_name, region_name):
+            assert service_name == "ce"
+            assert region_name == "us-east-1"
+            return FakeCostExplorer()
+
+    windows = monitoring_windows(datetime(2026, 8, 15, 9, tzinfo=JST))
+    monkeypatch.setattr(aws_report, "monitoring_windows", lambda: windows)
+    monkeypatch.setitem(sys.modules, "boto3", FakeBoto3())
+
+    aws_report.main()
+
+    output = capsys.readouterr().out
+    assert "日次異常:" not in output
+    assert "日次固定費（異常判定から除外）" in output
 
 
 def test_openai_cost_report_sums_api_buckets_and_daily_series() -> None:

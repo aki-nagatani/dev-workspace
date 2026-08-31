@@ -4,6 +4,19 @@
 
 MyPokedexおよびFishTrackの本番EC2インスタンスへの接続方法と、本番データベース（AWS RDS）へのアクセス方法を提供します。
 
+## FishTrack 本番 DB アクセスの正（2026-08-26 採用）
+
+RDS へは **PC から直接接続しない**。接続情報は本番 EC2 の `.env` のみ。
+
+| 用途 | 正 | 使わない |
+| --- | --- | --- |
+| **繰り返し自動化**（spec-crawl 全件取得・現行フラグ同期、ai-spec-import 本番 commit） | **用途固定の HTTP API**（トークン。汎用 SQL API は作らない） | 自動化の本命を SSM にしない |
+| **API が未実装の間** | **SSH** → `docker compose exec app` → ORM（現行） | ローカル Docker DB を本番のつもりで使わない |
+| **単発調査** | **SSH**（短いコマンドは SSM `send-command` でも可） | 都度エンドポイントを増やさない |
+| **大きな標準出力**（タックル全件 JSON 等） | SSH または将来の読取 API | SSM `send-command`（出力が約 24KB で切れる） |
+
+詳細・未実装範囲は FishTrack 仕様 `11_future.md` **11-4-H**。実装後は `07_api_routing.md` が契約の正。
+
 ## 重要: 正しいEC2インスタンスの確認
 
 **接続前に必ず正しいインスタンスを確認してください。**
@@ -56,7 +69,9 @@ gh secret list --repo aki-nagatani/FishTrack | Select-String "EC2"
 
 ## 接続方法
 
-### 方法1: AWS Systems Manager (Session Manager) 経由（推奨）
+### 方法1: AWS Systems Manager (Session Manager) 経由（短い単発・対話）
+
+FishTrack の **全件ダンプや現行フラグ同期の自動化には使わない**（上記「本番 DB アクセスの正」）。対話シェルや数行の確認コマンド向け。
 
 **Session Managerを使用する利点：**
 
@@ -123,7 +138,7 @@ aws ssm send-command `
 aws ssm get-command-invocation --command-id <CommandId> --instance-id <InstanceId> --output json
 ```
 
-### 方法2: SSH接続（Session Managerが使用できない場合）
+### 方法2: SSH接続（FishTrack 自動化の現行経路）
 
 **注意**: SSH接続を使用する場合は、必ず正しいIPアドレスを確認してください。
 

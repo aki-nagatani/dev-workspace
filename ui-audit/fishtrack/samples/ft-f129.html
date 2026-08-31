@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>F129 広告枠方針 — 代表4画面の仮枠</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_dashboard.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/site_header_drawer.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; }
+    .sample-page { max-width: 860px; margin: 0 auto; padding: 16px; background: #fff; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 16px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b;
+      margin: 20px 0 8px; letter-spacing: 0.02em;
+    }
+    .sample-frame {
+      width: 390px; overflow: hidden; background: #ebeff5;
+      border: 1px solid #e2e8f0; border-radius: 12px;
+    }
+    .sample-frame .ft-site-header__bar { position: relative !important; }
+    .sample-frame .ft-sticky-submit { position: relative !important; display: grid; }
+    .ft-ad-slot { margin: 0.85rem 0 0; }
+    .ft-ad-slot__label {
+      margin: 0 0 0.35rem; font-size: 0.75rem; color: var(--color-text-muted);
+    }
+    .ft-ad-slot__box {
+      border: 1px dashed #94a3b8; border-radius: 8px;
+      background: #f1f5f9; color: #475569;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; font-size: 0.8rem; padding: 0.5rem;
+    }
+    .ft-ad-slot__box--network { height: 90px; max-height: 100px; box-sizing: border-box; }
+    .ft-ad-slot__box--affiliate { min-height: 120px; max-height: 200px; }
+    .sample-frame main { padding: 0.75rem; }
+    .sample-catch-form { padding-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="sample-page">
+    <p class="sample-note">
+      方針の判断材料。製品 CSS と現行クラスを使い、広告は仮枠だけを足している。
+      実装・AdSense タグは含めない。正本は仕様 <code>05_ui_ux</code> の配置方針。
+    </p>
+
+    <p class="sample-block-label">ホーム（記録）— ALL TIME BEST5 の後・フッター前。節ヘッダーの「釣果を追加」の外</p>
+    <div class="sample-frame">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card home-dashboard__section" aria-label="最近の釣果">
+          <div class="home-dashboard__section-header">
+            <h2>最近の釣果</h2>
+            <div class="filter-actions">
+              <a class="btn btn--sm" href="#">釣果を追加</a>
+              <a class="btn btn--sm btn--secondary" href="#">釣果一覧へ</a>
+            </div>
+          </div>
+          <p class="text-muted">カード一覧（省略）</p>
+        </section>
+        <section class="card home-dashboard__section" aria-label="ALL TIME BEST5">
+          <div class="home-dashboard__section-header">
+            <h2>ALL TIME BEST5</h2>
+            <a class="btn btn--sm btn--secondary" href="#">釣果一覧へ</a>
+          </div>
+          <p class="text-muted">カード一覧（省略）</p>
+        </section>
+        <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+          <p class="ft-ad-slot__label">広告</p>
+          <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+        </aside>
+      </main>
+    </div>
+
+    <p class="sample-block-label">釣果登録（記録フォーム）— フォーム内・sticky 登録バーには出さない</p>
+    <div class="sample-frame">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main class="sample-catch-form">
+        <section class="card" data-page="catch-form">
+          <div class="card-header">
+            <h2>釣果登録</h2>
+            <a class="btn btn--ghost btn--sm" href="#">一覧へ戻る</a>
+          </div>
+          <p class="hint">入力エリア。ここには広告を置かない。</p>
+        </section>
+      </main>
+      <div class="ft-sticky-submit">
+        <button type="button" class="btn ft-sticky-submit__button">登録</button>
+      </div>
+    </div>
+
+    <p class="sample-block-label">ロッドを探す（探す一覧）— 結果の行間には入れず、ページングの後</p>
+    <div class="sample-frame">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card">
+          <div class="card-header">
+            <h2>ロッドを探す</h2>
+            <a class="btn" href="#">新しいロッドを登録</a>
+          </div>
+          <p class="text-muted">カード結果（省略）</p>
+          <nav class="ft-pagination" aria-label="ページネーション">
+            <span>1 / 5</span>
+          </nav>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <p class="sample-block-label">ロッド型番詳細（探す・選ぶ）— スペック下にアフィリエイト、その下にネットワーク。保有追加と同じ行には置かない</p>
+    <div class="sample-frame">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">釣具アフィリエイト（高さ 約120px）</div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

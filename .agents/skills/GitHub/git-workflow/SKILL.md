@@ -20,19 +20,19 @@ description: >-
 
 **MyPokedex、FishTrack、otayori-navi の3リポジトリに限り**、`develop` を作業用とし、リリース時のみ `main` へマージする。（`dev-workspace`・`personal-tools` 等は対象外。）
 
-- **`main`**: 本番（更新で即デプロイ）。**直接プッシュ禁止**
+- **`main`**: 本番コードの正。**直接プッシュ禁止**。本番コンテナ差し替えは **毎日 03:00 JST**（緊急は各リポ `*_emergency-deploy`）
 - **`develop`**: 日常のコミット・プッシュ先
 - **フロー**: 開発は `develop` → リリース時に GitHub で `main` ← `develop` の PR をマージ
 - **例外**: 新規プロジェクトで `develop` が無いときは初回のみ `main` で構築し、準備後 `develop` へ移行
 
 各製品のコミット・PR 手順は **当該リポ** の SKILL が正本:
 
-| 製品 | コミット | PR まで |
-| --- | --- | --- |
-| FishTrack | `FishTrack_commit` | `FishTrack_pull-request` |
-| MyPokedex | `MyPokedex_commit` | `MyPokedex_pull-request` |
-| otayori-navi | （`otayori-navi_pull-request` 内） | `otayori-navi_pull-request` |
-| 複数リポ | — | `commit-all` |
+| 製品 | コミット | PR まで | 緊急デプロイ |
+| --- | --- | --- | --- |
+| FishTrack | `FishTrack_commit` | `FishTrack_pull-request` | `FishTrack_emergency-deploy` |
+| MyPokedex | `MyPokedex_commit` | `MyPokedex_pull-request` | `MyPokedex_emergency-deploy` |
+| otayori-navi | （`otayori-navi_pull-request` 内） | `otayori-navi_pull-request` | — |
+| 複数リポ | — | `commit-all` | — |
 
 **フィーチャーブランチは新規作成しない**（ユーザー明示時のみ例外）。製品 SKILL は **`develop` 上でコミット・push** を前提とする。
 

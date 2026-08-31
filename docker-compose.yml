@@ -1,4 +1,18 @@
 services:
+  ui-audit:
+    image: nginx:alpine
+    ports:
+      - "127.0.0.1:8990:80"
+    volumes:
+      - ./ui-audit:/usr/share/nginx/html:ro
+      - ./ui-audit/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -q --spider http://127.0.0.1/ || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   shared-db:
     # 統合データベース（FishTrackとMyPokedexの両方のテーブルを含む）
     # 本番環境（shared-db）と同じ構成

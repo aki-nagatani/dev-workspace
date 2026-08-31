@@ -7,5 +7,6 @@
 - **本職**: **`work-folder-update`** 等と併用
 - **作業ログ**: **`obsidian-cursor-log`**（証跡。正本更新の代替ではない）
 - **月次日報**: **`obsidian-cursor-monthly-report`**（`CursorLog` のジャンル別要約）
+- **方針の正本**: ユーザー未合意の推奨を「採用」「確定」と書かない（`SKILL.md`「エージェントの姿勢」）
 
 Always respond in Japanese when applying this skill.

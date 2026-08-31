@@ -90,6 +90,58 @@ def daily_costs(client: Any, period: CostPeriod) -> list[tuple[str, Decimal]]:
     ]
 
 
+def _is_monthly_fixed_charge(service: str, usage_type: str) -> bool:
+    """日次異常判定から除外する月次固定計上かを判定する。"""
+    return service == "Tax" or (
+        service == "Amazon Route 53" and usage_type == "HostedZone"
+    )
+
+
+def daily_costs_excluding_fixed_charges(
+    client: Any,
+    period: CostPeriod,
+) -> tuple[list[tuple[str, Decimal]], list[tuple[str, str, Decimal]]]:
+    """月次固定計上を分離した日次コストと固定費内訳を返す。"""
+    results = _cost_and_usage(
+        client,
+        period,
+        granularity="DAILY",
+        group_by=[
+            {"Type": "DIMENSION", "Key": "SERVICE"},
+            {"Type": "DIMENSION", "Key": "USAGE_TYPE"},
+        ],
+    )
+    operational_costs: list[tuple[str, Decimal]] = []
+    fixed_charges: list[tuple[str, str, Decimal]] = []
+    for result in results:
+        day = result["TimePeriod"]["Start"]
+        operational_total = Decimal()
+        for group in result.get("Groups", []):
+            keys = group.get("Keys", [])
+            service = keys[0] if keys else ""
+            usage_type = keys[1] if len(keys) > 1 else ""
+            amount = Decimal(group["Metrics"]["UnblendedCost"]["Amount"])
+            if _is_monthly_fixed_charge(service, usage_type):
+                label = (
+                    service
+                    if service == "Tax" or not usage_type
+                    else f"{service}/{usage_type}"
+                )
+                fixed_charges.append((day, label, amount))
+            else:
+                operational_total += amount
+        operational_costs.append((day, operational_total))
+    return operational_costs, fixed_charges
+
+
+def _fixed_charge_summary(fixed_charges: list[tuple[str, str, Decimal]]) -> str:
+    """固定費内訳をサービス・UsageType単位でSlack向けに整形する。"""
+    totals: dict[str, Decimal] = {}
+    for _day, label, amount in fixed_charges:
+        totals[label] = totals.get(label, Decimal()) + amount
+    return "、".join(f"{label} {format_usd(amount)}" for label, amount in totals.items())
+
+
 def build_report(
     windows: MonitoringWindows,
     current_costs: dict[str, Decimal],
@@ -97,6 +149,8 @@ def build_report(
     previous_full_month_total: Decimal,
     recent_month_totals: list[tuple[CostPeriod, Decimal]],
     current_daily_costs: list[tuple[str, Decimal]],
+    *,
+    fixed_daily_costs: list[tuple[str, str, Decimal]] | None = None,
 ) -> str:
     """Slack へ投稿する AWS コストサマリを生成する。"""
     total_current = sum(current_costs.values(), Decimal())
@@ -176,6 +230,11 @@ def build_report(
         lines.extend(["直近完了月の推移:", *month_trend_lines(recent_month_totals)])
 
     lines.append(anomaly_summary(current_daily_costs))
+    if fixed_daily_costs:
+        lines.append(
+            "日次固定費（異常判定から除外）: "
+            + _fixed_charge_summary(fixed_daily_costs)
+        )
     if judgment.needs_cursor_paste:
         increases = significant_increases(current_costs, previous_costs)
         focus_points = [
@@ -210,6 +269,10 @@ def main() -> None:
     recent_month_totals = [
         (period, period_total(client, period)) for period in windows.recent_full_months
     ]
+    current_daily_costs, fixed_daily_costs = daily_costs_excluding_fixed_charges(
+        client,
+        windows.focus,
+    )
     print(
         build_report(
             windows,
@@ -217,7 +280,8 @@ def main() -> None:
             service_costs(client, windows.previous_comparable),
             period_total(client, windows.previous_full_month),
             recent_month_totals,
-            daily_costs(client, windows.focus),
+            current_daily_costs,
+            fixed_daily_costs=fixed_daily_costs,
         )
     )
 

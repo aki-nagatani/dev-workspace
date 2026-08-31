@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>広告枠方針 — 代表4画面の仮枠</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; }
+    .sample-page { max-width: 860px; margin: 0 auto; padding: 16px; background: #fff; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 16px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b;
+      margin: 20px 0 8px; letter-spacing: 0.02em;
+    }
+    .sample-frame {
+      width: 390px; overflow: hidden; background: #fff;
+      border: 1px solid #e2e8f0; border-radius: 12px;
+    }
+    .sample-frame.has-tabs { position: relative; padding-bottom: 52px; }
+    .sample-frame .fixed-header { position: relative !important; }
+    .sample-frame.has-tabs .site-bottom-tabs {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr 1fr;
+      position: absolute !important;
+      left: 0; right: 0; bottom: 0;
+      z-index: 1100;
+      min-height: 52px;
+      background: #fff;
+      border-top: 1px solid #e0e0e0;
+    }
+    .sample-frame.has-tabs .site-bottom-tabs a {
+      display: flex; align-items: center; justify-content: center;
+      padding: 10px 4px; font-size: 0.875rem; text-decoration: none; color: #222;
+    }
+    .pk-ad-slot { margin: 0.85rem 0 0; }
+    .pk-ad-slot__label {
+      margin: 0 0 0.35rem; font-size: 0.75rem; color: #666;
+    }
+    .pk-ad-slot__box {
+      border: 1px dashed #94a3b8; border-radius: 8px;
+      background: #f1f5f9; color: #475569;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; font-size: 0.8rem; padding: 0.5rem;
+      height: 90px; max-height: 100px; box-sizing: border-box;
+    }
+    .sample-frame main.container { padding: 10px; }
+    .sample-frame .pkTable { width: 100%; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="sample-page">
+    <p class="sample-note">
+      方針の判断材料。製品 CSS と現行クラスを使い、広告は仮枠だけを足している。
+      実装・AdSense タグは含めない。正本は仕様 <code>05_ui_ux</code> の配置方針。
+      アフィリエイト枠は置かない。下タブは枠内で再現している（実装の fixed と同じ高さ 52px）。
+    </p>
+
+    <p class="sample-block-label">図鑑 — 表の後・フッター前。行間・操作列の「図鑑登録」の外。下タブに重ねない</p>
+    <div class="sample-frame has-tabs">
+      <header class="site-header fixed-header">
+        <nav class="site-nav">
+          <div class="left">
+            <button type="button" class="hamburger" aria-label="メニューを開く">
+              <span class="hamburger-icon" aria-hidden="true">☰</span>
+            </button>
+            <a href="#" class="site-logo-link" aria-label="MyPokedex トップ">
+              <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+            </a>
+            <span class="site-current-game">スカーレット/バイオレット</span>
+          </div>
+        </nav>
+      </header>
+      <main id="main-content" class="container">
+        <h1>図鑑</h1>
+        <div class="dex-progress" aria-label="図鑑進捗">
+          <div class="dex-progress__item">
+            <span class="dex-progress__label">進捗：</span>
+            <span class="dex-progress__value">12/400（3%）</span>
+          </div>
+        </div>
+        <details class="pkFilterCollapse">
+          <summary>未登録フィルタ</summary>
+        </details>
+        <table class="pkTable pkTable-sticky">
+          <thead>
+            <tr>
+              <th class="pk-col pk-col--name">名称</th>
+              <th class="pk-col pk-col--actions">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="pk-col pk-col--name">フシギダネ</td>
+              <td class="pk-col pk-col--actions">
+                <button type="button" class="btn btn--xs btn--primary">図鑑登録</button>
+              </td>
+            </tr>
+            <tr>
+              <td class="pk-col pk-col--name">フシギソウ</td>
+              <td class="pk-col pk-col--actions">
+                <button type="button" class="btn btn--xs">解除</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="pk-ad-slot" aria-label="広告">
+          <p class="pk-ad-slot__label">広告</p>
+          <div class="pk-ad-slot__box">ネットワーク広告（高さ 90px）</div>
+        </aside>
+      </main>
+      <nav class="site-bottom-tabs" aria-label="主要ナビ">
+        <a href="#">パーティ</a>
+        <a href="#" aria-current="page">図鑑</a>
+        <a href="#">設定</a>
+      </nav>
+    </div>
+
+    <p class="sample-block-label">パーティ＆ボックス — ボックス表／空状態の後。弱点提案・検索・「図鑑から追加する」の外</p>
+    <div class="sample-frame has-tabs">
+      <header class="site-header fixed-header">
+        <nav class="site-nav">
+          <div class="left">
+            <button type="button" class="hamburger" aria-label="メニューを開く">
+              <span class="hamburger-icon" aria-hidden="true">☰</span>
+            </button>
+            <a href="#" class="site-logo-link" aria-label="MyPokedex トップ">
+              <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+            </a>
+            <span class="site-current-game">スカーレット/バイオレット</span>
+          </div>
+        </nav>
+      </header>
+      <main id="main-content" class="container">
+        <h2>パーティー <span class="pkBadge">1/6</span></h2>
+        <section class="pkRecommend" aria-label="弱点攻略パーティ提案">
+          <div class="pkRecommend__header">
+            <button type="button" class="pkRecommend__toggle">弱点攻略パーティ提案</button>
+          </div>
+        </section>
+        <table class="pkTable pkTable-sticky">
+          <thead>
+            <tr>
+              <th class="pk-col pk-col--name">名称</th>
+              <th class="pk-col pk-col--actions">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="pk-col pk-col--name">フシギダネ</td>
+              <td class="pk-col pk-col--actions">
+                <button type="button" class="btn btn--secondary">ボックスへ</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <h2>ボックス <span class="pkBadge">0</span></h2>
+        <details class="pkFilterCollapse">
+          <summary>ボックスフィルタ</summary>
+        </details>
+        <div class="pkEmptyBox">
+          <p class="pkEmptyBox__message">ボックスにポケモンはいません。</p>
+          <p class="pkEmptyBox__action"><a href="#">図鑑から追加する</a></p>
+        </div>
+        <aside class="pk-ad-slot" aria-label="広告">
+          <p class="pk-ad-slot__label">広告</p>
+          <div class="pk-ad-slot__box">ネットワーク広告（高さ 90px）</div>
+        </aside>
+      </main>
+      <nav class="site-bottom-tabs" aria-label="主要ナビ">
+        <a href="#" aria-current="page">パーティ</a>
+        <a href="#">図鑑</a>
+        <a href="#">設定</a>
+      </nav>
+    </div>
+
+    <p class="sample-block-label">設定 — フォーム内・保存ボタン付近には出さない</p>
+    <div class="sample-frame has-tabs">
+      <header class="site-header fixed-header">
+        <nav class="site-nav">
+          <div class="left">
+            <button type="button" class="hamburger" aria-label="メニューを開く">
+              <span class="hamburger-icon" aria-hidden="true">☰</span>
+            </button>
+            <a href="#" class="site-logo-link" aria-label="MyPokedex トップ">
+              <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+            </a>
+          </div>
+        </nav>
+      </header>
+      <main id="main-content" class="container">
+        <div class="settings-page">
+          <header class="settings-page__header">
+            <h1 class="settings-page__title">ゲーム切替設定</h1>
+            <p class="description">入力エリア。ここには広告を置かない。</p>
+          </header>
+          <p><button type="button" class="btn btn--primary">保存</button></p>
+        </div>
+      </main>
+      <nav class="site-bottom-tabs" aria-label="主要ナビ">
+        <a href="#">パーティ</a>
+        <a href="#">図鑑</a>
+        <a href="#" aria-current="page">設定</a>
+      </nav>
+    </div>
+
+    <p class="sample-block-label">LP — 出さない（ヒーローも締め CTA も。登録導線を広告と競合させない）</p>
+    <div class="sample-frame">
+      <header class="site-header">
+        <nav class="site-nav">
+          <div class="left">
+            <a href="#" class="site-logo-link" aria-label="MyPokedex トップ">
+              <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+            </a>
+          </div>
+        </nav>
+      </header>
+      <main class="container lp-main">
+        <section class="lp-party-stage">
+          <div class="lp-party-stage__lead">
+            <h1 class="lp-title">図鑑だけじゃない。</h1>
+            <p class="lp-desc">ここには広告を置かない。</p>
+            <div class="lp-actions">
+              <a href="#" class="lp-btn btn--primary">無料で始める</a>
+            </div>
+          </div>
+        </section>
+        <section class="lp-cta-block">
+          <h2>集めるのも、パーティを考えるのも、もっと楽しく。</h2>
+          <div class="lp-actions">
+            <a href="#" class="lp-btn btn--primary">無料で始める</a>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

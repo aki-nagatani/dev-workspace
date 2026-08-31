@@ -71,6 +71,7 @@ description: >-
 | FishTrack | **`local-browser-verify`** SKILL（`FishTrack/.agents/skills/`）。AI 用アカウント・Cursor ブラウザ表示 |
 | MyPokedex | **`local-browser-verify`** SKILL（`MyPokedex/.agents/skills/`）。AI 用アカウント・Cursor ブラウザ表示 |
 
+- **ブラウザ配置**: **サイドで開かない**（**`cursor-ide-browser-position`** SKILL。`position: "side"` 禁止）
 - **確認観点**（代表）: ヘッダー・ナビ・表／フォーム配置・sticky・横スクロール・空状態・モーダル／パネル・主要ボタン
 - **報告**: 確認した URL と気づいた点を短く記載する
 

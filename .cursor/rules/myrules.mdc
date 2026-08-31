@@ -50,11 +50,11 @@ alwaysApply: true
   指摘の反映も **まず既存 SKILL を更新**し、該当 SKILL がなければ **新規 SKILL を作成**する。\
   **myrules に長い手順・チェックリストを追記・複製しない**（横断で短い原則だけを myrules に残す）。
 - **更新先の切り分け**: **該当ワークフロー用 SKILL**（\
-  FishTrack AI スペック照合系・`FishTrack_pull-request`・**`FishTrack_commit`** は **FishTrack** `.agents/skills/`。\
-  **`MyPokedex_pull-request`**・**`MyPokedex_commit`** は **MyPokedex** `.agents/skills/`。\
+  FishTrack AI スペック照合系・`FishTrack_pull-request`・**`FishTrack_commit`**・**`FishTrack_emergency-deploy`** は **FishTrack** `.agents/skills/`。\
+  **`MyPokedex_pull-request`**・**`MyPokedex_commit`**・**`MyPokedex_emergency-deploy`** は **MyPokedex** `.agents/skills/`。\
   **`otayori-navi_pull-request`** は **otayori-navi** `.agents/skills/`。\
   **`commit-all`**・**`commit-message`**・**`github-actions-check`**・**`code-comment-guidelines`**・**`git-workflow`** は **`dev-workspace/.agents/skills/GitHub/`**。\
-  **`error-handling-policy`**・**`document-creation-policy`**・**`temp-file-management`**・**`file-size-policy`**・**`frontend-html-template`**・**`datetime-jst`** は **`dev-workspace/.agents/skills/`**（ルート）。\
+  **`error-handling-policy`**・**`document-creation-policy`**・**`temp-file-management`**・**`file-size-policy`**・**`frontend-html-template`**・**`datetime-jst`**・**`cursor-ide-browser-position`** は **`dev-workspace/.agents/skills/`**（ルート）。\
   **`obsidian-cursor-log`**・**`obsidian-cursor-monthly-report`**・**`obsidian-second-brain`**・\
   **`obsidian-inbox-summarize`**・**`obsidian-update-rules`**・**`markdown-editing`**・**`markdownlint-fix`** は **`dev-workspace/.agents/skills/Obsidian/`**。\
   **`mokuhyo\*`**・**`work-folder-update`**・**`work-kadai-update`**・**`work-knowledge-deepen`** は **`dev-workspace/.agents/skills/DTS/`**。\
@@ -84,7 +84,7 @@ alwaysApply: true
 
 ### 禁止（シェル・スクリプト経由の書き込み）
 
-**`temp/` 以外**へのファイル作成・更新・上書きを、シェルやスクリプトで行ってはならない。
+**`temp/` および FishTrack `temp-spec-crawl/` 以外**へのファイル作成・更新・上書きを、シェルやスクリプトで行ってはならない。
 
 - 例: PowerShell の `Copy-Item` / `Move-Item` / `Set-Content` / リダイレクト（`>`）、`[System.IO.File]::WriteAllText`
 - 例: Python / Node 等の `open(..., "w")`・`write_text`・ループ一括置換、`sed` / 正規表現のみの機械更新
@@ -96,15 +96,16 @@ alwaysApply: true
 - **`StrReplace` / `Write` / `Delete` / `EditNotebook`**（Cursor 編集ツール）またはエディタ上の操作
 - 変更単位が追跡可能な形で行う（大きいファイルは節・ブロック単位に分割可）
 
-### 例外（`temp/` のみ）
+### 例外（`temp/` および FishTrack `temp-spec-crawl/`）
 
-- 各リポジトリの **`temp/`** 配下への出力は、シェル・スクリプト可（L2 JSON、カバレッジ、調査用生成物等）
-- **`temp/` から正本へ**は **Read のみ** → 正本へ **`Write` / `StrReplace`**（`Copy-Item` 等で正本へコピー禁止）
-- 詳細: **`temp-file-management`** SKILL
+- 各リポジトリの **`temp/`** 配下への出力は、シェル・スクリプト可（カバレッジ、調査用生成物等）
+- **FishTrack `temp-spec-crawl/`**: spec-crawl CLI 作業専用。シェル書き込み可。**汎用 `temp/` 掃除では消さない**
+- **`temp/` / `temp-spec-crawl/` から正本へ**は **Read のみ** → 正本へ **`Write` / `StrReplace`**（`Copy-Item` 等で正本へコピー禁止）
+- 詳細: **`temp-file-management`** SKILL（spec-crawl は **`spec-crawl` SKILL**）
 
 ### 旧文言との関係
 
-- 「スクリプトによる置換・書き換え厳禁」は **`temp/` 以外**を指す（上記と同義）
+- 「スクリプトによる置換・書き換え厳禁」は **`temp/`・FishTrack `temp-spec-crawl/` 以外**を指す（上記と同義）
 - 対象が **1 ファイル**・**特定リポジトリ**に限っても同様
 
 ## 残作業・次アクションの案内（重要）
@@ -208,6 +209,12 @@ alwaysApply: true
 
 - **FishTrack / MyPokedex / otayori-navi** の Jinja/HTML: **`frontend-html-template`** SKILL（`.agents/skills/frontend-html-template/SKILL.md`）
 
+## Cursor ブラウザ配置（重要）
+
+**ブラウザはサイドで開かないこと。** `browser_navigate` / `browser_tabs` に **`position: "side"` を付けない**（エディタをサイドパネルで割らない）。
+
+- **手順の正本**: **`cursor-ide-browser-position`** SKILL（`.agents/skills/cursor-ide-browser-position/SKILL.md`）。既定は `position` 省略。見せるときだけ `"active"`
+
 ## Git運用（重要）
 
 **無断コミット・プッシュ禁止。** ブランチ方針・自問チェック・LF 改行の正本: **`git-workflow`** SKILL（`.agents/skills/GitHub/git-workflow/SKILL.md`）
@@ -222,6 +229,8 @@ alwaysApply: true
 ## 一時ファイル管理（重要）
 
 **一時ファイルは `temp/` 配下のみ。プロジェクト直下への作成禁止。**\
-**1 チャットの作業完了時は `temp/` を空にする（理想状態）。次回も使うものは `scripts/` 等へ。**
+**1 チャットの作業完了時は `temp/` を空にする（理想状態）。次回も使うものは `scripts/` 等へ。**\
+**例外**: pytest の **`coverage.xml`**（gitignore）はリポ直下に**残す**（完了時に消さない。次の diff-cover でフル pytest を省略するため）。再利用条件は SKILL。\
+**例外（FishTrack）**: **`temp-spec-crawl/`** は汎用 `temp/` と別。他チャットの `temp/` 掃除では消さない。空にするのは当該 `/spec-crawl` セッションの正本反映検証後のみ（SKILL 正）。
 
 - **手順の正本**: **`temp-file-management`** SKILL（`.agents/skills/temp-file-management/SKILL.md`）

@@ -46,15 +46,17 @@
       font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;
       color: #64748b; text-transform: none; margin-right: 0.15rem;
     }
-    .nav-group--record { background: #f1f5f9; border-color: #cbd5e1; }
-    .nav-group--find { background: #ecfdf5; border-color: #a7f3d0; }
-    .nav-group--ref { background: #eff6ff; border-color: #bfdbfe; }
+    .nav-group--record,
+    .nav-group--find,
+    .nav-group--ref {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
     .is-current {
       font-weight: 700;
       color: #0f4c81 !important;
       box-shadow: inset 0 -2px 0 #0f4c81;
     }
-    .hl-new { outline: 2px solid #2e7d32; outline-offset: 2px; background: #e8f5e9; }
     .account-menu summary {
       list-style: none; cursor: pointer; font-size: 0.9rem;
     }
@@ -105,15 +107,15 @@
     <p class="sample-block-label">変更後（グループ＋現在地＋パブリックフィールド）</p>
     <div class="sample-after">
       <nav class="ft-site-nav" aria-label="サンプル変更後">
-        <a class="is-current hl-new" href="#" aria-current="page">ホーム</a>
-        <span class="nav-group nav-group--record hl-new" role="group" aria-label="記録">
+        <a class="is-current" href="#" aria-current="page">ホーム</a>
+        <span class="nav-group nav-group--record" role="group" aria-label="記録">
           <span class="nav-group__label">記録</span>
           <a href="#">釣果一覧</a>
           <a href="#">釣行一覧</a>
           <a href="#">マイフィールド</a>
           <a href="#">マイタックル</a>
         </span>
-        <span class="nav-group nav-group--find hl-new" role="group" aria-label="探す">
+        <span class="nav-group nav-group--find" role="group" aria-label="探す">
           <span class="nav-group__label">探す</span>
           <details class="ft-nav-dropdown ft-nav-tackle" open>
             <summary class="ft-nav-dropdown__summary">
@@ -127,7 +129,7 @@
             </div>
           </details>
         </span>
-        <span class="nav-group nav-group--ref hl-new" role="group" aria-label="参照">
+        <span class="nav-group nav-group--ref" role="group" aria-label="参照">
           <span class="nav-group__label">参照</span>
           <a href="#">水位データ</a>
           <a href="#">パブリックフィールド</a>

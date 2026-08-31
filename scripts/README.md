@@ -46,7 +46,7 @@ python extract_pdf_text.py <PDFファイルパス>
 
 ## 定期コスト監視
 
-`.github/workflows/cost_monitoring.yml` が毎月1日・15日 09:00 JSTに実行する。
+`.github/workflows/cost_monitoring.yml` が毎月1日・15日 22:00 JSTに実行する。
 AWS と OpenAI API の集計は別ジョブで並列に動作し、Slack `#コスト監視` へ投稿する。
 
 運用フロー:
@@ -64,6 +64,8 @@ AWS と OpenAI API の集計は別ジョブで並列に動作し、Slack `#コ�
 - 毎月15日: 当月累計・月末予測中心（正常時は詳細を省略）
 - 共通: 同期間前月比、前月完了月合計、日次異常（異常時のみ詳細）
 - AWS: サービス上位（構成比）。増減は閾値超えのみ
+- AWSの日次異常判定は、TaxとRoute 53のHostedZone（月次固定計上）を運用費から分離する。
+  固定費は総額には含め、通知本文にも「日次固定費（異常判定から除外）」として表示する。
 - 異常時: Cursor依頼ブロック（SKILL・対象・調査観点・成果物）を本文に含める
 
 GitHub リポジトリ Secrets には、次を設定する。

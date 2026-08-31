@@ -3,6 +3,102 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O12 — ユーザー管理の検索追加</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 900px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc;
+      border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b;
+      margin: 14px 0 6px;
+    }
+    .sample-frame .card { margin: 0; }
+    .sample-frame .admin-stats-section,
+    .sample-frame .admin-users-section { padding: 8px; }
+    .sample-frame .stat-card {
+      min-height: 120px; border: 1px solid #e2e8f0;
+      border-radius: 8px; padding: 8px; margin: 8px 0;
+    }
+    .sample-frame .admin-users-section form {
+      display: flex; gap: 12px; align-items: end;
+      margin: 12px 0;
+    }
+    .sample-frame .admin-users-section form > div:first-child {
+      flex: 1 1 auto;
+    }
+    .sample-frame .admin-users-section input {
+      width: 100%; box-sizing: border-box;
+    }
+    .sample-frame .change-after {
+      outline: 2px solid #2e7d32; outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      現在の統計グラフと一覧の順序を維持し、一覧の直前に検索フォームだけを追加する。
+      下の変更後ではメールアドレスまたは ID を検索できる。
+    </p>
+
+    <p class="sample-block-label">変更前（現状）</p>
+    <section class="card">
+      <div class="admin-stats-section">
+        <h3>統計情報</h3>
+        <div class="stats-grid">
+          <div class="stat-card"><h4>新規ユーザー数（日次）</h4></div>
+          <div class="stat-card"><h4>アクティブユーザー数（週次）</h4></div>
+        </div>
+      </div>
+      <div class="admin-users-section">
+        <h3>ユーザー一覧</h3>
+        <table class="ft-table">
+          <thead><tr><th scope="col">ID</th><th scope="col">メールアドレス</th></tr></thead>
+          <tbody><tr><td>6</td><td>ai-admin@local.fishtrack</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="sample-block-label">変更後</p>
+    <section class="card change-after">
+      <div class="admin-stats-section">
+        <h3>統計情報</h3>
+        <div class="stats-grid">
+          <div class="stat-card"><h4>新規ユーザー数（日次）</h4></div>
+          <div class="stat-card"><h4>アクティブユーザー数（週次）</h4></div>
+        </div>
+      </div>
+      <div class="admin-users-section">
+        <h3>ユーザー一覧</h3>
+        <form method="get" action="/admin/users" role="search" aria-label="ユーザー検索">
+          <div>
+            <label for="admin-user-query">メールアドレスまたはID</label>
+            <input id="admin-user-query" type="search" name="q" placeholder="メールアドレスまたはID">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn--sm">検索</button>
+          </div>
+        </form>
+        <table class="ft-table">
+          <thead><tr><th scope="col">ID</th><th scope="col">メールアドレス</th></tr></thead>
+          <tbody><tr><td>6</td><td>ai-admin@local.fishtrack</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
   <title>FT-O12 案A — ユーザー一覧を先に・検索を付ける</title>
   <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
   <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
