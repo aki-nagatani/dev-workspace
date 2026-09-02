@@ -57,7 +57,7 @@ alwaysApply: true
   **`error-handling-policy`**・**`document-creation-policy`**・**`temp-file-management`**・**`file-size-policy`**・**`frontend-html-template`**・**`datetime-jst`**・**`cursor-ide-browser-position`** は **`dev-workspace/.agents/skills/`**（ルート）。\
   **`obsidian-cursor-log`**・**`obsidian-cursor-monthly-report`**・**`obsidian-second-brain`**・\
   **`obsidian-inbox-summarize`**・**`obsidian-update-rules`**・**`markdown-editing`**・**`markdownlint-fix`** は **`dev-workspace/.agents/skills/Obsidian/`**。\
-  **`mokuhyo\*`**・**`work-folder-update`**・**`work-kadai-update`**・**`work-knowledge-deepen`** は **`dev-workspace/.agents/skills/DTS/`**。\
+  **`mokuhyo\*`**・**`work-folder-update`**・**`work-kadai-update`**・**`work-knowledge-deepen`**・**`quality-analysis`** は **`dev-workspace/.agents/skills/DTS/`**。\
   **`FaiNavi_deploy`** は **`personal-tools/.agents/skills/`**。\
   共通手順は **`ai-spec-check-report/SKILL.md`** 等）→\
   **製品一行**は各リポ **`AGENTS.md`** → **myrules** は **全タスク横断の短い原則のみ**（例: 後方互換方針、CursorLog 必須、無断コミット禁止）。迷ったら **SKILL 側に寄せる**。

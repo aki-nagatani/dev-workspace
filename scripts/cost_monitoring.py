@@ -12,6 +12,9 @@ from zoneinfo import ZoneInfo
 TOKYO = ZoneInfo("Asia/Tokyo")
 
 # 判定・詳細表示の初期閾値（少額運用向け）
+# 毎月1日は前月完了月（当月は実績不足で予測しない）。
+# GHA遅延で2日未明に落ちても、10日未満なら前月のまま。10日・20日は当月累計。
+CURRENT_MONTH_REVIEW_FROM_DAY = 10
 WARN_MOM_RATIO = Decimal("0.20")
 WARN_ABSOLUTE_USD = Decimal("5")
 INVESTIGATE_PROJECTION_RATIO = Decimal("0.20")
@@ -101,13 +104,22 @@ def _full_month(month_start: date) -> CostPeriod:
     return CostPeriod(month_start, _shift_months(month_start, 1))
 
 
+def uses_previous_month_review(today: date) -> bool:
+    """1日ジョブ相当なら前月完了月を見る。
+
+    当月予測は10日未満だと実績不足。定期実行が遅れて2日になっても
+    1日ジョブとして前月レビューを維持する。
+    """
+    return today.day < CURRENT_MONTH_REVIEW_FROM_DAY
+
+
 def monitoring_windows(now: datetime | None = None) -> MonitoringWindows:
     """JST の実行日から月次監視用の期間セットを計算する。"""
     today = (now or datetime.now(TOKYO)).astimezone(TOKYO).date()
     this_month = _month_start(today)
     previous_month = _shift_months(this_month, -1)
 
-    if today.day == 1:
+    if uses_previous_month_review(today):
         focus = _full_month(previous_month)
         previous_comparable = _full_month(_shift_months(previous_month, -1))
         is_complete_month = True

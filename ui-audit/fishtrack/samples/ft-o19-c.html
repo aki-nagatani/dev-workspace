@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O19 案C — カード維持で項目と向きを分ける</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 390px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .master-model-cards { display: grid; }
+    .sample-after .holding-sort-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: stretch;
+    }
+    .sample-after .holding-sort-bar select {
+      min-width: 0;
+      max-width: none;
+    }
+    .sample-after .holding-sort-bar__field > span {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案C: カード一覧は維持する。並び替えを「項目」と「向き」に分ける。
+      プリセット（標準／人気／最近更新）は項目の先頭グループ。
+      列を選んだときだけ向きボタンが使える。表ヘッダーの ↕ と同じ2状態。
+      採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（現状・列キーなし）</p>
+    <section class="card">
+      <div class="card-header"><h2>リールを探す</h2></div>
+      <nav class="holding-sort-bar" aria-label="並び替え">
+        <div class="holding-sort-bar__field">
+          <label for="sort-before-c">並び替え</label>
+          <div class="holding-sort-bar__controls">
+            <select id="sort-before-c" aria-label="並び替えプリセット">
+              <option selected>標準</option>
+              <option>人気順</option>
+              <option>最近更新された順</option>
+            </select>
+          </div>
+        </div>
+      </nav>
+      <div class="master-model-cards">
+        <a class="master-model-card" href="#">
+          <div class="master-model-card__main">
+            <div class="master-model-card__heading">
+              <h3 class="master-model-card__model">100L</h3>
+              <span class="master-model-card__pill">ベイト</span>
+            </div>
+            <p class="master-model-card__series">DAIWA · 24STEEZ SV TW</p>
+            <dl class="master-model-card__meta">
+              <div class="master-model-card__meta-item"><dt>ジャンル</dt><dd>ベイト</dd></div>
+              <div class="master-model-card__meta-item"><dt>自重</dt><dd>160</dd></div>
+              <div class="master-model-card__meta-item"><dt>ギア比</dt><dd>8.5</dd></div>
+              <div class="master-model-card__meta-item"><dt>最大ドラグ力</dt><dd>5.0</dd></div>
+            </dl>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <p class="sample-block-label">変更後（項目と向き・カードは維持）</p>
+    <section class="card sample-after">
+      <div class="card-header"><h2>リールを探す</h2></div>
+      <nav class="holding-sort-bar" aria-label="並び替え">
+        <div class="holding-sort-bar__field">
+          <label for="sort-key-c">項目</label>
+          <div class="holding-sort-bar__controls">
+            <select id="sort-key-c" aria-label="並び替えの項目">
+              <optgroup label="プリセット">
+                <option>標準</option>
+                <option>人気順</option>
+                <option>最近更新された順</option>
+              </optgroup>
+              <optgroup label="列">
+                <option>メーカー</option>
+                <option>シリーズ</option>
+                <option>モデル名/型番</option>
+                <option>ジャンル</option>
+                <option selected>自重(g)</option>
+                <option>ギア比</option>
+                <option>最大ドラグ力</option>
+                <option>スプール</option>
+                <option>発売年</option>
+                <option>定価（税抜）</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+        <div class="holding-sort-bar__field">
+          <span id="sort-dir-c-label">向き</span>
+          <div class="holding-sort-bar__controls" role="group" aria-labelledby="sort-dir-c-label">
+            <button type="button" class="btn btn--sm">昇順</button>
+            <button type="button" class="btn btn--sm btn--ghost">降順</button>
+          </div>
+        </div>
+      </nav>
+      <div class="master-model-cards">
+        <a class="master-model-card" href="#">
+          <div class="master-model-card__main">
+            <div class="master-model-card__heading">
+              <h3 class="master-model-card__model">100L</h3>
+              <span class="master-model-card__pill">ベイト</span>
+            </div>
+            <p class="master-model-card__series">DAIWA · 24STEEZ SV TW</p>
+            <dl class="master-model-card__meta">
+              <div class="master-model-card__meta-item"><dt>ジャンル</dt><dd>ベイト</dd></div>
+              <div class="master-model-card__meta-item"><dt>自重</dt><dd>160</dd></div>
+              <div class="master-model-card__meta-item"><dt>ギア比</dt><dd>8.5</dd></div>
+              <div class="master-model-card__meta-item"><dt>最大ドラグ力</dt><dd>5.0</dd></div>
+            </dl>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

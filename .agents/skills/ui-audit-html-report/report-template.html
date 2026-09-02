@@ -504,9 +504,12 @@
         if (!id || id === "resolved-issues" || id === "open-issues") return;
         var el = document.getElementById(id);
         if (!el) return;
-        var details = el.matches && el.matches("details")
+        var details = (el.matches && el.matches("details"))
           ? el
-          : el.querySelector(":scope > details");
+          : (el.closest && el.closest("details"));
+        if (!details && el.querySelector) {
+          details = el.querySelector(":scope > details");
+        }
         if (details) details.open = true;
       }
       window.addEventListener("hashchange", openResolvedForHash);

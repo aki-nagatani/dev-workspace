@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1120, initial-scale=1">
+  <title>FT-H13 案B — 3画面で重量とタックルを揃える（調整後）</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 1120px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-trio {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+    .sample-col h4 {
+      margin: 0 0 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+    }
+    .sample-col .catch-card { width: 100%; }
+    .catch-card__measure {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.35rem 0.75rem;
+      margin: 0;
+    }
+    .catch-card__weight {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B 調整後（採用後の想定）: 魚種・サイズ・重量とタックルを3画面で揃える。
+      ルアーは設定時、トレーラーは対象プラグかつ設定時、リグはワーム時、写真枚数は出さない。
+      場所はホーム／一覧、時刻は釣行詳細。行は既存 dl に足すだけ。現状の製品には無い。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+    <p class="sample-block-label">変更前（同一釣果・3画面）</p>
+    <div class="sample-trio">
+      <div class="sample-col">
+        <h4>ホーム</h4>
+        <article class="catch-card catch-card--no-photo">
+          <div class="catch-card__thumb">
+            <span class="catch-card__thumb-placeholder">写真なし</span>
+          </div>
+          <div class="catch-card__body">
+            <div class="catch-card__meta">
+              <span>2026-02-28</span>
+              <span>07:15</span>
+            </div>
+            <h3 class="catch-card__title">ラージマウスバス</h3>
+            <p class="catch-card__size">25.0cm</p>
+            <dl class="catch-card__details">
+              <div><dt>フィールド</dt><dd>三島湖</dd></div>
+              <div><dt>エリア</dt><dd>あああ</dd></div>
+              <div><dt>釣行</dt><dd>2026-02-28</dd></div>
+              <div><dt>写真</dt><dd>1枚</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+      <div class="sample-col">
+        <h4>釣果一覧</h4>
+        <article class="catch-card catch-card--no-photo">
+          <div class="catch-card__thumb">
+            <span class="catch-card__thumb-placeholder">写真なし</span>
+          </div>
+          <div class="catch-card__body">
+            <div class="catch-card__meta">
+              <span>2026-02-28</span>
+              <span>07:15</span>
+            </div>
+            <h3 class="catch-card__title">ラージマウスバス</h3>
+            <p class="catch-card__size">25.0cm</p>
+            <dl class="catch-card__details">
+              <div><dt>フィールド</dt><dd>三島湖</dd></div>
+              <div><dt>エリア</dt><dd>あああ</dd></div>
+              <div><dt>釣行</dt><dd>2026-02-28</dd></div>
+              <div><dt>ルアー</dt><dd>BUTZ / Vander155 / スモークシュリンプ</dd></div>
+              <div><dt>リグ</dt><dd>未設定</dd></div>
+              <div><dt>写真</dt><dd>1枚</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+      <div class="sample-col">
+        <h4>釣行詳細</h4>
+        <div class="trip-detail-catches">
+          <article class="catch-card catch-card--no-photo">
+            <a class="catch-card__thumb" href="#">
+              <span class="catch-card__thumb-placeholder">写真なし</span>
+            </a>
+            <div class="catch-card__body">
+              <div class="catch-card__headline">
+                <h3 class="catch-card__title">ラージマウスバス</h3>
+                <div class="catch-card__meta">
+                  <span class="catch-card__time">07:15</span>
+                </div>
+              </div>
+              <p class="catch-card__measure">
+                <span class="catch-card__size">25.0cm</span>
+                <span class="catch-card__weight">500.0g</span>
+              </p>
+              <dl class="catch-card__details">
+                <div>
+                  <dt>ルアー</dt>
+                  <dd><a href="#">BUTZ / Vander155 / スモークシュリンプ</a></dd>
+                </div>
+                <div>
+                  <dt>リグ</dt>
+                  <dd>未設定</dd>
+                </div>
+              </dl>
+              <a class="btn btn--ghost btn--sm" href="#">詳細</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+    <p class="sample-block-label">変更後（3画面ともサイズ＋重量。ルアーは設定時。写真枚数なし。場所と時刻は画面の役割どおり）</p>
+    <div class="sample-trio">
+      <div class="sample-col">
+        <h4>ホーム</h4>
+        <article class="catch-card catch-card--no-photo">
+          <div class="catch-card__thumb">
+            <span class="catch-card__thumb-placeholder">写真なし</span>
+          </div>
+          <div class="catch-card__body">
+            <div class="catch-card__meta">
+              <span>2026-02-28</span>
+              <span>07:15</span>
+            </div>
+            <h3 class="catch-card__title">ラージマウスバス</h3>
+            <p class="catch-card__measure">
+              <span class="catch-card__size">25.0cm</span>
+              <span class="catch-card__weight">500.0g</span>
+            </p>
+            <dl class="catch-card__details">
+              <div><dt>フィールド</dt><dd>三島湖</dd></div>
+              <div><dt>エリア</dt><dd>あああ</dd></div>
+              <div><dt>釣行</dt><dd>2026-02-28</dd></div>
+              <div><dt>ルアー</dt><dd>BUTZ / Vander155 / スモークシュリンプ</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+      <div class="sample-col">
+        <h4>釣果一覧</h4>
+        <article class="catch-card catch-card--no-photo">
+          <div class="catch-card__thumb">
+            <span class="catch-card__thumb-placeholder">写真なし</span>
+          </div>
+          <div class="catch-card__body">
+            <div class="catch-card__meta">
+              <span>2026-02-28</span>
+              <span>07:15</span>
+            </div>
+            <h3 class="catch-card__title">ラージマウスバス</h3>
+            <p class="catch-card__measure">
+              <span class="catch-card__size">25.0cm</span>
+              <span class="catch-card__weight">500.0g</span>
+            </p>
+            <dl class="catch-card__details">
+              <div><dt>フィールド</dt><dd>三島湖</dd></div>
+              <div><dt>エリア</dt><dd>あああ</dd></div>
+              <div><dt>釣行</dt><dd>2026-02-28</dd></div>
+              <div><dt>ルアー</dt><dd>BUTZ / Vander155 / スモークシュリンプ</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+      <div class="sample-col">
+        <h4>釣行詳細</h4>
+        <div class="trip-detail-catches">
+          <article class="catch-card catch-card--no-photo">
+            <a class="catch-card__thumb" href="#">
+              <span class="catch-card__thumb-placeholder">写真なし</span>
+            </a>
+            <div class="catch-card__body">
+              <div class="catch-card__headline">
+                <h3 class="catch-card__title">ラージマウスバス</h3>
+                <div class="catch-card__meta">
+                  <span class="catch-card__time">07:15</span>
+                </div>
+              </div>
+              <p class="catch-card__measure">
+                <span class="catch-card__size">25.0cm</span>
+                <span class="catch-card__weight">500.0g</span>
+              </p>
+              <dl class="catch-card__details">
+                <div>
+                  <dt>ルアー</dt>
+                  <dd><a href="#">BUTZ / Vander155 / スモークシュリンプ</a></dd>
+                </div>
+              </dl>
+              <a class="btn btn--ghost btn--sm" href="#">詳細</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

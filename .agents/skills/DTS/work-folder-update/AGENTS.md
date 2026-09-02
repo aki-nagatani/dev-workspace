@@ -6,7 +6,7 @@ Always respond in Japanese when applying this skill.
 
 - **`Obsidian/Work/`** 配下の **`.md` / `.csv`** を **作成・更新・削除**する
 - ユーザーが **`@Obsidian/Work`** または Work 内パスを指定した
-- **`work-kadai-update`**・**`mokuhyo-*`**・**`work-knowledge-deepen`** で Work を変更する
+- **`work-kadai-update`**・**`mokuhyo-*`**・**`work-knowledge-deepen`**・**`quality-analysis`** で Work を変更する
 
 ## 必須の最初アクション
 
@@ -32,6 +32,7 @@ Work は**第2の脳**—移す価値が少しでもあれば正本を更新す�
 
 - 課題ブロック: **`work-kadai-update`**
 - 管理シート・CSV: **`mokuhyo-kanri-sheet-csv`** 等
+- IT/ST 品質分析: **`quality-analysis`**
 - 暗黙知深掘り: **`work-knowledge-deepen`**
 - Markdown: **`markdown-editing`** / **`markdownlint-fix`**
 - 完了後: **`obsidian-cursor-log`**

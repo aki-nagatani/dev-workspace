@@ -24,6 +24,7 @@ from scripts.cost_monitoring import (
     projected_month_total,
     share_percent,
     significant_increases,
+    uses_previous_month_review,
 )
 from scripts.report_aws_cost_to_slack import build_report as build_aws_report
 import scripts.report_aws_cost_to_slack as aws_report
@@ -39,13 +40,52 @@ JST = timezone(timedelta(hours=9))
 
 
 def test_comparison_periods_uses_complete_months_on_first_day() -> None:
-    """月初は直前の完了月とその前月を比較対象にする。"""
+    """1日は直前の完了月とその前月を比較対象にする。"""
     current, previous = comparison_periods(datetime(2026, 8, 1, 9, tzinfo=JST))
 
     assert current.start.isoformat() == "2026-07-01"
     assert current.end.isoformat() == "2026-08-01"
     assert previous.start.isoformat() == "2026-06-01"
     assert previous.end.isoformat() == "2026-07-01"
+
+
+def test_uses_previous_month_review_until_tenth() -> None:
+    """1日ジョブと遅延分は前月、10日以降は当月累計にする。"""
+    assert uses_previous_month_review(datetime(2026, 9, 1, tzinfo=JST).date()) is True
+    assert uses_previous_month_review(datetime(2026, 9, 2, 2, 15, tzinfo=JST).date()) is True
+    assert uses_previous_month_review(datetime(2026, 9, 9, tzinfo=JST).date()) is True
+    assert uses_previous_month_review(datetime(2026, 9, 10, tzinfo=JST).date()) is False
+    assert uses_previous_month_review(datetime(2026, 9, 20, tzinfo=JST).date()) is False
+
+
+def test_monitoring_windows_keeps_complete_month_when_first_job_is_delayed() -> None:
+    """1日ジョブが2日未明に落ちても前月完了月を見る。"""
+    windows = monitoring_windows(datetime(2026, 9, 2, 2, 15, tzinfo=JST))
+
+    assert windows.is_complete_month is True
+    assert windows.mode_label == "完了月"
+    assert windows.focus.start.isoformat() == "2026-08-01"
+    assert windows.focus.end.isoformat() == "2026-09-01"
+
+
+def test_comparison_periods_uses_month_to_date_from_tenth() -> None:
+    """10日以降は当月の前日までと前月の同日数を比較する。"""
+    current, previous = comparison_periods(datetime(2026, 8, 10, 9, tzinfo=JST))
+
+    assert current.start.isoformat() == "2026-08-01"
+    assert current.end.isoformat() == "2026-08-10"
+    assert previous.start.isoformat() == "2026-07-01"
+    assert previous.end.isoformat() == "2026-07-10"
+
+
+def test_comparison_periods_uses_month_to_date_on_twentieth() -> None:
+    """20日も当月累計として前月同日数と比較する。"""
+    current, previous = comparison_periods(datetime(2026, 8, 20, 9, tzinfo=JST))
+
+    assert current.start.isoformat() == "2026-08-01"
+    assert current.end.isoformat() == "2026-08-20"
+    assert previous.start.isoformat() == "2026-07-01"
+    assert previous.end.isoformat() == "2026-07-20"
 
 
 def test_comparison_periods_uses_month_to_date_after_first_day() -> None:

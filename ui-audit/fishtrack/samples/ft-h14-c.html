@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=400, initial-scale=1">
+  <title>FT-H14 案C — 情報欄を1列にまとめる</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 400px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-after .catch-card__details > div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.08rem;
+      align-items: start;
+    }
+    .sample-after .catch-card__details dd {
+      overflow-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案C: 情報欄を1列にする。各項目はラベルの下に値。サムネ幅は現状の 9.5rem。
+      採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（ラベル｜値の2列。ルアー2行・トレーラー3行でラベルの下が空く）</p>
+    <div class="catch-card-grid">
+      <article class="catch-card catch-card--no-photo">
+        <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+        <div class="catch-card__body">
+          <div class="catch-card__meta"><span>2026-07-01</span><span>04:20</span></div>
+          <p class="catch-card__measure">
+            <span class="catch-card__size">40.0cm</span>
+            <span class="catch-card__weight">500.0g</span>
+          </p>
+          <dl class="catch-card__details">
+            <div><dt>フィールド</dt><dd>亀山湖</dd></div>
+            <div><dt>エリア</dt><dd>未設定</dd></div>
+            <div><dt>ルアー</dt><dd><a href="#">EVERGREEN / Dゾーンフライ</a></dd></div>
+            <div><dt>トレーラー</dt><dd><a href="#">DAIWA / STEEZ クアッドフォーゼ</a></dd></div>
+          </dl>
+        </div>
+      </article>
+    </div>
+
+    <p class="sample-block-label">変更後（下。ラベルの下に値。行内の空は消える。カードは縦に伸びる）</p>
+    <div class="sample-after">
+      <div class="catch-card-grid">
+        <article class="catch-card catch-card--no-photo">
+          <div class="catch-card__thumb"><span class="catch-card__thumb-placeholder">写真なし</span></div>
+          <div class="catch-card__body">
+            <div class="catch-card__meta"><span>2026-07-01</span><span>04:20</span></div>
+            <p class="catch-card__measure">
+              <span class="catch-card__size">40.0cm</span>
+              <span class="catch-card__weight">500.0g</span>
+            </p>
+            <dl class="catch-card__details">
+              <div><dt>フィールド</dt><dd>亀山湖</dd></div>
+              <div><dt>エリア</dt><dd>未設定</dd></div>
+              <div><dt>ルアー</dt><dd><a href="#">EVERGREEN / Dゾーンフライ</a></dd></div>
+              <div><dt>トレーラー</dt><dd><a href="#">DAIWA / STEEZ クアッドフォーゼ</a></dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O19 案A — SPでも表ヘッダーで並び替え</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 390px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-after .master-list-table-wrap { display: block !important; }
+    .sample-after .master-model-cards { display: none !important; }
+    .sample-after .table-scroll table { min-width: 0 !important; }
+    .sample-after .ft-col-visibility-toolbar { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（不採用）: 767px 以下でも表を出し、列ヘッダーの並び替えボタンをタップできるようにする。
+      カード一覧は出さない。スマホのカード表示を捨てるため検討対象外。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（現状・表は非表示）</p>
+    <section class="card">
+      <div class="card-header"><h2>リールを探す</h2></div>
+      <nav class="holding-sort-bar" aria-label="並び替え">
+        <div class="holding-sort-bar__field">
+          <label for="sort-before">並び替え</label>
+          <div class="holding-sort-bar__controls">
+            <select id="sort-before" aria-label="並び替えプリセット">
+              <option selected>標準</option>
+              <option>人気順</option>
+              <option>最近更新された順</option>
+            </select>
+          </div>
+        </div>
+      </nav>
+      <div class="master-model-cards" style="display:grid">
+        <a class="master-model-card" href="#">
+          <div class="master-model-card__main">
+            <div class="master-model-card__heading">
+              <span class="master-model-card__model">100L</span>
+              <span class="master-model-card__pill">ベイト</span>
+            </div>
+            <p class="master-model-card__series">DAIWA · 24STEEZ SV TW</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <p class="sample-block-label">変更後（表ヘッダーで並び替え）</p>
+    <section class="card sample-after">
+      <div class="card-header"><h2>リールを探す</h2></div>
+      <nav class="holding-sort-bar" aria-label="並び替え">
+        <div class="holding-sort-bar__field">
+          <label for="sort-after-a">並び替え</label>
+          <div class="holding-sort-bar__controls">
+            <select id="sort-after-a" aria-label="並び替えプリセット">
+              <option selected>標準</option>
+              <option>人気順</option>
+              <option>最近更新された順</option>
+            </select>
+          </div>
+        </div>
+      </nav>
+      <div class="master-list-table-wrap">
+        <div class="table-scroll table-scroll--sticky-head">
+          <table class="ft-table ft-table--striped ft-table--hover ft-table--rod-master-sticky ft-table--reel-master">
+            <thead>
+              <tr>
+                <th scope="col" class="is-sortable" data-sort-key="manufacturer">
+                  <button type="button" class="table-sort" data-sort-key="manufacturer" aria-label="メーカーで並び替え">
+                    <span class="table-sort__label">メーカー</span>
+                    <span class="sort-indicator" aria-hidden="true">↕</span>
+                  </button>
+                </th>
+                <th scope="col" class="is-sortable" data-sort-key="series">
+                  <button type="button" class="table-sort" data-sort-key="series" aria-label="シリーズで並び替え">
+                    <span class="table-sort__label">シリーズ</span>
+                    <span class="sort-indicator" aria-hidden="true">↕</span>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>DAIWA</td>
+                <td>24STEEZ SV TW</td>
+              </tr>
+              <tr>
+                <td>DAIWA</td>
+                <td>21 ZILLION SV TW</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -6,8 +6,11 @@ Slack Webhook URLを使用してメッセージを送信する。
 
 Usage:
     python send_slack_notification.py "メッセージ本文"
+    python send_slack_notification.py --message-file temp/message.txt
     python send_slack_notification.py --channel "#general" "メッセージ本文"
     python send_slack_notification.py --channel "@username" "メッセージ本文"
+    python send_slack_notification.py --message-file temp/message.txt \\
+        --webhook-env-key CURSOR_COST_MONITORING_SLACK_WEBHOOK_URL
 """
 
 from __future__ import annotations
@@ -28,17 +31,13 @@ class SlackNotificationError(RuntimeError):
     pass
 
 
-def get_slack_webhook_url_from_env_file() -> str | None:
-    """プロジェクトルートの.envファイルからSlack Webhook URLを取得する。
+def project_env_file() -> Path:
+    """スクリプト基準のプロジェクトルート `.env` パスを返す。"""
+    return Path(__file__).resolve().parent.parent / ".env"
 
-    Returns:
-        Slack Webhook URL（見つからない場合はNone）
-    """
-    # スクリプトの場所からプロジェクトルートを推定
-    script_dir = Path(__file__).parent
-    project_root = script_dir.parent
-    env_file = project_root / ".env"
 
+def read_env_file_value(env_file: Path, key: str) -> str | None:
+    """`.env` から指定キーの値を読む。見つからなければ None。"""
     if not env_file.exists():
         return None
 
@@ -46,21 +45,69 @@ def get_slack_webhook_url_from_env_file() -> str | None:
         with open(env_file, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
-                # コメント行と空行をスキップ
                 if not line or line.startswith("#"):
                     continue
-                # KEY=VALUE形式を解析
-                if "=" in line:
-                    key, value = line.split("=", 1)
-                    key = key.strip()
-                    value = value.strip().strip('"').strip("'")
-                    if key == "SLACK_WEBHOOK_URL" and value:
-                        return value
+                if "=" not in line:
+                    continue
+                env_key, value = line.split("=", 1)
+                if env_key.strip() == key:
+                    parsed = value.strip().strip('"').strip("'")
+                    if parsed:
+                        return parsed
     except OSError:
-        # ファイル読み取りエラーは無視
         pass
 
     return None
+
+
+def get_slack_webhook_url_from_env_file() -> str | None:
+    """プロジェクトルートの.envファイルから汎用 Slack Webhook URLを取得する。"""
+    return read_env_file_value(project_env_file(), "SLACK_WEBHOOK_URL")
+
+
+def load_notification_text(message: str | None, message_file: str | None) -> str:
+    """位置引数または UTF-8 ファイルから通知本文を読む。
+
+    PowerShell は二重引用符内の `$200` 等を変数展開するため、
+    金額を含む本文はファイル経由にする。
+    """
+    if message_file:
+        return Path(message_file).read_text(encoding="utf-8")
+    if message:
+        return message
+    raise ValueError("message or --message-file is required")
+
+
+def resolve_webhook_url(
+    *,
+    cli_webhook_url: str | None,
+    webhook_env_key: str | None,
+    environ: dict[str, str] | None = None,
+    env_file: Path | None = None,
+) -> str | None:
+    """Webhook URL を解決する。専用キー指定時は汎用キーへフォールバックしない。"""
+    if cli_webhook_url:
+        return cli_webhook_url
+
+    env = environ if environ is not None else os.environ
+    env_path = env_file if env_file is not None else project_env_file()
+
+    if webhook_env_key:
+        from_env = env.get(webhook_env_key)
+        if from_env:
+            return from_env
+        return read_env_file_value(env_path, webhook_env_key)
+
+    webhook_url = env.get("SLACK_WEBHOOK_URL")
+    if webhook_url:
+        return webhook_url
+    webhook_url = read_env_file_value(env_path, "SLACK_WEBHOOK_URL")
+    if webhook_url:
+        return webhook_url
+    webhook_url = get_slack_webhook_url_from_mcp_config()
+    if webhook_url:
+        return webhook_url
+    return get_slack_webhook_url_from_local_config()
 
 
 def get_slack_webhook_url_from_local_config() -> str | None:
@@ -188,7 +235,16 @@ def main() -> int:
     )
     parser.add_argument(
         "message",
-        help="送信するメッセージ本文",
+        nargs="?",
+        help="送信するメッセージ本文（金額の $ を含む場合は --message-file を使う）",
+    )
+    parser.add_argument(
+        "--message-file",
+        help="UTF-8 の本文ファイル（PowerShell の $ 展開を避ける）",
+    )
+    parser.add_argument(
+        "--webhook-env-key",
+        help=".env の Webhook キー名。指定時は SLACK_WEBHOOK_URL へフォールバックしない",
     )
     parser.add_argument(
         "--channel",
@@ -211,18 +267,35 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    # Webhook URLの取得（優先順位: コマンドライン引数 > 環境変数 > .envファイル > MCP設定ファイル > config.local.json）
-    webhook_url = args.webhook_url
-    if not webhook_url:
-        webhook_url = os.environ.get("SLACK_WEBHOOK_URL")
-    if not webhook_url:
-        webhook_url = get_slack_webhook_url_from_env_file()
-    if not webhook_url:
-        webhook_url = get_slack_webhook_url_from_mcp_config()
-    if not webhook_url:
-        webhook_url = get_slack_webhook_url_from_local_config()
+    if bool(args.message) == bool(args.message_file):
+        print(
+            "Error: specify exactly one of positional message or --message-file",
+            file=sys.stderr,
+        )
+        return 1
+
+    try:
+        text = load_notification_text(args.message, args.message_file)
+    except OSError as exc:
+        print(f"Error: failed to read --message-file: {exc}", file=sys.stderr)
+        return 1
+
+    webhook_url = resolve_webhook_url(
+        cli_webhook_url=args.webhook_url,
+        webhook_env_key=args.webhook_env_key,
+    )
 
     if not webhook_url:
+        if args.webhook_env_key:
+            print(
+                f"Error: {args.webhook_env_key} is not set",
+                file=sys.stderr,
+            )
+            print(
+                "Dedicated webhook has no generic SLACK_WEBHOOK_URL fallback.",
+                file=sys.stderr,
+            )
+            return 1
         print(
             "Error: SLACK_WEBHOOK_URL is not set",
             file=sys.stderr,
@@ -238,11 +311,10 @@ def main() -> int:
         print("  5. Local config: Create config.local.json in project root with SLACK_WEBHOOK_URL", file=sys.stderr)
         return 1
 
-    # メッセージ送信
     try:
         send_slack_message(
             webhook_url=webhook_url,
-            text=args.message,
+            text=text,
             channel=args.channel,
             username=args.username,
             icon_emoji=args.icon_emoji,

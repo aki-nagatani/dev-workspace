@@ -2,7 +2,8 @@ name: Cost Monitoring
 
 on:
   schedule:
-    - cron: "0 13 1,15 * *"
+    # 毎月1・10・20日 22:00 JST。1日は前月完了月、10日・20日は当月累計。
+    - cron: "0 13 1,10,20 * *"
   workflow_dispatch:
 
 permissions:

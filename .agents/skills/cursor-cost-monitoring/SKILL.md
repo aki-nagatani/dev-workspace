@@ -57,8 +57,10 @@ Cursor LLMによるUsage取得は行わない。
 - 現行プランと比較候補プランの月額、Included枠、適用条件
 - 画面上の警告、超過、支払いに関する表示
 
-画面に表示されない請求額、税額、為替額、残り使用量から推測した金額は記載しない。
-取得できない値は「画面表示なし」とする。
+画面に表示されない請求額、税額、為替額は「画面表示なし」とする。
+**推測シナリオ**（CSV相当額÷Spending% など）は公式表示と混ぜず、
+「推測」と明示して記録する。ユーザーが予測を求めたときはこのシナリオで
+コスト予測する。取得できない値は「画面表示なし」とする。
 
 ### 4-1. 請求サイクルの使用量見積もり
 
@@ -230,14 +232,29 @@ CSVの過去実績がLuna中心でも、見通しと節約案は標準運用（G
 月額総額 = プラン月額 + max(Other Modelsの月間ドル消化 − そのプランのOther Included, 0)。
 Other Includedはプラン月額に含まれるため、Included額を月額へ別途加算しない。
 超過はトークン件数ではなく、Otherプールのドル消化（API単価ベース）である。
-Cursor Models分は公式ドル枠がない限り候補請求に加算しない。
 報告例: `Pro+ = $60 + max($366 − $70, 0) = $356`。
 
-Cursor ModelsはOther Modelsと別プールであり、公式に金額換算できるIncluded枠が
-ない場合がある。その場合、Cursor ModelsへAPI単価を適用して候補プランの請求額を
-水増しせず、「利用枠の比較不可」または画面上の制限値確認として記録する。
-全モデルをオンデマンドで計算した額は利用量の大きさを示す基準値であり、
-候補プランの請求額にはそのまま加算しない。ユーザーが別プールへ切り替える
+公式にCursor Modelsのドル枠が無いときは、上式の候補請求へCursor相当額を
+足さない（Includedの二重計上になる）。そのうえで **推測シナリオ** を必ず別掲する。
+
+**推測シナリオ（コスト予測・公式表示と分離）**:
+ユーザー指摘（2026-09-01）により、画面にドル枠が無くても次で予測する。
+請求額ではない。Slack／履歴では「推測」と書く。
+
+1. 現行プランのCursor Includedドル(推測) = そのプールのCSVオンデマンド相当額
+   ÷ Spending使用率。例: $1,851 / 54% ≒ $3,428。Billing%（54.1%）でも出しレンジにする。
+2. サイクル終了時のCursorドル消化(推測) = 相当額を4-1と同じ日数で外挿する。
+   終了時使用率 × Includedドル(推測) でも検算する。
+3. 下位プランのCursor枠(推測) = 現行プランのIncludedドル(推測)
+   × (そのプランの倍率 / 現行倍率)。Ultra画面の20xはPro比。Pro+は公開の3x Proを使う。
+   Otherのドル枠比（$20/$70/$400）とは一致しないことがある。
+4. 推測の月額総額 = プラン月額 + Other超過（公式Other枠）
+   + max(Cursor終了時ドル消化 − そのプランのCursor枠推測, 0)。
+5. Otherでも同じ割り算（相当額÷Spending%）を検算に使い、前回確認の公式ドル枠
+   （Ultra $400等）との差を注記する。一致しないことは推測誤差の目安であり、
+   推測シナリオをやめる理由にはしない。
+
+ユーザーが別プールへ切り替える
 運用をしている場合は、切替なし・Other先行・Cursor先行を分けて比較する。
 
 現在のプランの実際のon-demand spendが取得できる場合は、それを実績として優先し、
@@ -331,6 +348,8 @@ Included使用見通し: [Cursor Models／Other Modelsの現在値・サイク�
 契約プラン推奨: Ultra維持／Pro+変更検討／Pro変更検討／次回も観測
 推奨根拠: [現行プラン実績と候補プランの月額総額見積もりの比較]
 プラン別月額見積もり: [例: Pro+ = $60 + max(Otherドル消化 − $70, 0)。Included額の二重加算禁止]
+推測Cursor Included: [CSV相当÷Spending%。Billing%とのレンジ]
+推測コスト予測: [プラン月額＋Other超過＋max(Cursor終了時ドル−下位Cursor枠推測,0)。倍率はUltra 20x／Pro+ 3x]
 節約案: [最小見積もりとの差額、利用枠・機能上の注意]
 見積もり注記: [トークン使用量の概算。請求額は推定しない]
 相当額注記: [CSV内訳または50:50中点に公式単価を使った試算。実際の請求額ではない]
@@ -353,6 +372,17 @@ SKILL path: dev-workspace/.agents/skills/cursor-cost-monitoring/SKILL.md
 Slack送信は既存の`dev-workspace/scripts/send_slack_notification.py`を使う。
 Webhook URLを本文、ログ、コマンド引数の表示へ直接書かない。
 
+#### 本文のドル記号（PowerShell 展開禁止）
+
+金額の `$`（`$200` / `$0.00` 等）は、PowerShell の二重引用符や `python -c "..."` に
+埋め込むと変数展開され、Slack では `Ultra（\/月）` や `on-demand spendは\` のように欠ける。
+`\$` で逃げても `\` だけが残る。
+
+- 本文は Cursor の `Write` で UTF-8 ファイルへ書く（`temp/cursor_cost_slack.txt`）。
+- 送信は `--message-file` と `--webhook-env-key CURSOR_COST_MONITORING_SLACK_WEBHOOK_URL`。
+- 送信前にそのファイルを Read し、`$200` や `$0` が残っていることを確認する。
+- 禁止: `python -c`、PowerShell の `"..."` / ヒアドキュメントへ `$` を含む本文を書く。
+
 #### Webhookの保管場所と用途分離
 
 - ローカルの`/cursor-cost-monitoring`専用Webhookは、
@@ -360,9 +390,9 @@ Webhook URLを本文、ログ、コマンド引数の表示へ直接書かない
 - `SLACK_WEBHOOK_URL`は汎用キーのため、Cursor監視の保存先として新規利用しない。
 - `COST_MONITORING_SLACK_WEBHOOK_URL`はGitHub Actions専用Secretであり、
   ローカルから値を取得・推測しない。
-- ローカル送信時は、専用キーの値を表示しない子プロセスの環境変数へ一時的に渡し、
-  `send_slack_notification.py`を実行する。専用キーがない場合は汎用キーへ
-  フォールバックせず、送信を中止して設定不足として報告する。
+- ローカル送信時は `--message-file` と
+  `--webhook-env-key CURSOR_COST_MONITORING_SLACK_WEBHOOK_URL` を使う。
+  専用キーがない場合は汎用キーへフォールバックせず、送信を中止して設定不足として報告する。
 - 専用WebhookはBot名義で`#コスト監視`へ投稿できるものを使用する。
   Slack APIのユーザー認証による送信や、別チャンネル固定のWebhookは使用しない。
 
@@ -386,6 +416,8 @@ Slack通知本文を作成した後、送信成否にかかわらず、同じ確
 - Cursor Models／Other Modelsの現在使用率、サイクル終了時Included使用見込み、残り枠、
   100%到達見込み、Other先行／Cursor先行の切替シナリオ
 - 利用量ベース月額相当額、候補プラン別の月額総額見積もり、差額
+- 推測シナリオ（CSV相当÷Spending%のCursor Included、終了時ドル消化、
+  倍率按分した下位Cursor枠、推測の月額総額）。公式見積もりと混ぜない
 - 判定と判定理由
 - 契約プラン推奨、節約案、推奨根拠
 - 見積もり注記

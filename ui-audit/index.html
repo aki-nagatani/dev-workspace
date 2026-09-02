@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FishTrack / MyPokedex UI 問題点レポート（2026-08-20）</title>
+  <title>FishTrack / MyPokedex UI 問題点レポート（2026-09-02）</title>
   <style>
     :root {
       --bg: #f5f6f8;
@@ -18,8 +18,6 @@
       --link: #1565c0;
       --rec: #e8f5e9;
     }
-    #ft-o9 img[alt="日付・フィールドの必須印（改善後）"] { display: none; }
-    #ft-o9 figure.pc:has(img[alt="日付・フィールドの必須印（改善後）"]) { display: none; }
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -217,6 +215,12 @@
       font-size: 0.88rem;
       margin: 0.6rem 0 0.4rem;
     }
+    table.compare caption {
+      caption-side: top;
+      text-align: left;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
     table.compare th,
     table.compare td {
       border: 1px solid var(--border);
@@ -226,6 +230,7 @@
       background: #fff;
     }
     table.compare th { background: #f0f3f8; }
+    table.compare td.changed { background: #fff6c8; font-weight: 700; }
     .sample-link { font-size: 0.85rem; }
     .sample-link a { color: var(--link); }
 
@@ -303,7 +308,7 @@
   <header>
     <h1>FishTrack / MyPokedex UI 問題点レポート</h1>
     <p>共有レポート（dev-workspace/ui-audit）。MyPokedex :5002 · FishTrack :5001／各 local AI アカウント</p>
-    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 再診日: 2026-08-20（JST・FishTrack 全体）</p>
+    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 診断日: 2026-09-02（JST・OPEN 0件）</p>
     <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。解決済みはアコーディオン（既定クローズ）。解決から1ヶ月経過した課題はレポートから削除する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
     <p>改善サンプルはローカル製品（CSS・ロゴ・コンポーネント）をそのまま使い、改善箇所だけを差分修正したものである。</p>
   </header>
@@ -313,10 +318,6 @@
     <a href="#open-issues">未解決</a>
     <a href="#resolved-issues">解決済み</a>
     <a href="#gallery">ギャラリー</a>
-    <span class="toc-group">未解決 FishTrack</span>
-    <div class="toc-row">
-      <a href="#ft-o9">FT-O9</a>
-    </div>
     <span class="toc-group">解決済み MyPokedex</span>
     <div class="toc-row">
       <a href="#mp-o4">MP-O4</a>
@@ -334,6 +335,15 @@
     </div>
     <span class="toc-group">解決済み FishTrack</span>
     <div class="toc-row">
+      <a href="#ft-h14">FT-H14</a>
+      <a href="#ft-o19">FT-O19</a>
+      <a href="#ft-o20">FT-O20</a>
+      <a href="#ft-o21">FT-O21</a>
+      <a href="#ft-h13">FT-H13</a>
+      <a href="#ft-o18">FT-O18</a>
+      <a href="#ft-o17">FT-O17</a>
+      <a href="#ft-h12">FT-H12</a>
+      <a href="#ft-h11">FT-H11</a>
       <a href="#ft-h8">FT-H8</a>
       <a href="#ft-o6">FT-O6</a>
       <a href="#ft-o3">FT-O3</a>
@@ -370,8 +380,14 @@
 <main>
     <section id="summary" class="meta">
       <div><strong>対象</strong>: MyPokedex・FishTrack の<strong>全画面</strong>（両製品同時診断。片方限定は明示時のみ）</div>
-      <div><strong>範囲</strong>: ログイン後のユーザー向け画面一式（SP／PC）。管理画面は依頼時に含む</div>
-      <div><strong>スクショ例（抜粋）</strong>: MP — partyBox・dex 等／FT — dashboard・catch・trip・field-area・rod-models・lure-masters（プラグフィルタ）等（網羅対象は上記全画面）</div>
+      <div><strong>範囲</strong>: ログイン後のユーザー向け画面一式（SP／PC）。管理画面は依頼時に含む。
+        今回はユーザー指定の<strong>FishTrack FT-H14 案A採用</strong>
+        （ホーム最近の釣果／釣果一覧のサムネ付きカード情報欄。PC 1280・SP 390）。
+        MyPokedex は対象外（理由: 釣果カードが無い）。
+        管理者専用画面は対象外（理由: 一般ユーザーの釣果カード）。</div>
+      <div><strong>スクショ例（抜粋）</strong>: FT —
+        <code>/dashboard</code>・<code>/catch/</code> の <code>.catch-card</code>。
+        MP — 今回の抜粋なし（対象外）</div>
       <div><strong>観点</strong>: 中核は操作性・視認性・初回ユーザー（迷わないか）・管理者の管理しやすさ。
         併せて導線・主CTA・空状態・必須／任意・表密度・フィルタ・誤アフォーダンス・一貫性・危険操作・フィードバック・SP/PC・a11y。
         正本は <code>ui-audit-html-report</code> SKILL「診断観点」。</div>
@@ -382,14 +398,814 @@
 
     <section id="open-issues" aria-labelledby="open-issues-title">
       <h2 id="open-issues-title" class="section-title">未解決の課題</h2>
-      <p class="section-lead">OPEN 1件（FT-O9）。</p>
-
+      <p class="section-lead">OPEN 0件。</p>
 
     </section>
 
 <section id="resolved-issues" aria-labelledby="resolved-issues-title">
       <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
       <p class="section-lead">再診断済み。各課題はアコーディオン（既定クローズ）。解決日から1ヶ月経過した課題は削除する。</p>
+
+    <article class="issue" id="ft-h14" data-resolved-on="2026-09-02">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-H14 — 釣果カード情報欄のルアー・トレーラーラベル周りが空く
+          </h2>
+        </summary>
+        <p class="label">画面: ホーム最近の釣果／BEST5、釣果一覧、釣行詳細の紐づく釣果。
+          観点: 視認性・SP／PC。案A採用。案B・案Cは不採用。
+          2026-09-02: 製品 CSS 実装・再診断済み。
+          関連 <a href="#ft-h13">FT-H13</a>（表示項目の揃え）</p>
+        <h3>対象箇所</h3>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong>
+              <code>/dashboard</code>、<code>/catch/</code>、<code>/trip/&lt;id&gt;</code> の
+              <code>.catch-card</code></li>
+            <li><strong>位置:</strong> 横長カード右本文の dl（ラベル列｜値列）。特に「ルアー」「トレーラー」行</li>
+            <li><strong>部品／セレクタ:</strong>
+              <code>.catch-card:has(&gt; .catch-card__thumb) .catch-card__details &gt; div</code>
+              （<code>grid-template-columns: 4.25rem minmax(0, 1fr)</code>）、
+              同セレクタの <code>dd</code> は <code>overflow-wrap: break-word</code>、
+              サムネ幅 <code>9.5rem</code>。
+              推薦カード用の汎用 <code>.catch-card__details &gt; div</code>（<code>5.5rem</code>）は対象外で残置。
+              CSS: <code>fishtrack_tail.css</code></li>
+            <li><strong>対象外:</strong>
+              同一行カードの stretch 余白（今回の主因ではない）。
+              釣果詳細ページ本体（カードではない）。
+              フィールド推薦カード（<code>.field-recommendation-card</code>）。
+              表示項目の過不足（<a href="#ft-h13">FT-H13</a> 解決済み）。
+              ルアーリンクの行き先（<a href="#ft-o20">FT-O20</a>）。
+              管理者専用画面。MyPokedex（釣果カードなし）</li>
+          </ul>
+        </div>
+        <h3>改善前の事象</h3>
+        <p>PC 1280 でカード幅約 368px。右の情報欄はラベル 88px ＋ 値 94px の2列。
+          「フィールド」「エリア」は各 19px（1行）なのに、長い製品名の「ルアー」は 37px（2行）、
+          「トレーラー」は 56px（3行）。ラベル文字は1行のままセルだけ高くなり、
+          左列のラベルの下（行内）が空く。2列の縦ラインは維持されている。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-dashboard-h14-details-gap.png" alt="改善前。ホーム左上カード。ルアーとトレーラーのラベル下に空">
+            <figcaption>pc-dashboard-h14-details-gap.png — ▲ 改善前。ルアー2行・トレーラー3行に対しラベルは1行で下が空く</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-dashboard-catch-card-density.png" alt="改善前。ホームの釣果カード全体">
+            <figcaption>pc-dashboard-catch-card-density.png — ▲ 改善前。同じホーム。短いカード側の stretch は今回の対象外</figcaption>
+          </figure>
+          <figure>
+            <img src="fishtrack/sp-dashboard-catch-card-density.png" alt="改善前。SPホーム。値列が狭くルアーが折り返す">
+            <figcaption>sp-dashboard-catch-card-density.png — ▲ 改善前 SP。値列がさらに狭く、同じ2列の折り返しが強い</figcaption>
+          </figure>
+        </div>
+        <h3>何が問題か</h3>
+        <p>視認性: スキャンする左列（ルアー／トレーラー）だけ上下が開き、1行のフィールド行とリズムが揃わない。
+          ラベルを縦中央にしても空は残る（上下に分散するだけ）。
+          操作性は壊れていないので MED。</p>
+        <h3>実施した改善</h3>
+        <p><strong>案A採用（2026-09-02）。</strong>
+          サムネ付き横長カードは2列を維持。ラベル列を <code>4.25rem</code>、値は <code>minmax(0, 1fr)</code>、
+          <code>overflow-wrap: break-word</code>。サムネ幅は <code>9.5rem</code> のまま。
+          案B（サムネ 5.5rem）・案C（ラベルの下に値の1列）は不採用。</p>
+        <p class="sample-link">改善サンプル:
+          <a href="fishtrack/samples/ft-h14-a.html">fishtrack/samples/ft-h14-a.html</a>
+          （案A）。比較用
+          <a href="fishtrack/samples/ft-h14-b.html">fishtrack/samples/ft-h14-b.html</a>
+          （案B・不採用）／
+          <a href="fishtrack/samples/ft-h14-c.html">fishtrack/samples/ft-h14-c.html</a>
+          （案C・不採用）</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-dashboard-h14-details-after.png" alt="改善後。ホームカード。トレーラーは2行">
+            <figcaption>pc-dashboard-h14-details-after.png — ▲ 改善後 PC。ラベル 68px。トレーラー 3行→2行（56px→37px）。ルアーは2行のまま</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-catch-list-h14-details-after.png" alt="改善後。釣果一覧の同じカード">
+            <figcaption>pc-catch-list-h14-details-after.png — ▲ 改善後。釣果一覧でも同じ2列・ラベル 4.25rem</figcaption>
+          </figure>
+          <figure>
+            <img src="fishtrack/sp-dashboard-h14-details-after.png" alt="改善後 SP。サムネ幅不変のため値列は狭い">
+            <figcaption>sp-dashboard-h14-details-after.png — ▲ 改善後 SP。サムネ 9.5rem 維持のため値列は狭く、折り返しは残る（案Aの想定内）</figcaption>
+          </figure>
+        </div>
+        <table class="compare">
+          <caption>レイアウトの違い（表示項目は全案とも現状と同じ）</caption>
+          <thead>
+            <tr>
+              <th>観点</th><th>改善前</th><th>案A（採用）</th>
+              <th>案B（不採用）</th><th>案C（不採用）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>情報欄</th>
+              <td>ラベル｜値の2列（5.5rem）</td>
+              <td>2列（ラベル 4.25rem）</td>
+              <td>2列（ラベル 4.25rem）</td>
+              <td>1列（ラベルの下に値）</td>
+            </tr>
+            <tr>
+              <th>サムネ</th>
+              <td>9.5rem</td>
+              <td>9.5rem</td>
+              <td>5.5rem</td>
+              <td>9.5rem</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="options">
+          <div class="option recommended">
+            <h4>案A — ラベル列を狭め値の折り返しを減らす <span class="rec-tag">採用</span></h4>
+            <p>2列は維持。サムネは 9.5rem のまま。ラベル列を 4.25rem、値は <code>break-word</code>。
+              再診断ではトレーラーが 3行→2行（56px→37px）。フィールド／トレーラーのラベルは 4.25rem でも1行。</p>
+            <ul>
+              <li>メリット: 2列の縦ライン維持。サムネサイズ不変。CSS のみ。</li>
+              <li>デメリット: ルアーは2行のまま。トレーラーも2行で、ラベル下の空は完全には消えない。SP の値列は狭い。</li>
+            </ul>
+            <p class="sample-link"><a href="fishtrack/samples/ft-h14-a.html">samples/ft-h14-a.html</a></p>
+            <figure>
+              <img src="fishtrack/sample-ft-h14-a.png" alt="案A。上はトレーラー3行、下は2行でラベル下が減る">
+              <figcaption>sample-ft-h14-a.png — ▲ 上の変更前はトレーラー3行。下の変更後は2行でラベル下が減る</figcaption>
+            </figure>
+          </div>
+          <div class="option">
+            <h4>案B — サムネも狭めて値列をさらに広げる（不採用）</h4>
+            <p>却下（2026-09-02）。案Aに加えサムネを 5.5rem。計測ではルアー1行・トレーラー2行。
+              実装しない。</p>
+            <ul>
+              <li>メリット: ルアー行のラベル空が消える。SP の値列も広い。</li>
+              <li>デメリット: 写真なし／写真サムネが小さくなる。トレーラーはまだ2行。</li>
+            </ul>
+            <p class="sample-link"><a href="fishtrack/samples/ft-h14-b.html">samples/ft-h14-b.html</a></p>
+            <figure>
+              <img src="fishtrack/sample-ft-h14-b.png" alt="案B。下はルアー1行、サムネが狭い">
+              <figcaption>sample-ft-h14-b.png — ▲ 上の変更前はルアー2行。下の変更後はルアー1行、左サムネが狭い（不採用）</figcaption>
+            </figure>
+          </div>
+          <div class="option">
+            <h4>案C — 情報欄を1列にまとめる（不採用）</h4>
+            <p>2列をやめる。各項目はラベルの下に値を置く。サムネは 9.5rem のまま。
+              値は情報欄の全幅を使うので、行内のラベル下が空かない。採用せず実装しない。</p>
+            <ul>
+              <li>メリット: 指摘の空が消える。長い製品名の折り返しが減る。サムネ不変。CSS のみ。</li>
+              <li>デメリット: ラベル用の行が増えカードが縦に伸びる。2列の縦スキャンは無くなる。</li>
+            </ul>
+            <p class="sample-link"><a href="fishtrack/samples/ft-h14-c.html">samples/ft-h14-c.html</a></p>
+            <figure>
+              <img src="fishtrack/sample-ft-h14-c.png" alt="案C。上は2列、下はラベルの下に値の1列">
+              <figcaption>sample-ft-h14-c.png — ▲ 上の変更前は2列。下の変更後はラベルの下に値</figcaption>
+            </figure>
+          </div>
+        </div>
+        <h3>再診断</h3>
+        <p>2026-09-02 にローカル Docker の
+          <code>/dashboard</code>（PC 1280・SP 390）と <code>/catch/</code>（PC 1280）を ai-user で確認した。
+          サムネ付きカードのラベル列は 68px（4.25rem）、サムネ列 152px（9.5rem）、値は <code>break-word</code>。
+          PC のトレーラーは 56px（3行）→37px（2行）。ルアーは2行のまま。
+          SP はサムネ幅不変のため値列約 62px で折り返しは残る（案Aのデメリットどおり）。
+          採用範囲を満たしたので RESOLVED とする。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o19" data-resolved-on="2026-09-02">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-O19 — SP で表ヘッダーの並び替えができない
+          </h2>
+        </summary>
+        <p class="label">画面: リールを探すほか、ロッド／プラグ／ワームを探す、マイタックル保有一覧。
+          観点: 操作性・SP／PC・初回ユーザー・同類画面の一貫性。案C採用。
+          2026-09-02: 探す系とマイタックルの並び替え内容を横目比較（新規OPENなし）。</p>
+        <h3>対象箇所</h3>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong>
+              <code>/tackle/reel-models/</code>、<code>/tackle/rod-models/</code>、
+              <code>/lure-masters/plug</code>、<code>/lure-masters/worm</code>。
+              同類: <code>/tackle/reel/</code> 等のマイタックル保有一覧</li>
+            <li><strong>位置:</strong> フィルタ直下の並び替えバー。SP（767px 以下）</li>
+            <li><strong>部品／セレクタ:</strong>
+              <code>[data-list-sort-bar]</code>、<code>#master-sort-preset</code>、
+              <code>[data-list-sort-dir]</code>、
+              <code>thead th[data-sort-key]</code></li>
+            <li><strong>対象外:</strong> PC の表ヘッダーソート（残置）。
+              管理者専用画面。MyPokedex 図鑑／パーティ</li>
+          </ul>
+        </div>
+        <h3>改善前の事象</h3>
+        <p>スマホ幅では探す一覧がカードになり、表ヘッダーの並び替えが消える。
+          セレクトは標準／人気順／最近更新の3種だけで、メーカー・自重などの列ソートに代われなかった。</p>
+        <div class="shots">
+          <figure>
+            <img src="fishtrack/sp-reel-models-thead-sort.png" alt="改善前。SPのカード一覧と3種の並び替えセレクトだけ">
+            <figcaption>sp-reel-models-thead-sort.png — ▲ 改善前。並び替えは3種のみ。表ヘッダーは無い</figcaption>
+          </figure>
+        </div>
+        <h3>何が問題か</h3>
+        <p>操作性: PC では列ヘッダーで並べ替えられるが、SP ではその操作が無い。
+          初回ユーザーは「並べ替えは人気順だけ」と誤解しやすい。
+          根本原因は SP で表ラッパを隠していること。</p>
+        <h3>実施した改善</h3>
+        <p><strong>案C採用（2026-09-02）。</strong>
+          SP のカードは維持する。並び替えを「項目」セレクトと「向き」ボタン（昇順／降順）に分ける。
+          プリセットは項目の先頭グループ。列を選ぶと向きが使える。プリセット時は向きを無効化し
+          「プリセットでは向きを選べません」と出す。列候補は thead の全 <code>data-sort-key</code>。
+          SSR がキー名だけ出しているときは thead ラベルで上書きする。
+          案A（SPでも表）・案B（1セレクト）・案D（カードチップ）は不採用。</p>
+        <p class="sample-link">改善サンプル:
+          <a href="fishtrack/samples/ft-o19-c.html">fishtrack/samples/ft-o19-c.html</a>
+          （案C）。比較用
+          <a href="fishtrack/samples/ft-o19-b.html">fishtrack/samples/ft-o19-b.html</a>
+          （案B・不採用）／
+          <a href="fishtrack/samples/ft-o19-d.html">fishtrack/samples/ft-o19-d.html</a>
+          （案D・不採用）／
+          <a href="fishtrack/samples/ft-o19-a.html">fishtrack/samples/ft-o19-a.html</a>
+          （案A・不採用）</p>
+        <div class="shots">
+          <figure>
+            <img src="fishtrack/sp-reel-models-sort-after.png" alt="改善後。項目が自重(g)、向きが昇順。下はカード一覧">
+            <figcaption>sp-reel-models-sort-after.png — ▲ 改善後。項目「自重(g)」と向き「昇順」。カードは残る</figcaption>
+          </figure>
+        </div>
+        <h3>再診断</h3>
+        <p>2026-09-02 にローカル Docker の
+          <code>/tackle/reel-models/?sort=weight_g:asc</code>（SP）、
+          ロッド／プラグを探す、マイタックル <code>/tackle/reel/</code>、PC の表ヘッダーを ai-user で確認した。
+          項目に全列表列が出る。プリセット時は向き disabled。列選択時は昇順／降順が使える。
+          項目ラベルは「自重(g)」になりキー名のまま出ない。カード一覧は維持。RESOLVED とする。</p>
+        <h3 id="ft-o19-compare">横目比較（探す系 vs マイタックル）</h3>
+        <p>2026-09-02 SP 390。操作UIは同一マクロ（項目セレクト＋向きボタン）。
+          プリセットと列候補だけ画面目的で違う。一貫性の欠如ではないので新規 OPEN しない。
+          プラグ／ワームを探すもプリセットはロッド／リール探すと同じ3種。</p>
+        <div class="shots">
+          <figure>
+            <img src="fishtrack/sp-reel-search-sort-bar.png" alt="リールを探す。項目は標準、向きは無効">
+            <figcaption>sp-reel-search-sort-bar.png — ▲ 探す（リール）。プリセットは人気順／最近更新。列はスペック17</figcaption>
+          </figure>
+          <figure>
+            <img src="fishtrack/sp-holding-reel-sort-bar.png" alt="マイタックルリール。項目は標準、向きは無効">
+            <figcaption>sp-holding-reel-sort-bar.png — ▲ マイタックル（リール・コンパクト）。プリセットは釣果系。列は8</figcaption>
+          </figure>
+        </div>
+        <table class="compare" id="ft-o19-compare-ui">
+          <caption>操作UI（SP・リール）</caption>
+          <thead>
+            <tr><th>観点</th><th>探す <code>/tackle/reel-models/</code></th><th>マイタックル <code>/tackle/reel/</code></th></tr>
+          </thead>
+          <tbody>
+            <tr><th>部品</th><td colspan="2">同じ <code>list_sort_bar</code>／<code>master_list_sort.js</code></td></tr>
+            <tr><th>項目＋向き</th><td>あり</td><td>あり</td></tr>
+            <tr><th>プリセット時の向き</th><td>disabled＋説明</td><td>disabled＋説明</td></tr>
+            <tr><th>列の出所</th><td>thead <code>data-sort-key</code></td><td>thead <code>data-sort-key</code>（コンパクト8列）</td></tr>
+          </tbody>
+        </table>
+        <table class="compare" id="ft-o19-compare-presets">
+          <caption>プリセット</caption>
+          <thead>
+            <tr><th>探す（ロッド／リール／プラグ／ワーム）</th><th>マイタックル（ロッド／リール）</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>標準</td><td>標準</td></tr>
+            <tr><td>人気順</td><td>最近の釣果順</td></tr>
+            <tr><td>最近更新された順</td><td>釣果が多い順</td></tr>
+          </tbody>
+        </table>
+        <table class="compare" id="ft-o19-compare-cols">
+          <caption>列グループ（リール／ロッド）</caption>
+          <thead>
+            <tr><th>画面</th><th>列候補</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>リールを探す</th>
+              <td>メーカー、シリーズ、モデル名/型番、ジャンル、自重(g)、ギア比、最大ドラグ力、スプール、スプール径、スプール幅、最大巻上量、ハンドル長、BB数、RB数、発売年、定価（税抜）、JANコード</td>
+            </tr>
+            <tr>
+              <th>マイタックル リール</th>
+              <td>メーカー、シリーズ・型番、ジャンル、ギア比、釣果数、最大サイズ、平均サイズ、ステータス</td>
+            </tr>
+            <tr>
+              <th>ロッドを探す</th>
+              <td>メーカー、シリーズ、モデル名/型番、ジャンル、全長(ft/in)、継数、パワー、アクション、自重(g)、ライン、ほか thead 列</td>
+            </tr>
+            <tr>
+              <th>マイタックル ロッド</th>
+              <td>メーカー、シリーズ・型番、ジャンル、パワー、釣果数、最大サイズ、平均サイズ、ステータス</td>
+            </tr>
+          </tbody>
+        </table>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o20" data-resolved-on="2026-09-02">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-O20 — ホーム／一覧のルアーが製品へリンクしない
+          </h2>
+        </summary>
+        <p class="label">画面: ホーム最近の釣果、釣果一覧。観点: 操作性・同類画面の一貫性・誤アフォーダンス。
+          関連 <a href="#ft-o21">FT-O21</a>。案A採用</p>
+        <h3>対象箇所</h3>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong>
+              <code>/dashboard</code>（最近の釣果／BEST5）、
+              <code>/catch/</code>（釣果一覧）</li>
+            <li><strong>位置:</strong> 横長 <code>.catch-card</code> の <code>dl.catch-card__details</code> 内「ルアー」「トレーラー」行</li>
+            <li><strong>部品／セレクタ:</strong>
+              <code>article.catch-card.js-clickable-item[data-detail-url]</code>（カード全体が釣果詳細）、
+              <code>partials/_catch_card_tackle_rows.html</code>、
+              テンプレで <code>lure_url</code> / <code>trailer_url</code> に製品 URL を渡す</li>
+            <li><strong>対象外:</strong>
+              釣行詳細の紐づく釣果（入口の揃えは <a href="#ft-o21">FT-O21</a>）。
+              フィールド／エリア行（場所はプレーンテキストのまま）。
+              ロッド／リール（カードに出していない）。
+              写真タップのライトボックス。管理者専用画面。MyPokedex</li>
+          </ul>
+        </div>
+        <h3>改善前の事象</h3>
+        <p>仕様は「釣果カードからタックル・ルアー詳細へリンクする」。
+          ホームと一覧はルアー／トレーラー名をプレーンテキストにし、カード全体クリックで釣果詳細へ行っていた。
+          同じ釣果でも釣行詳細ではルアー名が青リンクで製品詳細へ行っていた。
+          API の <code>lureInventoryDetailUrl</code> はあったが、テンプレが URL を渡していなかった。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-dashboard-catch-card-links.png" alt="改善前。ホームの釣果カード。ルアー名がリンク色ではない">
+            <figcaption>pc-dashboard-catch-card-links.png — ▲ 改善前ホーム。ルアー／トレーラーが黒テキスト</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-catch-list-card-links.png" alt="改善前。釣果一覧カード。ルアー名がリンク色ではない">
+            <figcaption>pc-catch-list-card-links.png — ▲ 改善前一覧。ルアーをクリックしても釣果詳細</figcaption>
+          </figure>
+        </div>
+        <h3>何が問題か</h3>
+        <p>操作性: ルアー詳細へ行くのに釣果詳細を経由する。到達コストが増える。
+          一貫性: 同じカード部品なのに画面でリンクの有無が違う。
+          初回ユーザー: 釣行詳細でリンクだと学んだあと、ホームでは押せないと迷う。
+          誤アフォーダンス: ルアー名は情報に見えるが、タップすると釣果詳細へ飛ぶ。</p>
+        <h3>実施した改善</h3>
+        <p><strong>案A採用（2026-09-02）。</strong>
+          カード全体クリックは釣果詳細のまま。ルアー／トレーラー名だけ製品詳細への内側 <code>a</code>。
+          案B（全体クリックをやめ詳細ボタン）は不採用。</p>
+        <p class="sample-link">改善サンプル:
+          <a href="fishtrack/samples/ft-o20-a.html">fishtrack/samples/ft-o20-a.html</a>
+          （案A）。比較用
+          <a href="fishtrack/samples/ft-o20-b.html">fishtrack/samples/ft-o20-b.html</a>
+          （案B・不採用）</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-dashboard-catch-card-links-after.png" alt="改善後。ホームのルアー名が青リンク">
+            <figcaption>pc-dashboard-catch-card-links-after.png — ▲ 改善後ホーム。ルアー／トレーラーがリンク色。カード余白は釣果詳細</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-catch-list-card-links-after.png" alt="改善後。釣果一覧のルアー名が青リンク">
+            <figcaption>pc-catch-list-card-links-after.png — ▲ 改善後一覧。同じ内側リンク</figcaption>
+          </figure>
+        </div>
+        <h3>再診断</h3>
+        <p>2026-09-02 にローカル Docker の <code>/dashboard</code> と <code>/catch/</code> を ai-user で確認した。
+          ルアー／トレーラーが <code>/tackle/plug/product/…</code>・<code>/tackle/worm/product/…</code> へリンクする。
+          カード全体は釣果詳細のまま。RESOLVED とする。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o21" data-resolved-on="2026-09-02">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-low">LOW</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-O21 — 釣行詳細だけ釣果詳細の入口が複数
+          </h2>
+        </summary>
+        <p class="label">画面: 釣行詳細の紐づく釣果。観点: 同類画面の一貫性・誤アフォーダンス。
+          関連 <a href="#ft-o20">FT-O20</a>。案A採用</p>
+        <h3>対象箇所</h3>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> <code>/trip/&lt;id&gt;</code>（例: <code>/trip/70</code>）の「紐づく釣果」</li>
+            <li><strong>位置:</strong> 各 <code>.catch-card</code> の余白・サムネ・ルアー行</li>
+            <li><strong>部品／セレクタ:</strong>
+              <code>article.catch-card.js-clickable-item[data-detail-url]</code>、
+              サムネは <code>div.catch-card__thumb</code>（写真拡大のみ）、
+              ルアー／トレーラーの <code>dd a</code>、
+              <code>title_href = none</code></li>
+            <li><strong>対象外:</strong>
+              ホーム／一覧の内側ルアーリンク（<a href="#ft-o20">FT-O20</a>）。
+              ルアーが製品へリンクすること自体（仕様どおり。残す）。
+              写真ありのライトボックス</li>
+          </ul>
+        </div>
+        <h3>改善前の事象</h3>
+        <p>ホーム／一覧はカード全体の1本で釣果詳細へ行く。
+          釣行詳細だけ、写真なしサムネの <code>&lt;a&gt;</code> と「詳細」ボタンがどちらも釣果詳細だった。
+          ルアーは別途製品リンク。魚種見出しがあるカードでは見出しリンクが3本目になっていた。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-trip-catch-card-links.png" alt="改善前。釣行詳細カード。青リンクのルアーと詳細ボタン">
+            <figcaption>pc-trip-catch-card-links.png — ▲ 改善前。写真なしサムネと「詳細」がどちらも釣果詳細</figcaption>
+          </figure>
+        </div>
+        <h3>何が問題か</h3>
+        <p>一貫性: 同じ釣果カードなのに入口の本数が画面で違う。
+          誤アフォーダンス: 写真なしサムネは拡大に見えず、詳細ボタンと二重。
+          操作性そのものは壊れていなかった（どれも釣果へ行ける）ので重大度は LOW。</p>
+        <h3>実施した改善</h3>
+        <p><strong>案A採用（2026-09-02）。</strong>
+          ホームと同じカード全体クリック。サムネは写真拡大のみ。「詳細」ボタンなし。ルアーリンクは残す。
+          案B（詳細ボタンに一本化）は不採用。</p>
+        <p class="sample-link">改善サンプル:
+          <a href="fishtrack/samples/ft-o21-a.html">fishtrack/samples/ft-o21-a.html</a>
+          （案A）。比較用
+          <a href="fishtrack/samples/ft-o21-b.html">fishtrack/samples/ft-o21-b.html</a>
+          （案B・不採用）</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-trip-catch-card-links-after.png" alt="改善後。釣行詳細カード。詳細ボタンがなくルアーは青リンク">
+            <figcaption>pc-trip-catch-card-links-after.png — ▲ 改善後。詳細ボタンなし。カード余白は釣果詳細。ルアーは製品リンク</figcaption>
+          </figure>
+        </div>
+        <h3>再診断</h3>
+        <p>2026-09-02 にローカル Docker の <code>/trip/70</code> を ai-user で確認した。
+          <code>js-clickable-item</code> あり、サムネは <code>div</code>、「詳細」ボタンなし、ルアーは製品リンク。RESOLVED とする。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-h13" data-resolved-on="2026-09-02">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-H13 — 釣果カードの表示項目が画面ごとに違う
+          </h2>
+        </summary>
+        <p class="label">画面: ホーム「最近の釣果」／BEST5、釣果一覧、釣行詳細「紐づく釣果」。
+          観点: 視認性・同類画面の一貫性・初回ユーザー。案B（調整後）採用</p>
+        <h3>対象箇所</h3>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> <code>/dashboard</code>（最近の釣果・その年 BEST5・ALL TIME BEST5）、
+              <code>/catch/</code>、釣行詳細 <code>/trip/&lt;id&gt;</code> の「紐づく釣果」</li>
+            <li><strong>位置:</strong> 各画面の <code>.catch-card-grid</code> 内の1件カード</li>
+            <li><strong>部品:</strong> <code>partials/_catch_card_measure.html</code>、
+              <code>partials/_catch_card_place_rows.html</code>、
+              <code>partials/_catch_card_tackle_rows.html</code>、
+              <code>partials/_home_catch_card_grid.html</code>、
+              <code>catch/list.html</code>、<code>trip/detail.html</code></li>
+            <li><strong>対象外:</strong> 釣行プランAIの <code>field-recommendation-card</code>。
+              カード全体クリックと「詳細」ボタンの操作差。管理者専用画面。
+              MyPokedex（同等の釣果カードが無い）</li>
+          </ul>
+        </div>
+        <h3>改善前の事象</h3>
+        <p>同じ <code>.catch-card</code> なのに、同一釣果でも出る項目が画面で違った。
+          ホームは場所・日付中心でルアーも重量も無い。一覧はルアー／リグ（ワーム）／トレーラーが足されるが重量は無い。
+          釣行詳細は重量と時刻がありルアーは常時（未設定可）だが、場所と写真枚数は出さない。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-dashboard-recent-catch-card.png" alt="改善前。ホームの最近の釣果カードにルアーが無い">
+            <figcaption>pc-dashboard-recent-catch-card.png — ▲ 改善前ホーム。フィールド／エリア／釣行／写真のみ。ルアー行なし</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-catch-list-card-rig.png" alt="改善前。釣果一覧カードにルアーとリグがある">
+            <figcaption>pc-catch-list-card-rig.png — ▲ 改善前一覧。ルアーとリグがある。重量は無い</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-trip-detail-catch-card-worm.png" alt="改善前。釣行詳細カードに重量とリグがある">
+            <figcaption>pc-trip-detail-catch-card-worm.png — ▲ 改善前釣行詳細。25.0cm と 500.0g。場所行なし</figcaption>
+          </figure>
+          <figure>
+            <img src="fishtrack/sp-catch-list-card-rig.png" alt="改善前。SP の釣果一覧カード">
+            <figcaption>sp-catch-list-card-rig.png — ▲ 改善前 SP。差はビューポートではなく画面</figcaption>
+          </figure>
+        </div>
+        <h3>何が問題か</h3>
+        <ul>
+          <li>視認性: 同じ見た目のカードなのに、ホームでは使ったルアーが分からない。一覧では重量が分からない。</li>
+          <li>同類画面の一貫性: テンプレが3つに分かれ、ホームにタックルを足しても一覧と釣行詳細でまたズレが残る。</li>
+          <li>初回ユーザー: ホームでルアーが見えず、一覧へ行って初めて出る。釣行詳細だけ重量があることに気づきにくい。</li>
+        </ul>
+        <table class="compare" id="ft-h13-current">
+          <caption>改善前</caption>
+          <thead>
+            <tr><th>項目</th><th>ホーム</th><th>一覧</th><th>釣行詳細</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>魚種・サイズ</th><td>あり</td><td>あり</td><td>あり</td></tr>
+            <tr><th>重量</th><td>なし</td><td>なし</td><td>あり</td></tr>
+            <tr><th>日付</th><td>あり</td><td>あり</td><td>なし（釣行側）</td></tr>
+            <tr><th>時刻</th><td>あり</td><td>あり</td><td>時刻のみ</td></tr>
+            <tr><th>フィールド／エリア</th><td>あり</td><td>あり</td><td>なし</td></tr>
+            <tr><th>ルアー</th><td>なし</td><td>設定時</td><td>常時（未設定可）</td></tr>
+            <tr><th>リグ</th><td>なし</td><td>ワーム時</td><td>ワーム時</td></tr>
+            <tr><th>トレーラー</th><td>なし</td><td>対象プラグかつ設定時</td><td>対象プラグ</td></tr>
+            <tr><th>写真枚数</th><td>あり</td><td>あり</td><td>なし</td></tr>
+            <tr><th>順位</th><td>BEST5 のみ</td><td>なし</td><td>なし</td></tr>
+          </tbody>
+        </table>
+        <h3>実施した改善</h3>
+        <p><strong>案B（調整後）採用（2026-09-02）。</strong>
+          3画面でサイズ・重量・タックルを揃える。ルアーは設定時、トレーラーは対象プラグかつ設定時、写真枚数は出さない。
+          場所／日付の役割は現状どおり。魚種見出しのラージマウスバス省略は別対応。</p>
+        <ul>
+          <li>共通パーシャル（サイズ＋重量／場所行／タックル行）を3画面で使う</li>
+          <li>ホームと一覧にも記録時の重量を出す。未記録はサイズのみ、両方なしは「未記録」</li>
+          <li>釣行詳細のルアー／トレーラー未設定行を廃止。ワーム時のみリグ（未入力は「未設定」）</li>
+          <li>3画面とも写真枚数行を出さない</li>
+        </ul>
+        <table class="compare" id="ft-h13-plan-b">
+          <caption>案B 後 — 3画面でサイズ・重量・タックルを揃える</caption>
+          <thead>
+            <tr><th>項目</th><th>ホーム</th><th>一覧</th><th>釣行詳細</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>魚種・サイズ</th><td>あり</td><td>あり</td><td>あり</td></tr>
+            <tr><th>重量</th><td class="changed">あり</td><td class="changed">あり</td><td>あり</td></tr>
+            <tr><th>日付</th><td>あり</td><td>あり</td><td>なし（釣行側）</td></tr>
+            <tr><th>時刻</th><td>あり</td><td>あり</td><td>時刻のみ</td></tr>
+            <tr><th>フィールド／エリア</th><td>あり</td><td>あり</td><td>なし</td></tr>
+            <tr><th>ルアー</th><td class="changed">設定時</td><td>設定時</td><td class="changed">設定時</td></tr>
+            <tr><th>リグ</th><td class="changed">ワーム時</td><td>ワーム時</td><td>ワーム時</td></tr>
+            <tr><th>トレーラー</th><td class="changed">対象プラグかつ設定時</td><td>対象プラグかつ設定時</td><td class="changed">対象プラグかつ設定時</td></tr>
+            <tr><th>写真枚数</th><td class="changed">なし</td><td class="changed">なし</td><td>なし</td></tr>
+            <tr><th>順位</th><td>BEST5 のみ</td><td>なし</td><td>なし</td></tr>
+          </tbody>
+        </table>
+        <p class="sample-link">改善サンプル:
+          <a href="fishtrack/samples/ft-h13-b.html">fishtrack/samples/ft-h13-b.html</a>
+          （案B）。比較用
+          <a href="fishtrack/samples/ft-h13-a.html">fishtrack/samples/ft-h13-a.html</a>
+          （案A・不採用）</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-dashboard-recent-catch-card-after.png" alt="改善後。ホームカードに重量とルアー">
+            <figcaption>pc-dashboard-recent-catch-card-after.png — ▲ 改善後ホーム。40.0cm 500.0g。ルアー／トレーラーあり。写真枚数なし</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-catch-list-card-rig-after.png" alt="改善後。釣果一覧カードに重量とルアー">
+            <figcaption>pc-catch-list-card-rig-after.png — ▲ 改善後一覧。同じコア。重量未記録の隣カードはサイズのみ</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-trip-detail-catch-card-after.png" alt="改善後。釣行詳細カードに重量とルアー">
+            <figcaption>pc-trip-detail-catch-card-after.png — ▲ 改善後釣行詳細。時刻＋サイズ＋重量。ルアーは設定時。場所行なし</figcaption>
+          </figure>
+          <figure>
+            <img src="fishtrack/sp-catch-list-card-rig-after.png" alt="改善後。SP の釣果一覧カード">
+            <figcaption>sp-catch-list-card-rig-after.png — ▲ 改善後 SP。重量とタックル。写真枚数なし</figcaption>
+          </figure>
+        </div>
+        <h3>再診断</h3>
+        <p>2026-09-02 にローカル Docker の <code>/dashboard</code>、<code>/catch/</code>、<code>/trip/70</code> を
+          ai-user で確認した。重量記録ありは 40.0cm 500.0g、ルアー設定時のみ行あり、写真枚数なし。RESOLVED とする。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o18" data-resolved-on="2026-09-01">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-O18 — カラー名が必須なのに印がない
+          </h2>
+        </summary>
+        <p class="label">画面: カラー追加グリッド。観点: 初回ユーザー・必須／任意。関連 <a href="#ft-o17">FT-O17</a>。案A採用</p>
+        <h3>対象箇所</h3>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> 新規 <code>/lure-plug/new</code> 等、詳細編集のカラー一覧</li>
+            <li><strong>位置:</strong> <code>.lure-color-add</code> と各 <code>[data-color-row]</code> のカラー名ラベル</li>
+            <li><strong>セレクタ:</strong> <code>label</code>（<code>for</code> 無し）＋ <code>[data-new-color-name]</code> / <code>[data-color-name]</code></li>
+            <li><strong>対象外:</strong> 製品名・プラグ種別の ※（既に付いている）。JAN・定価（任意でよい）。
+              <code>required</code> 属性と空追加時の <code>alert</code>（インラインエラー化は別改善）</li>
+          </ul>
+        </div>
+        <h3>改善前の事象</h3>
+        <p>節見出しは「カラー（任意）」のまま、追加グリッドのカラー名に必須印が無かった。
+          「カラーを追加」でカラー名が空だと <code>alert("カラー名を入力してください。")</code> になる。
+          ページ先頭の「※ は必須入力です。」は製品名・プラグ種別向けで、カラー名には付いていなかった。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-edit-colors-add.png" alt="改善前。カラー追加グリッドに必須印なし">
+            <figcaption>pc-lure-plug-edit-colors-add.png — ▲ 改善前。カラー名ラベルに ※ が無い</figcaption>
+          </figure>
+        </div>
+        <h3>実施した改善</h3>
+        <ul>
+          <li>各行ラベルを「カラー名※」（製品と同じ <code>.required</code>）にした</li>
+          <li>節ヒント「節自体は任意です。行を追加するときはカラー名が必須です。JANと定価は未入力のままで保存できます。」を置いた</li>
+          <li>節見出し「カラー（任意）」と JAN・定価の任意は維持。空追加時の <code>alert</code> は変えていない</li>
+        </ul>
+        <p class="sample-link">改善サンプル:
+          <a href="fishtrack/samples/ft-o18-a.html">fishtrack/samples/ft-o18-a.html</a>
+          （案A）</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-edit-colors-add-after.png" alt="改善後。詳細編集のカラー名に ※">
+            <figcaption>pc-lure-plug-edit-colors-add-after.png — ▲ 改善後。節ヒント＋各行は「カラー名※」</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-new-colors-required-after.png" alt="改善後。新規フォームのカラー名にも ※">
+            <figcaption>pc-lure-plug-new-colors-required-after.png — ▲ 改善後。新規のカラー節も同じ ※ とヒント</figcaption>
+          </figure>
+        </div>
+        <h3>再診断</h3>
+        <p>2026-09-01 にローカル Docker の <code>/lure-plug/new</code> と <code>/lure-plug/21</code> を
+          ai-admin で確認した。カラー名は ※、節は任意の説明があるので RESOLVED とする。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o17" data-resolved-on="2026-09-01">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-O17 — カラーを入力してもリストは空のまま
+          </h2>
+        </summary>
+        <p class="label">画面: プラグ／ワーム新規のカラー節。詳細編集も同パターン。観点: 操作性・フィードバック。関連 <a href="#ft-o18">FT-O18</a>。案A採用</p>
+        <h3>対象箇所</h3>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> <code>/lure-plug/new</code>、<code>/lure-worm/new</code>、詳細編集 <code>/lure-plug/&lt;id&gt;</code></li>
+            <li><strong>位置:</strong> カラー（任意）節。入力行そのものがリスト</li>
+            <li><strong>セレクタ:</strong> <code>[data-lure-color-create]</code>、<code>[data-color-row]</code>、<code>button[data-add-color]</code></li>
+            <li><strong>対象外:</strong> 読み取り専用詳細のカラー表。閲覧専用の「カラーがありません。」</li>
+          </ul>
+        </div>
+        <h3>改善前の事象</h3>
+        <p>カラー名・JAN・定価を入力しても、「カラーを追加」を押すまでリストは「まだカラーを追加していません。」のまま。
+          保存時は JS が未追加の入力も拾うため、画面の空表示と保存結果が一致しなかった。
+          追加後は、空の追加フォームと登録済み行が同じ3項目グリッドで並んだ。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-new-colors-pending.png" alt="改善前。入力済みでもまだ追加していません">
+            <figcaption>pc-lure-plug-new-colors-pending.png — ▲ 改善前。ゴーストシャッドを入力した直下に空メッセージ</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-new-colors-added.png" alt="改善前。追加後に空フォームと行が二重">
+            <figcaption>pc-lure-plug-new-colors-added.png — ▲ 改善前。上の空グリッドと下の登録行が同じ見た目</figcaption>
+          </figure>
+          <figure>
+            <img src="fishtrack/sp-lure-plug-new-colors.png" alt="改善前。SP でも追加フォームと行が縦に二重">
+            <figcaption>sp-lure-plug-new-colors.png — ▲ 改善前。SP 1列でも空フォーム＋登録行が続く</figcaption>
+          </figure>
+        </div>
+        <h3>実施した改善</h3>
+        <ul>
+          <li>追加用フォームをやめ、入力した行そのものを保存対象にした</li>
+          <li>新規は空の1行から始める。「行を追加」は空行を足すだけ（空名でも <code>alert</code> しない）</li>
+          <li>「まだカラーを追加していません。」は出さない。全削除時のみ「カラー行がありません。」</li>
+          <li>カラー名が空の行は保存時に送らない。JAN・定価は任意。FT-O18 の ※ と FT-H12 の定価ヒントは維持</li>
+          <li>詳細は既存行の末尾に空行＋写真プレースホルダ</li>
+        </ul>
+        <p class="sample-link">改善サンプル:
+          <a href="fishtrack/samples/ft-o17-a.html">fishtrack/samples/ft-o17-a.html</a>
+          （案A）</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-new-colors-direct-after.png" alt="改善後。新規は空1行と行を追加">
+            <figcaption>pc-lure-plug-new-colors-direct-after.png — ▲ 改善後。追加フォーム無し。空1行＋「行を追加」</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-new-colors-direct-typed-after.png" alt="改善後。入力しても空メッセージが出ない">
+            <figcaption>pc-lure-plug-new-colors-direct-typed-after.png — ▲ 改善後。ゴーストシャッドを入力してもリスト行のまま</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-edit-colors-direct-after.png" alt="改善後。詳細は既存行の下に空行">
+            <figcaption>pc-lure-plug-edit-colors-direct-after.png — ▲ 改善後。既存行の下に空行＋写真プレースホルダ</figcaption>
+          </figure>
+        </div>
+        <h3>再診断</h3>
+        <p>2026-09-01 にローカル Docker の <code>/lure-plug/new</code>、<code>/lure-worm/new</code>、
+          <code>/lure-plug/21</code> を ai-admin で確認した。追加フォームは無く、入力行がリストなので RESOLVED とする。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-h12" data-resolved-on="2026-09-01">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-H12 — カラー定価ラベルが長く各行で繰り返す
+          </h2>
+        </summary>
+        <p class="label">画面: カラーグリッド（新規・詳細編集）。観点: 視認性・管理者の密度。関連 <a href="#ft-h11">FT-H11</a>。案A採用</p>
+        <h3>対象箇所</h3>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> 新規カラー節、詳細編集のカラー一覧（例: <code>/lure-plug/21</code>）</li>
+            <li><strong>位置:</strong> <code>.lure-color-form-grid</code> 第3フィールドの <code>label</code></li>
+            <li><strong>部品:</strong> <code>lure_master_create_colors.html</code> / <code>lure_color_rows.html</code> のハードコードラベル、
+              <code>lure_master_color_create.js</code> / <code>lure_master_bulk_save.js</code> の行追加 HTML、
+              <code>LureColorEditForm.list_price</code></li>
+            <li><strong>対象外:</strong> 製品 <code>#list_price</code>（<a href="#ft-h11">FT-H11</a>）。読み取り専用表の「定価（税抜）」列</li>
+          </ul>
+        </div>
+        <h3>改善前の事象</h3>
+        <p>カラー行の定価ラベルが「定価（税抜、製品と異なるカラーのみ）」で、3列グリッドの第3列で折り返していた。
+          詳細編集ではカラーごとに同じ長いラベルが繰り返されていた。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-edit-colors-list.png" alt="改善前。詳細編集で長い定価ラベルが各カラー行に繰り返す">
+            <figcaption>pc-lure-plug-edit-colors-list.png — ▲ 改善前。各行の右列ラベルが長い</figcaption>
+          </figure>
+        </div>
+        <h3>実施した改善</h3>
+        <ul>
+          <li>各行のラベルを「定価（税抜）」にした（テンプレ・行追加 JS・<code>LureColorEditForm</code>）</li>
+          <li>節ヒント「定価は、製品の定価と違うカラーだけ入力します。空欄なら製品の定価を使います。」を置いた</li>
+          <li>製品 <code>#list_price</code> は変更していない（<a href="#ft-h11">FT-H11</a>）</li>
+        </ul>
+        <p class="sample-link">改善サンプル:
+          <a href="fishtrack/samples/ft-h12-a.html">fishtrack/samples/ft-h12-a.html</a>
+          （案A）</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-edit-colors-list-after.png" alt="改善後。カラー定価は短いラベルと節ヒント">
+            <figcaption>pc-lure-plug-edit-colors-list-after.png — ▲ 改善後。節ヒント＋各行は「定価（税抜）」</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-new-colors-price-after.png" alt="改善後。新規フォームのカラー定価も短い">
+            <figcaption>pc-lure-plug-new-colors-price-after.png — ▲ 改善後。新規のカラー節も同じ短いラベルとヒント</figcaption>
+          </figure>
+        </div>
+        <h3>再診断</h3>
+        <p>2026-09-01 にローカル Docker の <code>/lure-plug/new</code> と <code>/lure-plug/21</code> を
+          ai-admin で確認した。カラー定価は短いラベル、例外ルールは節ヒントのみなので RESOLVED とする。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-h11" data-resolved-on="2026-09-01">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-high">HIGH</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-H11 — 製品の定価ラベルがカラー例外の文言になっている
+          </h2>
+        </summary>
+        <p class="label">画面: プラグ／ワーム新規・詳細編集。観点: 視認性・初回ユーザー。関連 <a href="#ft-h12">FT-H12</a>。案A採用</p>
+        <h3>対象箇所</h3>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> <code>/lure-plug/new</code>、<code>/lure-worm/new</code>、
+              <code>/lure-plug/&lt;id&gt;</code>、<code>/lure-worm/&lt;id&gt;</code>（管理者編集）</li>
+            <li><strong>位置:</strong> 詳細スペック節の定価。セレクタ <code>label[for="list_price"]</code> / <code>#list_price</code></li>
+            <li><strong>部品:</strong> <code>_LureProductSpecFormMixin.list_price</code>（<code>forms/lure.py</code>）</li>
+            <li><strong>対象外:</strong> カラー行の定価ラベル（<a href="#ft-h12">FT-H12</a>）。読み取り専用詳細の「定価（税抜）」表示</li>
+          </ul>
+        </div>
+        <h3>改善前の事象</h3>
+        <p>詳細スペックの製品定価（<code>#list_price</code>）のラベルが「定価（税抜、製品と異なるカラーのみ）」になっていた。
+          製品本体の金額欄なのに、カラーだけ違うとき用の説明が付いていた。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-new-product-price.png" alt="改善前。製品定価とカラー定価が同じ長いラベル">
+            <figcaption>pc-lure-plug-new-product-price.png — ▲ 改善前。製品定価とカラー節の定価が同じ文言</figcaption>
+          </figure>
+        </div>
+        <h3>実施した改善</h3>
+        <ul>
+          <li>製品定価ラベルを「定価（税抜）」に戻した（<code>_LureProductSpecFormMixin.list_price</code>）</li>
+          <li>欄下に「製品の定価です。カラーだけ金額が違う場合は、下のカラー節に入力します。」のヒントを付けた</li>
+          <li>カラー行の長いラベルは変更していない（<a href="#ft-h12">FT-H12</a>）</li>
+        </ul>
+        <p class="sample-link">改善サンプル:
+          <a href="fishtrack/samples/ft-h11-a.html">fishtrack/samples/ft-h11-a.html</a>
+          （案A。製品実装は <code>forms/lure.py</code> と <code>lure_product_detail_spec_fields_body.html</code>）</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-lure-plug-new-product-price-after.png" alt="改善後。製品定価は短いラベルとヒント">
+            <figcaption>pc-lure-plug-new-product-price-after.png — ▲ 改善後。製品は「定価（税抜）」＋ヒント。カラー行は長いラベルのまま</figcaption>
+          </figure>
+        </div>
+        <h3>再診断</h3>
+        <p>2026-09-01 にローカル Docker の <code>/lure-plug/new</code> と <code>/lure-plug/21</code> を
+          ai-admin で確認した。製品 <code>#list_price</code> は短いラベルとヒント、カラー節は従来の長いラベルのままなので RESOLVED とする。</p>
+      </details>
+    </article>
 
     <article class="issue" id="ft-h8" data-resolved-on="2026-08-20">
       <details>
@@ -3320,7 +4136,22 @@
         <figure class="pc"><img src="mypokedex/pc-dex.png" alt=""><figcaption>pc-dex.png</figcaption></figure>
         <figure class="pc"><img src="fishtrack/ft-pc-lure-masters-plug-filter-minnow.png" alt=""><figcaption>ft-pc-lure-masters-plug-filter-minnow.png（FT-M5/M6）</figcaption></figure>
         <figure class="pc"><img src="fishtrack/ft-pc-lure-masters-m5-after.png" alt=""><figcaption>ft-pc-lure-masters-m5-after.png（FT-M5 アフター）</figcaption></figure>
-        <figure class="pc"><img src="fishtrack/ft-pc-lure-masters-plug-filter-empty.png" alt=""><figcaption>ft-pc-lure-masters-plug-filter-empty.png（FT-M7）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-lure-plug-new-colors-pending.png" alt=""><figcaption>pc-lure-plug-new-colors-pending.png（FT-O17 改善前）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-lure-plug-new-colors-added.png" alt=""><figcaption>pc-lure-plug-new-colors-added.png（FT-O17 改善前）</figcaption></figure>
+        <figure><img src="fishtrack/sp-lure-plug-new-colors.png" alt=""><figcaption>sp-lure-plug-new-colors.png（FT-O17 SP 改善前）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-dashboard-recent-catch-card.png" alt=""><figcaption>pc-dashboard-recent-catch-card.png（FT-H13 ホーム）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-catch-list-card-rig.png" alt=""><figcaption>pc-catch-list-card-rig.png（FT-H13 一覧）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-trip-detail-catch-card-worm.png" alt=""><figcaption>pc-trip-detail-catch-card-worm.png（FT-H13 釣行詳細）</figcaption></figure>
+        <figure><img src="fishtrack/sp-catch-list-card-rig.png" alt=""><figcaption>sp-catch-list-card-rig.png（FT-H13 SP）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-dashboard-catch-card-links.png" alt=""><figcaption>pc-dashboard-catch-card-links.png（FT-O20 ホーム）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-catch-list-card-links.png" alt=""><figcaption>pc-catch-list-card-links.png（FT-O20 一覧）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-trip-catch-card-links.png" alt=""><figcaption>pc-trip-catch-card-links.png（FT-O20/O21 釣行詳細）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-dashboard-h14-details-gap.png" alt=""><figcaption>pc-dashboard-h14-details-gap.png（FT-H14 情報欄2列）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-dashboard-catch-card-density.png" alt=""><figcaption>pc-dashboard-catch-card-density.png（FT-H14 ホーム）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-catch-list-card-density.png" alt=""><figcaption>pc-catch-list-card-density.png（FT-H14 一覧）</figcaption></figure>
+        <figure><img src="fishtrack/sp-dashboard-catch-card-density.png" alt=""><figcaption>sp-dashboard-catch-card-density.png（FT-H14 SP）</figcaption></figure>
+        <figure><img src="fishtrack/sp-reel-search-sort-bar.png" alt=""><figcaption>sp-reel-search-sort-bar.png（FT-O19 探すリール）</figcaption></figure>
+        <figure><img src="fishtrack/sp-holding-reel-sort-bar.png" alt=""><figcaption>sp-holding-reel-sort-bar.png（FT-O19 マイタックルリール）</figcaption></figure>
       </div>
       <h2 style="font-size:1.2rem;margin-top:2rem;">再診断（改善後）</h2>
       <div class="shots">
@@ -3340,6 +4171,19 @@
         <figure class="pc"><img src="fishtrack/pc-admin-field-request-pagination-after.png" alt=""><figcaption>pc-admin-field-request-pagination-after.png（FT-O15）</figcaption></figure>
         <figure class="pc"><img src="fishtrack/pc-field-edit-prefecture-extras-after.png" alt=""><figcaption>pc-field-edit-prefecture-extras-after.png（FT-O16）</figcaption></figure>
         <figure><img src="fishtrack/sp-field-edit-prefecture-extras-after.png" alt=""><figcaption>sp-field-edit-prefecture-extras-after.png（FT-O16）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-lure-plug-new-colors-direct-after.png" alt=""><figcaption>pc-lure-plug-new-colors-direct-after.png（FT-O17 アフター）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-lure-plug-new-colors-direct-typed-after.png" alt=""><figcaption>pc-lure-plug-new-colors-direct-typed-after.png（FT-O17 入力後）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-lure-plug-edit-colors-direct-after.png" alt=""><figcaption>pc-lure-plug-edit-colors-direct-after.png（FT-O17 詳細アフター）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-dashboard-recent-catch-card-after.png" alt=""><figcaption>pc-dashboard-recent-catch-card-after.png（FT-H13 ホーム）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-catch-list-card-rig-after.png" alt=""><figcaption>pc-catch-list-card-rig-after.png（FT-H13 一覧）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-trip-detail-catch-card-after.png" alt=""><figcaption>pc-trip-detail-catch-card-after.png（FT-H13 釣行詳細）</figcaption></figure>
+        <figure><img src="fishtrack/sp-catch-list-card-rig-after.png" alt=""><figcaption>sp-catch-list-card-rig-after.png（FT-H13 SP）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-dashboard-catch-card-links-after.png" alt=""><figcaption>pc-dashboard-catch-card-links-after.png（FT-O20 ホーム）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-catch-list-card-links-after.png" alt=""><figcaption>pc-catch-list-card-links-after.png（FT-O20 一覧）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-trip-catch-card-links-after.png" alt=""><figcaption>pc-trip-catch-card-links-after.png（FT-O21 釣行詳細）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-dashboard-h14-details-after.png" alt=""><figcaption>pc-dashboard-h14-details-after.png（FT-H14 ホーム）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/pc-catch-list-h14-details-after.png" alt=""><figcaption>pc-catch-list-h14-details-after.png（FT-H14 一覧）</figcaption></figure>
+        <figure><img src="fishtrack/sp-dashboard-h14-details-after.png" alt=""><figcaption>sp-dashboard-h14-details-after.png（FT-H14 SP）</figcaption></figure>
       </div>
       <h2 style="font-size:1.2rem;margin-top:2rem;">改善サンプル画像</h2>
       <div class="shots">
@@ -3361,6 +4205,16 @@
         <figure><img src="fishtrack/sample-ft-m7-a.png" alt=""><figcaption>sample-ft-m7-a.png（FT-M7）</figcaption></figure>
         <figure class="pc"><img src="fishtrack/sample-ft-o16-a.png" alt=""><figcaption>sample-ft-o16-a.png（FT-O16 案A）</figcaption></figure>
         <figure class="pc"><img src="fishtrack/sample-ft-o16-b.png" alt=""><figcaption>sample-ft-o16-b.png（FT-O16 案B）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/sample-ft-o17-a.png" alt=""><figcaption>sample-ft-o17-a.png（FT-O17 案A）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/sample-ft-h13-a.png" alt=""><figcaption>sample-ft-h13-a.png（FT-H13 案A）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/sample-ft-h13-b.png" alt=""><figcaption>sample-ft-h13-b.png（FT-H13 案B 調整後）</figcaption></figure>
+        <figure><img src="fishtrack/sample-ft-o20-a.png" alt=""><figcaption>sample-ft-o20-a.png（FT-O20 案A）</figcaption></figure>
+        <figure><img src="fishtrack/sample-ft-o20-b.png" alt=""><figcaption>sample-ft-o20-b.png（FT-O20 案B）</figcaption></figure>
+        <figure><img src="fishtrack/sample-ft-o21-a.png" alt=""><figcaption>sample-ft-o21-a.png（FT-O21 案A）</figcaption></figure>
+        <figure><img src="fishtrack/sample-ft-o21-b.png" alt=""><figcaption>sample-ft-o21-b.png（FT-O21 案B）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/sample-ft-h14-a.png" alt=""><figcaption>sample-ft-h14-a.png（FT-H14 案A）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/sample-ft-h14-b.png" alt=""><figcaption>sample-ft-h14-b.png（FT-H14 案B・不採用）</figcaption></figure>
+        <figure class="pc"><img src="fishtrack/sample-ft-h14-c.png" alt=""><figcaption>sample-ft-h14-c.png（FT-H14 案C・不採用）</figcaption></figure>
       </div>
     </section>
   </main>
@@ -3376,9 +4230,12 @@
         if (!id || id === "resolved-issues" || id === "open-issues") return;
         var el = document.getElementById(id);
         if (!el) return;
-        var details = el.matches && el.matches("details")
+        var details = (el.matches && el.matches("details"))
           ? el
-          : el.querySelector(":scope > details");
+          : (el.closest && el.closest("details"));
+        if (!details && el.querySelector) {
+          details = el.querySelector(":scope > details");
+        }
         if (details) details.open = true;
       }
       window.addEventListener("hashchange", openResolvedForHash);
