@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-H25 案A — ロッド／リール探す表をカード幅まで伸ばす</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      width: max-content;
+    }
+    .sample-frame {
+      width: 1280px;
+      padding: 16px;
+      background: #e8edf4;
+      box-sizing: border-box;
+    }
+    .sample-note {
+      font-size: 0.8rem;
+      color: #475569;
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+      margin: 14px 0 6px;
+    }
+    .sample-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+    .sample-card .master-list-table-wrap { display: block; }
+    .sample-card .master-model-cards { display: none; }
+    .sample-card .table-scroll {
+      min-width: 0;
+      background: #fff;
+      outline: 1px dashed #cbd5e1;
+    }
+    /* 変更前: 960px 指定が勝ち、カード幅まで届かない状態を再現する */
+    .sample-before .table-scroll .ft-table--rod-master-sticky {
+      min-width: 960px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用・製品実装済み）:
+      <code>.table-scroll .ft-table--rod-master-sticky { min-width: 100%; }</code>
+      で <code>.table-scroll table { min-width: 960px }</code> に勝たせる。
+      <code>width: max-content</code> は維持し、列が多いときは横スクロールする。
+      リール探すの既定オフ列は隠したまま（ロッド探すも同じセレクタ）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（保有の右に白い余り。表がカード幅まで届かない）</p>
+    <div class="sample-card sample-before">
+      <section class="card">
+        <div class="card-header">
+          <h2>リールを探す</h2>
+        </div>
+        <div class="master-list-table-wrap">
+          <div class="table-scroll table-scroll--viewport table-scroll--sticky-head">
+            <table class="ft-table ft-table--striped ft-table--hover ft-table--rod-master-sticky ft-table--reel-master">
+              <colgroup>
+                <col class="ft-table__col--rod-mfr">
+                <col class="ft-table__col--rod-series">
+                <col class="ft-table__col--rod-model">
+                <col>
+                <col>
+                <col>
+                <col class="ft-table__col--catalog-current">
+                <col class="ft-table__col--rod-holding">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col" class="ft-table__sticky-col ft-table__sticky-col--mfr">メーカー</th>
+                  <th scope="col" class="ft-table__sticky-col ft-table__sticky-col--series">シリーズ</th>
+                  <th scope="col" class="ft-table__sticky-col ft-table__sticky-col--model">モデル名/型番</th>
+                  <th scope="col" class="ft-table__th--reel-type">ジャンル</th>
+                  <th scope="col" class="ft-table__th--weight-g">自重(g)</th>
+                  <th scope="col" class="ft-table__th--gear-ratio">ギア比</th>
+                  <th scope="col" class="ft-table__th--catalog-current">現行</th>
+                  <th scope="col" class="rod-sticky-col--holding">保有</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="is-odd">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+                  <td class="ft-table__sticky-col ft-table__sticky-col--series">その他</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model"><span class="model-name-text">VERIFY-OWNER-0826</span></td>
+                  <td>スピニング</td>
+                  <td></td>
+                  <td></td>
+                  <td>未判定</td>
+                  <td class="holding-cell"><span class="holding-status">—</span></td>
+                </tr>
+                <tr class="is-even">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+                  <td class="ft-table__sticky-col ft-table__sticky-col--series">24STEEZ SV TW</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model"><span class="model-name-text">100L</span></td>
+                  <td>ベイト</td>
+                  <td>160</td>
+                  <td>6.7</td>
+                  <td>未判定</td>
+                  <td class="holding-cell"><span class="holding-status holding-status--owned">保有中</span></td>
+                </tr>
+                <tr class="is-odd">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+                  <td class="ft-table__sticky-col ft-table__sticky-col--series">21 ZILLION SV TW</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model"><span class="model-name-text">1000</span></td>
+                  <td>ベイト</td>
+                  <td>175</td>
+                  <td>6.3</td>
+                  <td>未判定</td>
+                  <td class="holding-cell"><span class="holding-status">—</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <p class="sample-block-label">変更後（下。保有がカード右端まで届く。列が多いときは横スクロール）</p>
+    <div class="sample-card sample-after">
+      <section class="card">
+        <div class="card-header">
+          <h2>リールを探す</h2>
+        </div>
+        <div class="master-list-table-wrap">
+          <div class="table-scroll table-scroll--viewport table-scroll--sticky-head">
+            <table class="ft-table ft-table--striped ft-table--hover ft-table--rod-master-sticky ft-table--reel-master">
+              <colgroup>
+                <col class="ft-table__col--rod-mfr">
+                <col class="ft-table__col--rod-series">
+                <col class="ft-table__col--rod-model">
+                <col>
+                <col>
+                <col>
+                <col class="ft-table__col--catalog-current">
+                <col class="ft-table__col--rod-holding">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col" class="ft-table__sticky-col ft-table__sticky-col--mfr">メーカー</th>
+                  <th scope="col" class="ft-table__sticky-col ft-table__sticky-col--series">シリーズ</th>
+                  <th scope="col" class="ft-table__sticky-col ft-table__sticky-col--model">モデル名/型番</th>
+                  <th scope="col" class="ft-table__th--reel-type">ジャンル</th>
+                  <th scope="col" class="ft-table__th--weight-g">自重(g)</th>
+                  <th scope="col" class="ft-table__th--gear-ratio">ギア比</th>
+                  <th scope="col" class="ft-table__th--catalog-current">現行</th>
+                  <th scope="col" class="rod-sticky-col--holding">保有</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="is-odd">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+                  <td class="ft-table__sticky-col ft-table__sticky-col--series">その他</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model"><span class="model-name-text">VERIFY-OWNER-0826</span></td>
+                  <td>スピニング</td>
+                  <td></td>
+                  <td></td>
+                  <td>未判定</td>
+                  <td class="holding-cell"><span class="holding-status">—</span></td>
+                </tr>
+                <tr class="is-even">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+                  <td class="ft-table__sticky-col ft-table__sticky-col--series">24STEEZ SV TW</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model"><span class="model-name-text">100L</span></td>
+                  <td>ベイト</td>
+                  <td>160</td>
+                  <td>6.7</td>
+                  <td>未判定</td>
+                  <td class="holding-cell"><span class="holding-status holding-status--owned">保有中</span></td>
+                </tr>
+                <tr class="is-odd">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr">DAIWA</td>
+                  <td class="ft-table__sticky-col ft-table__sticky-col--series">21 ZILLION SV TW</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model"><span class="model-name-text">1000</span></td>
+                  <td>ベイト</td>
+                  <td>175</td>
+                  <td>6.3</td>
+                  <td>未判定</td>
+                  <td class="holding-cell"><span class="holding-status">—</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>FT-H23 採用 — 素材はエラストマー時のみ表示</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/lure_masters.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 390px; padding: 12px; background: #f1f5f9; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 12px 0 6px; }
+    .sample-card {
+      background: #fff; border-radius: 12px; padding: 12px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+    .sample-highlight {
+      outline: 2px solid #f59e0b;
+      outline-offset: 2px;
+      border-radius: 2px;
+      background: color-mix(in srgb, #f59e0b 12%, #fff);
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      採用: 項目名は「素材」。エラストマーのときだけ
+      <code>素材：エラストマー</code> を出す。
+      false／未設定は項目ごと非表示（ハイフン系の否表示は使わない）。
+    </p>
+
+    <p class="sample-block-label">変更前（同一 dl 内で — と － が混在）</p>
+    <div class="sample-card sample-before">
+      <dl class="details-list">
+        <div>
+          <dt>メーカー</dt>
+          <dd>DAIWA</dd>
+        </div>
+        <div>
+          <dt>重量</dt>
+          <dd>4.0 g</dd>
+        </div>
+        <div>
+          <dt>エラストマー</dt>
+          <dd class="sample-highlight">－</dd>
+        </div>
+        <div>
+          <dt>入数</dt>
+          <dd>8</dd>
+        </div>
+        <div>
+          <dt>メモ</dt>
+          <dd>—</dd>
+        </div>
+      </dl>
+    </div>
+
+    <p class="sample-block-label">変更後（非エラストマーは素材行なし）</p>
+    <div class="sample-card sample-after">
+      <dl class="details-list">
+        <div>
+          <dt>メーカー</dt>
+          <dd>DAIWA</dd>
+        </div>
+        <div>
+          <dt>重量</dt>
+          <dd>4.0 g</dd>
+        </div>
+        <div>
+          <dt>入数</dt>
+          <dd>8</dd>
+        </div>
+        <div>
+          <dt>メモ</dt>
+          <dd>—</dd>
+        </div>
+      </dl>
+    </div>
+
+    <p class="sample-block-label">エラストマーのとき（参考）</p>
+    <div class="sample-card">
+      <dl class="details-list">
+        <div>
+          <dt>重量</dt>
+          <dd>3.5 g</dd>
+        </div>
+        <div>
+          <dt class="sample-highlight">素材</dt>
+          <dd class="sample-highlight">エラストマー</dd>
+        </div>
+        <div>
+          <dt>入数</dt>
+          <dd>6</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=720, initial-scale=1">
+  <title>FT-O22 案A — マイタックル詳細からマスタを見る</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A: ロッド／リール／ワーム／プラグのマイタックル詳細ヘッダーに「マスタを見る」を足す。
+      採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（保有を編集・一覧に戻るだけ。マスタへのリンクが無い）</p>
+    <section class="card my-tackle-detail">
+      <div class="card-header my-tackle-detail__header">
+        <h2>ロッド詳細</h2>
+        <div class="my-tackle-detail__actions">
+          <a class="btn-link" href="#">保有を編集</a>
+          <a class="btn-link" href="#">一覧に戻る</a>
+        </div>
+      </div>
+      <section class="card card--nested">
+        <h3>スペック・保有情報</h3>
+        <dl class="details-list">
+          <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+          <div><dt>シリーズ・型番</dt><dd>ブレイゾン C610M</dd></div>
+        </dl>
+      </section>
+    </section>
+
+    <p class="sample-block-label">変更後（下。ヘッダーにマスタを見る）</p>
+    <section class="card my-tackle-detail">
+      <div class="card-header my-tackle-detail__header">
+        <h2>ロッド詳細</h2>
+        <div class="my-tackle-detail__actions">
+          <a class="btn-link" href="#">マスタを見る</a>
+          <a class="btn-link" href="#">保有を編集</a>
+          <a class="btn-link" href="#">一覧に戻る</a>
+        </div>
+      </div>
+      <section class="card card--nested">
+        <h3>スペック・保有情報</h3>
+        <dl class="details-list">
+          <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+          <div><dt>シリーズ・型番</dt><dd>ブレイゾン C610M</dd></div>
+        </dl>
+      </section>
+    </section>
+  </div>
+</body>
+</html>

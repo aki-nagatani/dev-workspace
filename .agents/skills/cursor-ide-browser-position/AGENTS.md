@@ -11,4 +11,5 @@ Always respond in Japanese when applying this skill.
 
 - **ブラウザはサイドで開かないこと**（`position: "side"` 禁止）
 - 既定は `position` 省略。見せるときだけ `"active"`
+- **FishTrack プレビューの本家表示**: Playwright MCP／外部ブラウザ禁止。**`cursor-ide-browser` のみ**
 - 手順の正本は **`SKILL.md`**

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=720, initial-scale=1">
+  <title>FT-O25 案A — クリアを常時出す</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    details.ft-filter-collapse { display: block; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A: マイタックルも探す系と同じく、フィルタ展開中はクリアを常時出す。初期の「所持／在庫あり」へ戻せる。
+      採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（既定の所持ではクリアが無い。探す系にはある）</p>
+    <section class="card">
+      <form class="filter-form">
+        <details class="ft-filter-collapse" open>
+          <summary class="ft-filter-collapse__summary">
+            <span class="ft-filter-collapse__label">フィルタ</span>
+            <span class="ft-filter-collapse__caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="ft-filter-collapse__panel">
+            <div class="filter-grid filter-grid--primary">
+              <div>
+                <label for="o25-before-status">ステータス</label>
+                <select id="o25-before-status"><option>所持</option></select>
+              </div>
+              <div class="filter-actions">
+                <button type="button" class="btn btn--sm">適用</button>
+                <button type="button" class="filter-details-toggle">詳細フィルタを表示</button>
+              </div>
+            </div>
+          </div>
+        </details>
+      </form>
+    </section>
+
+    <p class="sample-block-label">変更後（下。探すと同じくクリアが常にある）</p>
+    <section class="card">
+      <form class="filter-form">
+        <details class="ft-filter-collapse" open>
+          <summary class="ft-filter-collapse__summary">
+            <span class="ft-filter-collapse__label">フィルタ</span>
+            <span class="ft-filter-collapse__caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="ft-filter-collapse__panel">
+            <div class="filter-grid filter-grid--primary">
+              <div>
+                <label for="o25-after-status">ステータス</label>
+                <select id="o25-after-status"><option>所持</option></select>
+              </div>
+              <div class="filter-actions">
+                <button type="button" class="btn btn--sm">適用</button>
+                <a class="btn btn--ghost btn--sm" href="#">クリア</a>
+                <button type="button" class="filter-details-toggle">詳細フィルタを表示</button>
+              </div>
+            </div>
+          </div>
+        </details>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

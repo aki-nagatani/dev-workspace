@@ -315,7 +315,6 @@
     <a href="#summary">サマリー</a>
     <a href="#open-issues">未解決</a>
     <a href="#resolved-issues">解決済み</a>
-    <a href="#gallery">ギャラリー</a>
     <span class="toc-group">未解決</span>
     <div class="toc-row">
       <a href="#issue-id">ISSUE_ID</a>
@@ -338,14 +337,15 @@
     </p>
 
     <section id="summary" class="meta">
-      <div><strong>対象</strong>: MyPokedex・FishTrack の<strong>全画面</strong>（両製品同時診断）</div>
+      <div><strong>対象</strong>: MyPokedex・FishTrack の<strong>全画面</strong>（未ログイン LP を含む。ログイン後に限定しない。両製品同時診断）</div>
       <div><strong>スクショ例（任意）</strong>: {SCREENS}</div>
       <div><strong>観点</strong>: 中核は操作性・視認性・初回ユーザー（迷わないか）・管理者の管理しやすさ。
         併せて導線・主CTA・空状態・必須／任意・表密度・フィルタ・誤アフォーダンス・一貫性・危険操作・フィードバック・SP/PC・a11y。
         正本は <code>ui-audit-html-report</code> SKILL「診断観点」。</div>
       <div><strong>成果物</strong>: 本 HTML + PNG + <code>samples/</code></div>
       <div><strong>備考</strong>: 未解決／解決済みを分離。解決済みはアコーディオン（既定クローズ）。
-        解決から1ヶ月経過した課題は HTML から削除。個別課題の経緯は各 article。</div>
+        解決から1ヶ月経過した課題は HTML から削除。個別課題の経緯は各 article。
+        対象は未ログイン LP を含む全画面（ログイン後のみは禁止）。</div>
     </section>
 
     <section id="open-issues" aria-labelledby="open-issues-title">
@@ -475,21 +475,6 @@
       </details>
     </article>
     -->
-    </section>
-
-    <section id="gallery">
-      <h2 style="font-size:1.2rem;margin-top:2rem;">全スクショ（現状・改善前）</h2>
-      <div class="shots">
-        <!-- <figure><img src="….png" alt=""><figcaption>….png</figcaption></figure> -->
-      </div>
-      <h2 style="font-size:1.2rem;margin-top:2rem;">再診断（改善後）</h2>
-      <div class="shots">
-        <!-- <figure><img src="…-after.png" alt=""><figcaption>…-after.png</figcaption></figure> -->
-      </div>
-      <h2 style="font-size:1.2rem;margin-top:2rem;">改善サンプル画像</h2>
-      <div class="shots">
-        <!-- <figure><img src="sample-….png" alt=""><figcaption>sample-….png</figcaption></figure> -->
-      </div>
     </section>
   </main>
 

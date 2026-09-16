@@ -28,7 +28,7 @@ AI チャット・調査・レビュー・設計判断・ユーザー訂正・�
 
 | 領域 | 正本の置き場 | 典型コンテンツ | 更新時に Read する SKILL（該当時） |
 | --- | --- | --- | --- |
-| **汎用知識・ツール** | `Notes/Knowledge/` | 技術・AI・運用の実用知見 | **`obsidian-inbox-summarize` §4**（Knowledge 集約・上書き方針） |
+| **汎用知識・ツール** | `Notes/Knowledge/` | 技術・AI・ツールの**一般的な**実用知見 | **`obsidian-inbox-summarize` §4**（Knowledge 集約・上書き方針） |
 | **出典・原文** | `Notes/Knowledge/Articles/` | 記事全文・文字起こし原文 | **`obsidian-inbox-summarize` §1.5**（InBox／明示取り込み時） |
 | **釣り** | `Fishing/`（釣行は `釣行メモ.md`） | 釣行記録・フィールド・タックル | **`obsidian-inbox-summarize` 1.4.1** 等 |
 | **本職（仕事）** | `Work/` | 人・案件・課題・定例・人事・暗黙知 | **`work-folder-update`**（課題は **`work-kadai-update`** 等） |
@@ -37,6 +37,9 @@ AI チャット・調査・レビュー・設計判断・ユーザー訂正・�
 
 - **Articles**: 出典の**エピソード記憶**（いつ何を読んだかの一次記録）
 - **Knowledge**: 横断的な**統合理解**（現時点で信頼できる実用知見。**最新の正**に揃える。詳細は `obsidian-inbox-summarize` §4）
+- **Knowledge に書かないもの**: 特定製品の個人運用・秘密パス・取込手順・ホスト固有の作業ログ。\
+  例: [[OpenClaw]] ノートは OpenClaw **一般**の知見のみ。FaiNavi／ME 取込などは
+  `DevProject/specifications/`（[[FaiNavi仕様書]] 等）へ書く
 - **領域専用正本**: そのドメインの**最新の事実・判断・経験**（Knowledge に重複させず、正本へ直接反映）
 
 ## いつ正本へ反映するか
@@ -69,6 +72,16 @@ AI チャット・調査・レビュー・設計判断・ユーザー訂正・�
 5. **判断不能時のみ確認**: 保存先・領域が一意に決まらないときだけユーザーに聞く
 6. **未合意の方針を確定として書かない**: エージェントの推奨は「提案」と明記する。\
     ユーザーが「それでよい」等を言うまで、Knowledge / 計画に「採用」「確定」と書かない（比較表は書いてよい）
+
+## Obsidian への書き込み手段（厳禁・再発防止）
+
+ボールト（`D:/OneDrive/アプリ/remotely-save/Obsidian/`）への更新は **Cursor の `Write` / `StrReplace` / `Delete` のみ**。
+
+- **禁止**: シェル／スクリプトでのコピー・生成・上書き（`Copy-Item`・`shutil.copy` / `copy2`・`write_text`・`Set-Content` 等）
+- **禁止の典型**: `temp/` にノートを生成したあと **シェルで Obsidian へコピー**する（件数・サイズ・サブエージェント失敗を理由にしない）
+- **理由**: シェル経由だと Cursor の Review／差分に載らず、レビュー不能になる（ユーザー明示の禁止）
+- **正しい流れ**: `temp/` 生成物は **Read** → 正本パスへ **`Write` / `StrReplace`**（1 ファイルずつ）
+- **横断正本**: myrules「ファイル修正と差分確認」・**`temp-file-management`** SKILL
 
 ## 報告前の自己チェック（CursorLog とは別）
 

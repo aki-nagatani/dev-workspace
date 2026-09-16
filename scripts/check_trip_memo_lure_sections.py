@@ -32,40 +32,54 @@ _RESULT_TOKENS = (
     "のみ（",
 )
 
-_SIZE_TOKENS = ("cm", "センチ", "mm", "尾")
+_JA_SIZE_TOKENS = ("センチ", "尾")
+# 釣果サイズの cm/mm。Gimmy など製品名に含まれる mm は単語境界で除外する。
+_ASCII_SIZE_RE = re.compile(r"(?<![A-Za-z])(cm|mm)(?![A-Za-z])")
 
 _VALID_LINE_PATTERNS = (
     re.compile(r"^- \*\*[^*]+\*\*\s*$"),
     re.compile(r"^- \*\*[^*]+\*\* — \*\*[^*]+\*\*\s*$"),
     re.compile(r"^- \*\*[^*]+\*\*: \*\*[^*]+\*\*\s*$"),
-    re.compile(r"^- \*\*[^*]+\*\*: \*\*[^*]+\*\* — \*\*[^*]+\*\*\s*$"),
+    re.compile(r"^- \*\*[^*]+\*\*: \*\*[^*]+\*\* — .+$"),
     re.compile(r"^- \*\*[^*]+\*\*: \*\*[^*]+\*\* ＋ \*\*[^*]+\*\*"),
-    re.compile(r"^- \*\*[^*]+\*\*: \*\*[^*]+\*\* \*\*[^*]+\*\*"),
+    re.compile(r"^- \*\*[^*]+\*\*: \*\*[^*]+\*\* \*\*[^*]+\*\*(?: — .*)?\s*$"),
 )
+_MATCH_STATUS_SUFFIX = re.compile(r"\s*（(?:未突合|曖昧)）\s*$")
+_TRIP_HEADING = re.compile(r"^## \d{4}-\d{2}-\d{2}\b")
+_LURE_HEADING = re.compile(r"^###\s+使用ルアー")
+
+
+def _strip_match_status_suffix(line: str) -> str:
+    """import 後の未突合／曖昧印を除いた行。製品名の太字は変えない。"""
+    return _MATCH_STATUS_SUFFIX.sub("", line).rstrip()
 
 
 def _is_valid_product_line(line: str) -> bool:
-    stripped = line.strip()
+    stripped = _strip_match_status_suffix(line.strip())
     return any(pattern.match(stripped) for pattern in _VALID_LINE_PATTERNS)
 
 
 def _line_issues(line: str) -> list[str]:
-    stripped = line.strip()
+    stripped = _strip_match_status_suffix(line.strip())
     if not stripped.startswith("- "):
         return []
 
     issues: list[str] = []
-    for token in _RESULT_TOKENS + _SIZE_TOKENS:
+    for token in _RESULT_TOKENS + _JA_SIZE_TOKENS:
         if token in stripped:
             issues.append(f"結果・状況語「{token}」")
+    for match in _ASCII_SIZE_RE.finditer(stripped):
+        issues.append(f"結果・状況語「{match.group(1)}」")
 
     colon_match = re.match(r"^- \*\*[^*]+\*\*:\s+(.+)$", stripped)
     if colon_match and "**" not in colon_match.group(1):
         issues.append("コロン後が製品名（太字）ではない")
 
     product_tail = re.match(r"^- \*\*[^*]+\*\*:\s+\*\*[^*]+\*\*\s+(.+)$", stripped)
-    if product_tail and not product_tail.group(1).strip().startswith("—"):
-        issues.append("製品名の後に結果・説明が続く")
+    if product_tail:
+        remainder = product_tail.group(1).strip()
+        if not remainder.startswith("—") and not remainder.startswith("**"):
+            issues.append("製品名の後に結果・説明が続く")
 
     dash_tail = re.match(r"^- \*\*[^*]+\*\* — .+$", stripped)
     if dash_tail and not re.search(r"\*\*[^*]+\*\*\s*$", stripped):
@@ -78,10 +92,23 @@ def _line_issues(line: str) -> list[str]:
 
 
 def _iter_lure_sections(lines: list[str]) -> list[tuple[int, list[tuple[int, str]]]]:
+    """日付付き釣行 `##` 配下の使用ルアー節だけを返す。先頭説明とコード例は対象外。"""
     sections: list[tuple[int, list[tuple[int, str]]]] = []
     index = 0
+    in_fence = False
+    in_trip = False
     while index < len(lines):
-        if re.match(r"^###\s+使用ルアー", lines[index]):
+        line = lines[index]
+        if line.startswith("```"):
+            in_fence = not in_fence
+            index += 1
+            continue
+        if in_fence:
+            index += 1
+            continue
+        if _TRIP_HEADING.match(line):
+            in_trip = True
+        if in_trip and _LURE_HEADING.match(line):
             section_start = index + 1
             items: list[tuple[int, str]] = []
             index += 1

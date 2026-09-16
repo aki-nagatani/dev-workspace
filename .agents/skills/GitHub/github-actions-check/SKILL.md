@@ -103,8 +103,17 @@ try {
 
 - **必ず結果を確認する**:
   - `conclusion: "success"`の場合: 対象ジョブが成功したことを確認する。\
-    **FishTrack / MyPokedex の main push** では **lint / test のみ**（deploy は skipped が正常）。\
-    緊急デプロイと 03:00 定時では **deploy 成功**まで見る。
+    **FishTrack / MyPokedex の main push** では **lint / test / publish-artifact**
+    （EC2 反映の `apply-now` は skipped が正常）。
+    緊急デプロイでは **apply-now 成功**まで見る。03:00 定時は GitHub Actions ではなく
+    EventBridge Scheduler → SSM。
+    **定時デプロイの Slack は 03:00 には来ない**（失敗でも。毎日 07:30 JST の
+    EventBridge Scheduler → Lambda。GitHub Actions `schedule` は使わない）。
+    **未実行（結果 JSON なし）とスキップ（本番は最新）のときは 07:30 も送らない**。
+    07:30 Lambda のコードは `main` の `publish-artifact` で zip 更新する
+    （03:00 / 緊急の EC2 差し替えでは載らない）。
+    失敗／SSM未達／EC2停止は送る。
+    緊急デプロイの Slack は即時。
   - `conclusion: "failure"`または`conclusion: "cancelled"`の場合: **エラー内容を確認し、報告する**
 - 失敗している場合は、エラー内容を確認し、必要に応じて修正を行う
 
@@ -127,13 +136,19 @@ try {
 
 ### FishTrack
 
-- **確認対象**: lint、testジョブ（**push では deploy しない**。本番は毎日 03:00 JST。即時本番は `FishTrack_pull-request-emergency`）
+- **確認対象**: lint、test、publish-artifact（**push では apply-now しない**。
+  本番は毎日 03:00 JST の EventBridge → SSM。07:30 Slack は EventBridge → Lambda
+  （未実行・スキップは送らない。Lambda zip は `publish-artifact` で更新）。
+  即時本番は `FishTrack_pull-request-emergency`）
 - **通常の実行時間**: 3-8分
 - **確認URL**: <https://github.com/aki-nagatani/FishTrack/actions>
 
 ### MyPokedex
 
-- **確認対象**: lint、testジョブ（**push では deploy しない**。本番は毎日 03:00 JST。即時本番は `MyPokedex_pull-request-emergency`）
+- **確認対象**: lint、test、publish-artifact（**push では apply-now しない**。
+  本番は毎日 03:00 JST の EventBridge → SSM。07:30 Slack は EventBridge → Lambda
+  （未実行・スキップは送らない。Lambda zip は `publish-artifact` で更新）。
+  即時本番は `MyPokedex_pull-request-emergency`）
 - **通常の実行時間**: 3-8分
 - **確認URL**: <https://github.com/aki-nagatani/MyPokedex/actions>
 

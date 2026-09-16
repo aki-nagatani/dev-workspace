@@ -50,14 +50,14 @@ alwaysApply: true
   指摘の反映も **まず既存 SKILL を更新**し、該当 SKILL がなければ **新規 SKILL を作成**する。\
   **myrules に長い手順・チェックリストを追記・複製しない**（横断で短い原則だけを myrules に残す）。
 - **更新先の切り分け**: **該当ワークフロー用 SKILL**（\
-  FishTrack AI スペック照合系・`FishTrack_pull-request`・**`FishTrack_pull-request-emergency`**・**`FishTrack_commit`** は **FishTrack** `.agents/skills/`。\
+  FishTrack AI スペック照合系・`FishTrack_pull-request`・**`FishTrack_pull-request-emergency`**・**`FishTrack_commit`**・**`site-update-announce`** は **FishTrack** `.agents/skills/`。\
   **`MyPokedex_pull-request`**・**`MyPokedex_pull-request-emergency`**・**`MyPokedex_commit`** は **MyPokedex** `.agents/skills/`。\
   **`otayori-navi_pull-request`** は **otayori-navi** `.agents/skills/`。\
   **`commit-all`**・**`commit-message`**・**`github-actions-check`**・**`code-comment-guidelines`**・**`git-workflow`** は **`dev-workspace/.agents/skills/GitHub/`**。\
   **`error-handling-policy`**・**`document-creation-policy`**・**`temp-file-management`**・**`file-size-policy`**・**`frontend-html-template`**・**`datetime-jst`**・**`cursor-ide-browser-position`** は **`dev-workspace/.agents/skills/`**（ルート）。\
   **`obsidian-cursor-log`**・**`obsidian-cursor-monthly-report`**・**`obsidian-second-brain`**・\
   **`obsidian-inbox-summarize`**・**`obsidian-update-rules`**・**`markdown-editing`**・**`markdownlint-fix`** は **`dev-workspace/.agents/skills/Obsidian/`**。\
-  **`mokuhyo\*`**・**`work-folder-update`**・**`work-kadai-update`**・**`work-knowledge-deepen`**・**`quality-analysis`** は **`dev-workspace/.agents/skills/DTS/`**。\
+  **`mokuhyo\*`**・**`work-folder-update`**・**`work-todo-update`**・**`work-kadai-update`**・**`work-knowledge-deepen`**・**`quality-analysis`** は **`dev-workspace/.agents/skills/DTS/`**。\
   **`FaiNavi_deploy`** は **`personal-tools/.agents/skills/`**。\
   共通手順は **`ai-spec-check-report/SKILL.md`** 等）→\
   **製品一行**は各リポ **`AGENTS.md`** → **myrules** は **全タスク横断の短い原則のみ**（例: 後方互換方針、CursorLog 必須、無断コミット禁止）。迷ったら **SKILL 側に寄せる**。
@@ -72,7 +72,9 @@ alwaysApply: true
 
 - **手順の正本**: **`local-docker-python-restart`** SKILL（`.agents/skills/local-docker-python-restart/SKILL.md`）。サービス名・再ビルド境界・`dump` 前の restart 順序は同 SKILL に従う。
 
-## FaiNavi 実装完了と本番デプロイ（重要）
+## FaiNaviWEB 実装完了と本番デプロイ（重要）
+
+**呼称**: 金銭一連は **FaiNavi**。WEB画面は **FaiNaviWEB**（正本は仕様 `7-2`・`FaiNavi_deploy` SKILL）。
 
 **`personal-tools/src/fai_navi/`** のソース・テスト・マイグレーションを変更したセッションは、**ユーザーへの完了報告の前に** **`FaiNavi_deploy` SKILL**（`personal-tools/.agents/skills/FaiNavi_deploy/SKILL.md`）に従う。\
 **`npm test` →（必要時）`db:migrate:remote` → `npm run deploy` → 本番疎通**まで**エージェントが同一セッションで実施**する。\
@@ -87,21 +89,25 @@ alwaysApply: true
 **`temp/` および FishTrack `temp-spec-crawl/` 以外**へのファイル作成・更新・上書きを、シェルやスクリプトで行ってはならない。
 
 - 例: PowerShell の `Copy-Item` / `Move-Item` / `Set-Content` / リダイレクト（`>`）、`[System.IO.File]::WriteAllText`
-- 例: Python / Node 等の `open(..., "w")`・`write_text`・ループ一括置換、`sed` / 正規表現のみの機械更新
+- 例: Python / Node 等の `open(..., "w")`・`write_text`・`shutil.copy` / `shutil.copy2`・ループ一括置換、`sed` / 正規表現のみの機械更新
 - 例: **Task サブエージェント**が上記で正本（ソース・Obsidian 等）へ書くこと（親エージェントも同様）
-- 理由: Cursor の差分ビューで**追跡・レビューできなくなる**
+- **Obsidian ボールト（厳禁）**: `D:/OneDrive/アプリ/remotely-save/Obsidian/`（およびワークスペース上の同ボールト）へ\
+  シェル／スクリプトで **コピー・生成・上書きしない**（`temp/` 下書き → `Copy-Item` / `shutil.copy*` 含む）。\
+  **件数が多い・ファイルが大きい・サブエージェント失敗**を理由に例外にしない。
+- 理由: Cursor の差分ビュー（Review）で**追跡・レビューできなくなる**（シェルコピーしたファイルは差分に出ない）
 
 ### 正しい手段
 
 - **`StrReplace` / `Write` / `Delete` / `EditNotebook`**（Cursor 編集ツール）またはエディタ上の操作
 - 変更単位が追跡可能な形で行う（大きいファイルは節・ブロック単位に分割可）
+- Obsidian 正本は **1 ファイルずつ** `Write` / `StrReplace`（`temp/` 生成物は **Read** してからツールで書く）
 
 ### 例外（`temp/` および FishTrack `temp-spec-crawl/`）
 
 - 各リポジトリの **`temp/`** 配下への出力は、シェル・スクリプト可（カバレッジ、調査用生成物等）
 - **FishTrack `temp-spec-crawl/`**: spec-crawl CLI 作業専用。シェル書き込み可。**汎用 `temp/` 掃除では消さない**
-- **`temp/` / `temp-spec-crawl/` から正本へ**は **Read のみ** → 正本へ **`Write` / `StrReplace`**（`Copy-Item` 等で正本へコピー禁止）
-- 詳細: **`temp-file-management`** SKILL（spec-crawl は **`spec-crawl` SKILL**）
+- **`temp/` / `temp-spec-crawl/` から正本（ソース・Obsidian 等）へ**は **Read のみ** → 正本へ **`Write` / `StrReplace`**（`Copy-Item` / `shutil.copy*` 禁止）
+- 詳細: **`temp-file-management`** SKILL（spec-crawl は **`spec-crawl` SKILL**。Obsidian は **`obsidian-second-brain`**）
 
 ### 旧文言との関係
 

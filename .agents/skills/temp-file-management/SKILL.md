@@ -24,7 +24,8 @@ description: >-
 1. **一時ファイルは必ず `temp/` 配下に作成する**（プロジェクト直下禁止）。**例外**: pytest が出す **`coverage.xml`**（および同位置の **`.coverage`**）はリポ直下に置く（下記「coverage.xml」）。**例外（FishTrack spec-crawl）**: CLI 生成物は **`temp-spec-crawl/`**（下記「FishTrack `temp-spec-crawl/`」）
 2. **次回以降も使う可能性があるものは `temp/` に置かない**（下記「再利用するものの置き場」）。**`coverage.xml` は `temp/` へ移さない**（`diff_cover_gate.sh` の既定パスは直下）
 3. **作業完了時に `temp/` を空にする**（削除。移動先が必要なら先に `scripts/` 等へ昇格）。**`coverage.xml` は消さない**。**`temp-spec-crawl/` は汎用掃除の対象外**
-4. **`temp/` および FishTrack `temp-spec-crawl/` への書き込み**はシェル・スクリプト可。**そこから正本（ソース・Obsidian 等）へ**は **Read のみ** → 正本は **`Write` / `StrReplace`**（**myrules**「ファイル修正と差分確認」）
+4. **`temp/` および FishTrack `temp-spec-crawl/` への書き込み**はシェル・スクリプト可。**そこから正本（ソース・Obsidian 等）へ**は **Read のみ** → 正本は **`Write` / `StrReplace`**（**myrules**「ファイル修正と差分確認」）。\
+   **Obsidian への `Copy-Item` / `shutil.copy*` は禁止**（件数・サイズ・サブエージェント失敗を理由にしない。Review に差分が出ない）。
 
 ## 発火条件
 

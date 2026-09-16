@@ -1,0 +1,421 @@
+.sample-page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 16px 16px 48px;
+  background: #fff;
+}
+
+.sample-note {
+  font-size: 0.8rem;
+  color: #475569;
+  margin: 0 0 16px;
+  padding: 8px 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.sample-block-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  margin: 28px 0 8px;
+  letter-spacing: 0.02em;
+}
+
+.sample-frame {
+  width: 390px;
+  overflow: hidden;
+  background: #ebeff5;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.sample-section-title {
+  margin: 32px 0 8px;
+  font-size: 1.05rem;
+  color: #1f2937;
+}
+
+.sample-frame--pc {
+  width: 1080px;
+  max-width: 100%;
+}
+
+.sample-frame--pc .ft-nav-toggle {
+  display: none !important;
+}
+
+.sample-frame--pc .ft-site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 0 16px 8px;
+  font-size: 0.9375rem;
+}
+
+.sample-frame--pc .ft-site-nav a {
+  padding: 4px 8px;
+  text-decoration: none;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.sample-frame--pc .ft-site-nav a[aria-current="page"] {
+  color: var(--color-accent-strong);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 var(--color-accent);
+}
+
+.sample-frame--pc main {
+  padding: 24px 28px 32px;
+}
+
+.sample-frame--pc .aff {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.sample-frame--pc .aff__query {
+  flex: 0 1 auto;
+}
+
+.sample-frame--pc .aff-native-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  width: 100%;
+  min-height: 104px;
+}
+
+.sample-frame--pc .aff--center {
+  justify-content: center;
+  width: 100%;
+}
+
+.sample-frame--pc .aff-banner--leader {
+  width: 728px;
+  max-width: 100%;
+  min-height: 90px;
+}
+
+.sample-frame .ft-site-header__bar {
+  position: relative !important;
+}
+
+.sample-frame main {
+  padding: 0.75rem;
+}
+
+.ft-ad-slot {
+  margin: 0.85rem 0 0;
+}
+
+.ft-ad-slot__label {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.ft-ad-slot__box {
+  border: 1px dashed #94a3b8;
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.ft-ad-slot__box--network {
+  height: 90px;
+  max-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.8rem;
+}
+
+.ft-ad-slot__box--affiliate {
+  min-height: 140px;
+  max-height: 200px;
+  overflow: hidden;
+  padding: 0.5rem;
+}
+
+.ft-ad-slot__box--clip {
+  position: relative;
+}
+
+.aff {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 104px;
+}
+
+.aff__query {
+  margin: 0;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.aff__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.aff-amazon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 0.85rem;
+  border-radius: 8px;
+  background: #ffd814;
+  color: #111;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 1px solid #f2c200;
+}
+
+.aff-rakuten-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 0.85rem;
+  border-radius: 4px;
+  background: #bf0000;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.aff-native {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+.aff-native__img {
+  width: 72px;
+  height: 72px;
+  border-radius: 4px;
+  background:
+    linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+}
+
+.aff-native__title {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  color: #1e293b;
+}
+
+.aff-native__shop {
+  margin: 0.15rem 0 0;
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
+.aff-native__price {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #b12704;
+}
+
+.aff-native--rakuten .aff-native__price {
+  color: #bf0000;
+}
+
+.aff-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 56px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.aff-banner--a8 {
+  background: linear-gradient(90deg, #0f172a 0%, #1e3a5f 100%);
+}
+
+.aff-banner--cast {
+  background: linear-gradient(90deg, #111827 0%, #365314 100%);
+}
+
+.aff-banner__brand {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+}
+
+.aff-banner__copy {
+  margin: 0.1rem 0 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.aff-banner__cta {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  background: #facc15;
+  color: #111;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.aff-a8-text {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.aff-a8-text a {
+  color: #1d4ed8;
+}
+
+.aff-rect {
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  background: #1e293b;
+  color: #fff;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.aff-rect span {
+  font-size: 0.72rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.aff-compare {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.aff-compare--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.aff-compare__shop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-height: 88px;
+  padding: 0.4rem 0.3rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.aff-compare__name {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #475569;
+}
+
+.aff-compare__price {
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0f172a;
+}
+
+.aff-compare__price--na {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.aff-compare__cta {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+
+.aff-compare__shop--amazon {
+  background: #fff8e1;
+  border-color: #f2c200;
+}
+
+.aff-compare__shop--amazon .aff-compare__price {
+  color: #b12704;
+}
+
+.aff-compare__shop--rakuten {
+  background: #fff5f5;
+  border-color: #fecaca;
+}
+
+.aff-compare__shop--rakuten .aff-compare__price {
+  color: #bf0000;
+}
+
+.aff-compare__shop--yahoo {
+  background: #fff1f2;
+  border-color: #fda4af;
+}
+
+.aff-compare__shop--yahoo .aff-compare__price {
+  color: #e60012;
+}
+
+.aff-compare__shop--extra {
+  background: #f8fafc;
+}
+
+.aff-compare__meta {
+  margin: 0.35rem 0 0;
+  font-size: 0.68rem;
+  color: #64748b;
+}
+
+.sample-frame--pc .aff-compare__shop {
+  min-height: 96px;
+}
+
+.sample-frame--pc .aff-compare__name {
+  font-size: 0.75rem;
+}
+
+.sample-frame--pc .aff-compare__price {
+  font-size: 1.1rem;
+}
+
+@media (max-width: 420px) {
+  .aff-compare--4 {
+    grid-template-columns: repeat(4, minmax(5.5rem, 1fr));
+    overflow-x: auto;
+  }
+}

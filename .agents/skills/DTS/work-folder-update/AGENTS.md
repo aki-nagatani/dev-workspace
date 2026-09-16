@@ -6,7 +6,7 @@ Always respond in Japanese when applying this skill.
 
 - **`Obsidian/Work/`** 配下の **`.md` / `.csv`** を **作成・更新・削除**する
 - ユーザーが **`@Obsidian/Work`** または Work 内パスを指定した
-- **`work-kadai-update`**・**`mokuhyo-*`**・**`work-knowledge-deepen`**・**`quality-analysis`** で Work を変更する
+- **`work-kadai-update`**・**`work-todo-update`**・**`mokuhyo-*`**・**`work-knowledge-deepen`**・**`quality-analysis`** で Work を変更する
 
 ## 必須の最初アクション
 
@@ -26,11 +26,17 @@ Work は**第2の脳**—移す価値が少しでもあれば正本を更新す�
 
 - **本人（PL）**: `Work/メンバー情報/072858_長谷晃英.md`（**プロパー**は `{6桁社員番号}_{フルネーム}.md`）
 - **配下**: `Work/メンバー情報/`。**プロパー**は `{6桁社員番号}_{フルネーム}.md`（番号未確定は `{フルネーム}.md`）。**客員**は `{会社名}.md`（索引なし。人数・構成は `所属・役割・プロジェクト概要`）
-- **長谷の次アクション**: `Work/Todo.md`（正本更新でタスクが生じたら**同一セッション**で随時更新）
+- **長谷の次アクション**: 単発は `Work/Todo.md`、繰り返し（週次・月次・3ヶ月次・年次等）は `Work/Todo-定例作業.md`
+  （手順正本は **`work-todo-update`**。混ぜない。未完了上部・完了下部。能動着手が必要な実施だけ。
+  出席・参加は載せない。オブザーバーでメンバー実施の作業も載せない。
+  繰り返しは親1つ。定義は親に1回、対象月はチェック行だけ。未完了は向こう3か月分。
+  前タスク未完了・キック未到来・着手可能日前は `🚫 着手不可`。
+  着手推奨日前は next-action の優先度を落とす（除外しない）。`/next-action-work` は両方を見る）
 
 ## 併用
 
 - 課題ブロック: **`work-kadai-update`**
+- Todo: **`work-todo-update`**
 - 管理シート・CSV: **`mokuhyo-kanri-sheet-csv`** 等
 - IT/ST 品質分析: **`quality-analysis`**
 - 暗黙知深掘り: **`work-knowledge-deepen`**

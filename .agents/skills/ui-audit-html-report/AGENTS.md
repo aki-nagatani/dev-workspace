@@ -18,7 +18,9 @@ Always respond in Japanese when applying this skill.
 
 - **正本**: **`dev-workspace/ui-audit/index.html`**（FishTrack / MyPokedex **共有**。製品リポ直下は正本にしない）
 - **両製品同時診断**（片方だけで完了報告しない。明示限定時のみ例外）
-- **対象は各製品の全画面**（サマリーの URL 列挙はスクショ例。診断範囲の上限ではない）
+- **対象は各製品の全画面**（**未ログイン LP を含む**。ログイン後に限定しない。サマリーの URL 列挙はスクショ例。診断範囲の上限ではない）
+- **着手順（標準）**: 直近の UI 変更を重点で先に見る。他画面は省略しない。\
+  直近に問題がなければ同じ作業単位で全体へ広げる（**未ログイン LP を含む**。詳細は `SKILL.md`「直近 UI を重点」）
 - 資産: **`ui-audit/fishtrack/`**・**`ui-audit/mypokedex/`**（スクショ・`samples/`）
 - 配信: `dev-workspace/docker-compose.yml` の `ui-audit` サービス（nginx、`http://127.0.0.1:8990/`）。8989 番の個別サーバーは使わない
 - 問題 ID: 製品接頭辞（`mp-*` / `ft-*`）＋製品バッジ
@@ -75,8 +77,10 @@ Always respond in Japanese when applying this skill.
 - **PC 文字切れ指摘前**: `clearDeviceMetricsOverride`＋要素の overflow 計測（見た目スクショだけ禁止）
 - **案「保留」**: 実装・起票しない。`hold`／`hold-tag` で明示し **OPEN 維持**（SKILL「保留」節）
 - **案「検討中」**: 実装・起票しない。`hold-tag` は付けず **OPEN 維持**（SKILL「検討中」節）
+- **案「不採用」**: 実装・起票しない。article を **RESOLVED** へ移動（OPEN 維持しない。SKILL「不採用」節）
 - **関連事象で再診断後回し**: レポートに明記（例: MP-H2 は MP-O2 解決後）
 - **未解決／解決済みを分離**: `#open-issues` / `#resolved-issues`
+- **ギャラリーは置かない**（`#gallery` 禁止。診断は各 article 内スクショ。目次にも載せない）
 - **サマリー備考**: レポート運用ルールのみ。課題の OPEN／RESOLVED 履歴は**各 article**（サマリーへ日記を積まない）
 - **解決済みはアコーディオン**（各 article を `<details>`、**既定クローズ**。`data-resolved-on` 必須）
 - **解決から1ヶ月経過**した RESOLVED は **HTML から削除**（専用 PNG／samples も。隠すだけ禁止）

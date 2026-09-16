@@ -55,6 +55,7 @@ description: >-
 - 対象: `git commit` / `git push` / `gh pr create` / `gh pr merge` / `gh workflow run` / `gh run watch`
 
 1. **今回のユーザー指示**はコミット系の**明示依頼**か？
+   （`/spec-crawl` で `schedule-meta.json` を更新したときは **YES**。下記例外）
 2. その依頼は**今回の修正内容**向けか？（前ターンの `*_pull-request` を暗黙継続していないか）
 3. 迷えば**ユーザーに確認**したか？
 
@@ -63,6 +64,15 @@ description: >-
 - 「コードを直して」「バグを修正して」等は**修正のみ**（コミット依頼を含まない）
 - 各ユーザー指示は**独立**。前ターンのコミット系 SKILL は**単発**（成功後は失効）
 - 修正完了後は**「コミット/PR に進めてよろしいですか？」と確認のみ**で一旦停止
+- **例外（FishTrack `schedule-meta.json`）**: `/spec-crawl`（メーカー個別を含む）で
+  `scripts/spec_crawl/schedule-meta.json` を更新したときは、
+  **同一セッションで `develop` へ commit+push**する（確認待ちで止めない。
+  コミット対象は **`scripts/spec_crawl/schedule-meta.json` のみ**）。
+  **`main` マージは develop 全体**なので、`origin/main..develop` が今回のコミットだけのときだけ
+  `FishTrack_pull-request` §2 へ進む。他コミットがあるときは PR せず報告して確認する。
+  正本は **`spec-crawl` SKILL**「`schedule-meta.json` 更新時の Git」。
+  即時本番はこの例外に含めない（ユーザーが「今すぐ本番」と明示したときだけ
+  `FishTrack_pull-request-emergency`）
 
 ### 過去違反の記録（再発防止）
 

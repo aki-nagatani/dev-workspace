@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>タックル詳細のアフィリエイト見た目比較</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_dashboard.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/site_header_drawer.css">
+  <link rel="stylesheet" href="./ft-affiliate-preview.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; }
+  </style>
+</head>
+<body>
+  <div class="sample-page">
+    <p class="sample-note">
+      採用（2026-09-07）: タックル詳細のスペック下に Amazon／楽天／Yahoo!ショッピングを横並び比較する。
+      価格は公式 API をサーバで取得しキャッシュする（秒単位のライブはしない。画面に取得時刻）。
+      取れない店舗は価格なしで「探す」。列は足してよい。製品 CSS 流用。公式タグ・本番リンクは含まない。
+      価格はダミー。枠は約 140px（上限 200px）。クリック先は無効。
+    </p>
+
+    <h2 class="sample-section-title">採用 — PC（幅 1080px）</h2>
+
+    <p class="sample-block-label" id="label-pc-compare">PC — Amazon／楽天／Yahoo!ショッピングを並べ、価格を出す</p>
+    <div class="sample-frame sample-frame--pc" id="sample-pc-compare">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+        <nav class="ft-site-nav" aria-label="FishTrack ナビゲーション">
+          <a href="#">ホーム</a>
+          <a href="#">釣果一覧</a>
+          <a href="#" aria-current="page">タックルを探す</a>
+          <a href="#">水位データ</a>
+          <a href="#">アカウント</a>
+        </nav>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+              <div><dt>全長</dt><dd>6'10"</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff-compare" role="list">
+                <a class="aff-compare__shop aff-compare__shop--amazon" href="#" role="listitem">
+                  <span class="aff-compare__name">Amazon</span>
+                  <span class="aff-compare__price">¥18,480</span>
+                  <span class="aff-compare__cta">見る</span>
+                </a>
+                <a class="aff-compare__shop aff-compare__shop--rakuten" href="#" role="listitem">
+                  <span class="aff-compare__name">楽天市場</span>
+                  <span class="aff-compare__price">¥19,250</span>
+                  <span class="aff-compare__cta">見る</span>
+                </a>
+                <a class="aff-compare__shop aff-compare__shop--yahoo" href="#" role="listitem">
+                  <span class="aff-compare__name">Yahoo!ショッピング</span>
+                  <span class="aff-compare__price">¥18,900</span>
+                  <span class="aff-compare__cta">見る</span>
+                </a>
+              </div>
+              <p class="aff-compare__meta">JAN 4550133088964 ・ 取得 10:15（キャッシュ）</p>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <p class="sample-block-label" id="label-pc-compare4">PC — 店舗を足す例（価格APIが無い列は「探す」のみ）</p>
+    <div class="sample-frame sample-frame--pc" id="sample-pc-compare4">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+        <nav class="ft-site-nav" aria-label="FishTrack ナビゲーション">
+          <a href="#">ホーム</a>
+          <a href="#">釣果一覧</a>
+          <a href="#" aria-current="page">タックルを探す</a>
+          <a href="#">水位データ</a>
+          <a href="#">アカウント</a>
+        </nav>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+              <div><dt>全長</dt><dd>6'10"</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff-compare aff-compare--4" role="list">
+                <a class="aff-compare__shop aff-compare__shop--amazon" href="#" role="listitem">
+                  <span class="aff-compare__name">Amazon</span>
+                  <span class="aff-compare__price">¥18,480</span>
+                  <span class="aff-compare__cta">見る</span>
+                </a>
+                <a class="aff-compare__shop aff-compare__shop--rakuten" href="#" role="listitem">
+                  <span class="aff-compare__name">楽天市場</span>
+                  <span class="aff-compare__price">¥19,250</span>
+                  <span class="aff-compare__cta">見る</span>
+                </a>
+                <a class="aff-compare__shop aff-compare__shop--yahoo" href="#" role="listitem">
+                  <span class="aff-compare__name">Yahoo!ショッピング</span>
+                  <span class="aff-compare__price">¥18,900</span>
+                  <span class="aff-compare__cta">見る</span>
+                </a>
+                <a class="aff-compare__shop aff-compare__shop--extra" href="#" role="listitem">
+                  <span class="aff-compare__name">釣具のポイント</span>
+                  <span class="aff-compare__price aff-compare__price--na">価格未取得</span>
+                  <span class="aff-compare__cta">探す</span>
+                </a>
+              </div>
+              <p class="aff-compare__meta">JAN 4550133088964 ・ 取得 10:15（キャッシュ）</p>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <h2 class="sample-section-title">採用 — スマホ（幅 390px）</h2>
+
+    <p class="sample-block-label" id="label-sp-compare">スマホ — 3店舗を同じ行にコンパクトに並べる</p>
+    <div class="sample-frame" id="sample-sp-compare">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff-compare" role="list">
+                <a class="aff-compare__shop aff-compare__shop--amazon" href="#" role="listitem">
+                  <span class="aff-compare__name">Amazon</span>
+                  <span class="aff-compare__price">¥18,480</span>
+                  <span class="aff-compare__cta">見る</span>
+                </a>
+                <a class="aff-compare__shop aff-compare__shop--rakuten" href="#" role="listitem">
+                  <span class="aff-compare__name">楽天</span>
+                  <span class="aff-compare__price">¥19,250</span>
+                  <span class="aff-compare__cta">見る</span>
+                </a>
+                <a class="aff-compare__shop aff-compare__shop--yahoo" href="#" role="listitem">
+                  <span class="aff-compare__name">Yahoo</span>
+                  <span class="aff-compare__price aff-compare__price--na">未取得</span>
+                  <span class="aff-compare__cta">探す</span>
+                </a>
+              </div>
+              <p class="aff-compare__meta">JAN照合 ・ 取得 10:15</p>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <h2 class="sample-section-title">参考 — 検索ボタン・バナー（不採用）</h2>
+
+    <p class="sample-block-label" id="label-pc-combo">PC — Amazon と楽天の検索ボタンを左寄せで並べる</p>
+    <div class="sample-frame sample-frame--pc" id="sample-pc-combo">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+        <nav class="ft-site-nav" aria-label="FishTrack ナビゲーション">
+          <a href="#">ホーム</a>
+          <a href="#">釣果一覧</a>
+          <a href="#" aria-current="page">タックルを探す</a>
+          <a href="#">水位データ</a>
+          <a href="#">アカウント</a>
+        </nav>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+              <div><dt>全長</dt><dd>6'10"</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff">
+                <p class="aff__query">DAIWA ブレイゾン C610M</p>
+                <div class="aff__row">
+                  <a class="aff-amazon-btn" href="#">Amazonで探す</a>
+                  <a class="aff-rakuten-btn" href="#">楽天市場で探す</a>
+                </div>
+              </div>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <p class="sample-block-label" id="label-pc-cards">PC — 個別商品カードを2列（Amazon／楽天。ASIN・商品URLが取れるとき）</p>
+    <div class="sample-frame sample-frame--pc" id="sample-pc-cards">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+        <nav class="ft-site-nav" aria-label="FishTrack ナビゲーション">
+          <a href="#">ホーム</a>
+          <a href="#">釣果一覧</a>
+          <a href="#" aria-current="page">タックルを探す</a>
+          <a href="#">水位データ</a>
+          <a href="#">アカウント</a>
+        </nav>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+              <div><dt>全長</dt><dd>6'10"</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff-native-row">
+                <a class="aff-native" href="#">
+                  <div class="aff-native__img" aria-hidden="true"></div>
+                  <div>
+                    <p class="aff-native__title">ダイワ ブレイゾン C610M ベイトロッド</p>
+                    <p class="aff-native__shop">Amazon.co.jp</p>
+                    <p class="aff-native__price">¥18,480</p>
+                  </div>
+                </a>
+                <a class="aff-native aff-native--rakuten" href="#">
+                  <div class="aff-native__img" aria-hidden="true"></div>
+                  <div>
+                    <p class="aff-native__title">ダイワ ブレイゾン C610M</p>
+                    <p class="aff-native__shop">楽天市場</p>
+                    <p class="aff-native__price">¥19,250</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <p class="sample-block-label" id="label-pc-leader">PC — A8 などの 728×90 横長バナー（高さは枠内。型番連動は弱い）</p>
+    <div class="sample-frame sample-frame--pc" id="sample-pc-leader">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+        <nav class="ft-site-nav" aria-label="FishTrack ナビゲーション">
+          <a href="#">ホーム</a>
+          <a href="#">釣果一覧</a>
+          <a href="#" aria-current="page">タックルを探す</a>
+          <a href="#">水位データ</a>
+          <a href="#">アカウント</a>
+        </nav>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+              <div><dt>全長</dt><dd>6'10"</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff aff--center">
+                <a class="aff-banner aff-banner--a8 aff-banner--leader" href="#">
+                  <div>
+                    <div class="aff-banner__brand">A8.net 提携店</div>
+                    <p class="aff-banner__copy">釣具のポイントで探す</p>
+                  </div>
+                  <span class="aff-banner__cta">公式へ</span>
+                </a>
+              </div>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <h2 class="sample-section-title">参考 — スマホの旧案（不採用）</h2>
+
+    <p class="sample-block-label" id="label-amazon-search">Amazon アソシエイト — 型番の検索結果リンク（枠に収まる）</p>
+    <div class="sample-frame" id="sample-amazon-search">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff">
+                <p class="aff__query">DAIWA ブレイゾン C610M</p>
+                <a class="aff-amazon-btn" href="#">Amazonで探す</a>
+              </div>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <p class="sample-block-label" id="label-amazon-native">Amazon アソシエイト — 個別商品カード（ASIN が取れるとき）</p>
+    <div class="sample-frame" id="sample-amazon-native">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff">
+                <a class="aff-native" href="#">
+                  <div class="aff-native__img" aria-hidden="true"></div>
+                  <div>
+                    <p class="aff-native__title">ダイワ ブレイゾン C610M ベイトロッド</p>
+                    <p class="aff-native__shop">Amazon.co.jp</p>
+                    <p class="aff-native__price">¥18,480</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <p class="sample-block-label" id="label-rakuten">楽天アフィリエイト — 検索結果リンク</p>
+    <div class="sample-frame" id="sample-rakuten">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff">
+                <p class="aff__query">DAIWA ブレイゾン C610M</p>
+                <a class="aff-rakuten-btn" href="#">楽天市場で探す</a>
+              </div>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <p class="sample-block-label" id="label-a8-banner">A8.net — 広告主の横長バナー（店舗プログラムごと）</p>
+    <div class="sample-frame" id="sample-a8-banner">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff">
+                <a class="aff-banner aff-banner--a8" href="#">
+                  <div>
+                    <div class="aff-banner__brand">A8.net 提携店</div>
+                    <p class="aff-banner__copy">釣具のポイントで探す</p>
+                  </div>
+                  <span class="aff-banner__cta">公式へ</span>
+                </a>
+              </div>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <p class="sample-block-label" id="label-a8-text">A8.net — テキストリンク（型番とは連動しにくい）</p>
+    <div class="sample-frame" id="sample-a8-text">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff">
+                <p class="aff-a8-text">
+                  <a href="#">釣具のポイントで見る</a><br>
+                  <a href="#">LureShop で見る</a>
+                </p>
+              </div>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <p class="sample-block-label" id="label-cast">専門店（ValueCommerce 等）— 店舗バナー。型番ごとの自動リンクは難しい</p>
+    <div class="sample-frame" id="sample-cast">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate">
+              <div class="aff">
+                <a class="aff-banner aff-banner--cast" href="#">
+                  <div>
+                    <div class="aff-banner__brand">釣具専門店</div>
+                    <p class="aff-banner__copy">キャスティングで見る</p>
+                  </div>
+                  <span class="aff-banner__cta">店舗へ</span>
+                </a>
+              </div>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <p class="sample-block-label" id="label-overflow">向かない例 — A8 の 300×250 バナー。上限 200px で下端が切れる</p>
+    <div class="sample-frame" id="sample-overflow">
+      <header class="ft-site-header">
+        <div class="ft-site-header__bar">
+          <button type="button" class="ft-nav-toggle" aria-label="メニューを開く">
+            <span class="ft-nav-toggle__icon" aria-hidden="true">☰</span>
+          </button>
+          <h1 class="site-brand">
+            <a class="site-brand__link" href="#" aria-label="FishTrack ホーム">
+              <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            </a>
+          </h1>
+        </div>
+      </header>
+      <main>
+        <section class="card master-model-detail">
+          <div class="card-header">
+            <h2>ロッド型番詳細</h2>
+            <div class="header-actions">
+              <a class="btn-link" href="#">一覧に戻る</a>
+              <a class="btn" href="#">保有に追加</a>
+            </div>
+          </div>
+          <section class="card card--nested">
+            <h3>ブレイゾン C610M</h3>
+            <dl class="details-list">
+              <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+              <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+              <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+            </dl>
+          </section>
+          <aside class="ft-ad-slot ft-ad-slot--affiliate" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--affiliate ft-ad-slot__box--clip">
+              <div class="aff-rect">
+                300×250 バナー
+                <span>上限 200px のため下部が切れる</span>
+              </div>
+            </div>
+          </aside>
+          <aside class="ft-ad-slot ft-ad-slot--network" aria-label="広告">
+            <p class="ft-ad-slot__label">広告</p>
+            <div class="ft-ad-slot__box ft-ad-slot__box--network">ネットワーク広告（高さ 90px）</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

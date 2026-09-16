@@ -10,12 +10,12 @@ RDS へは **PC から直接接続しない**。接続情報は本番 EC2 の `.
 
 | 用途 | 正 | 使わない |
 | --- | --- | --- |
-| **繰り返し自動化**（spec-crawl 全件取得・現行フラグ同期、ai-spec-import 本番 commit） | **用途固定の HTTP API**（トークン。汎用 SQL API は作らない） | 自動化の本命を SSM にしない |
-| **API が未実装の間** | **SSH** → `docker compose exec app` → ORM（現行） | ローカル Docker DB を本番のつもりで使わない |
+| **繰り返し自動化**（spec-crawl タックル全件取得） | **用途固定の読取 HTTP API**（トークン。`07_api_routing.md` **7-10**） | 自動化の本命を SSM にしない |
+| **現行フラグ同期・preview-json commit** | **SSH** → `docker compose exec app` → ORM | ローカル Docker DB を本番のつもりで使わない |
 | **単発調査** | **SSH**（短いコマンドは SSM `send-command` でも可） | 都度エンドポイントを増やさない |
-| **大きな標準出力**（タックル全件 JSON 等） | SSH または将来の読取 API | SSM `send-command`（出力が約 24KB で切れる） |
+| **大きな標準出力**（タックル全件 JSON 等） | 読取 API | SSM `send-command`（出力が約 24KB で切れる） |
 
-詳細・未実装範囲は FishTrack 仕様 `11_future.md` **11-4-H**。実装後は `07_api_routing.md` が契約の正。
+詳細は FishTrack 仕様 `11_future.md` **11-4-H**（書込 HTTP は見送り）。読取契約は `07_api_routing.md` **7-10**。
 
 ## 重要: 正しいEC2インスタンスの確認
 
@@ -138,7 +138,7 @@ aws ssm send-command `
 aws ssm get-command-invocation --command-id <CommandId> --instance-id <InstanceId> --output json
 ```
 
-### 方法2: SSH接続（FishTrack 自動化の現行経路）
+### 方法2: SSH接続（書込・フォールバック・単発調査）
 
 **注意**: SSH接続を使用する場合は、必ず正しいIPアドレスを確認してください。
 

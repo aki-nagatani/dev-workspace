@@ -11,3 +11,6 @@ Always respond in Japanese when applying this skill.
 ## 製品別
 
 - FishTrack / MyPokedex / otayori-navi の**具体手順**は各リポの `*_commit` / `*_pull-request` / `*_pull-request-emergency` SKILL を Read
+- FishTrack `/spec-crawl` で `schedule-meta.json` を更新したときは同一セッションで
+  **そのファイルのみ** `develop` push。
+  `main` マージは JSON コミットだけが差のとき（`SKILL.md` 自問チェック例外）

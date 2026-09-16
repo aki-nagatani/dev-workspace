@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390, initial-scale=1">
+  <title>FT-H17 案A — ルアーマスタ詳細の dl を行ラップする</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 390px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .details-list--unwrapped {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem 0;
+    }
+    .details-list--unwrapped dt {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+    .details-list--unwrapped dd { margin: 0; color: #1f2937; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A: ワーム／プラグマスタ閲覧の dt/dd を、マイタックルやロッドマスタと同じく div で1行ずつ包む。
+      採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（SP でラベルの下に値が縦積み）</p>
+    <section class="card">
+      <div class="card-header">
+        <h2>DAIWA - STEEZ クアッドフォーゼ</h2>
+      </div>
+      <dl class="details-list--unwrapped">
+        <dt>メーカー</dt><dd>DAIWA</dd>
+        <dt>製品名</dt><dd>STEEZ クアッドフォーゼ</dd>
+        <dt>全長</dt><dd>51 mm</dd>
+        <dt>定価（税抜）</dt><dd>¥1,400</dd>
+      </dl>
+    </section>
+
+    <p class="sample-block-label">変更後（下。ラベルと値が同じ行。マイタックルと同じ）</p>
+    <section class="card">
+      <div class="card-header">
+        <h2>DAIWA - STEEZ クアッドフォーゼ</h2>
+      </div>
+      <dl class="details-list">
+        <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+        <div><dt>製品名</dt><dd>STEEZ クアッドフォーゼ</dd></div>
+        <div><dt>全長</dt><dd>51 mm</dd></div>
+        <div><dt>定価（税抜）</dt><dd>¥1,400</dd></div>
+      </dl>
+    </section>
+  </div>
+</body>
+</html>

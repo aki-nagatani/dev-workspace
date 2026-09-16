@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1120, initial-scale=1">
+  <title>FT-H24 案A — ルアー探す表をカード幅まで伸ばす</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/lure_masters.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      width: max-content;
+    }
+    .sample-frame {
+      width: 1120px;
+      padding: 16px;
+      background: #e8edf4;
+      box-sizing: border-box;
+    }
+    .sample-note {
+      font-size: 0.8rem;
+      color: #475569;
+      margin: 0 0 10px;
+      padding: 8px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #64748b;
+      margin: 14px 0 6px;
+    }
+    .sample-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    }
+    .sample-card .master-list-table-wrap { display: block; }
+    .sample-card .master-model-cards { display: none; }
+    .sample-card .table-scroll {
+      min-width: 0;
+      background: #fff;
+      outline: 1px dashed #cbd5e1;
+    }
+    .sample-after .ft-table--lure-master.ft-table--rod-master-sticky {
+      min-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A（採用・製品実装済み）:
+      <code>lure_masters.css</code> の
+      <code>min-width: max-content</code> をロッド一覧と同じ
+      <code>min-width: 100%</code> にする。
+      <code>width: max-content</code> は維持し、列が多いときは横スクロールする。
+      既定オフ列（素材・入数・推奨フック・定価）は隠したまま。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（保有の右に白い余り。表がカード幅まで届かない）</p>
+    <div class="sample-card sample-before">
+      <section class="card lure-masters">
+        <div class="card-header">
+          <h2>ワームを探す</h2>
+        </div>
+        <div class="master-list-table-wrap">
+          <div class="table-scroll table-scroll--viewport table-scroll--sticky-head">
+            <table
+              class="ft-table ft-table--striped ft-table--hover ft-table--rod-master-sticky ft-table--lure-master lure-masters-table"
+              data-ft-col-visibility="lure-worm"
+            >
+              <colgroup>
+                <col class="ft-table__col--rod-mfr" data-col="manufacturer">
+                <col class="ft-table__col--rod-model" data-col="product_name">
+                <col class="ft-table__col--lure-length ft-table__col--lure-grow" data-col="length">
+                <col class="ft-table__col--lure-weight ft-table__col--lure-grow" data-col="weight">
+                <col class="ft-table__col--lure-elastomer" data-col="elastomer">
+                <col class="ft-table__col--lure-pieces ft-table__col--lure-grow" data-col="pieces_per_bag">
+                <col class="ft-table__col--lure-hooks ft-table__col--lure-grow" data-col="recommended_hooks">
+                <col class="ft-table__col--lure-list-price ft-table__col--lure-grow" data-col="list_price">
+                <col class="ft-table__col--catalog-current" data-col="catalog_current">
+                <col class="ft-table__col--rod-holding" data-col="holding">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col" class="ft-table__sticky-col ft-table__sticky-col--mfr" data-col="manufacturer">メーカー</th>
+                  <th scope="col" class="ft-table__sticky-col ft-table__sticky-col--model" data-col="product_name">製品名</th>
+                  <th scope="col" class="ft-table__th--lure-length ft-table__th--lure-grow" data-col="length">全長</th>
+                  <th scope="col" class="ft-table__th--lure-weight ft-table__th--lure-grow" data-col="weight">重量</th>
+                  <th scope="col" class="ft-table__th--lure-elastomer" data-col="elastomer">素材</th>
+                  <th scope="col" class="ft-table__th--lure-pieces ft-table__th--lure-grow" data-col="pieces_per_bag">入数</th>
+                  <th scope="col" class="ft-table__th--lure-hooks ft-table__th--lure-grow" data-col="recommended_hooks">推奨フック</th>
+                  <th scope="col" class="ft-table__th--lure-list-price ft-table__th--lure-grow" data-col="list_price">定価（税抜）</th>
+                  <th scope="col" class="ft-table__th--catalog-current" data-col="catalog_current">現行</th>
+                  <th scope="col" class="rod-sticky-col--holding" data-col="holding">保有</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="is-odd">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr" data-col="manufacturer">BUTZ</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model" data-col="product_name"><span class="model-name-text">Vander155</span></td>
+                  <td class="ft-table__cell--lure-length ft-table__cell--lure-grow" data-col="length">6.1 inch (155 mm)</td>
+                  <td class="ft-table__cell--lure-weight ft-table__cell--lure-grow" data-col="weight">22.0 g</td>
+                  <td class="ft-table__cell--lure-elastomer" data-col="elastomer"></td>
+                  <td class="ft-table__cell--lure-pieces ft-table__cell--lure-grow" data-col="pieces_per_bag"></td>
+                  <td class="ft-table__cell--lure-hooks ft-table__cell--lure-grow" data-col="recommended_hooks"></td>
+                  <td class="ft-table__cell--lure-list-price ft-table__cell--lure-grow" data-col="list_price"></td>
+                  <td class="ft-table__cell--catalog-current" data-col="catalog_current">未判定</td>
+                  <td class="holding-cell" data-col="holding"><span class="holding-status holding-status--owned">保有中</span></td>
+                </tr>
+                <tr class="is-even">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr" data-col="manufacturer">DAIWA</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model" data-col="product_name"><span class="model-name-text">STEEZ クアッドフォーゼ</span></td>
+                  <td class="ft-table__cell--lure-length ft-table__cell--lure-grow" data-col="length">2 inch (51 mm)</td>
+                  <td class="ft-table__cell--lure-weight ft-table__cell--lure-grow" data-col="weight"></td>
+                  <td class="ft-table__cell--lure-elastomer" data-col="elastomer"></td>
+                  <td class="ft-table__cell--lure-pieces ft-table__cell--lure-grow" data-col="pieces_per_bag"></td>
+                  <td class="ft-table__cell--lure-hooks ft-table__cell--lure-grow" data-col="recommended_hooks"></td>
+                  <td class="ft-table__cell--lure-list-price ft-table__cell--lure-grow" data-col="list_price"></td>
+                  <td class="ft-table__cell--catalog-current" data-col="catalog_current">○</td>
+                  <td class="holding-cell" data-col="holding"><span class="holding-status holding-status--owned">保有中</span></td>
+                </tr>
+                <tr class="is-odd">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr" data-col="manufacturer">DAIWA</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model" data-col="product_name"><span class="model-name-text">ムーブベイト2.5</span></td>
+                  <td class="ft-table__cell--lure-length ft-table__cell--lure-grow" data-col="length">2.5 inch</td>
+                  <td class="ft-table__cell--lure-weight ft-table__cell--lure-grow" data-col="weight">4.0 g</td>
+                  <td class="ft-table__cell--lure-elastomer" data-col="elastomer"></td>
+                  <td class="ft-table__cell--lure-pieces ft-table__cell--lure-grow" data-col="pieces_per_bag"></td>
+                  <td class="ft-table__cell--lure-hooks ft-table__cell--lure-grow" data-col="recommended_hooks"></td>
+                  <td class="ft-table__cell--lure-list-price ft-table__cell--lure-grow" data-col="list_price"></td>
+                  <td class="ft-table__cell--catalog-current" data-col="catalog_current">○</td>
+                  <td class="holding-cell" data-col="holding"><span class="holding-status">—</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <p class="sample-block-label">変更後（下。保有がカード右端まで届く。列が多いときは横スクロール）</p>
+    <div class="sample-card sample-after">
+      <section class="card lure-masters">
+        <div class="card-header">
+          <h2>ワームを探す</h2>
+        </div>
+        <div class="master-list-table-wrap">
+          <div class="table-scroll table-scroll--viewport table-scroll--sticky-head">
+            <table
+              class="ft-table ft-table--striped ft-table--hover ft-table--rod-master-sticky ft-table--lure-master lure-masters-table"
+              data-ft-col-visibility="lure-worm"
+            >
+              <colgroup>
+                <col class="ft-table__col--rod-mfr" data-col="manufacturer">
+                <col class="ft-table__col--rod-model" data-col="product_name">
+                <col class="ft-table__col--lure-length ft-table__col--lure-grow" data-col="length">
+                <col class="ft-table__col--lure-weight ft-table__col--lure-grow" data-col="weight">
+                <col class="ft-table__col--lure-elastomer" data-col="elastomer">
+                <col class="ft-table__col--lure-pieces ft-table__col--lure-grow" data-col="pieces_per_bag">
+                <col class="ft-table__col--lure-hooks ft-table__col--lure-grow" data-col="recommended_hooks">
+                <col class="ft-table__col--lure-list-price ft-table__col--lure-grow" data-col="list_price">
+                <col class="ft-table__col--catalog-current" data-col="catalog_current">
+                <col class="ft-table__col--rod-holding" data-col="holding">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col" class="ft-table__sticky-col ft-table__sticky-col--mfr" data-col="manufacturer">メーカー</th>
+                  <th scope="col" class="ft-table__sticky-col ft-table__sticky-col--model" data-col="product_name">製品名</th>
+                  <th scope="col" class="ft-table__th--lure-length ft-table__th--lure-grow" data-col="length">全長</th>
+                  <th scope="col" class="ft-table__th--lure-weight ft-table__th--lure-grow" data-col="weight">重量</th>
+                  <th scope="col" class="ft-table__th--lure-elastomer" data-col="elastomer">素材</th>
+                  <th scope="col" class="ft-table__th--lure-pieces ft-table__th--lure-grow" data-col="pieces_per_bag">入数</th>
+                  <th scope="col" class="ft-table__th--lure-hooks ft-table__th--lure-grow" data-col="recommended_hooks">推奨フック</th>
+                  <th scope="col" class="ft-table__th--lure-list-price ft-table__th--lure-grow" data-col="list_price">定価（税抜）</th>
+                  <th scope="col" class="ft-table__th--catalog-current" data-col="catalog_current">現行</th>
+                  <th scope="col" class="rod-sticky-col--holding" data-col="holding">保有</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="is-odd">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr" data-col="manufacturer">BUTZ</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model" data-col="product_name"><span class="model-name-text">Vander155</span></td>
+                  <td class="ft-table__cell--lure-length ft-table__cell--lure-grow" data-col="length">6.1 inch (155 mm)</td>
+                  <td class="ft-table__cell--lure-weight ft-table__cell--lure-grow" data-col="weight">22.0 g</td>
+                  <td class="ft-table__cell--lure-elastomer" data-col="elastomer"></td>
+                  <td class="ft-table__cell--lure-pieces ft-table__cell--lure-grow" data-col="pieces_per_bag"></td>
+                  <td class="ft-table__cell--lure-hooks ft-table__cell--lure-grow" data-col="recommended_hooks"></td>
+                  <td class="ft-table__cell--lure-list-price ft-table__cell--lure-grow" data-col="list_price"></td>
+                  <td class="ft-table__cell--catalog-current" data-col="catalog_current">未判定</td>
+                  <td class="holding-cell" data-col="holding"><span class="holding-status holding-status--owned">保有中</span></td>
+                </tr>
+                <tr class="is-even">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr" data-col="manufacturer">DAIWA</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model" data-col="product_name"><span class="model-name-text">STEEZ クアッドフォーゼ</span></td>
+                  <td class="ft-table__cell--lure-length ft-table__cell--lure-grow" data-col="length">2 inch (51 mm)</td>
+                  <td class="ft-table__cell--lure-weight ft-table__cell--lure-grow" data-col="weight"></td>
+                  <td class="ft-table__cell--lure-elastomer" data-col="elastomer"></td>
+                  <td class="ft-table__cell--lure-pieces ft-table__cell--lure-grow" data-col="pieces_per_bag"></td>
+                  <td class="ft-table__cell--lure-hooks ft-table__cell--lure-grow" data-col="recommended_hooks"></td>
+                  <td class="ft-table__cell--lure-list-price ft-table__cell--lure-grow" data-col="list_price"></td>
+                  <td class="ft-table__cell--catalog-current" data-col="catalog_current">○</td>
+                  <td class="holding-cell" data-col="holding"><span class="holding-status holding-status--owned">保有中</span></td>
+                </tr>
+                <tr class="is-odd">
+                  <td class="ft-table__sticky-col ft-table__sticky-col--mfr" data-col="manufacturer">DAIWA</td>
+                  <td class="model-name-cell ft-table__sticky-col ft-table__sticky-col--model" data-col="product_name"><span class="model-name-text">ムーブベイト2.5</span></td>
+                  <td class="ft-table__cell--lure-length ft-table__cell--lure-grow" data-col="length">2.5 inch</td>
+                  <td class="ft-table__cell--lure-weight ft-table__cell--lure-grow" data-col="weight">4.0 g</td>
+                  <td class="ft-table__cell--lure-elastomer" data-col="elastomer"></td>
+                  <td class="ft-table__cell--lure-pieces ft-table__cell--lure-grow" data-col="pieces_per_bag"></td>
+                  <td class="ft-table__cell--lure-hooks ft-table__cell--lure-grow" data-col="recommended_hooks"></td>
+                  <td class="ft-table__cell--lure-list-price ft-table__cell--lure-grow" data-col="list_price"></td>
+                  <td class="ft-table__cell--catalog-current" data-col="catalog_current">○</td>
+                  <td class="holding-cell" data-col="holding"><span class="holding-status">—</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

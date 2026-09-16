@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=900, initial-scale=1">
+  <title>FT-M9 案A — 水位カバレッジの折りたたみと検索</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/water_level.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 900px; padding: 16px; background: #fff; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-before .water-level-coverage,
+    .sample-after .water-level-coverage {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+    }
+    .sample-before .water-level-coverage__list {
+      max-height: 280px;
+      overflow: hidden;
+    }
+    .water-level-coverage__fold > summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .water-level-coverage__fold > summary::-webkit-details-marker { display: none; }
+    .water-level-coverage__fold > summary .water-level-coverage__summary {
+      align-self: center;
+    }
+    .water-level-coverage__search {
+      display: block;
+      width: 100%;
+      max-width: 20rem;
+      margin: 0.75rem 0 0;
+      padding: 0.4rem 0.65rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font: inherit;
+    }
+    .water-level-coverage__item.is-hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      上は変更前（要対応を常時展開。実画面は25件）。下は変更後。
+      件数バッジは常時見え、一覧は開いたときだけ。名前検索で絞り込む。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（水質カバレッジが常時展開）</p>
+    <div class="sample-before">
+      <section class="water-level-coverage" aria-labelledby="wq-before-title" data-coverage-kind="water-quality">
+        <div class="water-level-coverage__header">
+          <div>
+            <h3 id="wq-before-title">水質対応カバレッジ（管理者）</h3>
+            <p class="water-level-coverage__lead">公開フィールドの水質対応状況を確認し、取得元がないフィールドを対象外として整理できます。</p>
+          </div>
+          <span class="water-level-coverage__summary">対応 3 / 29件</span>
+        </div>
+        <div class="water-level-coverage__panels">
+          <section class="water-level-coverage__panel water-level-coverage__panel--actionable">
+            <h4>要対応 <span>25件</span></h4>
+            <ul class="water-level-coverage__list">
+              <li class="water-level-coverage__item">
+                <div class="water-level-coverage__identity"><strong>あああ</strong><span>水際の散歩道</span></div>
+                <div class="water-level-coverage__actions">
+                  <a class="btn btn--ghost btn--sm" href="#">編集</a>
+                  <button class="btn btn--sm" type="button">対象外にする</button>
+                </div>
+              </li>
+              <li class="water-level-coverage__item">
+                <div class="water-level-coverage__identity"><strong>テスト</strong><span>千葉県</span></div>
+                <div class="water-level-coverage__actions">
+                  <a class="btn btn--ghost btn--sm" href="#">編集</a>
+                  <button class="btn btn--sm" type="button">対象外にする</button>
+                </div>
+              </li>
+              <li class="water-level-coverage__item">
+                <div class="water-level-coverage__identity"><strong>七川ダム</strong><span>和歌山県</span></div>
+                <div class="water-level-coverage__actions">
+                  <a class="btn btn--ghost btn--sm" href="#">編集</a>
+                  <button class="btn btn--sm" type="button">対象外にする</button>
+                </div>
+              </li>
+              <li class="water-level-coverage__item">
+                <div class="water-level-coverage__identity"><strong>七色貯水池</strong><span>三重県／和歌山県</span></div>
+                <div class="water-level-coverage__actions">
+                  <a class="btn btn--ghost btn--sm" href="#">編集</a>
+                  <button class="btn btn--sm" type="button">対象外にする</button>
+                </div>
+              </li>
+              <li class="water-level-coverage__item">
+                <div class="water-level-coverage__identity"><strong>前川ダム</strong><span>山形県</span></div>
+                <div class="water-level-coverage__actions">
+                  <a class="btn btn--ghost btn--sm" href="#">編集</a>
+                  <button class="btn btn--sm" type="button">対象外にする</button>
+                </div>
+              </li>
+              <li class="water-level-coverage__item">
+                <div class="water-level-coverage__identity"><strong>北山湖</strong><span>佐賀県</span></div>
+                <div class="water-level-coverage__actions">
+                  <a class="btn btn--ghost btn--sm" href="#">編集</a>
+                  <button class="btn btn--sm" type="button">対象外にする</button>
+                </div>
+              </li>
+            </ul>
+          </section>
+          <section class="water-level-coverage__panel water-level-coverage__panel--excluded">
+            <h4>対象外 <span>1件</span></h4>
+            <ul class="water-level-coverage__list">
+              <li class="water-level-coverage__item water-level-coverage__item--excluded">
+                <div class="water-level-coverage__identity"><strong>chizu-field</strong><span>所在地未設定</span></div>
+                <div class="water-level-coverage__actions">
+                  <a class="btn btn--ghost btn--sm" href="#">編集</a>
+                  <span class="text-muted">水位が対象外のため戻せません</span>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <p class="sample-block-label">変更後（閉じた状態。件数だけ見える）</p>
+    <div class="sample-after">
+      <section class="water-level-coverage" aria-labelledby="wq-closed-title" data-coverage-kind="water-quality">
+        <details class="water-level-coverage__fold">
+          <summary>
+            <div>
+              <h3 id="wq-closed-title">水質対応カバレッジ（管理者）</h3>
+              <p class="water-level-coverage__lead">公開フィールドの水質対応状況を確認し、取得元がないフィールドを対象外として整理できます。</p>
+            </div>
+            <span class="water-level-coverage__summary">要対応 25件 · 対応 3 / 29件</span>
+          </summary>
+        </details>
+      </section>
+    </div>
+
+    <p class="sample-block-label">変更後（開いて名前で絞り込み）</p>
+    <div class="sample-after">
+      <section class="water-level-coverage" aria-labelledby="wq-after-title" data-coverage-kind="water-quality">
+        <details class="water-level-coverage__fold" open>
+          <summary>
+            <div>
+              <h3 id="wq-after-title">水質対応カバレッジ（管理者）</h3>
+              <p class="water-level-coverage__lead">公開フィールドの水質対応状況を確認し、取得元がないフィールドを対象外として整理できます。</p>
+            </div>
+            <span class="water-level-coverage__summary">要対応 25件 · 対応 3 / 29件</span>
+          </summary>
+          <label for="wq-search">フィールド名で絞り込み</label>
+          <input id="wq-search" class="water-level-coverage__search" type="search" value="七" placeholder="部分一致">
+          <div class="water-level-coverage__panels">
+            <section class="water-level-coverage__panel water-level-coverage__panel--actionable">
+              <h4>要対応 <span>2件</span></h4>
+              <ul class="water-level-coverage__list" data-coverage-list>
+                <li class="water-level-coverage__item">
+                  <div class="water-level-coverage__identity"><strong>七川ダム</strong><span>和歌山県</span></div>
+                  <div class="water-level-coverage__actions">
+                    <a class="btn btn--ghost btn--sm" href="#">編集</a>
+                    <button class="btn btn--sm" type="button">対象外にする</button>
+                  </div>
+                </li>
+                <li class="water-level-coverage__item">
+                  <div class="water-level-coverage__identity"><strong>七色貯水池</strong><span>三重県／和歌山県</span></div>
+                  <div class="water-level-coverage__actions">
+                    <a class="btn btn--ghost btn--sm" href="#">編集</a>
+                    <button class="btn btn--sm" type="button">対象外にする</button>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="water-level-coverage__panel water-level-coverage__panel--excluded">
+              <h4>対象外 <span>0件</span></h4>
+              <p class="text-muted">該当する対象外フィールドはありません。</p>
+            </section>
+          </div>
+        </details>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

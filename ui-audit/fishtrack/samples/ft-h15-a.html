@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=720, initial-scale=1">
+  <title>FT-H15 案A — マイタックル詳細にマスタスペックを載せる</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A: ロッド／リールのマイタックル詳細に、マスタと同じスペック項目を載せる。保有のステータス・状態・購入日・メモは残す。
+      採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（スペックはジャンル・パワー・アクションまで。全長・自重などが無い）</p>
+    <section class="card my-tackle-detail">
+      <div class="card-header my-tackle-detail__header">
+        <h2>ロッド詳細</h2>
+        <div class="my-tackle-detail__actions">
+          <a class="btn-link" href="#">保有を編集</a>
+          <a class="btn-link" href="#">一覧に戻る</a>
+        </div>
+      </div>
+      <section class="card card--nested">
+        <h3>スペック・保有情報</h3>
+        <dl class="details-list">
+          <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+          <div><dt>シリーズ・型番</dt><dd>ブレイゾン C610M</dd></div>
+          <div><dt>ジャンル</dt><dd>ベイト</dd></div>
+          <div><dt>パワー</dt><dd>M</dd></div>
+          <div><dt>アクション</dt><dd>RF</dd></div>
+          <div><dt>ステータス</dt><dd>所持</dd></div>
+          <div><dt>状態</dt><dd>新品</dd></div>
+          <div><dt>購入日</dt><dd>—</dd></div>
+          <div><dt>メモ</dt><dd>—</dd></div>
+        </dl>
+      </section>
+    </section>
+
+    <p class="sample-block-label">変更後（下。マスタと同じ全長・自重・ルアー重量などを保有情報の前に載せる）</p>
+    <section class="card my-tackle-detail">
+      <div class="card-header my-tackle-detail__header">
+        <h2>ロッド詳細</h2>
+        <div class="my-tackle-detail__actions">
+          <a class="btn-link" href="#">保有を編集</a>
+          <a class="btn-link" href="#">一覧に戻る</a>
+        </div>
+      </div>
+      <section class="card card--nested">
+        <h3>スペック・保有情報</h3>
+        <dl class="details-list">
+          <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+          <div><dt>シリーズ</dt><dd>ブレイゾン</dd></div>
+          <div><dt>モデル名／型番</dt><dd>C610M</dd></div>
+          <div><dt>ジャンル</dt><dd>ベイト</dd></div>
+          <div><dt>全長</dt><dd>6' 10"</dd></div>
+          <div><dt>継数</dt><dd>グリップジョイント</dd></div>
+          <div><dt>パワー</dt><dd>M</dd></div>
+          <div><dt>アクション</dt><dd>RF</dd></div>
+          <div><dt>自重</dt><dd>108.0 g</dd></div>
+          <div><dt>ルアー重量</dt><dd>3/16 ～ 3/4 oz</dd></div>
+          <div><dt>ライン</dt><dd>8 ～ 16 lb</dd></div>
+          <div><dt>ブランク素材</dt><dd>HVFカーボン</dd></div>
+          <div><dt>カーボン含有率</dt><dd>89.0 %</dd></div>
+          <div><dt>技術特性</dt><dd>AIR SENSOR SEAT</dd></div>
+          <div><dt>定価（税抜）</dt><dd>¥20,800</dd></div>
+          <div><dt>JANコード</dt><dd>4550133088964</dd></div>
+          <div><dt>ステータス</dt><dd>所持</dd></div>
+          <div><dt>状態</dt><dd>新品</dd></div>
+          <div><dt>購入日</dt><dd>—</dd></div>
+          <div><dt>メモ</dt><dd>—</dd></div>
+        </dl>
+      </section>
+    </section>
+  </div>
+</body>
+</html>

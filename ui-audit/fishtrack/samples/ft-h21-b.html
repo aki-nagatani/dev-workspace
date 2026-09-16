@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=720, initial-scale=1">
+  <title>FT-H21 案B — 短いラベルを横1行</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #fff; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-table { width: 100%; table-layout: fixed; }
+    .sample-table col.col-mfr { width: 6.5rem; }
+    .sample-table col.col-name { width: auto; }
+    .sample-table col.col-status { width: 6rem; }
+    .hl-actions { outline: 2px solid #c62828; outline-offset: -2px; background: #ffebee !important; }
+    .sample-before col.col-actions { width: 7.5rem; }
+    .sample-before td.actions .inline-form { display: block; margin: 0; }
+    .sample-before td.actions .btn-link { white-space: normal; }
+    .sample-after col.col-actions { width: 11rem; }
+    .sample-after td.actions {
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .sample-after td.actions .inline-form {
+      display: inline;
+      margin: 0 0.55rem;
+    }
+    .sample-after td.actions .btn-link { white-space: nowrap; }
+    .sample-after td.actions a.btn-link + .inline-form,
+    .sample-after td.actions .inline-form + a.btn-link {
+      margin-left: 0.55rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B（採用後の想定。現状の製品には無い）: 操作ラベルを短くし、フォームをインラインにして横1行に並べる。
+      到達できる操作は現状と同じ。表形式は維持。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（操作リンクが縦積み。行が高すぎる）</p>
+    <div class="sample-before">
+      <table class="ft-table ft-table--striped sample-table">
+        <colgroup>
+          <col class="col-mfr">
+          <col class="col-name">
+          <col class="col-status">
+          <col class="col-actions">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>メーカー</th>
+            <th>製品名</th>
+            <th>ステータス</th>
+            <th class="actions hl-actions">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>JACKALL</td>
+            <td>ジミー</td>
+            <td>在庫あり</td>
+            <td class="actions hl-actions">
+              <a class="btn-link" href="#">保有編集</a>
+              <form class="inline-form" action="#" method="post">
+                <button class="btn-link" type="button">在庫切れに更新</button>
+              </form>
+              <a class="btn-link" href="#">マスタ詳細</a>
+            </td>
+          </tr>
+          <tr>
+            <td>DAIWA</td>
+            <td>STEEZ クアッドフォーゼ</td>
+            <td>在庫あり</td>
+            <td class="actions hl-actions">
+              <a class="btn-link" href="#">保有編集</a>
+              <form class="inline-form" action="#" method="post">
+                <button class="btn-link" type="button">在庫切れに更新</button>
+              </form>
+              <a class="btn-link" href="#">マスタ詳細</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="sample-block-label">変更後（下。短いラベルを横1行）</p>
+    <div class="sample-after">
+      <table class="ft-table ft-table--striped sample-table">
+        <colgroup>
+          <col class="col-mfr">
+          <col class="col-name">
+          <col class="col-status">
+          <col class="col-actions">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>メーカー</th>
+            <th>製品名</th>
+            <th>ステータス</th>
+            <th class="actions hl-actions">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>JACKALL</td>
+            <td>ジミー</td>
+            <td>在庫あり</td>
+            <td class="actions hl-actions">
+              <a class="btn-link" href="#">保有</a>
+              <form class="inline-form" action="#" method="post">
+                <button class="btn-link" type="button">在庫切</button>
+              </form>
+              <a class="btn-link" href="#">マスタ</a>
+            </td>
+          </tr>
+          <tr>
+            <td>DAIWA</td>
+            <td>STEEZ クアッドフォーゼ</td>
+            <td>在庫あり</td>
+            <td class="actions hl-actions">
+              <a class="btn-link" href="#">保有</a>
+              <form class="inline-form" action="#" method="post">
+                <button class="btn-link" type="button">在庫切</button>
+              </form>
+              <a class="btn-link" href="#">マスタ</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>
