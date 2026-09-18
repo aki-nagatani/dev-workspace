@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O36 案A — カード直前の結果行に並び替え</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/list_sp_cards.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 390px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .master-model-cards { display: grid !important; }
+    .sample-before .holding-sort-bar {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+    .sample-before .holding-sort-bar select {
+      min-width: 0;
+      max-width: none;
+      width: 100%;
+    }
+    .list-results-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 8px 0 10px;
+    }
+    .list-results-meta__count {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+    .sample-after .holding-sort-bar {
+      width: auto;
+      flex: 0 1 auto;
+      margin: 0;
+      align-items: center;
+    }
+    .sample-after .holding-sort-bar__field { gap: 0; }
+    .sample-after .holding-sort-bar label { display: none; }
+    .sample-after .holding-sort-bar__control { min-width: 12.5rem; }
+    .sample-after .holding-sort-bar select {
+      width: 100%;
+      min-width: 12.5rem;
+      max-width: 16rem;
+      height: 32px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A: SP のカード直前に件数と並び替えを1行で置く（探すの FT-O35 と同じ）。
+      向きボタンは置かない。PC の表ではこのセレクトを出さずヘッダーだけ。
+      採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（マイフィールド・並び替え UI なし）</p>
+    <section class="card sample-before">
+      <div class="card-header"><h2>マイフィールド</h2></div>
+      <h3 class="page-title--spaced">フィールド一覧</h3>
+      <form class="filter-form">
+        <div class="filter-grid">
+          <div>
+            <label for="field-keyword-before">フィールド絞り込み（名称/所在地）</label>
+            <input id="field-keyword-before" type="search" value="">
+          </div>
+          <div>
+            <label for="field-prefecture-before">都道府県</label>
+            <select id="field-prefecture-before">
+              <option selected>すべて</option>
+            </select>
+          </div>
+        </div>
+      </form>
+      <div class="master-model-cards" aria-label="フィールド一覧">
+        <a class="master-model-card" href="#">
+          <div class="master-model-card__main">
+            <div class="master-model-card__heading">
+              <h3 class="master-model-card__model">亀山湖</h3>
+            </div>
+            <p class="master-model-card__series">千葉県</p>
+            <dl class="master-model-card__meta">
+              <div class="master-model-card__meta-item">
+                <dt>釣果数</dt>
+                <dd>7</dd>
+              </div>
+              <div class="master-model-card__meta-item">
+                <dt>最大サイズ</dt>
+                <dd>40.0cm</dd>
+              </div>
+              <div class="master-model-card__meta-item">
+                <dt>平均サイズ</dt>
+                <dd>33.3cm</dd>
+              </div>
+            </dl>
+          </div>
+          <span class="master-model-card__chevron" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <p class="sample-block-label">変更後（マイフィールド・結果行）</p>
+    <section class="card sample-after">
+      <div class="card-header"><h2>マイフィールド</h2></div>
+      <h3 class="page-title--spaced">フィールド一覧</h3>
+      <form class="filter-form">
+        <div class="filter-grid">
+          <div>
+            <label for="field-keyword-after">フィールド絞り込み（名称/所在地）</label>
+            <input id="field-keyword-after" type="search" value="">
+          </div>
+          <div>
+            <label for="field-prefecture-after">都道府県</label>
+            <select id="field-prefecture-after">
+              <option selected>すべて</option>
+            </select>
+          </div>
+        </div>
+      </form>
+      <div class="list-results-meta">
+        <span class="list-results-meta__count">全 4 件</span>
+        <nav class="holding-sort-bar" aria-label="並び替え">
+          <div class="holding-sort-bar__field">
+            <div class="holding-sort-bar__controls">
+              <div class="holding-sort-bar__control">
+              <span class="holding-sort-bar__face">更新日（新しい順）</span>
+              <select id="field-sort-after" aria-label="並び替え">
+                <option value="updated_desc" selected>更新日（新しい順）</option>
+                <option value="updated_asc">更新日（古い順）</option>
+                <option value="name:asc">名称（あいうえお順）</option>
+                <option value="catch_count:desc">釣果数（多い順）</option>
+                <option value="max_size:desc">最大サイズ（大きい順）</option>
+                <option value="avg_size:desc">平均サイズ（大きい順）</option>
+              </select>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <div class="master-model-cards" aria-label="フィールド一覧">
+        <a class="master-model-card" href="#">
+          <div class="master-model-card__main">
+            <div class="master-model-card__heading">
+              <h3 class="master-model-card__model">亀山湖</h3>
+            </div>
+            <p class="master-model-card__series">千葉県</p>
+            <dl class="master-model-card__meta">
+              <div class="master-model-card__meta-item">
+                <dt>釣果数</dt>
+                <dd>7</dd>
+              </div>
+              <div class="master-model-card__meta-item">
+                <dt>最大サイズ</dt>
+                <dd>40.0cm</dd>
+              </div>
+              <div class="master-model-card__meta-item">
+                <dt>平均サイズ</dt>
+                <dd>33.3cm</dd>
+              </div>
+            </dl>
+          </div>
+          <span class="master-model-card__chevron" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <p class="sample-block-label">変更前（エリア・フィルタ内のフル幅セレクト）</p>
+    <section class="card sample-before">
+      <div class="card-header"><h2>このフィールドのエリア一覧</h2></div>
+      <form class="filter-form">
+        <div class="filter-grid">
+          <div>
+            <label for="area-keyword-before">エリア絞り込み（名称）</label>
+            <input id="area-keyword-before" type="search" value="">
+          </div>
+          <div>
+            <label for="area-sort-before">並び順</label>
+            <select id="area-sort-before">
+              <option value="updated_desc" selected>更新日（新しい順）</option>
+              <option value="updated_asc">更新日（古い順）</option>
+            </select>
+          </div>
+        </div>
+      </form>
+      <p class="table-empty">このフィールドに紐づくエリアはまだ登録されていません。</p>
+    </section>
+
+    <p class="sample-block-label">変更後（エリア・結果行。列も選べる）</p>
+    <section class="card sample-after">
+      <div class="card-header"><h2>このフィールドのエリア一覧</h2></div>
+      <form class="filter-form">
+        <div class="filter-grid">
+          <div>
+            <label for="area-keyword-after">エリア絞り込み（名称）</label>
+            <input id="area-keyword-after" type="search" value="">
+          </div>
+        </div>
+      </form>
+      <div class="list-results-meta">
+        <span class="list-results-meta__count">全 0 件</span>
+        <nav class="holding-sort-bar" aria-label="並び替え">
+          <div class="holding-sort-bar__field">
+            <div class="holding-sort-bar__controls">
+              <div class="holding-sort-bar__control">
+              <span class="holding-sort-bar__face">更新日（新しい順）</span>
+              <select id="area-sort-after" aria-label="並び替え">
+                <option value="updated_desc" selected>更新日（新しい順）</option>
+                <option value="updated_asc">更新日（古い順）</option>
+                <option value="name:asc">エリア名（あいうえお順）</option>
+                <option value="catch_count:desc">釣果数（多い順）</option>
+                <option value="max_size:desc">最大サイズ（大きい順）</option>
+                <option value="avg_size:desc">平均サイズ（大きい順）</option>
+              </select>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <p class="table-empty">このフィールドに紐づくエリアはまだ登録されていません。</p>
+    </section>
+  </div>
+</body>
+</html>

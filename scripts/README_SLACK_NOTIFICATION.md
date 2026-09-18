@@ -3,7 +3,7 @@
 ## 概要
 
 `send_slack_notification.py` は、Slack Webhook URLを使用してメッセージを送信するPythonスクリプトです。
-MCP経由のSlack送信が不安定な場合のフォールバック手段として使用されます。
+**Cursor 作業完了通知の自動フォールバックではない。** 運用監視など、明示実行時のみ使う。
 
 ## セットアップ
 
@@ -168,11 +168,9 @@ python scripts/send_slack_notification.py --help
 
 ## 統合方法
 
-`slack-final-report` SKILLから自動的に呼び出されます。MCP経由の送信が失敗した場合、以下の優先順位でフォールバックされます：
+**Cursor 作業完了通知からは呼び出さない。** エージェントは最終報告前に本スクリプトを自動実行しない。
 
-1. **MCP経由**: `mcp_text2slack_send_to_slack` または `send_to_slack` ツール
-2. **Pythonスクリプト経由**: `run_terminal_cmd` ツールを使用してこのスクリプトを実行
-3. **直接HTTPリクエスト**: `mcp_web_fetch` ツールを使用（最終手段）
+手動・運用監視（例: `aws-cost-monitoring` の専用 Webhook）で使う場合のみ、明示的に本スクリプトを実行する。
 
 ## トラブルシューティング
 
@@ -220,11 +218,11 @@ python scripts/send_slack_notification.py --help
 ## 関連ファイル
 
 - `scripts/send_slack_notification.py`: メインスクリプト
-- `.agents/skills/slack-final-report/SKILL.md`: SKILL定義ファイル
 - `.env.example`: .envファイルのテンプレート
 - `config.local.json.example`: config.local.jsonファイルのテンプレート
 
 ## 更新履歴
 
+- 2026-09-17: Cursor 作業完了通知からの自動呼び出しを廃止。専用 SKILL は削除
 - 2026-01-31: 初版作成（MCP経由のSlack送信が不安定な場合のフォールバック手段として実装）
 - 2026-01-31: .envファイルとconfig.local.jsonファイルのサポートを追加（安全な機密情報管理のため）

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O34 案B — マイフィールドも SP カードにする</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/list_sp_cards.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 390px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-before .table-scroll { overflow-x: auto; }
+    .sample-before .table-scroll table { min-width: 700px; }
+    .sample-after .master-list-table-wrap { display: none; }
+    .sample-after .master-model-cards { display: grid; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B: マイフィールドも探すと同じ SP カードにする。件数の横並び比較はできなくなる。
+      フィールド系は採用済み。所在地は副題のみ（meta に重複しない）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（現状・表＋横スクロール）</p>
+    <section class="card sample-before">
+      <div class="card-header"><h2>マイフィールド</h2></div>
+      <h3 class="page-title--spaced">フィールド一覧</h3>
+      <div class="table-scroll">
+        <table class="ft-table ft-table--striped field-area-table">
+          <thead>
+            <tr>
+              <th scope="col">名称</th>
+              <th scope="col">所在地</th>
+              <th scope="col">緯度</th>
+              <th scope="col">経度</th>
+              <th scope="col">釣果数</th>
+              <th scope="col">最大サイズ</th>
+              <th scope="col">平均サイズ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="field-area-table__label">亀山湖</span></td>
+              <td><span class="field-area-table__label">千葉県</span></td>
+              <td><span class="field-area-table__label field-area-table__label--coord">35.3</span></td>
+              <td><span class="field-area-table__label field-area-table__label--coord">140.2</span></td>
+              <td class="numeric"><span class="field-area-table__label">7</span></td>
+              <td class="numeric"><span class="field-area-table__label">40.0cm</span></td>
+              <td class="numeric"><span class="field-area-table__label">33.3cm</span></td>
+            </tr>
+            <tr>
+              <td><span class="field-area-table__label">UI監査用フィールド0916</span></td>
+              <td><span class="field-area-table__label">千葉県</span></td>
+              <td><span class="field-area-table__label field-area-table__label--coord">未設定</span></td>
+              <td><span class="field-area-table__label field-area-table__label--coord">未設定</span></td>
+              <td class="numeric"><span class="field-area-table__label">0</span></td>
+              <td class="numeric"><span class="field-area-table__label">—</span></td>
+              <td class="numeric"><span class="field-area-table__label">—</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="sample-block-label">変更後（探すと同じカード）</p>
+    <section class="card sample-after">
+      <div class="card-header"><h2>マイフィールド</h2></div>
+      <h3 class="page-title--spaced">フィールド一覧</h3>
+      <div class="master-list-table-wrap">
+        <div class="table-scroll">
+          <table class="ft-table"><thead><tr><th>名称</th></tr></thead></table>
+        </div>
+      </div>
+      <div class="master-model-cards" aria-label="フィールド一覧">
+        <a class="master-model-card" href="#">
+          <div class="master-model-card__main">
+            <div class="master-model-card__heading">
+              <h3 class="master-model-card__model">亀山湖</h3>
+            </div>
+            <p class="master-model-card__series">千葉県</p>
+            <dl class="master-model-card__meta">
+              <div class="master-model-card__meta-item">
+                <dt>釣果数</dt>
+                <dd>7</dd>
+              </div>
+              <div class="master-model-card__meta-item">
+                <dt>最大サイズ</dt>
+                <dd>40.0cm</dd>
+              </div>
+              <div class="master-model-card__meta-item">
+                <dt>平均サイズ</dt>
+                <dd>33.3cm</dd>
+              </div>
+            </dl>
+          </div>
+          <span class="master-model-card__chevron" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+        </a>
+        <a class="master-model-card" href="#">
+          <div class="master-model-card__main">
+            <div class="master-model-card__heading">
+              <h3 class="master-model-card__model">UI監査用フィールド0916</h3>
+            </div>
+            <p class="master-model-card__series">千葉県</p>
+            <dl class="master-model-card__meta">
+              <div class="master-model-card__meta-item">
+                <dt>釣果数</dt>
+                <dd>0</dd>
+              </div>
+              <div class="master-model-card__meta-item">
+                <dt>最大サイズ</dt>
+                <dd>—</dd>
+              </div>
+              <div class="master-model-card__meta-item">
+                <dt>平均サイズ</dt>
+                <dd>—</dd>
+              </div>
+            </dl>
+          </div>
+          <span class="master-model-card__chevron" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

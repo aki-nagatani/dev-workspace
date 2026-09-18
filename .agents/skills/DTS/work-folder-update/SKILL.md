@@ -15,7 +15,7 @@ description: >-
 
 - **Read せず編集しない**（チャット要約・`AGENTS.md` のみ・前ターンで Read 済みでも**当該セッションの Work 編集ごとに再 Read**）
 - Read 後、**§ 作業フロー**に従い振り分け・記録漏れ防止を行う
-- **専用 SKILL**（`work-kadai-update`・`mokuhyo-*` 等）が発火する領域では、本 SKILL の Read **のあと**に該当 SKILL も Read する
+- **専用 SKILL**（`work-kadai-update`・`mokuhyo-*`・`ojt-*` 等）が発火する領域では、本 SKILL の Read **のあと**に該当 SKILL も Read する
 
 **`Obsidian/Work/`** は、**株式会社DTSにおける本職**（いわゆる「仕事」）に関する情報を集約する正本領域である。\
 AI がこの配下を修正するときは、**チャットだけで収束させず**、**ユーザーから得た情報を適宜相応のノートに記録として残す**。
@@ -98,8 +98,11 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 | --- | --- |
 | **本 SKILL** | **Work 配下を触るすべての作業の入口**。チャット情報の振り分け・記録漏れ防止 |
 | **`work-todo-update`** | **`Work/Todo.md`**（単発）と **`Work/Todo-定例作業.md`**（繰り返し）の追加・完了・期限・未完了／完了セクション運用 |
+| **`next-action-work`** | 本職の次の一手。Todo と **Asana MCP（読み取り）**。自分は着手、配下の期限近傍はリマインド。Work は編集しない |
 | **`work-kadai-update`** | **`Work/課題.md`** の書き方・統合・カテゴリ（課題ブロックの正本） |
 | **`mokuhyo-*`** | **人事考課_管理シート**・目標・校閲・Excel/CSV 同期 |
+| **`ojt-monthly-report-manager-comment`** | 新人OJT**月報**の上長フォローコメント |
+| **`ojt-development-plan-manager-comment`** | 新人OJT**育成計画**の四半期上長振り返りコメント |
 | **`quality-analysis`** | **IT/ST 品質分析**の MD 成果物（顧客提出 Excel は書かない。構成は納品済み過去結果を踏襲） |
 | **`work-knowledge-deepen`** | **暗黙知の深掘り**専用セッション（質問→回答ループ）。本 SKILL の記録義務と併用可 |
 | **`markdown-editing`** / **`markdownlint-fix`** | Work 内 `.md` の体裁 |
@@ -113,7 +116,7 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 
 - **`D:/OneDrive/アプリ/remotely-save/Obsidian/Work/`** 配下の **`.md` / `.csv`** を **作成・更新・削除**する
 - ユーザーが **`@Obsidian/Work`** または Work 内のパスを指定して依頼した
-- **`work-kadai-update`**・**`work-todo-update`**・**`mokuhyo-*`**・**`work-knowledge-deepen`**・**`quality-analysis`** のいずれかが発火し、Work 配下を変更する
+- **`work-kadai-update`**・**`work-todo-update`**・**`mokuhyo-*`**・**`ojt-*`**・**`work-knowledge-deepen`**・**`quality-analysis`** のいずれかが発火し、Work 配下を変更する
 
 **対象外**（本 SKILL を Read しない）:
 
@@ -169,6 +172,8 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 | **体制・役割・プロジェクト概要・ステークホルダ・DoD・エスカレーション・情報共有・開発ルール・変更管理** | `Work/体制・プロジェクト/` の該当ノート | — |
 | **継続・未解決の業務課題**（財務・CS・育成・稼働・体制等） | `Work/課題.md` | **`work-kadai-update`** |
 | **人事考課・目標・達成基準・設定時コメント・管理シート** | `Work/社内業務/人事考課/` | **`mokuhyo-*`** |
+| **OJT月報の上長フォロー** | `Work/社内業務/{年度}新人OJT/{年度}_{氏名}_月報.md` | **`ojt-monthly-report-manager-comment`** |
+| **OJT育成計画の四半期上長コメント** | `Work/社内業務/2026新人OJT/2026_古川_育成計画.md`（**Excel は正本ではない**） | **`ojt-development-plan-manager-comment`** |
 | **プロ認定・DCP・申請文案**（制度整理・転記ガイド・下書き・**申請時Q&Aアーカイブ**） | `Work/社内業務/プロ認定/`（本人の資格**事実**は本人用メンバーノート）。**`第三者評価者からの質問.md` は正本外** | — |
 | **採用・面接** | `Work/社内業務/{採用テーマ}/` | — |
 | **社内手続き**（勤怠・経費・休出・備品・セキュリティ・オンボーディング等） | `Work/社内手続き/` | — |
@@ -254,6 +259,7 @@ Obsidian **Work/** はユーザーの**第2の脳**として扱う。**チャッ
 | ユーザーがメンバーの異動を伝えつつ `課題.md` 更新を依頼 | `課題.md` は **`work-kadai-update`**。あわせて **`Work/メンバー情報/{6桁社員番号}_{フルネーム}.md`**（または体制ノート）へ異動を記録 |
 | 定例会のメモ整理依頼＋チャットで顧客 FB | `定例・報告/` にメモ。未解決課題は **`課題.md`** へ **`work-kadai-update`** |
 | 目標下書きセッション | **`mokuhyo-draft`** が主。確定した課題は **`work-kadai-update`** で `課題.md` へ**報告前**同期 |
+| OJT育成計画の2Q/3Q/4Q振り返りコメント | **`ojt-development-plan-manager-comment`**。正本は `2026_古川_育成計画.md`。Excel ではない。月報と混同しない |
 | プロ認定・本人／配下の資格・認定の事実 | **本人** → **本人用メンバーノート**。**配下** → **`{6桁社員番号}_{フルネーム}.md`**（未作成時は新規作成）。`プロ認定_参考資料_*` 等は本人用メンバーノートを参照。申請用下書きだけに書いて終えない |
 | ユーザーが Work 以外の話も混ぜて業務情報を伝えた | **依頼の主題に限らず § 収集対象**を棚卸しし、該当する正本へ追記 |
 | チャットで訂正（「以前の記載は誤り」） | **正本＋参照している依頼ファイル**を同セッションで整合 |

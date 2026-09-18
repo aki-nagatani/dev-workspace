@@ -6,7 +6,7 @@ Always respond in Japanese when applying this skill.
 
 - **`Obsidian/Work/`** 配下の **`.md` / `.csv`** を **作成・更新・削除**する
 - ユーザーが **`@Obsidian/Work`** または Work 内パスを指定した
-- **`work-kadai-update`**・**`work-todo-update`**・**`mokuhyo-*`**・**`work-knowledge-deepen`**・**`quality-analysis`** で Work を変更する
+- **`work-kadai-update`**・**`work-todo-update`**・**`mokuhyo-*`**・**`ojt-*`**・**`work-knowledge-deepen`**・**`quality-analysis`** で Work を変更する
 
 ## 必須の最初アクション
 
@@ -31,13 +31,17 @@ Work は**第2の脳**—移す価値が少しでもあれば正本を更新す�
   出席・参加は載せない。オブザーバーでメンバー実施の作業も載せない。
   繰り返しは親1つ。定義は親に1回、対象月はチェック行だけ。未完了は向こう3か月分。
   前タスク未完了・キック未到来・着手可能日前は `🚫 着手不可`。
-  着手推奨日前は next-action の優先度を落とす（除外しない）。`/next-action-work` は両方を見る）
+  着手推奨日前は next-action の優先度を落とす（除外しない）。
+  `/next-action-work` は両方と Asana MCP を見る（配下の期限近傍・未完了はリマインド））
 
 ## 併用
 
 - 課題ブロック: **`work-kadai-update`**
 - Todo: **`work-todo-update`**
 - 管理シート・CSV: **`mokuhyo-kanri-sheet-csv`** 等
+- OJT月報コメント: **`ojt-monthly-report-manager-comment`**
+- OJT育成計画の四半期上長コメント: **`ojt-development-plan-manager-comment`**
+  （正本 `Work/社内業務/2026新人OJT/2026_古川_育成計画.md`。Excel ではない）
 - IT/ST 品質分析: **`quality-analysis`**
 - 暗黙知深掘り: **`work-knowledge-deepen`**
 - Markdown: **`markdown-editing`** / **`markdownlint-fix`**

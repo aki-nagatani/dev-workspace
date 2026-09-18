@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=980">
+  <title>FT-O33 案A — 同じ意図の並び替えラベルを揃える</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 640px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .holding-sort-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      align-items: flex-end;
+    }
+    .holding-sort-bar select { min-width: 0; max-width: none; }
+    .sample-frame select[size] { height: auto; overflow: auto; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A: 同じ意図の並びは、フィールド一覧の「項目（向き）」形に揃える。
+      探すの管理者プリセットは「更新日（新しい順）」、マイタックルのプリセットは「釣果数（多い順）」。
+      列の向きはボタンにしない。表はヘッダー、SP カード時はセレクト内「列名（昇順／降順）」。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（現状・同じ意図なのに別名）</p>
+    <section class="card">
+      <div class="card-header"><h2>マイタックル（リール）</h2></div>
+      <nav class="holding-sort-bar" aria-label="並び替え">
+        <div class="holding-sort-bar__field">
+          <label for="holding-sort-before">項目</label>
+          <div class="holding-sort-bar__controls">
+            <select id="holding-sort-before" size="8">
+              <optgroup label="プリセット">
+                <option value="" selected>標準</option>
+                <option value="recent_used:desc">最近の釣果順</option>
+                <option value="catch_count:desc">釣果が多い順</option>
+              </optgroup>
+              <optgroup label="列">
+                <option value="manufacturer">メーカー（昇順）</option>
+                <option value="catch_count">釣果数（降順）</option>
+                <option value="max_size">最大サイズ（降順）</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+      </nav>
+      <p class="hint">探す（管理者）は「最近更新された順」。フィールドは「更新日（新しい順）」「釣果数（多い順）」。</p>
+    </section>
+
+    <p class="sample-block-label">変更後（項目（向き）に揃えたプリセット）</p>
+    <section class="card">
+      <div class="card-header"><h2>マイタックル（リール）</h2></div>
+      <nav class="holding-sort-bar" aria-label="並び替え">
+        <div class="holding-sort-bar__field">
+          <label for="holding-sort-after">項目</label>
+          <div class="holding-sort-bar__controls">
+            <select id="holding-sort-after" size="8">
+              <optgroup label="プリセット">
+                <option value="" selected>標準</option>
+                <option value="recent_used:desc">最近の釣果順</option>
+                <option value="catch_count:desc">釣果数（多い順）</option>
+              </optgroup>
+              <optgroup label="列">
+                <option value="manufacturer">メーカー（昇順）</option>
+                <option value="catch_count">釣果数（降順）</option>
+                <option value="max_size">最大サイズ（降順）</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+      </nav>
+      <p class="hint">探す（管理者）も「更新日（新しい順）」。フィールドと同じ語になる。</p>
+    </section>
+  </div>
+</body>
+</html>

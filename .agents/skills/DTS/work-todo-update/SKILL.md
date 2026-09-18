@@ -18,7 +18,8 @@ description: >-
 
 - **単発** → `Work/Todo.md`
 - **繰り返し**（週次・月次・3ヶ月次・年次等） → `Work/Todo-定例作業.md`
-- 混ぜない。`/next-action-work` は**両方**を読む
+- 混ぜない。`/next-action-work` は**両方**と **Asana MCP** を読む
+（Asana の手順は **`next-action-work` SKILL**）
 
 **最初の作業**: 本ファイルを **Read** する。続けて対象の正本（単発なら **`Work/Todo.md`**、
 繰り返しなら **`Work/Todo-定例作業.md`**。横断なら両方）を **Read** する。\

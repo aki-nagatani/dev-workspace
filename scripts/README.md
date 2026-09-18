@@ -94,6 +94,7 @@ OpenAI Costs API は、429・一時的な5xxに対して `Retry-After` 優先の
 
 Cursor個人契約のUsage監視はGHAで実額を取得せず、
 `cursor-cost-monitoring` SKILLをCursor内ブラウザから明示的に呼び出す。
-GHAの `cursor_usage_reminder.yml` は、約5日ごとにSKILL呼び出しをSlackへ促すだけである。
+GHAの `cursor_usage_reminder.yml` は、約10日ごと（毎月1・11・21・31日 22:00 JST）に
+SKILL呼び出しをSlackへ促すだけである。
 確認結果はObsidianの `Notes/コスト監視履歴.md`へ追記し、Cursorの認証情報や
 Cookieは保存しない。

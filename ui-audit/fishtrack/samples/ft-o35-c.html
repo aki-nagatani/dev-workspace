@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O35 案C — 短いボタンから候補シート</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 390px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .master-model-cards { display: grid !important; }
+    .sample-before .holding-sort-bar {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+    }
+    .sample-before .holding-sort-bar select {
+      min-width: 0;
+      max-width: none;
+      width: 100%;
+    }
+    .list-results-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 8px 0 10px;
+    }
+    .list-results-meta__count {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+    }
+    .holding-sort-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: #fff;
+      color: var(--color-text);
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .sample-after .ft-select-menu {
+      position: relative;
+      left: auto;
+      top: auto;
+      width: 100%;
+      max-width: none;
+      margin: 0 0 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案C: 閉じたときは「標準 ▾」の短いボタンだけ。タップで候補シートを出す（列の昇順／降順が多いカード向け）。
+      下の変更後はシートを開いた状態。採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（現状・フル幅の常設セレクト）</p>
+    <section class="card sample-before">
+      <div class="card-header"><h2>リール一覧</h2></div>
+      <details class="ft-filter-collapse">
+        <summary class="ft-filter-collapse__summary">
+          <span class="ft-filter-collapse__label">フィルタ</span>
+          <span class="ft-filter-collapse__caret" aria-hidden="true">▾</span>
+        </summary>
+      </details>
+      <nav class="holding-sort-bar" aria-label="並び替え">
+        <div class="holding-sort-bar__field">
+          <label for="holding-sort-before-c">項目</label>
+          <div class="holding-sort-bar__controls">
+            <select id="holding-sort-before-c" aria-label="並び替えの項目">
+              <option value="" selected>標準</option>
+              <option value="recent_used:desc">最近の釣果順</option>
+            </select>
+          </div>
+        </div>
+      </nav>
+      <div class="master-model-cards holding-list-cards">
+        <a class="master-model-card holding-list-card" href="#">
+          <div class="master-model-card__main">
+            <div class="master-model-card__heading">
+              <h3 class="master-model-card__model">21 ZILLION SV TW 1000</h3>
+              <span class="master-model-card__pill">所持</span>
+            </div>
+            <p class="master-model-card__series">DAIWA · 21 ZILLION SV TW</p>
+          </div>
+          <span class="master-model-card__chevron" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <p class="sample-block-label">変更後（短いボタン＋開いたシート）</p>
+    <section class="card sample-after">
+      <div class="card-header"><h2>リール一覧</h2></div>
+      <details class="ft-filter-collapse">
+        <summary class="ft-filter-collapse__summary">
+          <span class="ft-filter-collapse__label">フィルタ</span>
+          <span class="ft-filter-collapse__caret" aria-hidden="true">▾</span>
+        </summary>
+      </details>
+      <div class="list-results-meta">
+        <span class="list-results-meta__count">全 1 件</span>
+        <button type="button" class="holding-sort-trigger" aria-expanded="true" aria-haspopup="listbox">
+          標準 <span aria-hidden="true">▾</span>
+        </button>
+      </div>
+      <ul class="ft-select-menu" role="listbox" aria-label="並び替え">
+        <li class="ft-select-menu__option is-selected" role="option" aria-selected="true">標準</li>
+        <li class="ft-select-menu__option" role="option">最近の釣果順</li>
+        <li class="ft-select-menu__option" role="option">釣果が多い順</li>
+        <li class="ft-select-menu__option" role="option">メーカー（昇順）</li>
+        <li class="ft-select-menu__option" role="option">メーカー（降順）</li>
+      </ul>
+      <div class="master-model-cards holding-list-cards">
+        <a class="master-model-card holding-list-card" href="#">
+          <div class="master-model-card__main">
+            <div class="master-model-card__heading">
+              <h3 class="master-model-card__model">21 ZILLION SV TW 1000</h3>
+              <span class="master-model-card__pill">所持</span>
+            </div>
+            <p class="master-model-card__series">DAIWA · 21 ZILLION SV TW</p>
+          </div>
+          <span class="master-model-card__chevron" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M6 3.5L10.5 8L6 12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

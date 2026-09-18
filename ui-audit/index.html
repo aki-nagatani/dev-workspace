@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FishTrack / MyPokedex UI 問題点レポート（2026-09-16）</title>
+  <title>FishTrack / MyPokedex UI 問題点レポート（2026-09-18）</title>
   <style>
     :root {
       --bg: #f5f6f8;
@@ -318,7 +318,7 @@
   <header>
     <h1>FishTrack / MyPokedex UI 問題点レポート</h1>
     <p>共有レポート（dev-workspace/ui-audit）。MyPokedex :5002 · FishTrack :5001／各 local AI アカウント</p>
-    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 診断日: 2026-09-16（JST・OPEN 1件）</p>
+    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 診断日: 2026-09-18（JST・OPEN 0件）</p>
     <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。解決済みはアコーディオン（既定クローズ）。解決から1ヶ月経過した課題はレポートから削除する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
     <p>改善サンプルはローカル製品（CSS・ロゴ・コンポーネント）をそのまま使い、改善箇所だけを差分修正したものである。</p>
   </header>
@@ -329,7 +329,7 @@
     <a href="#resolved-issues">解決済み</a>
     <span class="toc-group">未解決 FishTrack</span>
     <div class="toc-row">
-      <a href="#ft-h26">FT-H26</a>
+      <span class="toc-empty">なし</span>
     </div>
     <span class="toc-group">解決済み MyPokedex</span>
     <div class="toc-row">
@@ -337,6 +337,13 @@
     </div>
     <span class="toc-group">解決済み FishTrack</span>
     <div class="toc-row">
+      <a href="#ft-o36">FT-O36</a>
+      <a href="#ft-o34">FT-O34</a>
+      <a href="#ft-o33">FT-O33</a>
+      <a href="#ft-o35">FT-O35</a>
+      <a href="#ft-h26">FT-H26</a>
+      <a href="#ft-o31">FT-O31</a>
+      <a href="#ft-o32">FT-O32</a>
       <a href="#ft-h25">FT-H25</a>
       <a href="#ft-h24">FT-H24</a>
       <a href="#ft-h22">FT-H22</a>
@@ -368,29 +375,23 @@
       <a href="#ft-h12">FT-H12</a>
       <a href="#ft-h11">FT-H11</a>
       <a href="#ft-h8">FT-H8</a>
-      <a href="#ft-o6">FT-O6</a>
-      <a href="#ft-o3">FT-O3</a>
-      <a href="#ft-o4">FT-O4</a>
-      <a href="#ft-o1">FT-O1</a>
-      <a href="#ft-o10">FT-O10</a>
-      <a href="#ft-o8">FT-O8</a>
-      <a href="#ft-o2">FT-O2</a>
-      <a href="#ft-h7">FT-H7</a>
     </div>
   </nav>
 <main>
     <section id="summary" class="meta">
-      <div><strong>対象</strong>: FishTrack と MyPokedex の<strong>全画面</strong>（未ログイン LP・ログイン／登録導線・規約／PP・ログイン後・管理者。SP／PC）。
-        スクショ例は抜粋であり、診断上限ではない。</div>
-      <div><strong>範囲</strong>: 2026-09-16。入力系を最後まで通した（FT 登録送信・釣果／釣行／フィールド保存、MP 登録送信・図鑑登録・設定保存）。
-        新規 OPEN は FT-H26（登録見出しの折返し）のみ。
-        中核4観点（操作性・視認性・初回ユーザー・管理者の管理しやすさ）を当てた。
-        対象外（理由）: ローカル SMTP 未設定のため両製品の新規登録は確認メール送信で 500 になり
-        <code>/auth/check-email</code> までは到達できない（本番想定のメール到達確認ではない）。
-        保有編集の保存、FT プライバシー本文の通読、FT 管理者のメーカー／シリーズ・OpenAI 利用量・お知らせ編集、
-        MP 全国図鑑の全行操作と地方図鑑のゲーム横断、SP の全画面スクショ網羅。</div>
-      <div><strong>スクショ例（抜粋）</strong>: FT — <code>/</code>（未ログイン LP）、<code>/catch</code>、<code>/tackle/rod-models/</code>、<code>/tackle/rod-model/13</code>（比較枠）、
-        <code>/admin/users</code>。MP — <code>/</code>（未ログイン LP）、<code>/RGBP/partyBox</code>、<code>/RGBP/dex/rgbp</code>、<code>/admin/users</code></div>
+      <div><strong>対象</strong>: ユーザー指定により
+        <strong>フィールド系の並び替え</strong>に限定（全画面監査ではない）。
+        マイフィールド・フィールド詳細エリア・パブリック。PC ヘッダー対照。
+        MyPokedex はカード化していないため対象外（理由は範囲）。</div>
+      <div><strong>範囲</strong>: 2026-09-18。ユーザー指定で
+        <strong>フィールド系の並び替え</strong>を課題化した（特定画面。全画面監査ではない）。
+        <a href="#ft-o36">FT-O36</a> 案Aを採用し、マイフィールド／エリアの SP 結果行セレクトを実装。
+        再診断して RESOLVED。中核4観点のうち操作性・視認性・初回ユーザーを当該一覧に当てた。
+        管理者の管理しやすさ: フィールド並び替えは一般ユーザー画面のみ。管理者専用の別 UI は無い（対象外）。
+        MyPokedex 図鑑／パーティは表のままヘッダーソートで、フィールド系のカード化に追随しない（新規 OPEN なし）。</div>
+      <div><strong>スクショ例（抜粋）</strong>: FT —
+        <code>/field-area/list</code>、<code>/field-area/field/{id}</code>、<code>/public-fields</code>。
+        MP — 既存 <code>/RGBP/partyBox</code>（表ヘッダー。本事象なし）</div>
       <div><strong>観点</strong>: 中核は操作性・視認性・初回ユーザー（迷わないか）・管理者の管理しやすさ。
         併せて導線・主CTA・空状態・必須／任意・表密度・フィルタ・誤アフォーダンス・一貫性・危険操作・フィードバック・SP/PC・a11y。
         正本は <code>ui-audit-html-report</code> SKILL「診断観点」。</div>
@@ -402,19 +403,946 @@
 
     <section id="open-issues" aria-labelledby="open-issues-title">
       <h2 id="open-issues-title" class="section-title">未解決の課題</h2>
-      <p class="section-lead">現時点の OPEN は 1件。</p>
+      <p class="section-lead">現時点の OPEN は 0件。</p>
 
-    <article class="issue" id="ft-h26">
+    </section>
+
+<section id="resolved-issues" aria-labelledby="resolved-issues-title">
+      <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
+      <p class="section-lead">再診断済み。各課題はアコーディオン（既定クローズ）。解決日から1ヶ月経過した課題は削除する。</p>
+
+    <article class="issue" id="ft-o36" data-resolved-on="2026-09-18">
+      <details>
+        <summary>
       <h2>
         <span class="badge sev-med">MEDIUM</span>
-        <span class="badge status-open">OPEN</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O36 — フィールド系 SP カードでは並び替えに届かない
+      </h2>
+        </summary>
+      <p class="label">画面: マイフィールド、フィールド詳細のエリア一覧。
+        観点: 操作性・初回ユーザー・同類画面の一貫性。関連
+        <a href="#ft-o34">FT-O34</a>（フィールド SP カード）、
+        <a href="#ft-o35">FT-O35</a>（探すの結果行）、
+        <a href="#ft-o31">FT-O31</a>／<a href="#ft-o32">FT-O32</a>（ヘッダーのみ）。
+        2026-09-17 OPEN。2026-09-18 ユーザーが案A採用。製品実装・SP/PC 再診断して RESOLVED。
+        案B（フィルタフル幅）は不採用。</p>
+
+      <h3>改善前の事象</h3>
+      <p>
+        フィールド一覧の並び替えは表ヘッダーだけ（名称／所在地／釣果数／最大サイズ／平均サイズ。更新日は既定で UI に出さない）。
+        <a href="#ft-o34">FT-O34</a> で SP をカードにしたため <code>.master-list-table-wrap</code> が <code>display:none</code> になり、ヘッダー操作が消える。
+        マイフィールド SP には <code>#field-sort</code> も結果行もない。カードの直上はマップで、並び替え手段が無い。
+        エリアはフィルタ内のフル幅 <code>#area-sort</code>（更新日の新しい順／古い順だけ）が残る。列ソートはヘッダー依存のままなので SP では使えない。
+        パブリックフィールド一覧は元々並び替え機能が無い。
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/sp-field-list-filter-no-sort.png" alt="マイフィールド SP。フィルタに並び替えが無い">
+          <figcaption>sp-field-list-filter-no-sort.png — ▲ マイフィールド SP。絞り込みと都道府県だけで並び順セレクトが無い</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-field-list-cards-no-sort.png" alt="マイフィールド SP。カード直前に並び替えが無い">
+          <figcaption>sp-field-list-cards-no-sort.png — ▲ マップの直後がカード。件数も並び替えも無い</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-area-sort-in-filter.png" alt="エリア一覧 SP。並び順がフィルタ内のフル幅セレクト">
+          <figcaption>sp-area-sort-in-filter.png — ▲ エリア。並び順はフィルタのフル幅。候補は更新日だけ。列ソートは無い</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-field-list-header-sort.png" alt="マイフィールド PC。表ヘッダーに並び替え">
+          <figcaption>pc-field-list-header-sort.png — ▲ PC 1280。名称〜平均サイズのヘッダー ↕ が生きている（セレクトは出さない）</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-public-fields-no-sort.png" alt="パブリックフィールド SP。並び替え機能自体が無い">
+          <figcaption>sp-public-fields-no-sort.png — ▲ パブリック。キーワード／都道府県／水位／登録状態のみ。並び替えは対象外</figcaption>
+        </figure>
+      </div>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/field-area/list</code>（マイフィールド）、
+            <code>/field-area/field/{id}</code>（このフィールドのエリア一覧）</li>
+          <li><strong>位置:</strong>
+            マイフィールドはフィルタ直下〜マップ〜カード直前（並び替え UI 欠落）。
+            エリアはエリア一覧カード内の <code>.filter-grid</code> 2列目「並び順」</li>
+          <li><strong>部品／セレクタ:</strong>
+            マイフィールドは <code>input[name=fieldSort]</code>（非既定時のみ hidden。可視セレクトなし）と
+            <code>thead a</code>（SP では親 <code>.master-list-table-wrap</code> が非表示）。
+            エリアは <code>#area-sort</code></li>
+          <li><strong>対象外:</strong>
+            パブリック <code>/public-fields</code>（並び替え機能が仕様上無い。登録・所在地スキャンが主）。
+            PC の表ヘッダーソート（問題ではない。案Aでも維持）。
+            探す／マイタックル（<a href="#ft-o35">FT-O35</a> RESOLVED）。
+            項目セレクト＋向きボタン（不採用済み。再提案しない）。
+            MyPokedex 図鑑／パーティ（表ヘッダーのまま。フィールドのカード化に合わせない）。
+            管理者専用画面（フィールド並び替えの別 UI は無い）</li>
+        </ul>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>
+        操作性。PC ではヘッダーで釣果数や名称を並べ替えられるのに、SP では同じ一覧がカードになった瞬間に手段が消える。
+        初回ユーザーは「並び替えできない画面」だと誤解する。
+        エリアは更新日だけフィルタに残るため、カード上の釣果数 meta を多い順にできない。
+        探すは <a href="#ft-o35">FT-O35</a> でカード直前の結果行へ移しており、フィールド系だけが取り残されている。
+      </p>
+
+      <h3>改善策</h3>
+      <p>
+        向きボタンは置かない。カードでない PC のプルダウンに列候補は残さない。
+        ラベルは <a href="#ft-o33">FT-O33</a> に合わせる（<code>釣果数（多い順）</code>、<code>更新日（新しい順）</code>）。
+      </p>
+      <div class="option recommended">
+        <h4>案A — SP は探すと同じ結果行セレクト。PC はヘッダーのみ <span class="rec-tag">推奨</span></h4>
+        <p>
+          マイフィールド SP: カード直前に <code>list_sort_bar</code>（件数＋内容幅セレクト）。
+          プリセットに更新日（新しい／古い）。列は名称・所在地・釣果数・最大／平均サイズを
+          <code>項目（向き）</code> で常設（ヘッダーの代替）。マップより下、カードの直前。
+          マイフィールド PC: セレクトを出さずヘッダーのみ。
+          エリア SP: <code>#area-sort</code> をフィルタから外し、同じ結果行へ。列オプションを常設。
+          エリア PC: 更新日セレクトは結果行（または現状どおりフィルタ）に残してよいが、列はヘッダーだけ。
+        </p>
+      </div>
+      <div class="option">
+        <h4>案B — マイフィールドのフィルタへフル幅の並び順を足す</h4>
+        <p>
+          エリア現状と同じく、フィルタグリッドに「並び順」を足す。
+          探すでは <a href="#ft-o35">FT-O35</a> で不採用にした常設フル幅。
+          マップより上に置くと、並べ替えたカードまで距離がある。
+        </p>
+      </div>
+      <table class="compare">
+        <caption>マイフィールド SP の並び替え UI</caption>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>現状</th>
+            <th>案A</th>
+            <th>案B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>配置</th>
+            <td>なし（ヘッダーは非表示）</td>
+            <td>カード直前の結果行</td>
+            <td>フィルタ内フル幅</td>
+          </tr>
+          <tr>
+            <th>更新日</th>
+            <td>既定のみ（操作不可）</td>
+            <td>セレクト（新しい／古い）</td>
+            <td>セレクト（新しい／古い）</td>
+          </tr>
+          <tr>
+            <th>名称・所在地・釣果数・サイズ</th>
+            <td>到達不能</td>
+            <td>セレクト（列を常設）</td>
+            <td>セレクト（列を常設）</td>
+          </tr>
+          <tr>
+            <th>向きボタン</th>
+            <td>なし</td>
+            <td>なし</td>
+            <td>なし</td>
+          </tr>
+          <tr>
+            <th>PC</th>
+            <td>ヘッダーのみ</td>
+            <td>ヘッダーのみ（セレクトなし）</td>
+            <td>ヘッダー＋フィルタセレクトが重なりうる</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="compare">
+        <caption>エリア一覧 SP の並び替え UI</caption>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>現状</th>
+            <th>案A</th>
+            <th>案B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>配置</th>
+            <td>フィルタ内フル幅</td>
+            <td>カード直前の結果行</td>
+            <td>現状維持</td>
+          </tr>
+          <tr>
+            <th>更新日</th>
+            <td>セレクト</td>
+            <td>結果行セレクト</td>
+            <td>現状維持</td>
+          </tr>
+          <tr>
+            <th>エリア名・釣果数・サイズ</th>
+            <td>到達不能（ヘッダー非表示）</td>
+            <td>セレクトに常設</td>
+            <td>セレクトに足すならフィルタがさらに長い</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th></th>
+            <th>案A <span class="rec-tag">推奨</span></th>
+            <th>案B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>違い</th>
+            <td>探すと同じ結果行。PC はヘッダーのみ</td>
+            <td>エリア現状のフィルタ常設をマイにも足す</td>
+          </tr>
+          <tr>
+            <th>メリット</th>
+            <td>カードの直前で並べ替えられる。探すと揃う。O35 と同じ部品</td>
+            <td>実装が小さい。エリアと見た目が今のまま揃う</td>
+          </tr>
+          <tr>
+            <th>デメリット</th>
+            <td>マイに更新日を出すのはヘッダー方針からの追加</td>
+            <td>フル幅がフィルタを押し下げ、マップの下のカードまで遠い。O35 で不採用</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sample-link">
+        <a href="fishtrack/samples/ft-o36-a.html">サンプル HTML（案A）</a>／
+        <a href="fishtrack/samples/ft-o36-b.html">サンプル HTML（案B）</a>
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/sample-ft-o36-a.png" alt="上は並び替えなし、下は件数と結果行セレクト">
+          <figcaption>sample-ft-o36-a.png — 上は変更前、下の変更後は「全 4 件」と更新日（新しい順）の結果行</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sample-ft-o36-b.png" alt="上は並び替えなし、下はフィルタ内の並び順">
+          <figcaption>sample-ft-o36-b.png — 上は変更前、下の変更後はフィルタにフル幅の並び順</figcaption>
+        </figure>
+      </div>
+
+      <h3>実施した改善</h3>
+      <p>
+        案A。マイフィールド SP はマップより下・カード直前に <code>list_sort_bar</code>
+        （件数＋内容幅セレクト）。プリセットは更新日（新しい／古い）。列は名称・所在地・釣果数・最大／平均サイズを
+        <code>項目（向き）</code> で常設（O33 ラベル。向きボタンなし）。
+        マイフィールド PC はセレクトを出さずヘッダーのみ。
+        エリアは <code>#area-sort</code> をフィルタから外し同じ結果行へ。SP は列オプション常設。PC は更新日セレクトのみ（列はヘッダー）。
+        <code>updated_asc</code> を受理する。パブリックは並び替え対象外のまま。
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/sp-field-list-filter-after.png" alt="マイフィールド SP。フィルタに並び順は無くマップがある">
+          <figcaption>sp-field-list-filter-after.png — ▲ 再診断。フィルタは絞り込みと都道府県のみ（並び順は置かない）</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-field-list-sort-after.png" alt="マイフィールド SP。カード直前に件数と並び替えセレクト">
+          <figcaption>sp-field-list-sort-after.png — ▲ 再診断。マップの下・カード直前に「全 4 件」と更新日（新しい順）</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-area-sort-results-row-after.png" alt="エリア一覧 SP。フィルタではなく結果行で並び替え">
+          <figcaption>sp-area-sort-results-row-after.png — ▲ 再診断。フィルタは名称のみ。カード直前に「全 2 件」と結果行セレクト</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-field-list-header-only-after.png" alt="マイフィールド PC。表ヘッダーのみでセレクトは無い">
+          <figcaption>pc-field-list-header-only-after.png — ▲ 再診断 PC 1280。セレクトは非表示。名称〜平均サイズのヘッダー ↕</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-area-sort-results-row-after.png" alt="エリア一覧 PC。ヘッダーソートと右の更新日セレクト">
+          <figcaption>pc-area-sort-results-row-after.png — ▲ 再診断 PC 1280。列はヘッダー。更新日セレクトは結果行右（列候補は出さない）</figcaption>
+        </figure>
+      </div>
+    </details>
+    </article>
+
+    <article class="issue" id="ft-o34" data-resolved-on="2026-09-17">
+      <details>
+        <summary>
+      <h2>
+        <span class="badge sev-med">MEDIUM</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O34 — SP で表がカードになる一覧と、表のままの一覧が混在する
+      </h2>
+        </summary>
+      <p class="label">画面: 探す／マイタックル／フィールド系／釣行／申請（SP カード）。
+        観点: 同類画面の一貫性・視認性・初回ユーザー・表の密度。関連
+        <a href="#ft-o19">FT-O19</a>、
+        <a href="#ft-o35">FT-O35</a>（探すのカード時並び替え配置）、
+        <a href="#ft-o36">FT-O36</a>（フィールド系 SP の並び替え到達。2026-09-18 案Aで RESOLVED）。
+        同日、ユーザーがフィールド系に案B（カード）を採用。続けて釣行一覧・申請状況も案B採用。
+        製品実装・SP/PC 再診断して RESOLVED。案A（主列表）は不採用。
+        管理者のマスタ投稿レビューと MyPokedex 図鑑／パーティは表のまま（対象外）。</p>
+
+      <h3>改善前の事象</h3>
+      <p>
+        同じ「行が並ぶ一覧」でも、SP（767px 以下）の見せ方が画面で違う。
+        探す・マイタックル・フィールド系（マイフィールド／パブリック／フィールド詳細のエリア）は表を隠しカードになる。
+        釣行・申請状況は表のまま横スクロールする。
+        釣果と水位はもともとカード専用で、表→カードの切替ではない。
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/sp-rod-models-cards.png" alt="ロッドを探す。SP でカード一覧">
+          <figcaption>sp-rod-models-cards.png — ▲ 探す。SP では表が消えカードになる</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-holding-rod-cards.png" alt="マイタックル ロッド一覧。SP でカード">
+          <figcaption>sp-holding-rod-cards.png — ▲ マイタックル。探すと同じカード</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-field-list-table.png" alt="マイフィールド。変更前は SP でも表と横スクロール">
+          <figcaption>sp-field-list-table.png — ▲ 変更前。マイフィールドはカードにならず表＋横スクロール</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-trip-list-table.png" alt="釣行一覧。SP でも表">
+          <figcaption>sp-trip-list-table.png — ▲ 釣行一覧。日付グループの表のまま</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-catch-list-cards.png" alt="釣果一覧。カード専用">
+          <figcaption>sp-catch-list-cards.png — ▲ 釣果一覧。表がなく常時カード（切替ではない）</figcaption>
+        </figure>
+        <figure>
+          <img src="mypokedex/sp-mp-dex-table.png" alt="MyPokedex 図鑑。SP でも表">
+          <figcaption>sp-mp-dex-table.png — ▲ MP 図鑑。仕様どおり表のまま（カード化しない）</figcaption>
+        </figure>
+      </div>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            カード切替: <code>/tackle/rod-models/</code>（リール／プラグ／ワームを探すも同型）、
+            <code>/tackle/</code>（マイタックル保有）、
+            <code>/field-area/list</code>、
+            <code>/public-fields</code>、
+            フィールド詳細のエリア表。
+            カード切替（2026-09-17 釣行／申請も追加）: <code>/trip</code>、
+            <code>/master-submissions</code>。
+            常時カード: <code>/catch</code>、<code>/water-level</code></li>
+          <li><strong>位置:</strong> フィルタ／並び替えの下の一覧本体。SP 390</li>
+          <li><strong>部品／セレクタ:</strong>
+            <code>.master-list-table-wrap</code>（SP で <code>display:none</code>）、
+            <code>.master-model-cards</code>／<code>.holding-list-cards</code>、
+            <code>.table-scroll</code>＋<code>table.ft-table</code>（<code>min-width: 700px</code>）</li>
+          <li><strong>対象外:</strong>
+            未ログイン LP・ログイン／規約（表がない）。
+            MyPokedex 図鑑／パーティ（表維持が仕様。比較が目的なのでカード化しない）。
+            MP 管理者ユーザー一覧（表。ai-user では 404。テンプレ <code>admin/users.html</code> の <code>.pkTable</code>）。
+            FT 管理者の審査・ユーザー・メーカー一覧（作業用の表。カード化しない）。
+            探すを表に戻す案（<a href="#ft-o19">FT-O19</a> 案A 不採用済み）</li>
+        </ul>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>
+        同類画面の一貫性・初回ユーザー。探すでカードに慣れたあと、釣行や申請に行くと
+        同じ「一覧」なのに横スクロールの表になる。理由が画面上に無い。
+        フィールド系は 2026-09-17 に案Bを採用し、SP は探すと同型カード（
+        <code>list_sp_cards.css</code> の <code>.master-list-table-wrap</code> を 767px 以下で隠す）。
+        残件だった釣行・申請も 2026-09-17 に同じカード DOM を足した。
+        根本原因は、一覧ごとに狭幅カードを足していなかったこと。
+      </p>
+      <table class="compare" id="ft-o34-layout-compare">
+        <caption>SP 一覧の見せ方（2026-09-17 カード切替後）</caption>
+        <thead>
+          <tr>
+            <th>画面</th>
+            <th>SP</th>
+            <th>PC</th>
+            <th>画面目的</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>探す・マイタックル</th>
+            <td>カード（表は隠す）</td>
+            <td>表</td>
+            <td>スキャンして1件を開く</td>
+          </tr>
+          <tr>
+            <th>マイフィールド・パブリック・エリア</th>
+            <td>カード（表は隠す）</td>
+            <td>表</td>
+            <td>1件を選んで詳細へ（件数比較はカード meta）</td>
+          </tr>
+          <tr>
+            <th>釣行・申請</th>
+            <td>カード（表は隠す）</td>
+            <td>表</td>
+            <td>1件を選んで詳細へ（釣行は日付見出し）</td>
+          </tr>
+          <tr>
+            <th>釣果・水位</th>
+            <td>カード（表なし）</td>
+            <td>カード</td>
+            <td>1件の記録を見る</td>
+          </tr>
+          <tr>
+            <th>MP 図鑑／パーティ</th>
+            <td>表</td>
+            <td>表</td>
+            <td>種族値などの比較（カード化しない）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>改善策</h3>
+      <p>
+        画面目的で分ける。探す／マイタックルの SP カードは維持する（FT-O19）。
+        ユーザー指示でフィールド系・釣行・申請は案B（カード）を採用した。案A（主列表）は不採用。
+        管理者の審査一覧と MP 図鑑／パーティは表のまま（比較作業・仕様）。
+      </p>
+      <table class="compare">
+        <caption>マイフィールド SP の表示項目</caption>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>現状</th>
+            <th>案A</th>
+            <th>案B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>名称</th>
+            <td>表（見える）</td>
+            <td>表</td>
+            <td>カード見出し</td>
+          </tr>
+          <tr>
+            <th>所在地</th>
+            <td>表（見える）</td>
+            <td>表</td>
+            <td>カード副題</td>
+          </tr>
+          <tr>
+            <th>釣果数・最大・平均</th>
+            <td>表（横スクロール先）</td>
+            <td>表（SP でも見える）</td>
+            <td>カード meta（横並び比較は弱い）</td>
+          </tr>
+          <tr>
+            <th>緯度・経度・メモ・釣果一覧列</th>
+            <td>表（横スクロール先）</td>
+            <td>SP では出さない（詳細で見る）</td>
+            <td>出さない</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th></th>
+            <th>案A</th>
+            <th>案B <span class="rec-tag">採用</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>違い</th>
+            <td>比較一覧は表維持。SP は主列だけ。フィールドでは未採用</td>
+            <td>フィールド系も探すと同じカード</td>
+          </tr>
+          <tr>
+            <th>メリット</th>
+            <td>件数を列で比べられる。横スクロールが減る</td>
+            <td>探すと見た目が揃う。フィールド系で採用</td>
+          </tr>
+          <tr>
+            <th>デメリット</th>
+            <td>探すとの見た目差は残る。フィールドでは不採用</td>
+            <td>列での件数比較は弱い。フィールド／釣行／申請で採用</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sample-link">
+        <a href="fishtrack/samples/ft-o34-a.html">サンプル HTML（案A・フィールドでは不採用）</a>／
+        <a href="fishtrack/samples/ft-o34-b.html">サンプル HTML（案B・フィールド／釣行／申請で採用）</a>
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/sample-ft-o34-a.png" alt="上は横スクロールの全列表、下は主列だけの表">
+          <figcaption>sample-ft-o34-a.png — 上は変更前、下の変更後は表のまま主列だけ</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sample-ft-o34-b.png" alt="上は表、下はフィールドのカード">
+          <figcaption>sample-ft-o34-b.png — 上は変更前、下の変更後はカード（フィールド系は採用）</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-public-fields-table.png" alt="パブリックフィールドも SP で表">
+          <figcaption>sp-public-fields-table.png — ▲ 変更前。パブリックも表のまま</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-water-level-cards.png" alt="水位は常時カード">
+          <figcaption>sp-water-level-cards.png — ▲ 水位は表がない常時カード。切替対象外</figcaption>
+        </figure>
+        <figure>
+          <img src="mypokedex/sp-mp-party-table.png" alt="MyPokedex パーティ。SP でも表">
+          <figcaption>sp-mp-party-table.png — ▲ MP パーティ。表維持（カード化しない）</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-field-list-after.png" alt="マイフィールド。SP でカード一覧">
+          <figcaption>sp-field-list-after.png — ▲ 再診断。マイフィールド SP は探すと同型カード（案B）</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-public-fields-after.png" alt="パブリックフィールド。SP でカード">
+          <figcaption>sp-public-fields-after.png — ▲ 再診断。パブリック SP は登録ピル＋水位 meta のカード</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-field-detail-areas-after.png" alt="フィールド詳細のエリア一覧。SP で並び順セレクト">
+          <figcaption>sp-field-detail-areas-after.png — ▲ 再診断。エリアは並び順セレクトを残す。ai-user にはエリア 0 件</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/pc-field-list-after.png" alt="マイフィールド。PC では従来の表">
+          <figcaption>pc-field-list-after.png — ▲ 再診断。PC 1280 は表のまま（カードは非表示）</figcaption>
+        </figure>
+      </div>
+
+      <h3>実施した改善</h3>
+      <p>
+        釣行一覧と申請状況も <code>list_sp_cards.css</code> の 767px 切替にした。
+        釣行は日付見出し＋フィールド見出しのカード。申請は対象＋状況ピル。カード全体タップで詳細。
+        PC は従来の表（申請は詳細列）。管理者のマスタ投稿レビューは表のまま。
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/sp-trip-list-after.png" alt="釣行一覧。SP で日付見出しとカード">
+          <figcaption>sp-trip-list-after.png — ▲ 再診断。釣行 SP は日付見出し＋カード</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-submission-list-after.png" alt="申請状況。SP で対象と状況ピルのカード">
+          <figcaption>sp-submission-list-after.png — ▲ 再診断。申請 SP は対象＋状況ピルのカード</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-trip-list-after.png" alt="釣行一覧。PC では従来の表">
+          <figcaption>pc-trip-list-after.png — ▲ 再診断。PC 1280 の釣行は日付グループの表</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-submission-list-after.png" alt="申請状況。PC では従来の表">
+          <figcaption>pc-submission-list-after.png — ▲ 再診断。PC 1280 の申請は詳細列のある表</figcaption>
+        </figure>
+      </div>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o33" data-resolved-on="2026-09-17">
+      <details>
+        <summary>
+      <h2>
+        <span class="badge sev-med">MEDIUM</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O33 — 同じ並びの意図なのに画面ごとに別名
+      </h2>
+        </summary>
+      <p class="label">画面: マイフィールド、探す、マイタックル、MP 管理者ユーザー一覧（比較）。
+        観点: 初回ユーザー・同類画面の一貫性。関連 <a href="#ft-o32">FT-O32</a>。
+        2026-09-17 OPEN。同日 案A 採用・製品実装・再診断して RESOLVED。</p>
+
+      <h3>改善前の事象</h3>
+      <p>
+        並び替えプルダウンの選択肢を横並びにすると、同じ意図でも画面ごとに語が違う。
+        マイフィールドは並び順セレクトを置かず、列向きはヘッダー
+        （更新日並べ替えは出さない。<a href="#ft-o32">FT-O32</a> RESOLVED）。
+        マイタックルのセレクトも探すと同じく、表表示はプリセットのみ。
+        カード表示のときだけ列名（昇順／降順）。向きボタンなし。
+        探す（管理者）の「最近更新された順」は、エリア一覧の「更新日（新しい順）」と同じ日付の新しい順である。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-rod-search-sort-options.png" alt="改善前。ロッドを探す。プリセットは標準と人気順">
+          <figcaption>pc-rod-search-sort-options.png — ▲ 改善前。探す（一般）。プリセットは標準／人気順</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-holding-sort-options.png" alt="改善前。マイタックル。釣果が多い順">
+          <figcaption>pc-holding-sort-options.png — ▲ 改善前。マイタックル。プリセットに「釣果が多い順」</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="mypokedex/pc-mp-admin-sort-options.png" alt="MyPokedex管理者。ソートは登録日と最終ログイン">
+          <figcaption>pc-mp-admin-sort-options.png — ▲ MP 管理者。日付キー＋新しい順／古い順で一貫（比較）</figcaption>
+        </figure>
+      </div>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/field-area/list</code>（セレクトなし）、
+            <code>/field-area/field/{id}</code>、
+            <code>/tackle/rod-models/</code>（リール／プラグ／ワームも同型）、
+            <code>/tackle/reel/</code>（ロッド保有も同型）、
+            比較: <code>/admin/users</code>（MP）</li>
+          <li><strong>位置:</strong> 並び替えバーの項目セレクト（プリセット optgroup と列）。
+            フィールドはセレクトなし（列向きはヘッダー）。
+            エリアの常設は更新日のみ（列向きはヘッダー）。
+            マイタックルの常設は、表表示がプリセットのみ。カード表示のときだけ列
+            （向きボタンなし。列は JS が thead から足す）</li>
+          <li><strong>部品／セレクタ:</strong>
+            <code>#area-sort</code>、
+            <code>#master-sort-preset</code>、
+            <code>#holding-sort-preset</code>、
+            MP <code>select[name=sort]</code>／<code>select[name=dir]</code></li>
+          <li><strong>対象外:</strong>
+            向き語の混在そのもの（<a href="#ft-o32">FT-O32</a>）。
+            探すの列名（メーカー、全長など）は thead 由来で本事象ではない。
+            「標準」は既定プリセットの呼称として残してよい（別名問題の主因ではない）。
+            「人気順」は全ユーザー保有の集計であり釣果数ではない（改名しない）。
+            MP 図鑑はプルダウンがない。LP／ログイン／規約は並べ替え UI なし。</li>
+        </ul>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>
+        同類画面の一貫性。フィールドのヘッダー「釣果数」を覚えたあと、マイタックルでは
+        「釣果が多い順」と語が違う。更新日も、探すの「最近更新された順」と
+        エリアの「更新日（新しい順）」が並ぶと、別の並びだと誤解しやすい。
+      </p>
+      <table class="compare" id="ft-o33-option-compare">
+        <caption>並び替えプルダウンの選択肢（改善前の横並び）</caption>
+        <thead>
+          <tr>
+            <th>意図</th>
+            <th>マイフィールド</th>
+            <th>探す（一般）</th>
+            <th>探す（管理者）</th>
+            <th>マイタックル</th>
+            <th>MP 管理者</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>既定</th>
+            <td>セレクトなし（内部は更新日時の新しい順）</td>
+            <td>標準</td>
+            <td>標準</td>
+            <td>標準</td>
+            <td>登録日＋新しい順</td>
+          </tr>
+          <tr>
+            <th>日付が新しい</th>
+            <td>なし</td>
+            <td>なし（一般非表示）</td>
+            <td class="changed">最近更新された順</td>
+            <td>なし</td>
+            <td>登録日／最終ログイン＋新しい順</td>
+          </tr>
+          <tr>
+            <th>件数が多い</th>
+            <td>ヘッダー「釣果数」</td>
+            <td>人気順（全ユーザー集計。釣果数ではない）</td>
+            <td>人気順</td>
+            <td class="changed">釣果が多い順（列「釣果数」はヘッダー）</td>
+            <td>なし</td>
+          </tr>
+          <tr>
+            <th>向きの出し方</th>
+            <td>表ヘッダー</td>
+            <td>表はヘッダー。SP カード時はセレクト内「列名（昇順／降順）」。向きボタンなし</td>
+            <td>同左</td>
+            <td>同左</td>
+            <td>並び順セレクト（新しい順／古い順）</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>改善策</h3>
+      <p>
+        案A: 同じ意図はフィールドの「項目（向き）」形に揃える。
+        探す（管理者）は「更新日（新しい順）」、マイタックルのプリセットは「釣果数（多い順）」。
+        列の向きはボタンにしない。表はヘッダー、SP カード時はセレクト内「列名（昇順／降順）」。
+        FT-O31 案B には戻さない。
+      </p>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th></th>
+            <th>案A <span class="rec-tag">採用</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>違い</th>
+            <td>プリセットの文言だけをフィールドに寄せる。部品構成は現行のまま</td>
+          </tr>
+          <tr>
+            <th>メリット</th>
+            <td>画面をまたいでも同じ並びだと読める。マイタックルの二重表現が減る</td>
+          </tr>
+          <tr>
+            <th>デメリット</th>
+            <td>「最近更新された順」「釣果が多い順」の口語が少し硬くなる</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sample-link"><a href="fishtrack/samples/ft-o33-a.html">サンプル HTML（案A）</a></p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/sample-ft-o33-a.png" alt="上は釣果が多い順、下は釣果数（多い順）に揃えたプリセット">
+          <figcaption>sample-ft-o33-a.png — 上は変更前、下は変更後</figcaption>
+        </figure>
+      </div>
+
+        <h3>実施した改善</h3>
+        <p>2026-09-17 に案Aを製品実装した。
+          探す（管理者）のプリセットを「最近更新された順」から「更新日（新しい順）」へ変更
+          （ロッド／リール／プラグ／ワームのマスタ一覧）。
+          マイタックルのプリセットを「釣果が多い順」から「釣果数（多い順）」へ変更。
+          「人気順」は全ユーザー保有の集計のため改名していない。
+          向きボタンは追加していない。表はヘッダー、SP カード時はセレクト内「列名（昇順／降順）」。
+          仕様 <code>05_ui_ux.md</code>・<code>10_testing.md</code> を同期済み。
+          新規 E2E 必須シナリオ ID は追加していない（既存並びのラベル変更）。</p>
+        <h3>再診断</h3>
+        <p>2026-09-17、ローカル Docker（
+          <code>http://localhost:5001/tackle/</code>、
+          <code>/tackle/rod-models/?sort=updated_at:desc</code>）を PC 1280 で確認した。
+          マイタックルのプリセットに「釣果数（多い順）」。
+          探す（管理者）の閉じたセレクト面が「更新日（新しい順）」。
+          エリア一覧はもともと「更新日（新しい順）」。
+          事象は解消。MyPokedex 管理者は日付キー＋新しい／古いで一貫（新規 OPEN なし）。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-holding-sort-after.png" alt="改善後。マイタックル。釣果数（多い順）">
+            <figcaption>pc-holding-sort-after.png — ▲ 改善後。プリセットに「釣果数（多い順）」</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-rod-search-sort-admin-after.png" alt="改善後。探す管理者。更新日（新しい順）">
+            <figcaption>pc-rod-search-sort-admin-after.png — ▲ 改善後。管理者プリセットが「更新日（新しい順）」</figcaption>
+          </figure>
+        </div>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o35" data-resolved-on="2026-09-17">
+      <details>
+        <summary>
+      <h2>
+        <span class="badge sev-med">MEDIUM</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O35 — SP の並び替えがフル幅の常設フォーム欄になっている
+      </h2>
+        </summary>
+      <p class="label">画面: 探す／マイタックル（SP カード）。
+        観点: 視認性・操作性・初回ユーザー。関連
+        <a href="#ft-o34">FT-O34</a>（カード表示）、
+        <a href="#ft-o33">FT-O33</a>（選択肢の文言）。
+        2026-09-17 OPEN。同日 案A 採用・製品実装・再診断して RESOLVED。案B・案Cは不採用。</p>
+
+      <h3>改善前の事象</h3>
+      <p>
+        767px 以下では、折りたたんだ「フィルタ」の直下に、ラベル「項目」付きの並び替えセレクトが
+        カードの上へ常時フル幅で置かれる。
+        CSS は <code>.holding-sort-bar { width: 100%; align-items: stretch }</code> と
+        <code>select { width: 100% }</code>。
+        探す（ロッド）もマイタックル（リール）も同じ。
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/sp-holding-sort-fullwidth.png" alt="マイタックル SP。フィルタの下に項目ラベルと横幅いっぱいの並び替え">
+          <figcaption>sp-holding-sort-fullwidth.png — ▲ マイタックル SP。並び替えがカードの上でフル幅</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-rod-search-sort-fullwidth.png" alt="ロッドを探す SP。同じフル幅の並び替え">
+          <figcaption>sp-rod-search-sort-fullwidth.png — ▲ 探す SP。同じ常設フル幅セレクト</figcaption>
+        </figure>
+      </div>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/tackle/</code>（ロッド／リール／プラグ／ワーム保有）、
+            <code>/tackle/rod-models/</code>、
+            <code>/tackle/reel-models/</code>、
+            <code>/lure-masters/</code>（プラグ／ワーム）</li>
+          <li><strong>位置:</strong> <code>.holding-list-toolbar</code> 内、
+            折りたたみフィルタの直後〜カード／チップの直前。
+            ラベル「項目」＋ <code>#holding-sort-preset</code> または
+            <code>#master-sort-preset</code></li>
+          <li><strong>部品／セレクタ:</strong>
+            <code>nav.holding-sort-bar</code>、
+            <code>select[data-list-sort-key]</code>。
+            マクロ <code>list_sort_bar</code>。
+            SP 上書きは <code>fishtrack_tail_filters.css</code> の
+            <code>@media (max-width: 767px)</code></li>
+          <li><strong>対象外:</strong>
+            PC（768px 以上）のツールバー右寄せ。
+            マイフィールド（セレクトなし。ヘッダーのみ）。
+            選択肢の別名（<a href="#ft-o33">FT-O33</a>）。
+            SP で表かカードか（<a href="#ft-o34">FT-O34</a>）。
+            向きボタン（不採用済み）。
+            MP 図鑑／パーティ（表ヘッダー）。
+            MP 管理者ユーザー（フィルタ内の sort／dir）。
+            LP／ログイン／規約。</li>
+        </ul>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>
+        視認性: 並び替えが主入力欄に見え、カードが一段下がる。
+        操作性: フィルタは折りたたみ済みなのに、並び替えだけ常時フル幅で縦を使う。
+        初回ユーザー: 「項目」はフォームの必須欄に読め、一覧の副操作だと分かりにくい。
+      </p>
+
+      <h3>改善策</h3>
+      <p>
+        SP では並び替えをフォーム欄にしない。カード直前の短いコントロールにする。
+        カード時だけ列名（昇順／降順）を出す仕様はそのまま。向きボタンは出さない。
+      </p>
+      <table class="compare" id="ft-o35-items">
+        <caption>表示項目（現状と同じものを案ごとに）</caption>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>現状</th>
+            <th>案A <span class="rec-tag">採用</span></th>
+            <th>案B</th>
+            <th>案C</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>フィルタ折りたたみ</th>
+            <td>あり</td>
+            <td>あり（独立）</td>
+            <td>あり（並び替えと同じ行）</td>
+            <td>あり（独立）</td>
+          </tr>
+          <tr>
+            <th>並び替えラベル「項目」</th>
+            <td>あり</td>
+            <td>なし</td>
+            <td>なし</td>
+            <td>なし</td>
+          </tr>
+          <tr>
+            <th>件数</th>
+            <td>ページネーションのみ</td>
+            <td>上段の結果行にも</td>
+            <td>ページネーションのみ</td>
+            <td>上段の結果行にも</td>
+          </tr>
+          <tr>
+            <th>候補の出し方</th>
+            <td>フル幅ネイティブ select</td>
+            <td>内容幅 select</td>
+            <td>内容幅 select</td>
+            <td>短いボタン＋シート</td>
+          </tr>
+          <tr>
+            <th>列の昇順／降順</th>
+            <td>カード時のみセレクト内</td>
+            <td>同左</td>
+            <td>同左</td>
+            <td>シート内（カード時）</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th></th>
+            <th>案A <span class="rec-tag">採用</span></th>
+            <th>案B</th>
+            <th>案C</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>違い</th>
+            <td>件数と今の並びをカード直前の1行に置く</td>
+            <td>フィルタサマリーの右に内容幅セレクト</td>
+            <td>短いボタン。タップで候補シート</td>
+          </tr>
+          <tr>
+            <th>メリット</th>
+            <td>カードが先に見える。今の並びが読める。発見しやすい</td>
+            <td>縦の段が一番減る</td>
+            <td>列候補が多くても閉じた高さは最小</td>
+          </tr>
+          <tr>
+            <th>デメリット</th>
+            <td>件数表示がページネーションと二重になる</td>
+            <td>長いプリセット名がフィルタと横で窮屈。件数は上に出ない</td>
+            <td>候補を出すのに1タップ増える。実装が重い</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sample-link">
+        <a href="fishtrack/samples/ft-o35-a.html">サンプル HTML（案A・推奨）</a>／
+        <a href="fishtrack/samples/ft-o35-b.html">サンプル HTML（案B）</a>／
+        <a href="fishtrack/samples/ft-o35-c.html">サンプル HTML（案C）</a>
+      </p>
+      <div class="shots">
+        <figure>
+          <img src="fishtrack/sample-ft-o35-a.png" alt="上はフル幅セレクト、下は件数と内容幅の並び">
+          <figcaption>sample-ft-o35-a.png — 上は変更前、下の変更後は結果行（推奨）</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sample-ft-o35-b.png" alt="上はフル幅、下はフィルタと同じ行の並び替え">
+          <figcaption>sample-ft-o35-b.png — 上は変更前、下の変更後はフィルタと同じ行</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sample-ft-o35-c.png" alt="上はフル幅、下は短いボタンと開いたシート">
+          <figcaption>sample-ft-o35-c.png — 上は変更前、下の変更後は短いボタン＋シート</figcaption>
+        </figure>
+      </div>
+
+        <h3>実施した改善</h3>
+        <p>2026-09-17 に案Aを製品実装した。
+          探す／マイタックルの共通マクロ <code>list_sort_bar</code> を
+          <code>.list-results-meta</code> で包み、件数（<code>全 N 件</code>）と並び替えセレクトを1行にした。
+          SP（767px 以下）ではラベル「項目」を隠し、セレクトは内容幅（最大 14rem）。
+          PC では件数を出さず、バーはツールバー右端。
+          ロッド／リール探すの Ajax 再取得では結果行の件数もページャーと同期する。
+          仕様 <code>05_ui_ux.md</code>・<code>07_api_routing.md</code>・<code>10_testing.md</code> を同期済み。
+          新規 E2E 必須シナリオ ID は追加していない（既存並び替えバーのレイアウト修正）。</p>
+        <h3>再診断</h3>
+        <p>2026-09-17、ローカル Docker（
+          <code>http://localhost:5001/tackle/?kind=reel</code>、
+          <code>/tackle/rod-models/</code>、
+          <code>/lure-masters/plug</code>）を SP 390／PC 1280 で確認した。
+          SP: 件数と内容幅セレクトがカード直前の1行。ラベル「項目」は非表示。セレクト幅 224px（ビューポート 390）。
+          探すの件数は Ajax 後も一致（例: 全 216 件）。
+          PC: 件数は <code>display:none</code>、ラベル「項目」は表示、バーはツールバー右。
+          事象は解消。MyPokedex はカード上の常設フル幅セレクトなし（新規 OPEN なし）。</p>
+        <div class="shots">
+          <figure>
+            <img src="fishtrack/sp-holding-sort-after.png" alt="改善後。マイタックル SP。件数と内容幅の並び替え">
+            <figcaption>sp-holding-sort-after.png — ▲ 改善後。全 1 件と内容幅セレクト</figcaption>
+          </figure>
+          <figure>
+            <img src="fishtrack/sp-rod-search-sort-after.png" alt="改善後。ロッドを探す SP。件数と内容幅の並び替え">
+            <figcaption>sp-rod-search-sort-after.png — ▲ 改善後。全 216 件と内容幅セレクト</figcaption>
+          </figure>
+        </div>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-h26" data-resolved-on="2026-09-17">
+      <details>
+        <summary>
+      <h2>
+        <span class="badge sev-med">MEDIUM</span>
+        <span class="badge status-resolved">RESOLVED</span>
         <span class="badge badge-prod-ft">FishTrack</span>
         FT-H26 — ユーザー登録の見出しが「ユーザー登／録」に折れる
       </h2>
+        </summary>
       <p class="label">画面: ユーザー登録（PC・公開面カード）。観点: 視認性・初回ユーザー。
-        2026-09-16 OPEN。</p>
+        2026-09-16 OPEN。2026-09-17 案A 採用・製品実装・再診断して RESOLVED。</p>
 
-      <h3>事象</h3>
+      <h3>改善前の事象</h3>
       <p>
         <code>/auth/register</code> のカード見出し「ユーザー登録」が2行になり、最後の「録」だけが次行へ落ちる。
         説明文「FishTrack 専用のアカウントを作成します。」は見出しの右に並ぶ。
@@ -431,13 +1359,14 @@
       <h3>対象箇所</h3>
       <div class="where">
         <ul>
-          <li><strong>URL／画面:</strong> <code>/auth/register</code>（ユーザー登録）</li>
+          <li><strong>URL／画面:</strong> <code>/auth/register</code>（ユーザー登録）。
+            同じ構造のパスワード再設定依頼／再設定、ログイン後のパスワード変更・退会も含む</li>
           <li><strong>位置:</strong> カード先頭の見出し行。フォーム欄の上</li>
           <li><strong>部品／セレクタ:</strong>
             <code>.card-header</code> 内の <code>h2</code> と <code>p.hint</code></li>
           <li><strong>対象外:</strong>
-            767px 以下は <code>.card-header</code> が縦積みのため、同じ折返しは起きない。
-            ログイン見出し「ログイン」は4字で、同レイアウトでも折れていない。</li>
+            ログイン見出し「ログイン」（4字・説明なし）。
+            MyPokedex 新規登録は <code>h1</code> 単独で、同じ折返しは起きない。</li>
         </ul>
       </div>
 
@@ -458,7 +1387,7 @@
         <thead>
           <tr>
             <th></th>
-            <th>案A（推奨）</th>
+            <th>案A <span class="rec-tag">採用</span></th>
           </tr>
         </thead>
         <tbody>
@@ -483,12 +1412,307 @@
           <figcaption>sample-ft-h26-a.png — 上は変更前、下は変更後</figcaption>
         </figure>
       </div>
-    </article>
-    </section>
 
-<section id="resolved-issues" aria-labelledby="resolved-issues-title">
-      <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
-      <p class="section-lead">再診断済み。各課題はアコーディオン（既定クローズ）。解決日から1ヶ月経過した課題は削除する。</p>
+        <h3>実施した改善</h3>
+        <p>2026-09-17 に案Aを製品実装した。
+          認証カードの見出しと説明を内側の <code>div</code> にまとめ（釣果登録と同じ）、
+          <code>public_layout.css</code> で公開面 <code>.card-header</code> を縦積み・見出し nowrap。
+          仕様 <code>05_ui_ux.md</code> 5-16 と <code>10_testing.md</code> を同期済み。
+          新規 E2E 必須シナリオ ID は追加していない（既存登録フローのレイアウト修正）。</p>
+        <h3>再診断</h3>
+        <p>2026-09-17、ローカル Docker（
+          <code>http://localhost:5001/auth/register</code>）を PC 1440／SP 390 で確認した。
+          <code>h2</code> 高さ 29px（PC）／26px（SP）。1行。説明は見出しの下。
+          <code>flex-direction: column</code>。<code>/auth/reset-request</code> の長い見出しも1行。
+          MyPokedex 新規登録は同種の折返しなし（新規 OPEN なし）。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-register-heading-after.png" alt="改善後 PC。ユーザー登録が見出し1行">
+            <figcaption>pc-register-heading-after.png — ▲ 改善後。見出し1行、説明はその下</figcaption>
+          </figure>
+          <figure>
+            <img src="fishtrack/sp-register-heading-after.png" alt="改善後 SP。ユーザー登録が見出し1行">
+            <figcaption>sp-register-heading-after.png — ▲ 改善後 SP。見出し1行、説明はその下</figcaption>
+          </figure>
+        </div>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o31" data-resolved-on="2026-09-17">
+      <details>
+        <summary>
+      <h2>
+        <span class="badge sev-med">MEDIUM</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O31 — マイフィールドの「並び順」が表ヘッダーと食い違う
+      </h2>
+        </summary>
+      <p class="label">画面: マイフィールド一覧・フィールド詳細のエリア一覧（PC／SP）。観点: 操作性・視認性・初回ユーザー。
+        2026-09-17 OPEN。同日 案A 採用・製品実装・再診断して RESOLVED。案Bは不採用。</p>
+
+      <h3>改善前の事象</h3>
+      <p>
+        表ヘッダー「釣果数」で降順にすると先頭は亀山湖（7件）になり、列は ▼ になる。
+        同じ画面の「並び順」セレクトは <code>updated_desc</code>「更新日（新しい順）」のまま。
+        非既定のため「クリア」は出る。セレクトの候補は更新日と名称の4択だけで、
+        所在地・緯度経度・釣果数・最大／平均サイズは選べない。
+        フィールド詳細の <code>#area-sort</code> も同じ4択。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-field-list-sort-select-mismatch.png" alt="改善前。並び順が更新日のままクリアが出ている">
+          <figcaption>pc-field-list-sort-select-mismatch.png — ▲ 改善前。URL は釣果数降順なのにセレクトは更新日</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-field-list-sort-thead-catch.png" alt="改善前。表ヘッダーの釣果数が▼で亀山湖が7件先頭">
+          <figcaption>pc-field-list-sort-thead-catch.png — ▲ 改善前。表は釣果数降順</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-field-list-sort-select-mismatch.png" alt="改善前 SP。並び順は更新日のまま">
+          <figcaption>sp-field-list-sort-select-mismatch.png — ▲ 改善前 SP。釣果数は表の横スクロール先</figcaption>
+        </figure>
+      </div>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong> <code>/field-area/list</code>（マイフィールド）、
+            <code>/field-area/field/&lt;id&gt;</code>（フィールド詳細のエリア一覧）</li>
+          <li><strong>位置:</strong> フィルタ行の「並び順」と、その下の表ヘッダー</li>
+          <li><strong>部品／セレクタ:</strong>
+            <code>#field-sort</code>／<code>#area-sort</code>、
+            <code>thead a.table-sort[data-sort-key]</code>、
+            <code>th.is-sorted-desc</code></li>
+          <li><strong>対象外:</strong> タックルを探す／マイタックルの
+            <code>[data-list-sort-bar]</code>（<a href="#ft-o19">FT-O19</a> で項目＋向き済み）。
+            パブリックフィールド一覧（並べ替え UI なし）。
+            MyPokedex 図鑑ヘッダーソート。</li>
+        </ul>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>
+        操作性・視認性。今の並びをセレクトが嘘で示す。クリアを押すと本当に更新日へ戻るので、
+        意図と違う操作になる。SP では釣果数ヘッダーが画面外なので、セレクトが主操作なのに列キーが無い。
+        根本原因はセレクトがレガシー4択（<code>updated_desc</code> 等）のままで、
+        表ヘッダーの <code>{列}:asc|desc</code> を selected にできないこと。
+      </p>
+
+      <h3>改善策</h3>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th></th>
+            <th>案A <span class="rec-tag">採用</span></th>
+            <th>案B（不採用）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>違い</th>
+            <td>既存の「並び順」セレクトに表と同じ列キーを足し、選択中を同期する</td>
+            <td>セレクトを探す系と同じ項目＋向きバーに置き換える</td>
+          </tr>
+          <tr>
+            <th>メリット</th>
+            <td>DOM 変更が小さい。PC の表ヘッダーはそのまま。SP でも同じキーを選べる</td>
+            <td>探す／マイタックルと操作が揃う。向きが独立</td>
+          </tr>
+          <tr>
+            <th>デメリット</th>
+            <td>候補が増えてセレクトが長くなる。向きはラベルに含める</td>
+            <td>フィールド画面だけバーが増える。更新日プリセットと列の二段になる</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="compare" id="ft-o31-items-a">
+        <caption>案A 項目×画面</caption>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>マイフィールド</th>
+            <th>フィールド詳細エリア</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>並び順セレクト</th>
+            <td>更新日・名称・所在地・釣果数・最大／平均サイズ</td>
+            <td>更新日・エリア名・釣果数・最大／平均サイズ</td>
+          </tr>
+          <tr>
+            <th>表ヘッダー</th>
+            <td>現状どおり残す。選択中はセレクトと一致</td>
+            <td>同左</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="compare" id="ft-o31-items-b">
+        <caption>案B 項目×画面（不採用）</caption>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>マイフィールド</th>
+            <th>フィールド詳細エリア</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>項目セレクト</th>
+            <td>更新日プリセット＋列（名称・所在地・釣果数等）</td>
+            <td>更新日プリセット＋列（エリア名・釣果数等）</td>
+          </tr>
+          <tr>
+            <th>向き</th>
+            <td>列選択時のみ昇順／降順</td>
+            <td>同左</td>
+          </tr>
+          <tr>
+            <th>表ヘッダー</th>
+            <td>PC は残す。SP はバーが主操作</td>
+            <td>同左</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="sample-link"><a href="fishtrack/samples/ft-o31-a.html">サンプル HTML（案A）</a> ／
+        <a href="fishtrack/samples/ft-o31-b.html">サンプル HTML（案B）</a></p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/sample-ft-o31-a.png" alt="上は更新日のまま、下は釣果数が多い順">
+          <figcaption>sample-ft-o31-a.png — 上は変更前、下の変更後はセレクトが釣果数（多い順）</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sample-ft-o31-b.png" alt="上は4択、下は項目が釣果数で向きが降順">
+          <figcaption>sample-ft-o31-b.png — 上は変更前、下の変更後は項目＋向き（不採用）</figcaption>
+        </figure>
+      </div>
+
+        <h3>実施した改善</h3>
+        <p>2026-09-17 に案Aを製品実装した。
+          <code>field_list_sort_select_options</code>／<code>area_list_sort_select_options</code>
+          が表ヘッダーと同じ列キーを出し、
+          <code>name_asc</code> は <code>name:asc</code> に正規化して selected を合わせる。
+          釣果数・最大／平均サイズは多い／大きい順を先に出す。
+          同日、緯度・経度は列表示のみとし並び替え対象から外した（旧 <code>lat:*</code>／<code>lng:*</code> は既定へ戻す）。
+          続けて列の昇順／降順はヘッダーのみとし、セレクト常設は更新日だけにした（<a href="#ft-o32">FT-O32</a>）。
+          仕様 <code>05_ui_ux.md</code> 5-11 と <code>10_testing.md</code> を同期済み。
+          新規 E2E 必須シナリオ ID は追加していない（既存 <code>my_fields</code>）。</p>
+        <h3>再診断</h3>
+        <p>2026-09-17、ローカル Docker（
+          <code>http://localhost:5001/field-area/list?fieldSort=catch_count:desc</code> と
+          <code>/field-area/field/1?areaSort=catch_count:desc</code>）を PC 1280／SP 390 で確認した。
+          <code>#field-sort</code> の selected は「釣果数（多い順）」、表先頭は亀山湖 7件、
+          <code>th.is-sorted-desc</code>。
+          <code>#area-sort</code> も同じラベル。空エリアでもセレクトは同期する。</p>
+        <div class="shots">
+          <figure class="pc">
+            <img src="fishtrack/pc-field-list-sort-select-after.png" alt="改善後 PC。並び順が釣果数（多い順）">
+            <figcaption>pc-field-list-sort-select-after.png — ▲ 改善後。セレクトが釣果数（多い順）</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-field-list-sort-thead-after.png" alt="改善後 PC。釣果数▼で亀山湖が先頭">
+            <figcaption>pc-field-list-sort-thead-after.png — ▲ 改善後。表ヘッダーも釣果数▼</figcaption>
+          </figure>
+          <figure>
+            <img src="fishtrack/sp-field-list-sort-select-after.png" alt="改善後 SP。並び順が釣果数（多い順）">
+            <figcaption>sp-field-list-sort-select-after.png — ▲ 改善後 SP。セレクトが列と一致</figcaption>
+          </figure>
+          <figure class="pc">
+            <img src="fishtrack/pc-area-list-sort-select-after.png" alt="改善後 PC。エリア並び順が釣果数（多い順）">
+            <figcaption>pc-area-list-sort-select-after.png — ▲ 改善後。フィールド詳細のエリア並び順も同期</figcaption>
+          </figure>
+        </div>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o32" data-resolved-on="2026-09-17">
+      <details>
+        <summary>
+      <h2>
+        <span class="badge sev-med">MEDIUM</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O32 — 並び順セレクトの向き語が1本の中で混在する
+      </h2>
+        </summary>
+      <p class="label">画面: マイフィールド／フィールド詳細のエリア一覧。観点: 初回ユーザー・同類画面の一貫性。
+        関連 <a href="#ft-o33">FT-O33</a>。2026-09-17 OPEN。同日、列の昇順／降順をヘッダーに統一して再診断し RESOLVED。
+        案A（あいうえお順ラベル）は未採用。</p>
+
+      <h3>改善前の事象</h3>
+      <p>
+        <code>#field-sort</code> と <code>#area-sort</code> は、1つのセレクトに向き込みラベルを並べていた。
+        同じリストの中で「新しい順／古い順」「昇順／降順」「多い順／少ない順」「大きい順／小さい順」が混ざっていた。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-field-sort-options.png" alt="改善前。新しい順と昇順と多い順が混在">
+          <figcaption>pc-field-sort-options.png — ▲ 改善前。向き語が1本のセレクトに混在</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-area-sort-options.png" alt="改善前。エリア名は昇順、釣果数は多い順">
+          <figcaption>pc-area-sort-options.png — ▲ 改善前。エリア一覧も同じ混在</figcaption>
+        </figure>
+      </div>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/field-area/list</code>、<code>/field-area/field/&lt;id&gt;</code></li>
+          <li><strong>位置:</strong> フィルタ行の「並び順」セレクト</li>
+          <li><strong>部品／セレクタ:</strong>
+            <code>#field-sort</code>／<code>#area-sort</code></li>
+          <li><strong>対象外:</strong>
+            探す／マイタックルのセレクト完結（向きボタンなし。<a href="#ft-o33">FT-O33</a>）。
+            案Aのあいうえお順ラベルは未採用。</li>
+        </ul>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>
+        初回ユーザー。件数とサイズは意味ラベルなのに、名称・所在地だけが「昇順／降順」で、
+        同じ操作の読み方が途中で変わっていた。
+      </p>
+
+      <h3>実施した改善</h3>
+      <p>2026-09-17。列の昇順／降順は表ヘッダーだけにした。
+        セレクトの常設候補は更新日（新しい順／古い順）のみ。
+        列ソート中はフィルタ GET 用に、現在の列キーをセレクトへ1件だけ selected で残す（他列・逆向きは出さない）。
+        仕様 <code>05_ui_ux.md</code> 5-11 と <code>10_testing.md</code> を同期済み。
+        新規 E2E 必須シナリオ ID は追加していない（既存 <code>my_fields</code>）。</p>
+      <h3>再診断</h3>
+      <p>2026-09-17、ローカル Docker（
+        <code>http://localhost:5001/field-area/list</code> と
+        <code>?fieldSort=catch_count:desc</code>、
+        <code>/field-area/field/1?areaSort=catch_count:desc</code>）を PC で確認した。
+        既定の <code>#field-sort</code> は更新日2件のみ。
+        列ソート中の selected は「釣果数（多い順）」で、他列の昇順／降順は出ない。
+        表は <code>th.is-sorted-desc</code>、先頭は亀山湖 7件。
+        <code>#area-sort</code> も更新日2件＋現在列1件。
+        名称ヘッダークリックで <code>name:desc</code> に切り替わり、セレクトは「名称（降順）」になる。
+        MyPokedex に同種の結合セレクトはなく、新規 OPEN なし。</p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-field-sort-options-after.png" alt="改善後。並び順は更新日の新しい順">
+          <figcaption>pc-field-sort-options-after.png — ▲ 改善後。常設は更新日のみ</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-field-sort-column-after.png" alt="改善後。並び順が釣果数（多い順）">
+          <figcaption>pc-field-sort-column-after.png — ▲ 改善後。列ソート中は現在値1件を残す</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-field-sort-thead-column-after.png" alt="改善後。釣果数▼で亀山湖が先頭">
+          <figcaption>pc-field-sort-thead-column-after.png — ▲ 改善後。向き切替は表ヘッダー</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-area-sort-select-after.png" alt="改善後。エリア並び順が釣果数（多い順）">
+          <figcaption>pc-area-sort-select-after.png — ▲ 改善後。エリア一覧のセレクトも現在列1件</figcaption>
+        </figure>
+      </div>
+      </details>
+    </article>
 
     <article class="issue" id="ft-h25" data-resolved-on="2026-09-14">
       <details>
@@ -3470,475 +4694,6 @@
         <p>2026-08-20 に Docker 上の未ログイン LP を PC（1440×960）と SP（390×844）で確認した。ヒーロー、ページ内アンカー、登録 CTA、実画面を含む各節、SP ナビの表示を確認し、ログイン後画面では LP 専用ナビが出ないこともテストで確認したため、RESOLVED とする。</p>
       </details>
     </article>
-
-    <article class="issue" id="ft-o6" data-resolved-on="2026-08-17">
-      <details>
-        <summary>
-          <h2>
-            <span class="badge sev-med">MED</span>
-            <span class="badge status-resolved">RESOLVED</span>
-            <span class="badge badge-prod-ft">FishTrack</span>
-            FT-O6 — グローバルヘッダーがフラット同列でスキャンしづらい（案A 採用）
-          </h2>
-        </summary>
-        <p class="label">画面: 全画面共通ヘッダー（PC 横並び／SP ドロワー）</p>
-
-        <h3>対象箇所</h3>
-        <div class="where">
-          <ul>
-            <li><strong>URL／画面:</strong> ログイン後の全ページ共通
-              <code>partials/site_header.html</code>（<code>.ft-site-header</code>／<code>#ftSiteNav.ft-site-nav</code>）</li>
-            <li><strong>対象:</strong> ナビの情報グループ、現在地表示、参照導線、アカウント操作の配置</li>
-            <li><strong>対象外:</strong> 「タックルを探す」内のプラグ／ワーム分離は <a href="#ft-o2">FT-O2</a></li>
-          </ul>
-        </div>
-
-        <h3>改善前の事象</h3>
-        <p>記録・探す・参照のリンクがフラット同列で並び、現在ページの視覚的手がかりもなかった。パブリックフィールドはヘッダーから直接参照できず、設定・ログアウトもコンテンツナビと同列で競合していた。</p>
-
-        <h3>採用案と実装内容</h3>
-        <ul>
-          <li>ホームを単独で置き、釣果・釣行・マイフィールド・マイタックルを「記録」、タックル検索を「探す」、水位・パブリックフィールドを「参照」に区画。</li>
-          <li>現在ページのリンクに <code>aria-current="page"</code> を付与し、下線・太字で強調。</li>
-          <li>設定・ログアウトを右端の「アカウント」メニューへ集約し、管理者メニューとは分離。</li>
-          <li>PC と SP ドロワーで同じグループ構造・導線を使用。</li>
-        </ul>
-        <p class="sample-link">変更前後サンプル: <a href="fishtrack/samples/ft-o6-a.html">fishtrack/samples/ft-o6-a.html</a>（上＝変更前／下＝変更後）</p>
-        <p class="sample-note">実装後の PC／SP 表示は製品ブラウザで再診断済み。
-          変更前後の対比は上記サンプルで確認できる。</p>
-
-        <h3>再診断</h3>
-        <p>一般ユーザーのログイン後画面で、記録／探す／参照の区画、現在地表示、パブリックフィールド導線、アカウントメニュー（設定・ログアウト）を確認した。PC と SP ドロワーの両方で意図した表示になっているため、RESOLVED とする。</p>
-      </details>
-    </article>
-
-    <article class="issue" id="ft-o3" data-resolved-on="2026-08-17">
-      <details>
-      <summary>
-      <h2>
-        <span class="badge sev-med">MED</span>
-        <span class="badge status-resolved">RESOLVED</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-O3 — 水位一覧で更新の古いフィールドが鮮度の新しいものと同見た目
-      </h2>
-      </summary>
-      <p class="label">画面: 水位データ一覧 <code>/water-level</code></p>
-
-      <h3>対象箇所</h3>
-      <div class="where">
-        <ul>
-          <li><strong>URL／画面:</strong> <code>/water-level</code>（水位データ一覧）</li>
-          <li><strong>位置:</strong> マップ下のリザーバーカードグリッド
-            <code>.water-level-cards</code>／各
-            <code>.water-level-card</code></li>
-          <li><strong>対象外:</strong> 水位詳細グラフ、フィールドマップのピン見た目</li>
-        </ul>
-      </div>
-
-      <h3>改善前の事象</h3>
-      <p>
-        観測日が古いフィールドも、直近更新のフィールドと同じカード見た目で並び、
-        日付を読み比べないと鮮度を判断できなかった。
-      </p>
-      <div class="shots">
-        <figure class="pc">
-          <img src="fishtrack/pc-water-level-list-stale-same.png"
-               alt="水位一覧で古い観測日も通常カード">
-          <figcaption>pc-water-level-list-stale-same.png — ▲ 改善前。亀山湖は2026-07-29観測</figcaption>
-        </figure>
-      </div>
-
-      <h3>実施した改善</h3>
-      <ul>
-        <li>最新観測日から7日を超えたカードに
-          <code>water-level-card--stale</code> を付け、薄い表示と破線枠に変更</li>
-        <li>「更新が古い」と経過日数（○日前）のバッジを表示</li>
-        <li>フィールド名順の並びとカード全体クリックは維持</li>
-        <li>観測日がないカードには鮮度バッジを表示しない</li>
-      </ul>
-      <div class="shots">
-        <figure class="pc">
-          <img src="fishtrack/pc-water-level-list-stale-after.png"
-               alt="水位一覧で古いカードを弱め、更新が古いバッジを表示した改善後">
-          <figcaption>pc-water-level-list-stale-after.png — ▲ 改善後。薄い表示・破線枠・19日前バッジ</figcaption>
-        </figure>
-      </div>
-      <p><strong>再診断:</strong> 一般ユーザーのローカル <code>/water-level/</code> で、
-        2026-07-29観測の亀山湖に「更新が古い・19日前」が表示され、
-        カードの薄い表示と破線枠を確認した。ブラウザ再診断で解決を確認したため RESOLVED とする。</p>
-      </details>
-    </article>
-
-    <article class="issue" id="ft-o4" data-resolved-on="2026-08-17">
-      <details>
-      <summary>
-      <h2>
-        <span class="badge sev-med">MED</span>
-        <span class="badge status-resolved">RESOLVED</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-O4 — 管理者向けに水位未対応のパブリックフィールドが見えない／対象外にできない（案A 採用）
-      </h2>
-      </summary>
-      <p class="label">画面: 管理者向け水位データ一覧 <code>/water-level</code></p>
-
-      <h3>対象箇所</h3>
-      <div class="where">
-        <ul>
-          <li><strong>URL／画面:</strong> <code>/water-level</code> の水位カード下部</li>
-          <li><strong>位置:</strong> 管理者だけに表示する
-            <code>.water-level-coverage</code> パネル</li>
-          <li><strong>判定:</strong> 公開フィールドの水位取得元設定と
-            <code>Field.water_level_unavailable</code></li>
-          <li><strong>対象外:</strong> 一般ユーザーの水位カード、FT-O3 の鮮度表示、
-            <code>/public-fields</code> の水位列</li>
-        </ul>
-      </div>
-
-      <h3>改善前の事象</h3>
-      <p>
-        <code>/water-level</code> は水位取得元が設定されたフィールドだけを表示し、
-        未対応の公開フィールドは水位運用の画面から見えなかった。公開データがない
-        フィールドを「対象外」として管理者が明示する状態もなかった。
-      </p>
-      <div class="shots">
-        <figure class="pc">
-          <img src="fishtrack/pc-water-level-list-covered-only.png"
-               alt="水位一覧は対応済みカードのみ">
-          <figcaption>pc-water-level-list-covered-only.png — ▲ 改善前。対応済みカードのみで未対応ギャップが見えない</figcaption>
-        </figure>
-      </div>
-
-      <h3>実施した改善</h3>
-      <ul>
-        <li>水位一覧の下部に管理者専用「水位対応カバレッジ」を追加した。</li>
-        <li>公開フィールドを「対応」「要対応」「対象外」に分類し、対応件数と総数を表示する。</li>
-        <li>要対応のフィールドは「編集」「対象外にする」、対象外は「編集」「対象に戻す」で操作できる。</li>
-        <li>対象外は薄い表示と取消線で示し、一般ユーザーにはパネルも対象外状態も表示しない。</li>
-        <li>状態を <code>Field.water_level_unavailable</code> に保存し、画面再表示後も維持する。</li>
-      </ul>
-      <p class="sample-link">変更前後サンプル:
-        <a href="fishtrack/samples/ft-o4-a.html">fishtrack/samples/ft-o4-a.html</a>
-        （上＝変更前／下＝変更後）</p>
-      <figure class="pc">
-        <img src="fishtrack/sample-ft-o4-a.png" alt="FT-O4の変更前後サンプル">
-        <figcaption>sample-ft-o4-a.png — ▲ 上＝対応のみ／下＝要対応＋対象外</figcaption>
-      </figure>
-      <p><strong>再診断:</strong> 管理者のローカル <code>/water-level/</code> で
-        カバレッジパネル、要対応4件、対象外0件を確認後、chizu-fieldを対象外へ変更した。
-        再表示後に要対応3件・対象外1件、取消線表示、「対象に戻す」操作を確認した。
-        一般ユーザー画面にはパネルが表示されないことをテストで確認したため、
-        FT-O4はRESOLVEDとする。</p>
-      </details>
-    </article>
-
-    <article class="issue" id="ft-o2" data-resolved-on="2026-08-17">
-      <details>
-      <summary>
-      <h2>
-        <span class="badge sev-med">MED</span>
-        <span class="badge status-resolved">RESOLVED</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-O2 — 「タックルを探す」でプラグとワームが「ルアー」1本に同居（案A 採用）
-      </h2>
-      </summary>
-      <p class="label">画面: 全画面共通ヘッダー（PC ドロップダウン／SP ドロワー）</p>
-
-      <h3>対象箇所</h3>
-      <div class="where">
-        <ul>
-          <li><strong>URL／画面:</strong> 全ページ共通ヘッダー
-            <code>partials/site_header.html</code></li>
-          <li><strong>位置:</strong> 「タックルを探す」ドロップダウン内の
-            ロッド／リール／プラグ／ワーム検索リンク</li>
-          <li><strong>遷移先:</strong> <code>/lure-masters?tab=plug</code> または
-            <code>/lure-masters?tab=worm</code></li>
-          <li><strong>対象外:</strong> マイタックル側のプラグ／ワーム一覧、ロッド／リールを探す自体</li>
-        </ul>
-      </div>
-
-      <h3>事象（改善前）</h3>
-      <p>
-        ロッド・リールはヘッダーから種別ごとに直接入れるのに対し、
-        プラグとワームは「ルアーを探す」1本にまとめられ、着地後のタブ切替まで種別を選べなかった。
-      </p>
-      <p class="sample-link">変更前後サンプル:
-        <a href="fishtrack/samples/ft-o2-a.html">fishtrack/samples/ft-o2-a.html</a>
-        （上＝変更前／下＝変更後）</p>
-      <figure class="pc">
-        <img src="fishtrack/sample-ft-o2-a.png" alt="FT-O2の変更前後サンプル">
-        <figcaption>sample-ft-o2-a.png — ▲ 上が「ルアーを探す」1本、下がプラグ／ワーム分離</figcaption>
-      </figure>
-
-      <h3>何が問題か</h3>
-      <ul>
-        <li><strong>発見性:</strong> プラグとワームの別カテゴリが入口ラベルから分からなかった</li>
-        <li><strong>到達コスト:</strong> 「ルアー」→タブ切替の2段階が必要だった</li>
-        <li><strong>一貫性:</strong> タックル探索の粒度がロッド／リールと揃っていなかった</li>
-      </ul>
-
-      <h3>実施した改善・再診断</h3>
-      <ul>
-        <li>「ルアーを探す」を廃止し、「プラグを探す」「ワームを探す」をロッド／リールと同列に配置した。</li>
-        <li>各リンクに <code>tab=plug</code>／<code>tab=worm</code> を付け、種別確定済みの一覧へ直接遷移するようにした。</li>
-        <li>一般ユーザーのローカル <code>/dashboard</code> でドロップダウンを開き、4種類の検索導線とリンク先を確認した。</li>
-      </ul>
-      <figure class="pc">
-        <img src="fishtrack/pc-dashboard-header-o2-after.png" alt="タックル検索のプラグ・ワーム分離（改善後）">
-        <figcaption>pc-dashboard-header-o2-after.png — ▲ 改善後。ドロップダウンにプラグ／ワームを表示</figcaption>
-      </figure>
-      <p><strong>実装:</strong> 完了。共通ヘッダーテンプレート・テスト・仕様書を同期し、
-        ブラウザ再診断で解決を確認したため RESOLVED とする。</p>
-      </details>
-    </article>
-
-    <article class="issue" id="ft-h7" data-resolved-on="2026-08-17">
-      <details>
-      <summary>
-      <h2>
-        <span class="badge sev-med">MED</span>
-        <span class="badge status-resolved">RESOLVED</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-H7 — ホーム BEST5 に順位表示がなく 1 位が分かりづらい（案A 採用）
-      </h2>
-      </summary>
-      <p class="label">画面: PC FishTrack ホーム <code>/dashboard</code>（年次 BEST5／ALL TIME BEST5）</p>
-
-      <h3>対象箇所</h3>
-      <div class="where">
-        <ul>
-          <li><strong>URL／画面:</strong> <code>/dashboard</code>（ホーム）</li>
-          <li><strong>位置:</strong> 「最近の釣行」の下 — 年次 BEST5 と
-            ALL TIME BEST5 の各セクション</li>
-          <li><strong>部品:</strong> <code>.catch-card-grid</code> ／
-            <code>partials/_home_catch_card_grid.html</code> の
-            <code>.catch-card__rank</code> と <code>.catch-card--rank-1</code></li>
-          <li><strong>対象外:</strong> 「最近の釣果」カード（同パーシャルだがランキングではない）、
-            釣果一覧ページ</li>
-        </ul>
-      </div>
-
-      <h3>事象（改善前）</h3>
-      <p>
-        BEST5 見出しはあるが、カードは「最近の釣果」と同型で順位バッジ・番号・1位強調がなかった。
-        ソート順（サイズ降順）だけに依存するため、グリッド並びではどれが1位か一目で分からなかった。
-      </p>
-      <figure class="pc">
-        <img src="fishtrack/sample-ft-h7-a.png" alt="ダッシュボード BEST5の変更前後サンプル">
-        <figcaption>sample-ft-h7-a.png — ▲ 上が改善前。順位表記なし・通常釣果カードと同型</figcaption>
-      </figure>
-
-      <h3>何が問題か</h3>
-      <ul>
-        <li><strong>発見性:</strong> 「BEST5」なのにランキング感がなく、1位の達成感・比較が弱い</li>
-        <li><strong>認知コスト:</strong> サイズ数値をカードごとに見比べないと順位が確定しない</li>
-        <li><strong>一貫性:</strong> セクション目的（ランキング）とUI（平列カード）が不一致だった</li>
-      </ul>
-
-      <h3>実施した改善・再診断</h3>
-      <ul>
-        <li>年次 BEST5 と ALL TIME BEST5 の各カードに <code>#1</code>〜<code>#5</code> の順位バッジを追加した。</li>
-        <li>1位だけ枠・バッジ・サイズ色を軽く強調し、既存の <code>catch-card</code> グリッドと縦密度を維持した。</li>
-        <li>「最近の釣果」には順位を表示せず、ランキング画面だけに適用した。</li>
-        <li>ローカル一般ユーザーで <code>/dashboard</code> を表示し、年次／ALL TIME の順位バッジと1位強調を確認した。</li>
-      </ul>
-      <figure class="pc">
-        <img src="fishtrack/pc-dashboard-best5-after.png" alt="ダッシュボード BEST5（改善後）">
-        <figcaption>pc-dashboard-best5-after.png — ▲ 改善後。#1／#2バッジと1位の枠・サイズ色を確認</figcaption>
-      </figure>
-      <p><strong>実装:</strong> 完了。ホームの共通釣果カードにランキング表示を切り替える変数を追加し、
-        テンプレート・CSS・テスト・仕様書を同期したため RESOLVED とする。</p>
-      </details>
-    </article>
-
-    <article class="issue" id="ft-o1" data-resolved-on="2026-08-17">
-      <details>
-      <summary>
-      <h2>
-        <span class="badge sev-high">HIGH</span>
-        <span class="badge status-resolved">RESOLVED</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-O1 — ルアー釣果サマリにトレーラー使用分が含まれない
-      </h2>
-      </summary>
-      <p class="label">画面: マイタックル ワーム／プラグ一覧・製品詳細（釣果サマリ）</p>
-
-      <h3>対象箇所</h3>
-      <div class="where">
-        <ul>
-          <li><strong>URL／画面:</strong>
-            <code>/tackle/?kind=worm|plug</code>、
-            <code>/tackle/worm/product/&lt;id&gt;</code>・
-            <code>/tackle/plug/product/&lt;id&gt;</code></li>
-          <li><strong>位置:</strong> 一覧の釣果数／最大・平均サイズ列、詳細の「釣果サマリ」カード</li>
-          <li><strong>関連:</strong> 釣果一覧の
-            <code>?lureInventoryId=</code> 絞り込み、タックル候補の連動条件</li>
-          <li><strong>対象外:</strong> ロッド／リール保有サマリ、フィールド／エリアサマリ</li>
-        </ul>
-      </div>
-
-      <h3>事象（改善前）</h3>
-      <p>
-        釣果にワームを<strong>トレーラー</strong>（<code>trailer_inventory_id</code>）として記録しても、
-        主ルアー（<code>lure_inventory_id</code>）一致のみ集計するため、
-        当該ワームの釣果サマリが <strong>件数 0・サイズ —</strong> になっていた。
-      </p>
-      <figure class="pc">
-        <img src="fishtrack/pc-worm-product-trailer-summary-zero.png"
-             alt="ワーム製品詳細の釣果サマリが0">
-        <figcaption>pc-worm-product-trailer-summary-zero.png — ▲ 改善前。トレーラー使用分が釣果サマリに含まれない</figcaption>
-      </figure>
-
-      <h3>採用案</h3>
-      <p><strong>案A — トレーラーを合算</strong>を採用した。
-        主ルアーまたはトレーラーとして使った釣果を集計し、同一 Catch の同一保有 ID は一度だけ数える。
-        役割内訳を追加する案Bは採用しない。</p>
-      <p class="sample-link">改善サンプル:
-        <a href="fishtrack/samples/ft-o1-a.html">fishtrack/samples/ft-o1-a.html</a>
-        （変更前を上、変更後を下に掲載）</p>
-      <figure class="pc">
-        <img src="fishtrack/sample-ft-o1-a.png" alt="FT-O1 案Aの変更前後サンプル">
-        <figcaption>sample-ft-o1-a.png — ▲ 上＝0件／下＝トレーラー合算で 1・40.0cm</figcaption>
-      </figure>
-
-      <h3>実施した改善・再診断</h3>
-      <ul>
-        <li>一覧・製品詳細・カラー別集計を主ルアー／トレーラー合算へ統一した。</li>
-        <li>釣果一覧のルアー絞り込みと、ロッド／リール候補の連動条件もトレーラーを含めた。</li>
-        <li>テストデータでプラグ詳細を表示し、釣果数 <strong>1</strong>、最大サイズ <strong>40.0 cm</strong>、
-          平均サイズ <strong>40.0 cm</strong>、カラー別も <strong>1件</strong> になることを確認した。</li>
-        <li>2026-08-17、ローカルの一般ユーザーで
-          <code>/tackle/plug/product/3</code> を表示し、上記の集計値をブラウザで再確認した。</li>
-      </ul>
-      <p><strong>実装:</strong> 完了。サービス集計、釣果一覧の絞り込み、候補連動、テスト、仕様書を同期したため RESOLVED とする。</p>
-      </details>
-    </article>
-
-    <article class="issue" id="ft-o8" data-resolved-on="2026-08-17">
-      <details>
-      <summary>
-      <h2>
-        <span class="badge sev-med">MED</span>
-        <span class="badge status-resolved">RESOLVED</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-O8 — ホームのデータ有り節に記録CTAがない
-      </h2>
-      </summary>
-      <p class="label">画面: ホーム（ログイン後）</p>
-
-      <h3>対象箇所</h3>
-      <div class="where">
-        <ul>
-          <li><strong>URL／画面:</strong> <code>/dashboard</code>、
-            <code>home.html</code> の <code>.home-dashboard__section-header</code></li>
-          <li><strong>位置:</strong> 「最近の釣果」「最近の釣行」の見出し右にある一覧CTA</li>
-          <li><strong>対象外:</strong> 空状態本文の追加リンク、BEST5の順位表示（<a href="#ft-h7">FT-H7</a>）</li>
-        </ul>
-      </div>
-
-      <h3>事象（改善前）</h3>
-      <p>
-        データがあるときは各節ヘッダーが「一覧へ」だけになり、
-        日常の「もう1件記録する」ためにヘッダーや一覧を経由する必要があった。
-        空状態では追加リンクが出るため、データ有無で記録入口が逆転していた。
-      </p>
-      <figure class="pc">
-        <img src="fishtrack/pc-dashboard-no-add-cta.png"
-             alt="ホームに釣果を追加ボタンがない（改善前）">
-        <figcaption>pc-dashboard-no-add-cta.png — ▲ 改善前。節ヘッダーは「一覧へ」のみ</figcaption>
-      </figure>
-
-      <h3>採用案</h3>
-      <p><strong>案A — 節ヘッダーに記録CTA</strong>を採用した。
-        「最近の釣果」には「釣果を追加」、「最近の釣行」には「釣行を追加」を置き、
-        「一覧へ」は副次CTAとして残した。データがない場合は従来の空状態本文を維持する。</p>
-      <p class="sample-link">改善サンプル:
-        <a href="fishtrack/samples/ft-o8-a.html">fishtrack/samples/ft-o8-a.html</a>
-        （変更前を上、変更後を下に掲載）</p>
-      <figure class="pc">
-        <img src="fishtrack/sample-ft-o8-a.png" alt="FT-O8 案Aの変更前後サンプル">
-        <figcaption>sample-ft-o8-a.png — ▲ 下の変更後は釣果・釣行の記録CTAを各節ヘッダーに追加</figcaption>
-      </figure>
-
-      <h3>実施した改善・再診断</h3>
-      <ul>
-        <li>データ有りの「最近の釣果」「最近の釣行」ヘッダーに、主CTAを追加した。</li>
-        <li>「釣果一覧へ」「釣行一覧へ」は副次CTAとして併記し、一覧導線を維持した。</li>
-        <li>データ無しでは空状態本文の追加リンクを維持し、CTAを重複表示しないようにした。</li>
-        <li>ローカル一般ユーザーで <code>/dashboard</code> を表示し、両節の追加ボタンを確認した。</li>
-      </ul>
-      <p><strong>実装:</strong> 完了。テンプレート・テスト・仕様書を同期し、ブラウザ再診断で解決を確認したため RESOLVED とする。</p>
-      </details>
-    </article>
-
-    <article class="issue" id="ft-o10" data-resolved-on="2026-08-17">
-      <details>
-      <summary>
-      <h2>
-        <span class="badge sev-med">MED</span>
-        <span class="badge status-resolved">RESOLVED</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-O10 — パブリック追加依頼の入口が新規追加フォーム内に埋もれ、依頼状況への導線がない
-      </h2>
-      </summary>
-      <p class="label">画面: フィールド新規追加（一般ユーザー）</p>
-
-      <h3>対象箇所（改善後）</h3>
-      <div class="where">
-        <ul>
-          <li><strong>URL／画面:</strong>
-            <code>/fishtrack/field-area/field/new</code>、
-            <code>field_form.html</code> の <code>.card-description</code></li>
-          <li><strong>位置:</strong> 「フィールド新規追加」見出し直下、フィールド名入力欄の上</li>
-          <li><strong>対象外:</strong> マイフィールド一覧の依頼状況リンクは別課題（<a href="#ft-o6">FT-O6</a>）、
-            管理者の依頼レビューは</li>
-        </ul>
-      </div>
-
-      <h3>事象（改善前）</h3>
-      <p>パブリック追加依頼の機能自体は存在したが、
-        「フィールド新規追加」画面で公開範囲を選ぶ仕組みと管理者審査の流れが説明されず、
-        初回ユーザーには入口と利用方法が分かりにくかった。</p>
-      <figure class="pc">
-        <img src="fishtrack/pc-field-request-orphan.png"
-             alt="フィールド追加依頼画面の改善前">
-        <figcaption>pc-field-request-orphan.png — ▲ 改善前。画面はあるが利用方法の説明がない</figcaption>
-      </figure>
-
-      <h3>何が問題か</h3>
-      <ul>
-        <li><strong>初回ユーザー:</strong> プライベート登録とパブリック追加依頼の違いを理解しにくい</li>
-        <li><strong>視認性:</strong> 管理者承認後に公開される状態が、入力操作の前に示されていない</li>
-      </ul>
-
-      <h3>実施した改善</h3>
-      <p>案Bを採用し、フィールド新規追加画面の説明文に、
-        プライベート利用・パブリック追加依頼・承認後の公開・申請中の本人利用を明記した。
-        既存の公開範囲セレクトと登録フローは維持している。</p>
-      <p><strong>再診断:</strong> 2026-08-17 ローカルの一般ユーザーで
-        <code>/field-area/field/new</code> を表示し、説明文と公開範囲の選択肢を確認した。</p>
-      <figure class="pc">
-        <img src="fishtrack/pc-field-form-after.jpg"
-             alt="フィールド新規追加画面の説明文（改善後）">
-        <figcaption>ft-o10-field-description-after.jpg — ▲ 改善後。説明文が表示されている</figcaption>
-      </figure>
-      <p><strong>実装:</strong> 完了。一般ユーザーでのブラウザ再診断により、
-        案Bの目的である初回ユーザーへの利用方法の説明を確認できたため RESOLVED とする。</p>
-      </details>
-    </article>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </section>
 
   </main>

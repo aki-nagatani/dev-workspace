@@ -90,7 +90,7 @@ description: >-
 
 ### 記録形式（必須）
 
-- **`log_caught_exception(logger, context, exc)`** → `logger.error("Error in %s: %s", context, exc, exc_info=True)` に統一
+- **`log_caught_exception(logger, context, exc)`** → 例外の `__traceback__`（なければ `sys.exc_info()`）を `exc_info=(type, exc, tb)` で記録する。トレースバックが無い合成例外は `exc_info=True` を使わず、呼び出しスタックを本文へ付ける（Slack に `NoneType: None` を出さない）
 - **HTTP ルート**: `current_app.logger`（または `app.logger`）＋ `log_caught_exception`
 - **APScheduler 等**: **`run_background_job(app, context, fn, on_error=...)`**。**`app.logger` 必須**（モジュール直下 `logger` だけでは Slack/SNS 通知に届かない）
 - **`on_error`**: ドメイン補助のみ（例: spec-crawl 失敗 Slack）。追加の `logger.error` や失敗通知用の入れ子 `try/except` は書かない

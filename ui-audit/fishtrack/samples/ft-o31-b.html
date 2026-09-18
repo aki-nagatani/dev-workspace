@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O31 案B — 並び順セレクトを項目＋向きバーに置き換える</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 390px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .holding-sort-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: stretch;
+    }
+    .holding-sort-bar select { min-width: 0; max-width: none; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B: 4択の「並び順」を探す系と同じ項目＋向きバーにする。
+      プリセットは更新日。列を選んだときだけ向きボタンが使える。
+      採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（現状・更新日と名称だけ）</p>
+    <section class="card">
+      <div class="card-header"><h2>マイフィールド</h2></div>
+      <form method="get" class="filter-form">
+        <div class="filter-grid">
+          <div>
+            <label for="field-sort-before-b">並び順</label>
+            <select id="field-sort-before-b" name="fieldSort">
+              <option value="updated_desc" selected>更新日（新しい順）</option>
+              <option value="updated_asc">更新日（古い順）</option>
+              <option value="name_asc">名称（昇順）</option>
+              <option value="name_desc">名称（降順）</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <p class="sample-block-label">変更後（項目と向き。釣果数が選べる）</p>
+    <section class="card">
+      <div class="card-header"><h2>マイフィールド</h2></div>
+      <nav class="holding-sort-bar" aria-label="並び替え">
+        <div class="holding-sort-bar__field">
+          <label for="field-sort-after-b">項目</label>
+          <div class="holding-sort-bar__controls">
+            <select id="field-sort-after-b" aria-label="並び替えの項目">
+              <optgroup label="プリセット">
+                <option value="updated_desc">更新日（新しい順）</option>
+                <option value="updated_asc">更新日（古い順）</option>
+              </optgroup>
+              <optgroup label="列">
+                <option value="name">名称</option>
+                <option value="location">所在地</option>
+                <option value="catch_count" selected>釣果数</option>
+                <option value="max_size">最大サイズ</option>
+                <option value="avg_size">平均サイズ</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+        <div class="holding-sort-bar__field holding-sort-bar__dir">
+          <span id="field-sort-after-b-dir-label">向き</span>
+          <div class="holding-sort-bar__controls" role="group" aria-labelledby="field-sort-after-b-dir-label">
+            <button type="button" class="btn btn--sm btn--ghost">昇順</button>
+            <button type="button" class="btn btn--sm" aria-pressed="true">降順</button>
+          </div>
+        </div>
+      </nav>
+    </section>
+  </div>
+</body>
+</html>

@@ -69,7 +69,8 @@ AWS / OpenAI のコストを定期監視し、異常時だけ深掘りして改�
   プロダクト内の利用量ログは、内訳を調べるときだけ参照する。
 - Cursor 個人契約の Usage 監視は公式 API が使えないため、
   `cursor-cost-monitoring` SKILLへ分離する。
-  Cursor内ブラウザで画面表示値を確認し、GHAはSKILL呼び出しのリマインダーだけを送る。
+  Cursor内ブラウザで画面表示値を確認し、GHAはSKILL呼び出しのリマインダーだけを送る
+  （約10日ごと。正本は `cursor-cost-monitoring` SKILL）。
 
 ### 実行履歴の保存
 

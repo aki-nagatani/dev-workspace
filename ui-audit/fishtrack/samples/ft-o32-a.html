@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=880">
+  <title>FT-O32 案A — 並び順の向き語を意味ラベルに揃える</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 560px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-frame select { min-height: 0; }
+    .sample-frame select[size] {
+      height: auto;
+      min-height: 220px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A: 同一の「並び順」セレクト内の向き語を、意味が分かる語に揃える。
+      昇順／降順は使わない。日付は新しい／古い、件数は多い／少ない、サイズは大きい／小さい、
+      名称・所在地はあいうえお。緯度・経度の並び替えは出さない。
+      項目＋向きバー（FT-O31 案B）には戻さない。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（現状・向き語が混在）</p>
+    <section class="card">
+      <div class="card-header"><h2>マイフィールド</h2></div>
+      <form method="get" class="filter-form">
+        <div class="filter-grid">
+          <div>
+            <label for="field-sort-before">並び順</label>
+            <select id="field-sort-before" name="fieldSort" size="10">
+              <option value="updated_desc" selected>更新日（新しい順）</option>
+              <option value="updated_asc">更新日（古い順）</option>
+              <option value="name:asc">名称（昇順）</option>
+              <option value="name:desc">名称（降順）</option>
+              <option value="location:asc">所在地（昇順）</option>
+              <option value="location:desc">所在地（降順）</option>
+              <option value="catch_count:desc">釣果数（多い順）</option>
+              <option value="catch_count:asc">釣果数（少ない順）</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <p class="sample-block-label">変更後（向き語を意味ラベルに統一）</p>
+    <section class="card">
+      <div class="card-header"><h2>マイフィールド</h2></div>
+      <form method="get" class="filter-form">
+        <div class="filter-grid">
+          <div>
+            <label for="field-sort-after">並び順</label>
+            <select id="field-sort-after" name="fieldSort" size="10">
+              <option value="updated_desc" selected>更新日（新しい順）</option>
+              <option value="updated_asc">更新日（古い順）</option>
+              <option value="name:asc">名称（あいうえお順）</option>
+              <option value="name:desc">名称（逆順）</option>
+              <option value="location:asc">所在地（あいうえお順）</option>
+              <option value="location:desc">所在地（逆順）</option>
+              <option value="catch_count:desc">釣果数（多い順）</option>
+              <option value="catch_count:asc">釣果数（少ない順）</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+</body>
+</html>
