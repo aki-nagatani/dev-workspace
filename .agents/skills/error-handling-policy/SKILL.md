@@ -92,6 +92,7 @@ description: >-
 
 - **`log_caught_exception(logger, context, exc)`** → 例外の `__traceback__`（なければ `sys.exc_info()`）を `exc_info=(type, exc, tb)` で記録する。トレースバックが無い合成例外は `exc_info=True` を使わず、呼び出しスタックを本文へ付ける（Slack に `NoneType: None` を出さない）
 - **HTTP ルート**: `current_app.logger`（または `app.logger`）＋ `log_caught_exception`
+- **PostgreSQL**: 文の実行で返ったエラー（サーバログの `ERROR:` に相当する DBAPI 例外）は、ルートが握っても `register_postgres_error_logging`（SQLAlchemy `handle_error`）が `app.logger` の ERROR を 1 回出す。Slack/SNS はこれを拾う。同一例外のルート側 `log_caught_exception` は再記録しない。SQLite は対象外
 - **APScheduler 等**: **`run_background_job(app, context, fn, on_error=...)`**。**`app.logger` 必須**（モジュール直下 `logger` だけでは Slack/SNS 通知に届かない）
 - **`on_error`**: ドメイン補助のみ（例: spec-crawl 失敗 Slack）。追加の `logger.error` や失敗通知用の入れ子 `try/except` は書かない
 

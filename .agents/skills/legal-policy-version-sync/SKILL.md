@@ -1,9 +1,9 @@
 ---
 name: legal-policy-version-sync
 description: >-
-  利用規約・プライバシーポリシーの本文（テンプレ HTML 等）を更新するときは、必ず同意の版キー（環境変数・設定デフォルト）を同じリリースで更新する。
-  MyPokedex の P13 実装に準拠。FishTrack・おたよりナビで規約／PP を新規実装・改定するときも同原則を適用する。
-  規約・ポリシー・法的文言の編集、/legal/terms・/legal/privacy・再同意フロー、版キー・MYPDEX_TERMS_VERSION の運用依頼時に発火する。
+  利用規約・プライバシーポリシーの本文（テンプレ HTML 等）を更新するときは、必ず同意の版キーを同じリリースで更新する。
+  版キーは製品によりソース定数（FishTrack）または環境変数（MyPokedex）。
+  規約・ポリシー・法的文言の編集、/legal/terms・/legal/privacy・再同意フロー、版キー運用の依頼時に発火する。
 ---
 
 # 規約・プライバシーポリシー改定と版キーの同期
@@ -13,7 +13,8 @@ description: >-
 **利用規約またはプライバシーポリシーの本文に実質的な変更を入れた場合、その変更を本番・利用者に効かせるリリースでは、必ず「同意の版キー」を前回から変えた値に更新する。本文だけ更新して版キーを据え置かない。**
 
 - 版キーは **semver 不要**。**日付文字列**（例: `2026-04-04`）や **`v1` のような運用ラベル**でよいが、**規約と PP で別キー**にできる（片方だけ改定なら、その側のキーだけ上げる）。
-- **テンプレ上の「最終更新日」**と **デプロイ環境の版キー**は、利用者・保守者が誤解しないよう **同じ改定リリースで整合**させる（日付を倣うなら一致させる）。
+- **テンプレ上の「最終更新日」**と **版キー**は、利用者・保守者が誤解しないよう **同じ改定リリースで整合**させる（日付を倣うなら一致させる）。
+    FishTrack の版キーはソース定数。MyPokedex は環境変数。
 
 ## いつ発火するか
 
@@ -51,27 +52,37 @@ description: >-
 
 - **EC2 / Docker Compose**: 各環境の `.env` またはデプロイジョブで `MYPDEX_TERMS_VERSION` / `MYPDEX_PRIVACY_VERSION` を注入する運用なら、**その箇所を必ず同じ PR・同じリリース**に含める（本文だけマージしない）。
 
-## FishTrack・おたよりナビ（これから実装・転用）
+## FishTrack（実装済み）
 
-**統合作業スケジュール**の **P13 転用節**（公開ページ F31/O23、改定再同意 F32/O24）に沿って実装する。版キーの**考え方は MyPokedex と同一**とする。
+版キーの正はソース定数 `LEGAL_POLICY_TERMS_VERSION` と `LEGAL_POLICY_PRIVACY_VERSION`（`src/fishtrack/utils/legal_policy.py`）。
+`apply_fishtrack_config` が Flask 設定 `FISHTRACK_TERMS_VERSION` / `FISHTRACK_PRIVACY_VERSION` に載せる。
+**.env および環境変数には置かない・読まない**（古い `.env` が残ると再同意が走らない）。
 
-| 観点 | 方針 |
-| --- | --- |
-| 版キー | **規約用・PP 用で 2 本**（環境変数名はプロダクトの接頭辞に合わせる。例: 将来 **`FISHTRACK_TERMS_VERSION`** など。**実装ファイルを正**とし、本 SKILL は原則のみ固定） |
-| 本文更新 | **必ず版キーを同時更新**（本節の絶対原則） |
-| ユーザー保存 | メール確認済みユーザーに対し、同意済み版キー **2 列 + 同意日時** を DB に持つパターンを踏襲する |
-| 再同意 | メール一斉通知に頼らず、**ログイン後ゲート + 明示同意**（MyPokedex P13 同趣旨） |
+改定時:
 
-**実装 landing 後**は、環境変数名・ルート・テンプレパスを **統合作業スケジュールの転用チェックリスト**に追記する（計画書側の作業）。
+1. **本文を変えた側の定数だけ**を同じリリースで更新する。規約本文を変えていなければ `LEGAL_POLICY_TERMS_VERSION` は据え置く。
+2. **Obsidian 仕様**（`08_development.md`・`09_non_functional.md` 9-4）を同期する。
+3. **テスト**: 再同意経路を触ったら期待値を更新する。
+4. **ホームお知らせには載せない**（`site-update-announce`）。
+   全ユーザーがログイン後の再同意画面で目にする。
+
+## おたよりナビ（これから実装）
+
+実装時は FishTrack と同様にソース定数を正とし、`.env` に置かない。
+再同意・公開ページの振る舞いは MyPokedex と同趣旨。計画は統合作業スケジュール。
 
 ## レビュー時の自問
 
 - [ ] 本文（HTML）に差分があるか？ → あるなら **版キーに差分があるか**
 - [ ] 片方ドキュメントだけ変えたか？ → **変えた側の版キーだけ**上げたか（もう片方を誤って上げていないか）
-- [ ] `legal_policy` のフォールバック **`_DEFAULT_VERSION_KEY`** と `config` の既定が矛盾していないか
+- [ ] `legal_policy` のフォールバック（MyPokedex `_DEFAULT_VERSION_KEY` / FishTrack `LEGAL_POLICY_DEFAULT_VERSION`）と本文の最終更新が矛盾していないか
+- [ ] FishTrack で版キーを `.env` に足していないか
+- [ ] 版キー更新だけをホームお知らせに載せる提案をしていないか（再同意画面で足りる）
 
 ## 参照（コード）
 
 - MyPokedex: `MyPokedex/src/mypokedex/utils/legal_policy.py`
 - MyPokedex: `MyPokedex/src/mypokedex/config.py`（`MYPDEX_TERMS_VERSION` / `MYPDEX_PRIVACY_VERSION`）
-- 仕様・計画: Obsidian `DevProject/specifications/MyPokedex`、**`統合作業スケジュール.md`**（P13 転用・F31/F32/O23/O24）
+- FishTrack: `FishTrack/src/fishtrack/utils/legal_policy.py`（`LEGAL_POLICY_TERMS_VERSION` / `LEGAL_POLICY_PRIVACY_VERSION`）
+- FishTrack: `FishTrack/src/fishtrack/config.py`（環境変数は読まない）
+- 仕様・計画: Obsidian `DevProject/specifications/`、**`統合作業スケジュール.md`**

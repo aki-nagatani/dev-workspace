@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>MP-O2 案A — セーブ削除の前に確認する</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    body { padding-top: 0 !important; }
+    .sample-frame { width: 760px; padding: 16px; background: #f4f6f8; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A。削除ボタンの見た目は変えない。
+      フォームに data-confirm を付け、ボックス削除やアカウント削除と同じ確認を出してから送る。
+      確認文の例: 「セーブ「監査用」を削除します。このセーブのパーティ・ボックス・図鑑登録も削除されます。元に戻せません。よろしいですか？」
+    </p>
+    <p class="sample-block-label">変更前</p>
+    <section class="settings-subcard" aria-labelledby="sample-before-delete">
+      <h2 class="settings-subcard__title" id="sample-before-delete">セーブデータ</h2>
+      <div class="settings-save-game">
+        <h3 class="settings-save-game__title">赤・緑・青・ピカチュウ</h3>
+        <ul class="settings-save-list">
+          <li class="settings-save-row">
+            <span class="settings-save-row__name">監査用</span>
+            <form class="settings-save-form" action="#">
+              <input type="text" maxlength="40" required value="監査用" aria-label="監査用のセーブ名">
+              <button type="button" class="btn btn--quiet">名前を変更</button>
+            </form>
+            <form class="settings-save-form" action="#">
+              <button type="button" class="btn btn--quiet">このセーブを削除</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <p class="sample-block-label">変更後</p>
+    <section class="settings-subcard" aria-labelledby="sample-after-delete">
+      <h2 class="settings-subcard__title" id="sample-after-delete">セーブデータ</h2>
+      <div class="settings-save-game">
+        <h3 class="settings-save-game__title">赤・緑・青・ピカチュウ</h3>
+        <ul class="settings-save-list">
+          <li class="settings-save-row">
+            <span class="settings-save-row__name">監査用</span>
+            <form class="settings-save-form" action="#">
+              <input type="text" maxlength="40" required value="監査用" aria-label="監査用のセーブ名">
+              <button type="button" class="btn btn--quiet">名前を変更</button>
+            </form>
+            <form class="settings-save-form" action="#" data-confirm="セーブ「監査用」を削除します。このセーブのパーティ・ボックス・図鑑登録も削除されます。元に戻せません。よろしいですか？">
+              <button type="button" class="btn btn--quiet">このセーブを削除</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

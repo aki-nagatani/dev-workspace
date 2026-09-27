@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=720">
+  <title>FT-O37 案A — 保存を画面下端に固定</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/lure_masters.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-viewport {
+      position: relative;
+      height: 520px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid #d8dde8;
+      border-radius: 8px;
+    }
+    .sample-viewport .card { margin: 0; border: 0; box-shadow: none; }
+    .sample-after .ft-sticky-submit {
+      display: grid;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2;
+      padding: 0.65rem 0.85rem;
+      background: rgba(255, 255, 255, 0.96);
+      border-top: 1px solid rgba(148, 163, 184, 0.28);
+    }
+    .sample-after .ft-sticky-submit .btn { width: auto; justify-self: start; }
+    .sample-after .sample-viewport { padding-bottom: 4.5rem; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A: 保存を画面下端に固定する（釣果の sticky と同じ部品。PC でも出す）。
+      採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（先頭ビュー。保存は画面外）</p>
+    <div class="sample-viewport sample-before">
+      <section class="card">
+        <div class="card-header">
+          <h2>DAIWA - ムーブベイト3.1</h2>
+          <div class="header-actions">
+            <a class="btn-link" href="#">一覧へ</a>
+          </div>
+        </div>
+        <form class="ft-form">
+          <div class="form-field">
+            <label>製品名 <span class="required">※</span></label>
+            <input class="input" type="text" value="ムーブベイト3.1">
+          </div>
+          <h3 class="lure-color-section__title">カラー一覧</h3>
+          <ul class="lure-color-list">
+            <li class="lure-color-list__item">
+              <div class="lure-color-form-grid">
+                <div class="form-field">
+                  <label>カラー名<span class="required">※</span></label>
+                  <input class="input" type="text" value="グリパンピンク">
+                </div>
+                <div class="form-field">
+                  <label>JANコード</label>
+                  <input class="input" type="text" value="4550133545375">
+                </div>
+                <div class="form-field">
+                  <label>定価（税抜）</label>
+                  <input class="input" type="number" value="700">
+                </div>
+              </div>
+              <div class="lure-color-photo">
+                <div class="lure-color-photo__preview">
+                  <div class="lure-color-photo__placeholder">写真</div>
+                </div>
+                <div class="lure-color-photo__actions">
+                  <span class="btn btn--sm">写真を登録</span>
+                  <span class="btn btn--sm btn--secondary">公式サイトから取得</span>
+                </div>
+              </div>
+            </li>
+            <li class="lure-color-list__item">
+              <div class="lure-color-form-grid">
+                <div class="form-field">
+                  <label>カラー名<span class="required">※</span></label>
+                  <input class="input" type="text" value="ウォーターメロンシャッド">
+                </div>
+              </div>
+            </li>
+            <li class="lure-color-list__item" aria-hidden="true">
+              <div class="form-field">
+                <label>カラー名<span class="required">※</span></label>
+                <input class="input" type="text" value="グリパンエビミソ">
+              </div>
+              <div class="lure-color-photo">
+                <div class="lure-color-photo__preview">
+                  <div class="lure-color-photo__placeholder">写真</div>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="form-actions"><input class="btn" type="button" value="保存"></div>
+        </form>
+      </section>
+    </div>
+
+    <p class="sample-block-label">変更後（同じ先頭ビュー。下端に保存）</p>
+    <div class="sample-viewport sample-after">
+      <section class="card">
+        <div class="card-header">
+          <h2>DAIWA - ムーブベイト3.1</h2>
+          <div class="header-actions">
+            <a class="btn-link" href="#">一覧へ</a>
+          </div>
+        </div>
+        <form class="ft-form">
+          <div class="form-field">
+            <label>製品名 <span class="required">※</span></label>
+            <input class="input" type="text" value="ムーブベイト3.1">
+          </div>
+          <h3 class="lure-color-section__title">カラー一覧</h3>
+          <ul class="lure-color-list">
+            <li class="lure-color-list__item">
+              <div class="lure-color-form-grid">
+                <div class="form-field">
+                  <label>カラー名<span class="required">※</span></label>
+                  <input class="input" type="text" value="グリパンピンク">
+                </div>
+                <div class="form-field">
+                  <label>JANコード</label>
+                  <input class="input" type="text" value="4550133545375">
+                </div>
+                <div class="form-field">
+                  <label>定価（税抜）</label>
+                  <input class="input" type="number" value="700">
+                </div>
+              </div>
+              <div class="lure-color-photo">
+                <div class="lure-color-photo__preview">
+                  <div class="lure-color-photo__placeholder">写真</div>
+                </div>
+                <div class="lure-color-photo__actions">
+                  <span class="btn btn--sm">写真を登録</span>
+                  <span class="btn btn--sm btn--secondary">公式サイトから取得</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="ft-sticky-submit">
+            <button class="btn ft-sticky-submit__button" type="button">保存</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

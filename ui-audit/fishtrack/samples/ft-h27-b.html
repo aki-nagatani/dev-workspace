@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=720">
+  <title>FT-H27 案B — カラー行を折りたたむ</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/lure_masters.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-after .lure-color-list__item { padding: 0.35rem 0; }
+    .sample-after details {
+      border: 0;
+      background: transparent;
+    }
+    .sample-after summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-height: 2.5rem;
+    }
+    .sample-after summary::-webkit-details-marker { display: none; }
+    .sample-after .lure-color-summary-thumb {
+      width: 2.5rem;
+      height: 1.85rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.35rem;
+      background: #f8fafc;
+      flex: 0 0 auto;
+    }
+    .sample-after .lure-color-summary-name { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案B: 各カラーを折りたたみ、閉じた行は名前だけ。開いた行は現状と同じ入力。
+      採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（全行が常時展開）</p>
+    <section class="card sample-before">
+      <h3 class="lure-color-section__title">カラー一覧</h3>
+      <ul class="lure-color-list">
+        <li class="lure-color-list__item">
+          <div class="lure-color-form-grid">
+            <div class="form-field">
+              <label>カラー名<span class="required">※</span></label>
+              <input class="input" type="text" value="グリパンピンク">
+            </div>
+            <div class="form-field">
+              <label>JANコード</label>
+              <input class="input" type="text" value="4550133545375">
+            </div>
+            <div class="form-field">
+              <label>定価（税抜）</label>
+              <input class="input" type="number" value="700">
+            </div>
+          </div>
+        </li>
+        <li class="lure-color-list__item">
+          <div class="lure-color-form-grid">
+            <div class="form-field">
+              <label>カラー名<span class="required">※</span></label>
+              <input class="input" type="text" value="ウォーターメロンシャッド">
+            </div>
+            <div class="form-field">
+              <label>JANコード</label>
+              <input class="input" type="text" value="4550133545382">
+            </div>
+            <div class="form-field">
+              <label>定価（税抜）</label>
+              <input class="input" type="number" value="700">
+            </div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <p class="sample-block-label">変更後（2行目は閉じた状態）</p>
+    <section class="card sample-after">
+      <h3 class="lure-color-section__title">カラー一覧</h3>
+      <ul class="lure-color-list">
+        <li class="lure-color-list__item">
+          <details open>
+            <summary>
+              <span class="lure-color-summary-thumb" aria-hidden="true"></span>
+              <span class="lure-color-summary-name">グリパンピンク</span>
+            </summary>
+            <div class="lure-color-form-grid">
+              <div class="form-field">
+                <label>カラー名<span class="required">※</span></label>
+                <input class="input" type="text" value="グリパンピンク">
+              </div>
+              <div class="form-field">
+                <label>JANコード</label>
+                <input class="input" type="text" value="4550133545375">
+              </div>
+              <div class="form-field">
+                <label>定価（税抜）</label>
+                <input class="input" type="number" value="700">
+              </div>
+            </div>
+          </details>
+        </li>
+        <li class="lure-color-list__item">
+          <details>
+            <summary>
+              <span class="lure-color-summary-thumb" aria-hidden="true"></span>
+              <span class="lure-color-summary-name">ウォーターメロンシャッド</span>
+            </summary>
+            <div class="lure-color-form-grid">
+              <div class="form-field">
+                <label>カラー名<span class="required">※</span></label>
+                <input class="input" type="text" value="ウォーターメロンシャッド">
+              </div>
+            </div>
+          </details>
+        </li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>

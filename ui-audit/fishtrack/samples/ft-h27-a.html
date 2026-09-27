@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=720">
+  <title>FT-H27 案A — カラー行を横並びに圧縮</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/lure_masters.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .sample-after .lure-color-list__item {
+      display: grid;
+      grid-template-columns: 4.5rem minmax(0, 1fr);
+      column-gap: 0.75rem;
+      row-gap: 0.35rem;
+      align-items: start;
+      padding: 0.5rem 0;
+    }
+    .sample-after .lure-color-photo {
+      margin-top: 0;
+      max-width: none;
+      grid-row: 1 / span 2;
+    }
+    .sample-after .lure-color-photo__preview {
+      width: 4.5rem;
+      height: 3.4rem;
+    }
+    .sample-after .lure-color-photo__actions {
+      display: none;
+    }
+    .sample-after .lure-color-photo__caption-edit {
+      display: none;
+    }
+    .sample-after .lure-color-form-grid {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 5.5rem;
+      gap: 0.4rem 0.6rem;
+    }
+    .sample-after .lure-color-row-toolbar {
+      margin-top: 0;
+      grid-column: 2;
+    }
+    .sample-after .lure-color-row-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 0.75rem;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A: 閲覧時の表に近い1行。写真は小さく左、入力は横並び。写真操作は行の右に短く置く。
+      縦の占有は現状より小さくする。採用後の想定（現状の製品には無い）。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">変更前（1カラーで写真まで縦積み）</p>
+    <section class="card sample-before">
+      <h3 class="lure-color-section__title">カラー一覧</h3>
+      <ul class="lure-color-list">
+        <li class="lure-color-list__item">
+          <div class="lure-color-edit-block">
+            <div class="lure-color-form-grid">
+              <div class="form-field">
+                <label>カラー名<span class="required">※</span></label>
+                <input class="input" type="text" value="グリパンピンク">
+              </div>
+              <div class="form-field">
+                <label>JANコード</label>
+                <input class="input" type="text" value="4550133545375">
+              </div>
+              <div class="form-field">
+                <label>定価（税抜）</label>
+                <input class="input" type="number" value="700">
+              </div>
+            </div>
+            <div class="lure-color-row-toolbar">
+              <button type="button" class="btn-link">削除</button>
+            </div>
+          </div>
+          <div class="lure-color-photo">
+            <div class="lure-color-photo__preview">
+              <div class="lure-color-photo__placeholder">写真未登録</div>
+            </div>
+            <div class="lure-color-photo__actions">
+              <span class="btn btn--sm">写真を登録</span>
+              <span class="btn btn--sm btn--secondary">公式サイトから取得</span>
+            </div>
+            <div class="lure-color-photo__caption-edit">
+              <label>キャプション</label>
+              <input class="input-text input-text--sm" type="text">
+            </div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <p class="sample-block-label">変更後（同じ項目を1行に圧縮）</p>
+    <section class="card sample-after">
+      <h3 class="lure-color-section__title">カラー一覧</h3>
+      <ul class="lure-color-list">
+        <li class="lure-color-list__item">
+          <div class="lure-color-photo">
+            <div class="lure-color-photo__preview">
+              <div class="lure-color-photo__placeholder">写真</div>
+            </div>
+          </div>
+          <div class="lure-color-form-grid">
+            <div class="form-field">
+              <label>カラー名<span class="required">※</span></label>
+              <input class="input" type="text" value="グリパンピンク">
+            </div>
+            <div class="form-field">
+              <label>JANコード</label>
+              <input class="input" type="text" value="4550133545375">
+            </div>
+            <div class="form-field">
+              <label>定価（税抜）</label>
+              <input class="input" type="number" value="700">
+            </div>
+          </div>
+          <div class="lure-color-row-toolbar lure-color-row-actions">
+            <button type="button" class="btn-link">削除</button>
+            <span class="btn btn--sm">写真を登録</span>
+            <span class="btn btn--sm btn--secondary">公式サイトから取得</span>
+          </div>
+        </li>
+        <li class="lure-color-list__item">
+          <div class="lure-color-photo">
+            <div class="lure-color-photo__preview">
+              <div class="lure-color-photo__placeholder">写真</div>
+            </div>
+          </div>
+          <div class="lure-color-form-grid">
+            <div class="form-field">
+              <label>カラー名<span class="required">※</span></label>
+              <input class="input" type="text" value="ウォーターメロンシャッド">
+            </div>
+            <div class="form-field">
+              <label>JANコード</label>
+              <input class="input" type="text" value="4550133545382">
+            </div>
+            <div class="form-field">
+              <label>定価（税抜）</label>
+              <input class="input" type="number" value="700">
+            </div>
+          </div>
+          <div class="lure-color-row-toolbar lure-color-row-actions">
+            <button type="button" class="btn-link">削除</button>
+            <span class="btn btn--sm">写真を登録</span>
+            <span class="btn btn--sm btn--secondary">公式サイトから取得</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>

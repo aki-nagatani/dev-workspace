@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>MP-O1 案A — セーブ追加は選んだゲームだけ開く</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    body { padding-top: 0 !important; }
+    .sample-frame { width: 760px; padding: 16px; background: #f4f6f8; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label {
+      font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      案A。未複数化のゲームは「セーブを追加」だけを出す。押したゲームだけ名前欄が開く。
+      実画面は有効ゲームの数だけ並ぶ。ここでは並びが分かるよう3件にしている。
+      複数化済みの改名・削除は現状の行のまま（本サンプルの対象外）。
+    </p>
+    <p class="sample-block-label">変更前</p>
+    <section class="settings-subcard" aria-labelledby="sample-before-saves">
+      <h2 class="settings-subcard__title" id="sample-before-saves">セーブデータ</h2>
+      <p class="settings-subcard__body">
+        同じゲームで別のセーブを使うときだけ、ここで追加します。
+        追加するまでは、メニューの並びはゲームタイトルのままです。
+      </p>
+      <div class="settings-save-game">
+        <h3 class="settings-save-game__title">赤・緑・青・ピカチュウ</h3>
+        <form class="settings-save-form" action="#">
+          <input type="text" maxlength="40" required placeholder="新しいセーブ名" aria-label="赤・緑・青・ピカチュウの新しいセーブ名">
+          <button type="button" class="btn btn--quiet">追加</button>
+        </form>
+      </div>
+      <div class="settings-save-game">
+        <h3 class="settings-save-game__title">金・銀・クリスタル</h3>
+        <form class="settings-save-form" action="#">
+          <input type="text" maxlength="40" required placeholder="新しいセーブ名" aria-label="金・銀・クリスタルの新しいセーブ名">
+          <button type="button" class="btn btn--quiet">追加</button>
+        </form>
+      </div>
+      <div class="settings-save-game">
+        <h3 class="settings-save-game__title">スカーレット・バイオレット</h3>
+        <form class="settings-save-form" action="#">
+          <input type="text" maxlength="40" required placeholder="新しいセーブ名" aria-label="スカーレット・バイオレットの新しいセーブ名">
+          <button type="button" class="btn btn--quiet">追加</button>
+        </form>
+      </div>
+    </section>
+    <p class="sample-block-label">変更後</p>
+    <section class="settings-subcard" aria-labelledby="sample-after-saves">
+      <h2 class="settings-subcard__title" id="sample-after-saves">セーブデータ</h2>
+      <p class="settings-subcard__body">
+        同じゲームで別のセーブを使うときだけ、ここで追加します。
+        追加するまでは、メニューの並びはゲームタイトルのままです。
+      </p>
+      <div class="settings-save-game">
+        <h3 class="settings-save-game__title">赤・緑・青・ピカチュウ</h3>
+        <button type="button" class="btn btn--quiet">セーブを追加</button>
+      </div>
+      <div class="settings-save-game">
+        <h3 class="settings-save-game__title">金・銀・クリスタル</h3>
+        <form class="settings-save-form" action="#">
+          <input type="text" maxlength="40" required placeholder="新しいセーブ名" aria-label="金・銀・クリスタルの新しいセーブ名">
+          <button type="button" class="btn btn--quiet">追加</button>
+        </form>
+      </div>
+      <div class="settings-save-game">
+        <h3 class="settings-save-game__title">スカーレット・バイオレット</h3>
+        <button type="button" class="btn btn--quiet">セーブを追加</button>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FishTrack / MyPokedex UI 問題点レポート（2026-09-18）</title>
+  <title>FishTrack / MyPokedex UI 問題点レポート（2026-09-28）</title>
   <style>
     :root {
       --bg: #f5f6f8;
@@ -318,7 +318,7 @@
   <header>
     <h1>FishTrack / MyPokedex UI 問題点レポート</h1>
     <p>共有レポート（dev-workspace/ui-audit）。MyPokedex :5002 · FishTrack :5001／各 local AI アカウント</p>
-    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 診断日: 2026-09-18（JST・OPEN 0件）</p>
+    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 診断日: 2026-09-28（JST・OPEN は 0 件）</p>
     <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。解決済みはアコーディオン（既定クローズ）。解決から1ヶ月経過した課題はレポートから削除する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
     <p>改善サンプルはローカル製品（CSS・ロゴ・コンポーネント）をそのまま使い、改善箇所だけを差分修正したものである。</p>
   </header>
@@ -327,16 +327,17 @@
     <a href="#summary">サマリー</a>
     <a href="#open-issues">未解決</a>
     <a href="#resolved-issues">解決済み</a>
-    <span class="toc-group">未解決 FishTrack</span>
-    <div class="toc-row">
-      <span class="toc-empty">なし</span>
-    </div>
     <span class="toc-group">解決済み MyPokedex</span>
     <div class="toc-row">
+      <a href="#mp-o2">MP-O2</a>
+      <a href="#mp-o1">MP-O1</a>
       <a href="#mp-h5">MP-H5</a>
     </div>
     <span class="toc-group">解決済み FishTrack</span>
     <div class="toc-row">
+      <a href="#ft-o38">FT-O38</a>
+      <a href="#ft-o37">FT-O37</a>
+      <a href="#ft-h27">FT-H27</a>
       <a href="#ft-o36">FT-O36</a>
       <a href="#ft-o34">FT-O34</a>
       <a href="#ft-o33">FT-O33</a>
@@ -374,24 +375,17 @@
       <a href="#ft-o17">FT-O17</a>
       <a href="#ft-h12">FT-H12</a>
       <a href="#ft-h11">FT-H11</a>
-      <a href="#ft-h8">FT-H8</a>
     </div>
   </nav>
 <main>
     <section id="summary" class="meta">
-      <div><strong>対象</strong>: ユーザー指定により
-        <strong>フィールド系の並び替え</strong>に限定（全画面監査ではない）。
-        マイフィールド・フィールド詳細エリア・パブリック。PC ヘッダー対照。
-        MyPokedex はカード化していないため対象外（理由は範囲）。</div>
-      <div><strong>範囲</strong>: 2026-09-18。ユーザー指定で
-        <strong>フィールド系の並び替え</strong>を課題化した（特定画面。全画面監査ではない）。
-        <a href="#ft-o36">FT-O36</a> 案Aを採用し、マイフィールド／エリアの SP 結果行セレクトを実装。
-        再診断して RESOLVED。中核4観点のうち操作性・視認性・初回ユーザーを当該一覧に当てた。
-        管理者の管理しやすさ: フィールド並び替えは一般ユーザー画面のみ。管理者専用の別 UI は無い（対象外）。
-        MyPokedex 図鑑／パーティは表のままヘッダーソートで、フィールド系のカード化に追随しない（新規 OPEN なし）。</div>
-      <div><strong>スクショ例（抜粋）</strong>: FT —
-        <code>/field-area/list</code>、<code>/field-area/field/{id}</code>、<code>/public-fields</code>。
-        MP — 既存 <code>/RGBP/partyBox</code>（表ヘッダー。本事象なし）</div>
+      <div><strong>対象</strong>: FishTrack と MyPokedex の全画面（未ログイン LP、ログイン後、管理者を含む。SP／PC）。</div>
+      <div><strong>範囲</strong>: 2026-09-28。直近の釣行一覧（自分の一覧と全ユーザー表示）を SP 390×844 と PC 1440×960 で操作確認。
+        続けて両製品の未ログイン LP と、MyPokedex のパーティ画面（ログイン後・SP）を確認。
+        中核は操作性・視認性・初回ユーザー・管理者の管理しやすさ。
+        釣行一覧のサイズ・水温の出し分けに新規の問題は無かった。
+        未確認の画面は残作業（ホーム、釣果一覧の見た目、タックル、フィールド、図鑑、設定の再操作、管理者マスタ）。</div>
+      <div><strong>スクショ例（抜粋）</strong>: FT — <code>/trip/?view=all</code>（SP）</div>
       <div><strong>観点</strong>: 中核は操作性・視認性・初回ユーザー（迷わないか）・管理者の管理しやすさ。
         併せて導線・主CTA・空状態・必須／任意・表密度・フィルタ・誤アフォーダンス・一貫性・危険操作・フィードバック・SP/PC・a11y。
         正本は <code>ui-audit-html-report</code> SKILL「診断観点」。</div>
@@ -403,13 +397,505 @@
 
     <section id="open-issues" aria-labelledby="open-issues-title">
       <h2 id="open-issues-title" class="section-title">未解決の課題</h2>
-      <p class="section-lead">現時点の OPEN は 0件。</p>
+      <p class="section-lead">現時点の OPEN は 0 件。</p>
 
     </section>
 
 <section id="resolved-issues" aria-labelledby="resolved-issues-title">
       <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
       <p class="section-lead">再診断済み。各課題はアコーディオン（既定クローズ）。解決日から1ヶ月経過した課題は削除する。</p>
+
+    <article class="issue" id="ft-o38" data-resolved-on="2026-09-28">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-O38 — 全ユーザー表示ではフィルタが開いたまま一覧を押し下げる
+          </h2>
+        </summary>
+        <p class="label">2026-09-28 に案Aを採用し、再診断で解決。</p>
+
+        <h3>改善前の事象</h3>
+        <p>管理者の釣行一覧で「全ユーザーを表示」を開くと、絞り込みが常に開いた状態だった。SP（390×844）ではその欄の高さが約 509px あり、最初の釣行カードはビューポート下端まで下がっていた。</p>
+        <div class="shots">
+          <figure>
+            <img src="fishtrack/sp-trip-all-users-filter.png" alt="改善前。開いたフィルタの下に日付だけが見える">
+            <figcaption>sp-trip-all-users-filter.png — ▲ 改善前。このフィルタ全体。日付行は画面下端</figcaption>
+          </figure>
+        </div>
+
+        <h3>対象箇所</h3>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> <code>/trip/?view=all</code> と <code>/catch/?view=all</code></li>
+            <li><strong>位置:</strong> 見出しの直下。ユーザー選択と <code>details.ft-filter-collapse</code></li>
+            <li><strong>対象外:</strong> 自分の一覧。ほかの条件が付いているときの展開。MyPokedex</li>
+          </ul>
+        </div>
+
+        <h3>実施した改善</h3>
+        <p>案A。ユーザーの選択だけをフィルタの外に残し、日付・フィールドなどは閉じたままにした。ほかの条件があるときだけ開く。釣行一覧と釣果一覧の両方。</p>
+        <p class="sample-link">採用前サンプル:
+          <a href="fishtrack/samples/ft-o38-a.html">fishtrack/samples/ft-o38-a.html</a></p>
+        <div class="shots">
+          <figure>
+            <img src="fishtrack/sp-trip-all-users-filter-after.png" alt="改善後。ユーザー選択の下に釣行カードが見える">
+            <figcaption>sp-trip-all-users-filter-after.png — ▲ 改善後。ユーザー選択と閉じたフィルタの下に、最初の釣行カードが入る</figcaption>
+          </figure>
+        </div>
+
+        <h3>再診断</h3>
+        <p>2026-09-28 に SP 390×844 で確認した。釣行一覧はフィルタが閉じており、最初のカード上端は 382px。釣果一覧も閉じており、最初のカード上端は 471px。いずれも初期表示に入る。</p>
+      </details>
+    </article>
+
+    <article class="issue" id="mp-o2" data-resolved-on="2026-09-28">
+      <details>
+        <summary>
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span>
+        MP-O2 — セーブ削除が確認なしで送られる
+      </h2>
+        </summary>
+        <p class="label">画面: ゲーム切替設定（セーブを2件以上にしたあと）。観点: 危険操作・操作性。
+          関連 <a href="#mp-o1">MP-O1</a>。2026-09-27 診断。2026-09-28 に案Aを採用し、再診断して RESOLVED。</p>
+
+        <h3>改善前の事象</h3>
+        <p>
+          同じゲームにセーブを足すと、各セーブに「このセーブを削除」が出る。
+          削除フォームに <code>data-confirm</code> は無かった。
+          診断中に「監査用」を削除すると、確認は出ずその場で消えた。
+        </p>
+        <div class="shots">
+          <figure>
+            <img src="mypokedex/sp-mp-settings-save-delete.png" alt="セーブ1と監査用の行。それぞれこのセーブを削除がある">
+            <figcaption>sp-mp-settings-save-delete.png — ▲ 改善前。確認なしで送る「このセーブを削除」（SP 390×844）</figcaption>
+          </figure>
+        </div>
+
+        <h3>実施した改善</h3>
+        <p>
+          ボタンの見た目は変えていない。削除フォームに <code>data-confirm</code> を付け、送る前に確認する。
+          確認文は「セーブ「確認用」を削除します。このセーブのパーティ・ボックス・図鑑登録も削除されます。元に戻せません。よろしいですか？」。
+          キャンセルしたときは送らない。最後の 1 件には削除ボタンを出さない。
+          再診断では「確認用」を追加し、確認に応じて削除した。削除後はセーブ名の行も消えた。
+        </p>
+        <div class="shots">
+          <figure>
+            <img src="mypokedex/sp-mp-settings-save-delete-after.png" alt="セーブ1と確認用の行。このセーブを削除の見た目は改善前と同じ">
+            <figcaption>sp-mp-settings-save-delete-after.png — ▲ 改善後。ボタンは同じ。送信前に確認する（SP 390×844。確認後に確認用は削除済み）</figcaption>
+          </figure>
+        </div>
+      </details>
+    </article>
+
+    <article class="issue" id="mp-o1" data-resolved-on="2026-09-28">
+      <details>
+        <summary>
+      <h2>
+        <span class="badge sev-med">MED</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod">MyPokedex</span>
+        MP-O1 — セーブ追加の入力が有効ゲームの数だけ常時開いている
+      </h2>
+        </summary>
+        <p class="label">画面: ゲーム切替設定。観点: 初回ユーザー・視認性・必須／任意・操作性。
+          2026-09-27 診断。2026-09-28 に案Aを採用し、再診断して RESOLVED。</p>
+
+        <h3>改善前の事象</h3>
+        <p>
+          <code>/settings/game</code> の「セーブデータ」は、有効なゲームごとに空の
+          「新しいセーブ名」と「追加」を常に出していた。ローカルの AI 用アカウントでは 7 件。
+          入力は <code>required</code>。セーブを増やしていないゲームでも、埋めかけの欄に見えた。
+        </p>
+        <div class="shots">
+          <figure>
+            <img src="mypokedex/sp-mp-settings-saves.png" alt="設定画面のセーブデータ欄。ゲームごとに新しいセーブ名と追加が並ぶ">
+            <figcaption>sp-mp-settings-saves.png — ▲ 改善前。見出しの下に、ゲームごとの空欄と「追加」が続く（SP 390×844）</figcaption>
+          </figure>
+        </div>
+
+        <h3>実施した改善</h3>
+        <p>
+          セーブを追加していないゲームは「セーブを追加」だけを出す。押したゲームだけ名前欄と「追加」が開き、そのボタンは隠れる。
+          他のゲームのボタンはそのまま。セーブが2件以上のゲームは、名前変更・削除と、常時見える追加欄を今どおり残す。
+        </p>
+        <div class="shots">
+          <figure>
+            <img src="mypokedex/sp-mp-settings-saves-after.png" alt="設定画面のセーブデータ欄。ゲームごとにセーブを追加だけが出る">
+            <figcaption>sp-mp-settings-saves-after.png — ▲ 改善後の初期。空欄は無く、「セーブを追加」だけ（SP 390×844）</figcaption>
+          </figure>
+          <figure>
+            <img src="mypokedex/sp-mp-settings-saves-open.png" alt="赤・緑・青・ピカチュウだけ新しいセーブ名が開き、他はセーブを追加のまま">
+            <figcaption>sp-mp-settings-saves-open.png — ▲ 赤・緑・青・ピカチュウの「セーブを追加」を押したあと。そのゲームだけ名前欄と「追加」。他のゲームはボタンのまま（SP 390×844）</figcaption>
+          </figure>
+        </div>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o37" data-resolved-on="2026-09-18">
+      <details>
+        <summary>
+      <h2>
+        <span class="badge sev-high">HIGH</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-O37 — 長い編集画面では保存が画面外
+      </h2>
+        </summary>
+      <p class="label">画面: ルアーマスタ編集（主）。ロッド型番編集・釣果登録（PC）・フィールド編集も同型。
+        観点: 操作性・主CTA・管理者の管理しやすさ。関連
+        <a href="#ft-h27">FT-H27</a>（案Aでカラー行は圧縮済み）。
+        2026-09-18 OPEN。同日ユーザーが案A採用。製品実装・SP/PC 再診断して RESOLVED。
+        案B（見出し右の保存）は不採用。</p>
+
+      <h3>改善前の事象</h3>
+      <p>
+        ルアーマスタ編集（ワーム <code>/lure-worm/8</code> ムーブベイト3.1、カラー10＋空行）では
+        保存が <code>#lure-master-edit-form</code> 末尾の <code>.form-actions</code> だけ。
+        PC 1280×800 でページ高 6366px、保存の <code>top</code> は 6050px（先頭ビュー外）。
+        SP 390×844 ではページ高 8549px、保存 <code>top</code> 8308px。sticky は無い。
+        プラグ <code>/lure-plug/11</code> も同じ（PC ページ高 5931px、保存 5670px）。
+        先頭にはスペック入力だけが見え、カラーを直したあとも末尾までスクロールしないと保存できない。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-lure-worm-edit-top.png" alt="ワーム編集 PC 先頭。保存ボタンが無い">
+          <figcaption>pc-lure-worm-edit-top.png — ▲ 先頭。見出しは「一覧へ」だけで保存が無い</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-lure-worm-edit-save.png" alt="ワーム編集 PC 末尾の保存">
+          <figcaption>pc-lure-worm-edit-save.png — ▲ 末尾までスクロールしたあと。保存はカラー空行と「行を追加」の下</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-lure-worm-edit-top.png" alt="ワーム編集 SP 先頭。保存が無い">
+          <figcaption>sp-lure-worm-edit-top.png — ▲ SP 先頭。スペック途中まで。保存は画面外</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-rod-edit-top.png" alt="ロッド型番編集 PC 先頭。更新するは画面外">
+          <figcaption>pc-rod-edit-top.png — ▲ ロッド編集先頭。更新するは 2195px ページの 1934px 地点</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-catch-new-top.png" alt="釣果登録 PC 先頭。登録は画面外">
+          <figcaption>pc-catch-new-top.png — ▲ 釣果 PC。sticky は CSS で非表示。フッタ登録は 2301px</figcaption>
+        </figure>
+      </div>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/lure-worm/{id}</code>、<code>/lure-plug/{id}</code>（管理者編集）。
+            ルアー新規も末尾 <code>.form-actions</code>。
+            同型: <code>/tackle/rod-model/{id}/edit</code>（更新する、ページ高 2195px）、
+            リール型番編集（ロッドと同じフッタ）、
+            <code>/catch/new</code>（PC のみ。SP は既存 sticky）、
+            <code>/field-area/field/{id}/edit</code>（マップで 1656px）</li>
+          <li><strong>位置:</strong>
+            カード見出しの右（削除／一覧へ）の下〜カラー一覧のあと。保存はフォーム最後</li>
+          <li><strong>部品／セレクタ:</strong>
+            <code>#lure-master-edit-form .form-actions input[type=submit]</code>（保存）。
+            釣果 PC は <code>.catch-form-footer-submit</code>。
+            <code>.ft-sticky-submit</code> は釣果 SP のみ（<code>max-width: 767px</code>）</li>
+          <li><strong>対象外:</strong>
+            釣行登録 <code>/trip/new</code>（ページ高 887px、作成が 213px で先頭に入る）。
+            釣果 SP（sticky 登録あり）。
+            ルアー閲覧（<code>can_edit</code> なし。保有追加は行内）。
+            MyPokedex 設定 <code>/settings/game</code>（保存が先頭ビュー内。下図）。
+            図鑑／パーティ（行 CTA で長い保存フォームが無い）</li>
+        </ul>
+      </div>
+      <figure class="pc">
+        <img src="mypokedex/pc-mp-settings-game.png" alt="MyPokedex ゲーム切替設定。保存が画面内">
+        <figcaption>pc-mp-settings-game.png — ▲ MP。チェックの直後に保存。本事象なし（対象外）</figcaption>
+      </figure>
+
+      <h3>何が問題か</h3>
+      <p>
+        操作性・主 CTA。管理者のマスタメンテでも、カラーを直す作業のたびに数千 px スクロールが要る。
+        先頭で製品名だけ直しても保存が見えず、未保存のまま一覧へ戻りうる。
+        カラー行は <a href="#ft-h27">FT-H27</a> 案Aで圧縮したが、保存は末尾のまま。
+      </p>
+
+      <h3>改善策</h3>
+      <p>案A を推奨。釣果 SP の sticky を PC とルアー／ロッド等の長い保存フォームへ広げる。案B は先頭に戻れば届くが、カラー編集中は見えない。</p>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>現状</th>
+            <th>案A</th>
+            <th>案B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>保存の位置</th>
+            <td>フォーム末尾のみ</td>
+            <td>画面下端に固定（末尾ボタンは SP 釣果と同様に隠してよい）</td>
+            <td>見出し右に追加。末尾も残す</td>
+          </tr>
+          <tr>
+            <th>スクロール中</th>
+            <td>到達不能</td>
+            <td>常に押せる</td>
+            <td>先頭へ戻る必要あり</td>
+          </tr>
+          <tr>
+            <th>対象画面</th>
+            <td>ルアー編集が最悪。ロッド・釣果PC・フィールドも末尾のみ</td>
+            <td>長い保存フォーム共通</td>
+            <td>同じ</td>
+          </tr>
+          <tr>
+            <th>釣果 SP</th>
+            <td>既に sticky</td>
+            <td>現状維持＋PC にも出す</td>
+            <td>見出し保存は釣果の情報密度と合わない</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th></th>
+            <th>案A <span class="rec-tag">推奨</span></th>
+            <th>案B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>違い</th>
+            <td>ビューポート下端バー</td>
+            <td>カード見出しの保存</td>
+          </tr>
+          <tr>
+            <th>メリット</th>
+            <td>カラー編集中も保存できる。釣果の既存部品を流用</td>
+            <td>実装が小さい。先頭の製品名修正には足りる</td>
+          </tr>
+          <tr>
+            <th>デメリット</th>
+            <td>本文の下端がバーで隠れる（padding が要る）</td>
+            <td>リスト中ほどでは相変わらず見えない</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="shots">
+        <figure class="wide">
+          <img src="fishtrack/sample-ft-o37-a.png" alt="案Aサンプル。変更前は保存が画面外、変更後は下端に保存">
+          <figcaption>sample-ft-o37-a.png — ▲ 上: 変更前（先頭に保存なし）。下: 変更後（下端に保存）。
+            <a href="fishtrack/samples/ft-o37-a.html">ft-o37-a.html</a></figcaption>
+        </figure>
+        <figure class="wide">
+          <img src="fishtrack/sample-ft-o37-b.png" alt="案Bサンプル。見出し右に保存">
+          <figcaption>sample-ft-o37-b.png — ▲ 上: 変更前。下: 見出し右に保存。
+            <a href="fishtrack/samples/ft-o37-b.html">ft-o37-b.html</a></figcaption>
+        </figure>
+      </div>
+
+      <h3>実施した改善</h3>
+      <p>
+        案A。釣果 SP の <code>.ft-sticky-submit</code> を全ビューポートで常時表示し、
+        ルアー新規／編集、ロッド／リール新規／編集、フィールド／エリア新規／編集へ広げた。
+        ページ末尾の保存は隠し（釣果は DOM に残して JS フォールバック）、
+        カラー「行を追加」は途中のまま。CSS は <code>fishtrack_tail_form_sticky.css</code> に分離。
+        再診断: ワーム <code>/lure-worm/8</code> PC 1280×800 で sticky <code>top</code> 735px（ページ高 3945px）。
+        SP 390×844 で sticky <code>top</code> 779px、ボタン幅ほぼ全幅。
+        ロッド編集・釣果登録 PC・フィールド編集も先頭ビューで保存／更新に届く。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-lure-worm-edit-sticky-after.png" alt="改善後。ワーム編集 PC 先頭に下端の保存">
+          <figcaption>pc-lure-worm-edit-sticky-after.png — ▲ 再診断 PC。先頭ビューの下端に保存</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-lure-worm-edit-sticky-after.png" alt="改善後。ワーム編集 SP 先頭に全幅の保存">
+          <figcaption>sp-lure-worm-edit-sticky-after.png — ▲ 再診断 SP 390。下端に全幅の保存</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-rod-edit-sticky-after.png" alt="改善後。ロッド編集 PC に更新するとキャンセル">
+          <figcaption>pc-rod-edit-sticky-after.png — ▲ ロッド編集。先頭ビューで更新する／キャンセル</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-catch-new-sticky-after.png" alt="改善後。釣果登録 PC に下端の登録">
+          <figcaption>pc-catch-new-sticky-after.png — ▲ 釣果 PC。sticky 登録。フッタ送信は非表示</figcaption>
+        </figure>
+        <figure class="pc">
+          <img src="fishtrack/pc-field-edit-sticky-after.png" alt="改善後。フィールド編集 PC に下端の更新">
+          <figcaption>pc-field-edit-sticky-after.png — ▲ フィールド編集。先頭ビューで更新</figcaption>
+        </figure>
+      </div>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-h27" data-resolved-on="2026-09-18">
+      <details>
+        <summary>
+      <h2>
+        <span class="badge sev-med">MEDIUM</span>
+        <span class="badge status-resolved">RESOLVED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H27 — ルアー編集のカラー行が縦に伸びる
+      </h2>
+        </summary>
+      <p class="label">画面: ルアーマスタ編集のカラー一覧。
+        観点: 視認性・表の密度。関連
+        <a href="#ft-o37">FT-O37</a>（保存到達は同日 案A で RESOLVED）。
+        2026-09-18 OPEN。同日ユーザーが案A採用。製品実装・SP/PC 再診断して RESOLVED。
+        案B（折りたたみ）は不採用。</p>
+
+      <h3>改善前の事象</h3>
+      <p>
+        編集時のカラーは <code>ul.lure-color-list</code> の縦積み。
+        各行がカラー名／JAN／定価のグリッド、削除、133×100 の写真、
+        「写真を登録」「公式サイトから取得」、キャプション入力までを縦に置く。
+        PC で1行約 396px、SP で約 566px。10色だとカラー節だけでビューポート数画面分になる。
+        閲覧時は表（<code>.lure-color-table</code>）で写真＋名前が1行なのに、編集だけカードが膨らむ。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-lure-worm-edit-colors.png" alt="ワーム編集 PC。1カラーで写真とボタンが縦積み">
+          <figcaption>pc-lure-worm-edit-colors.png — ▲ グリパンピンク1行で写真・登録・キャプションまで。次のカラーは画面下端</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-lure-worm-edit-colors.png" alt="ワーム編集 SP。カラー入力が縦に伸びる">
+          <figcaption>sp-lure-worm-edit-colors.png — ▲ SP。1カラーでほぼ1画面。3フィールドが縦積み</figcaption>
+        </figure>
+      </div>
+
+      <h3>対象箇所</h3>
+      <div class="where">
+        <ul>
+          <li><strong>URL／画面:</strong>
+            <code>/lure-worm/{id}</code>、<code>/lure-plug/{id}</code> の編集（<code>can_edit</code>）。
+            ルアー新規のカラー節も同じ部品</li>
+          <li><strong>位置:</strong>
+            「カラー一覧」見出しの下、<code>.lure-color-list__item</code> 各行</li>
+          <li><strong>部品／セレクタ:</strong>
+            <code>.lure-color-form-grid</code>、
+            <code>.lure-color-photo</code>（<code>max-width: 20rem</code>）、
+            <code>.lure-color-photo__preview</code>（133×100）、
+            <code>.lure-color-photo__actions</code>、
+            <code>[data-photo-caption-input]</code></li>
+          <li><strong>対象外:</strong>
+            閲覧のカラー表（既に横並び。保有追加は行内）。
+            ロッド／リール編集（カラー行が無い。保存到達は <a href="#ft-o37">FT-O37</a>）。
+            MyPokedex（カラーマスタ編集が無い）</li>
+        </ul>
+      </div>
+
+      <h3>何が問題か</h3>
+      <p>
+        視認性・密度。スキャンして色名を直す作業なのに、写真パネルが行をビューポート一杯にする。
+        保存 CTA（<a href="#ft-o37">FT-O37</a>）までの距離も比例して増えていた（同日 sticky で解消）。
+        閲覧表と同じ項目なのに編集だけ縦に伸び、同類画面の一貫性も崩れる。
+      </p>
+
+      <h3>改善策</h3>
+      <p>案A を採用。閲覧表に近い1行密度を維持し、写真操作は行内の短いリンク／ボタンにする。
+        案B は不採用（閉じれば短いが、開いた行は改善前と同じ高さのまま）。</p>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>現状</th>
+            <th>案A</th>
+            <th>案B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>カラー名／JAN／定価</th>
+            <td>3列グリッドの下に写真</td>
+            <td>写真左＋3列を1行</td>
+            <td>閉じると名前だけ。開くと現状と同じ</td>
+          </tr>
+          <tr>
+            <th>写真プレビュー</th>
+            <td>133×100 を入力の下</td>
+            <td>小さなサムネを左</td>
+            <td>開いた行は現状サイズ</td>
+          </tr>
+          <tr>
+            <th>写真登録／公式取得／キャプション</th>
+            <td>プレビュー下に縦積み</td>
+            <td>行の操作列へ短く移す</td>
+            <td>開いた行に現状どおり</td>
+          </tr>
+          <tr>
+            <th>削除</th>
+            <td>入力グリッドの下</td>
+            <td>同じ操作列</td>
+            <td>開いた行</td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="compare">
+        <thead>
+          <tr>
+            <th></th>
+            <th>案A <span class="rec-tag">採用</span></th>
+            <th>案B（不採用）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>違い</th>
+            <td>常時コンパクトな1行</td>
+            <td>折りたたみ。開くと現状</td>
+          </tr>
+          <tr>
+            <th>メリット</th>
+            <td>10色でもスキャンできる。保存までの距離も減る</td>
+            <td>触らない色を畳める</td>
+          </tr>
+          <tr>
+            <th>デメリット</th>
+            <td>写真操作のラベルが短くなる</td>
+            <td>開いた行の高さは直らない。一括修正では全部開く</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="shots">
+        <figure class="wide">
+          <img src="fishtrack/sample-ft-h27-a.png" alt="案Aサンプル。縦積みから1行圧縮">
+          <figcaption>sample-ft-h27-a.png — ▲ 上: 変更前の縦積み。下: 写真左＋入力1行。
+            <a href="fishtrack/samples/ft-h27-a.html">ft-h27-a.html</a></figcaption>
+        </figure>
+        <figure class="wide">
+          <img src="fishtrack/sample-ft-h27-b.png" alt="案Bサンプル。2行目を折りたたみ">
+          <figcaption>sample-ft-h27-b.png — ▲ 上: 変更前。下: 2行目は名前だけ。
+            <a href="fishtrack/samples/ft-h27-b.html">ft-h27-b.html</a></figcaption>
+        </figure>
+      </div>
+
+      <h3>実施した改善</h3>
+      <p>
+        案A。編集カラー行は <code>.lure-color-edit-layout</code> でサムネ左＋カラー名／JAN／定価を横1行。
+        写真の登録／公式取得／削除／キャプションは <code>.lure-color-photo__ops</code> に置き、
+        <code>lure_color_photos.js</code> の <code>.lure-color-photo</code> セレクタは維持する。
+        閲覧表の 133×100 プレビューは変更しない。
+        再診断（ワーム <code>/lure-worm/8</code>）: PC 1行約 161px（改善前約 396px）、ページ高約 3849px（改善前 6366px）。
+        SP 390×844 で1行約 373px（改善前約 566px）、ページ高約 6394px（改善前 8549px）。
+        保存は末尾だったが、同日 <a href="#ft-o37">FT-O37</a> 案Aで下端 sticky にした。
+      </p>
+      <div class="shots">
+        <figure class="pc">
+          <img src="fishtrack/pc-lure-worm-edit-colors-after.png" alt="改善後。ワーム編集 PC。サムネ左と入力1行">
+          <figcaption>pc-lure-worm-edit-colors-after.png — ▲ 再診断 PC。サムネ左＋3フィールド1行。写真操作は入力の下</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-lure-worm-edit-colors-after.png" alt="改善後。ワーム編集 SP。名前全幅のあと JAN と定価">
+          <figcaption>sp-lure-worm-edit-colors-after.png — ▲ 再診断 SP 390。名前全幅、JAN と定価が横並び。1行で次のカラーが見える</figcaption>
+        </figure>
+      </div>
+      </details>
+    </article>
 
     <article class="issue" id="ft-o36" data-resolved-on="2026-09-18">
       <details>
@@ -4624,76 +5110,6 @@
       </details>
     </article>
 
-    <article class="issue" id="ft-h8" data-resolved-on="2026-08-20">
-      <details>
-        <summary>
-          <h2>
-            <span class="badge sev-high">HIGH</span>
-            <span class="badge status-resolved">RESOLVED</span>
-            <span class="badge badge-prod-ft">FishTrack</span>
-            FT-H8 — 未ログイン LP では登録前に何ができてどう便利かが分からない
-          </h2>
-        </summary>
-
-        <p class="label">画面: 未ログイン ランディング（PC／SP）。旧 FT-H9／FT-H10 を 2026-08-13 に本 ID へ統合</p>
-
-        <h3>対象箇所</h3>
-        <div class="where">
-          <ul>
-            <li><strong>URL／画面:</strong> <code>http://localhost:5001/</code>（未ログイン時）</li>
-            <li><strong>位置:</strong> <code>.ft-lp-hero</code>、<code>#ft-lp-prep</code>、
-              <code>#ft-lp-record</code>、<code>#ft-lp-features</code>、
-              <code>#ft-lp-future</code>、<code>#ft-lp-fit</code>、<code>#ft-lp-start</code>、
-              公開ヘッダー <code>.ft-site-header--public</code></li>
-            <li><strong>対象外:</strong> ログイン後画面そのもの。MyPokedex LP。
-              管理者 UI（未ログイン公開面のため対象外）</li>
-          </ul>
-        </div>
-
-        <h3>改善前の事象</h3>
-        <p>登録前に FishTrack の機能と利用価値を確認できず、生成写真中心のヒーローとストーリーだけでは、登録後の画面や具体的な使い方が伝わらなかった。</p>
-        <div class="shots">
-          <figure class="pc">
-            <img src="fishtrack/pc-lp-current.png" alt="改善前の FishTrack LP ヒーロー">
-            <figcaption>pc-lp-current.png — ▲ 改善前の現状スクリーンショット</figcaption>
-          </figure>
-          <figure class="pc">
-            <img src="fishtrack/pc-lp-stories.png" alt="改善前の FishTrack LP ストーリー">
-            <figcaption>pc-lp-stories.png — ▲ 改善前のストーリー領域</figcaption>
-          </figure>
-        </div>
-
-        <h3>実施した改善</h3>
-        <ul>
-          <li>ヒーローをビューポート全面にし、公開ヘッダーへ白ロゴ・ページ内ナビ・「無料で新規登録」を配置</li>
-          <li>釣行前／現場／帰宅後の導線を、実写と現行 UI の組み合わせで再構成</li>
-          <li>機能カード、今後の拡張、利用目的、使い始めの節を追加し、登録前に主な価値を確認できるようにした</li>
-          <li>PC／SP の実画面アセットを <code>static/img/lp</code> に用意し、<code>&lt;picture&gt;</code> で表示幅を切り替え</li>
-          <li>ログイン・法務画面では LP 専用ナビを表示しない条件分岐を維持</li>
-        </ul>
-
-        <p class="sample-link">改善サンプル:
-          <a href="fishtrack/samples/ft-h8.html">fishtrack/samples/ft-h8.html</a>
-          （完成版相当。製品実装は <code>landing.html</code>／<code>landing.css</code> に反映）</p>
-        <div class="shots">
-          <figure class="pc">
-            <img src="fishtrack/ft-h8-after-desktop.png" alt="改善後の FishTrack LP PC 表示">
-            <figcaption>ft-h8-after-desktop.png — ▲ 改善後。PC の未ログイン LP 全体</figcaption>
-          </figure>
-          <figure class="pc">
-            <img src="fishtrack/ft-h8-after-mobile.png" alt="改善後の FishTrack LP SP 表示">
-            <figcaption>ft-h8-after-mobile.png — ▲ 改善後。SP のヒーローと折り返しナビ</figcaption>
-          </figure>
-          <figure class="pc">
-            <img src="fishtrack/ft-h8-after-mobile-record.png" alt="改善後の FishTrack LP SP 機能表示">
-            <figcaption>ft-h8-after-mobile-record.png — ▲ 改善後。SP の機能カード領域</figcaption>
-          </figure>
-        </div>
-
-        <h3>再診断</h3>
-        <p>2026-08-20 に Docker 上の未ログイン LP を PC（1440×960）と SP（390×844）で確認した。ヒーロー、ページ内アンカー、登録 CTA、実画面を含む各節、SP ナビの表示を確認し、ログイン後画面では LP 専用ナビが出ないこともテストで確認したため、RESOLVED とする。</p>
-      </details>
-    </article>
     </section>
 
   </main>

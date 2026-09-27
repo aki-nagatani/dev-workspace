@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O38 案A 全ユーザー表示のフィルタ</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/list_sp_cards.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: max-content;
+      background: #eef2f7;
+    }
+    .sample-note {
+      width: 390px;
+      margin: 0;
+      padding: 0.45rem 0.7rem;
+      background: #fff;
+      color: #5c6578;
+      font: 600 0.8rem/1.4 "Segoe UI", "Hiragino Sans", sans-serif;
+    }
+    .sample-frame {
+      width: 390px;
+      background: #eef2f7;
+      padding: 0.6rem 0.65rem 0.8rem;
+      box-sizing: border-box;
+    }
+    .ft-o38-user {
+      margin: 0 0 0.75rem;
+    }
+    .ft-o38-user label {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    .ft-o38-user select {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <p class="sample-note">変更前</p>
+  <div class="sample-frame">
+    <section class="card">
+      <div class="card-header">
+        <h2>釣行一覧</h2>
+        <div class="filter-actions">
+          <a class="btn btn--ghost btn--sm" href="/trip/">自分の釣行に戻る</a>
+        </div>
+      </div>
+      <form class="filter-form" method="get" action="/trip/">
+        <details class="ft-filter-collapse" open>
+          <summary class="ft-filter-collapse__summary">
+            <span class="ft-filter-collapse__label">フィルタ</span>
+            <span class="ft-filter-collapse__caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="ft-filter-collapse__panel">
+            <div class="filter-grid">
+              <div>
+                <label for="before-user">ユーザー</label>
+                <select id="before-user" aria-label="ユーザーで絞り込み">
+                  <option>すべてのユーザー</option>
+                </select>
+              </div>
+              <div>
+                <label for="before-from">開始日</label>
+                <input id="before-from" type="date" aria-label="開始日">
+              </div>
+              <div>
+                <label for="before-to">終了日</label>
+                <input id="before-to" type="date" aria-label="終了日">
+              </div>
+              <div>
+                <label for="before-field">フィールド</label>
+                <select id="before-field" aria-label="フィールドで絞り込み">
+                  <option>すべて</option>
+                </select>
+              </div>
+              <div>
+                <label for="before-area">エリア</label>
+                <select id="before-area" aria-label="エリアで絞り込み" disabled>
+                  <option>すべて</option>
+                </select>
+              </div>
+              <div>
+                <label for="before-catch">釣果の有無</label>
+                <select id="before-catch" aria-label="釣果の有無で絞り込み">
+                  <option>すべて</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </details>
+      </form>
+      <div class="master-model-cards">
+        <div class="list-sp-date-group">
+          <p class="list-sp-date-heading">2026-09-16 <span class="list-sp-date-heading__count">1件</span></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <p class="sample-note" id="ft-o38-after-label">変更後</p>
+  <div class="sample-frame" id="ft-o38-after">
+    <section class="card">
+      <div class="card-header">
+        <h2>釣行一覧</h2>
+        <div class="filter-actions">
+          <a class="btn btn--ghost btn--sm" href="/trip/">自分の釣行に戻る</a>
+        </div>
+      </div>
+      <form class="filter-form" method="get" action="/trip/">
+        <div class="ft-o38-user">
+          <label for="after-user">ユーザー</label>
+          <select id="after-user" aria-label="ユーザーで絞り込み">
+            <option>すべてのユーザー</option>
+          </select>
+        </div>
+        <details class="ft-filter-collapse">
+          <summary class="ft-filter-collapse__summary">
+            <span class="ft-filter-collapse__label">フィルタ</span>
+            <span class="ft-filter-collapse__caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="ft-filter-collapse__panel">
+            <div class="filter-grid">
+              <div>
+                <label for="after-from">開始日</label>
+                <input id="after-from" type="date" aria-label="開始日">
+              </div>
+              <div>
+                <label for="after-to">終了日</label>
+                <input id="after-to" type="date" aria-label="終了日">
+              </div>
+              <div>
+                <label for="after-field">フィールド</label>
+                <select id="after-field" aria-label="フィールドで絞り込み">
+                  <option>すべて</option>
+                </select>
+              </div>
+              <div>
+                <label for="after-area">エリア</label>
+                <select id="after-area" aria-label="エリアで絞り込み" disabled>
+                  <option>すべて</option>
+                </select>
+              </div>
+              <div>
+                <label for="after-catch">釣果の有無</label>
+                <select id="after-catch" aria-label="釣果の有無で絞り込み">
+                  <option>すべて</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </details>
+      </form>
+      <div class="master-model-cards">
+        <div class="list-sp-date-group">
+          <p class="list-sp-date-heading">2026-09-16 <span class="list-sp-date-heading__count">1件</span></p>
+          <a class="master-model-card" href="/trip/74">
+            <div class="master-model-card__main">
+              <div class="master-model-card__heading">
+                <h3 class="master-model-card__model">亀山湖</h3>
+              </div>
+              <p class="master-model-card__series">未設定</p>
+              <dl class="master-model-card__meta">
+                <div class="master-model-card__meta-item">
+                  <dt>ユーザー</dt>
+                  <dd>ai-user@local.fishtrack</dd>
+                </div>
+                <div class="master-model-card__meta-item">
+                  <dt>時間帯</dt>
+                  <dd>未設定</dd>
+                </div>
+                <div class="master-model-card__meta-item">
+                  <dt>釣果数</dt>
+                  <dd>1</dd>
+                </div>
+                <div class="master-model-card__meta-item">
+                  <dt>サイズ</dt>
+                  <dd>30.0 cm</dd>
+                </div>
+              </dl>
+            </div>
+            <span class="master-model-card__chevron" aria-hidden="true">›</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
