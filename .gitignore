@@ -23,6 +23,10 @@ node_modules/
 *.log
 temp/
 
+# pytest coverage data
+.coverage
+.coverage.*
+
 # Backups
 backups/
 
