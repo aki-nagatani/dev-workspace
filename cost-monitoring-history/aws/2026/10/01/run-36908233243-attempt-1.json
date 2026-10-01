@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "service": "aws",
+  "status": "success",
+  "observed_at_utc": "2026-10-01T18:38:30.973560Z",
+  "observed_at_jst": "2026-10-02T03:38:30.973560+09:00",
+  "workflow": "Cost Monitoring",
+  "ref": "main",
+  "sha": "7e426464ad5d789584c9f21c1eb2648753fa3e7c",
+  "run_id": "36908233243",
+  "run_attempt": "1",
+  "summary": {
+    "judgment": "正常",
+    "period": "2026-09-01〜2026-09-30（比較: 2026-08-01〜2026-08-31）",
+    "total": "$70.70（同期間前月比 -1.7%）",
+    "previous_full_month_total": "$70.70（2026-09-01〜2026-09-30）",
+    "daily_average": "$2.36"
+  },
+  "report": "【対応不要】判定が正常のため、貼り付けも不要\n*AWS コスト監視（完了月）*\n判定: 正常\n期間: 2026-09-01〜2026-09-30（比較: 2026-08-01〜2026-08-31）\n合計: $70.70（同期間前月比 -1.7%）\n前月の完了月合計: $70.70（2026-09-01〜2026-09-30）\n日次平均: $2.36\n上位サービス:\n• Amazon Relational Database Service: $25.92（構成比 36.7%）\n• Amazon Elastic Compute Cloud - Compute: $19.52（構成比 27.6%）\n• Amazon Virtual Private Cloud: $10.78（構成比 15.3%）\n• Tax: $6.43（構成比 9.1%）\n• EC2 - Other: $2.86（構成比 4.0%）\n増加上位:\n• Amazon Simple Storage Service: $0.86（$0.25 → $1.11）\n直近完了月の推移:\n• 2026-07: $71.11\n• 2026-08: $71.92（前月比 +1.1%）\n• 2026-09: $70.70（前月比 -1.7%）\n日次異常なし\n日次固定費（異常判定から除外）: Amazon Route 53/HostedZone $1.00、Tax $6.43\n"
+}
