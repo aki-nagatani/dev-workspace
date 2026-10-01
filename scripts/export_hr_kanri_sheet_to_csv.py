@@ -3,7 +3,7 @@
 """
 人事考課_管理シート.md を読み取り、Excel 作業用 CSV を stdout に出力する（書き込みは行わない）。
 
-- 1 行 = 1 枝番（#### ブロック）。列は期・メンバー・等級・社員番号・枝番・目標ジャンル + 17 項目。
+- 1 行 = 1 枝番（#### ブロック）。列は期・メンバー・等級・社員番号・枝番・目標ジャンル + 21 項目。
 - <改善案> ブロックは CSV に含めない（校閲メタは Markdown のみ）。
 - mokuhyo-kanri-sheet-csv SKILL の全量再生成に使用。
 
@@ -41,8 +41,12 @@ FIELD_NAMES: tuple[str, ...] = (
     "設定時コメント(補助・１次調整者)",
     "上期達成状況コメント(本人)",
     "上期達成状況コメント(補助・１次評価者)",
+    "上期本人評価",
+    "上期補助評価",
     "下期達成状況コメント(本人)",
     "下期達成状況コメント(補助・１次評価者)",
+    "下期本人評価",
+    "下期補助評価",
 )
 
 CSV_HEADER: tuple[str, ...] = (
@@ -126,6 +130,8 @@ def parse_md(text: str) -> list[dict[str, str]]:
             grade = ""
             employee_id = ""
             i += 1
+            while i < len(lines) and not lines[i].strip():
+                i += 1
             if i < len(lines):
                 m_info = RE_MEMBER_LINE.match(lines[i].strip())
                 if m_info:

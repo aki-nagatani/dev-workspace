@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FN-O5 案A</title>
+  <style>
+    :root {
+      --card: #ffffff;
+      --text: #1a1d21;
+      --muted: #5c6570;
+      --accent: #0b6e4f;
+      --border: #d8dde3;
+      --bg: #f4f6f8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      width: 390px;
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      background: #fff;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .sample-note {
+      margin: 0;
+      padding: 0.55rem 0.75rem;
+      background: #fff8e1;
+      color: #5c4a00;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .frame { padding: 0.75rem; background: var(--bg); }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1rem 1.1rem;
+    }
+    h2 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+    .muted { margin: 0 0 0.75rem; color: var(--muted); font-size: 0.92rem; }
+    label { display: block; margin-top: 0.65rem; color: var(--muted); font-size: 0.85rem; font-weight: 600; }
+    select, button { font: inherit; }
+    select {
+      width: 100%;
+      margin-top: 0.25rem;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background: var(--card);
+    }
+    button {
+      width: 100%;
+      margin-top: 0.9rem;
+      padding: 0.6rem 0.85rem;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 0.55rem;
+      font-weight: 700;
+    }
+    code { font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <p class="sample-note">変更前。説明に設定用の名前がある。</p>
+  <div class="frame">
+    <section class="panel">
+      <h2>分析条件</h2>
+      <p class="muted">期間内の支出合計・月別・分類別・明細一覧を OpenAI に渡し、分析と改善提案を生成します。API キーは Worker のシークレット <code>FAINAVI_OPENAI_API_KEY</code> で設定します。</p>
+      <label for="from-before">開始年月</label>
+      <select id="from-before"><option>2026年04月</option></select>
+      <label for="to-before">終了年月</label>
+      <select id="to-before"><option>2026年09月</option></select>
+      <label for="source-before">口座</label>
+      <select id="source-before"><option>すべての口座</option></select>
+      <button type="button">分析する</button>
+    </section>
+  </div>
+  <p class="sample-note">変更後。説明は分析の内容だけ。設定用の名前は出さない。</p>
+  <div class="frame">
+    <section class="panel">
+      <h2>分析条件</h2>
+      <p class="muted">期間の支出から、分析と改善提案を出します。</p>
+      <label for="from-after">開始年月</label>
+      <select id="from-after"><option>2026年04月</option></select>
+      <label for="to-after">終了年月</label>
+      <select id="to-after"><option>2026年09月</option></select>
+      <label for="source-after">口座</label>
+      <select id="source-after"><option>すべての口座</option></select>
+      <button type="button">分析する</button>
+    </section>
+  </div>
+</body>
+</html>

@@ -221,7 +221,7 @@ OPEN / RESOLVED を問わず、問題 ID ごとに次を書く。**事象のス�
 汎用生成 LP の定番（オーバーレイ白抜き・左右交互3段・グラデ締め）は採らない（仕様 5-16）。
 **方向が決まったあとは案記号を増やさない**（2026-08-13）。正サンプルは
 `ui-audit/fishtrack/samples/ft-h8.html` **1本**を上書きブラッシュアップする。\
-ヒーローリード（`.ft-lp-hero__lead`）に無料枠・広告の話を書かない。先出しは締め CTA・規約・PP・meta description。\
+ヒーローリード（`.ft-lp-hero__lead`）と締め CTA に無料枠・広告の話を書かない。先出しは規約・PP・meta description。\
 本文は文末「ます。」が1字だけ次行に落ちない長さにする（必要なら `text-wrap: pretty`）。\
 **アプリ実画面**（`.ft-lp-moment__img--ui` / `.ft-lp-bento__ui` 等）は**ドラフト**。\
 監査用 `pc-*` / `ft-pc-*` PNG を本番 `static/img/lp/` へ流用しない。\
@@ -491,5 +491,5 @@ RESOLVED は「実施した改善」と**再診断後のアフタースクショ
 
 - MyPokedex / FishTrack: 各 **`local-browser-verify`**  
 - 採用後: **`ux-ideation`**（検討の起票はこれからやる分） / **`integrated-schedule-update`**（既存予定タスクの完了のみ。未予定の後付け完了は禁止）  
-- 計画書 `I3`: Obsidian `DevProject/plans/統合作業スケジュール.md`  
+- 計画書 `I3`: Obsidian `DevProject/plans/スケジュール.md`  
 - **`obsidian-cursor-log`**

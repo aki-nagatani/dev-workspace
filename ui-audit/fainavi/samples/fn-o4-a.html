@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FN-O4 案A</title>
+  <style>
+    :root {
+      --card: #ffffff;
+      --text: #1a1d21;
+      --muted: #5c6570;
+      --accent: #0b6e4f;
+      --border: #d8dde3;
+      --bg: #f4f6f8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      width: 390px;
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      background: #fff;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .sample-note {
+      margin: 0;
+      padding: 0.55rem 0.75rem;
+      background: #fff8e1;
+      color: #5c4a00;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .frame { padding: 0.75rem; background: var(--bg); }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1rem 1.1rem;
+      margin-top: 0.75rem;
+    }
+    .frame > .panel:first-child { margin-top: 0; }
+    h2 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+    h3 { margin: 0.8rem 0 0.35rem; font-size: 0.95rem; }
+    .muted { margin: 0 0 0.65rem; color: var(--muted); font-size: 0.92rem; }
+    input, button { font: inherit; }
+    input {
+      width: 100%;
+      margin-top: 0.25rem;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    button {
+      width: 100%;
+      margin-top: 0.75rem;
+      padding: 0.6rem 0.85rem;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 0.55rem;
+      font-weight: 700;
+    }
+    button:disabled { opacity: 0.55; }
+  </style>
+</head>
+<body>
+  <p class="sample-note">変更前。空の説明が先で、自分で組にするはその下。</p>
+  <div class="frame">
+    <section class="panel">
+      <h2>組にした振替</h2>
+      <p class="muted">組にした2件は収入・支出・収支に入りません。解除すると、金額の符号に合わせて支出か収入に戻します。</p>
+      <p class="muted">組にした振替はありません。</p>
+    </section>
+    <section class="panel">
+      <h2>候補</h2>
+      <p class="muted">別の口座で、金額の絶対値が同じ、符号が逆、内容に「振込」を含み、利用日の差が3日以内の組です。振替にするまで収入・支出のままです。給料と継続は対象外です。</p>
+      <p class="muted">候補はありません。</p>
+    </section>
+    <section class="panel">
+      <h2>自分で組にする</h2>
+      <p class="muted">出金と入金を1件ずつ選びます。口座が違い、金額の絶対値が同じ組だけ振替にできます。給料と継続は対象外です。</p>
+      <h3>出金</h3>
+      <input type="search" placeholder="口座・内容" aria-label="出金を絞り込む">
+      <button type="button" disabled>この2件を振替にする</button>
+    </section>
+  </div>
+  <p class="sample-note">変更後。自分で組にするを先頭にする。説明は1行。</p>
+  <div class="frame">
+    <section class="panel">
+      <h2>自分で組にする</h2>
+      <p class="muted">出金と入金を1件ずつ選びます。</p>
+      <h3>出金</h3>
+      <input type="search" placeholder="口座・内容" aria-label="出金を絞り込む">
+      <h3>入金</h3>
+      <input type="search" placeholder="口座・内容" aria-label="入金を絞り込む">
+      <button type="button" disabled>この2件を振替にする</button>
+    </section>
+    <section class="panel">
+      <h2>組にした振替</h2>
+      <p class="muted">組にした振替はありません。</p>
+    </section>
+    <section class="panel">
+      <h2>候補</h2>
+      <p class="muted">候補はありません。</p>
+    </section>
+  </div>
+</body>
+</html>

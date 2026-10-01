@@ -1,6 +1,6 @@
 # integrated-schedule-update
 
-Obsidian `DevProject/plans/統合作業スケジュール.md` の更新（タスク一覧・週次・二本柱。詳細節の大移動は SKILL 内の低頻度ノート）は **`SKILL.md`** に従う。
+Obsidian `DevProject/plans/スケジュール.md` の更新（タスク一覧・週次・二本柱。詳細節の大移動は SKILL 内の低頻度ノート）は **`SKILL.md`** に従う。
 
 **優先度と週・週次配分・ゼロベースのルール本文**は `SKILL.md` の **「計画書ルールの本文（詳細・SKILL正）」** に集約し、計画書は要点・表・週次中心に簡素化する。
 
@@ -40,6 +40,6 @@ Obsidian `DevProject/plans/統合作業スケジュール.md` の更新（タス
 
 ## 正本・SKILL 本文
 
-- **SKILL 本文**: **具体的なタスク番号は書かない**（`SKILL.md`「本 SKILL の記載方針」）。個別IDは **統合作業スケジュール.md** が正。
-- **`DevProject/` の正本**: 計画用タスク番号を**記載してよい**のは **`plans/統合作業スケジュール.md`** **のみ**（myrules「タスク番号の正本」）。
+- **SKILL 本文**: **具体的なタスク番号は書かない**（`SKILL.md`「本 SKILL の記載方針」）。個別IDは **スケジュール.md** が正。
+- **`DevProject/` の正本**: 計画用タスク番号を**記載してよい**のは **`plans/スケジュール.md`** **のみ**（myrules「タスク番号の正本」）。
 - **ナレッジの置き場所**: 永続的な設計・手順は**仕様書**（`DevProject/specifications/`）。計画書はタスク中心・補足は一時メモに留める（`SKILL.md`「正のドキュメント」）。

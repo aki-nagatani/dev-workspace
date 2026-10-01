@@ -46,6 +46,8 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 | **`mokuhyo-draft`** | 対象期の**12 項目**の下書き**作成・本文反映** |
 | **`mokuhyo-excel-to-markdown`** | Excel → 管理シートの**確定同期** |
 | **`mokuhyo-hojo-setteiji-comment`** | **設定時コメント(補助・１次調整者)** の生成（**長谷以外**） |
+| **`mokuhyo-hojo-furikaeri-comment`** | **達成状況コメント(補助・１次評価者)** の生成（振り返り時・**長谷以外**） |
+| **`mokuhyo-furikaeri`** | **長谷本人**の **達成状況コメント(本人)**（自身の振り返り） |
 | **`mokuhyo-kanri-sheet-csv`** | **`.md` 変更後の CSV ミラー同期**（`<改善案>` は CSV に含めない） |
 | **本 SKILL** | 既存本文は**触らず**、**`<改善案>`** のみ追記 |
 

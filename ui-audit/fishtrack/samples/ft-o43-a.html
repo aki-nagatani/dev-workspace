@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O43 案A — 公開ヘッダーを SP で2行にする</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/public_layout.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: max-content;
+      background: #fff;
+    }
+    .sample-note {
+      margin: 0;
+      padding: 8px 12px;
+      font: 600 13px/1.4 "Segoe UI", sans-serif;
+      color: #334155;
+      background: #f8fafc;
+    }
+    .sample-frame {
+      width: 406px;
+      overflow: hidden;
+      background: linear-gradient(165deg, #e8eef8 0%, #f8fafc 35%, #f0f4fa 100%);
+    }
+    .sample-frame .site-brand__logo {
+      width: 150px;
+      height: auto;
+    }
+    .sample-after .ft-site-header--public .ft-site-header__bar {
+      flex-wrap: wrap;
+      row-gap: 8px;
+      align-items: flex-start;
+    }
+    .sample-after .site-brand__logo {
+      width: 116px;
+    }
+    .sample-after .ft-lp-nav {
+      order: 3;
+      width: 100%;
+      margin-left: 0;
+      gap: 4px 12px;
+    }
+  </style>
+</head>
+<body class="ft-public-body">
+  <p class="sample-note">変更前（スマートフォン幅）</p>
+  <div class="sample-frame">
+    <header class="ft-site-header ft-site-header--public">
+      <div class="ft-site-header__bar">
+        <p class="site-brand">
+          <a class="site-brand__link" href="http://127.0.0.1:5001/" aria-label="FishTrack トップ">
+            <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+          </a>
+        </p>
+        <nav class="ft-lp-nav" aria-label="公開ページ">
+          <span class="ft-lp-nav__link">タックル</span>
+          <a class="ft-lp-nav__link" href="http://127.0.0.1:5001/field-areas/">フィールド</a>
+          <a class="ft-lp-nav__link" href="http://127.0.0.1:5001/water-level/">水位</a>
+          <a class="ft-lp-nav__login" href="http://127.0.0.1:5001/auth/login">ログイン</a>
+        </nav>
+        <a class="ft-lp-nav__cta" href="http://127.0.0.1:5001/auth/register">無料で新規登録</a>
+      </div>
+    </header>
+  </div>
+  <p class="sample-note">変更後。ロゴと新規登録を上段、タックル・フィールド・水位・ログインを下段に揃える。</p>
+  <div class="sample-frame sample-after">
+    <header class="ft-site-header ft-site-header--public">
+      <div class="ft-site-header__bar">
+        <p class="site-brand">
+          <a class="site-brand__link" href="http://127.0.0.1:5001/" aria-label="FishTrack トップ">
+            <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+          </a>
+        </p>
+        <nav class="ft-lp-nav" aria-label="公開ページ">
+          <span class="ft-lp-nav__link">タックル</span>
+          <a class="ft-lp-nav__link" href="http://127.0.0.1:5001/field-areas/">フィールド</a>
+          <a class="ft-lp-nav__link" href="http://127.0.0.1:5001/water-level/">水位</a>
+          <a class="ft-lp-nav__login" href="http://127.0.0.1:5001/auth/login">ログイン</a>
+        </nav>
+        <a class="ft-lp-nav__cta" href="http://127.0.0.1:5001/auth/register">無料で新規登録</a>
+      </div>
+    </header>
+  </div>
+</body>
+</html>

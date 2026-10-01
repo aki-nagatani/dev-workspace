@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1120">
+  <title>FT-O42 釣果を残す前の登録</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/public_layout.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/landing_h8.css">
+  <style>
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    .sample-note {
+      width: 1120px; margin: 0; padding: 0.45rem 0.7rem;
+      background: #fff8e1; color: #5c4a00; font-size: 0.82rem; font-weight: 700;
+    }
+    .frame { width: 1120px; background: #eef2f7; overflow: hidden; }
+    .frame .ft-site-header--public { position: relative; background: #fff; }
+    .frame .is-solid .ft-lp-nav__link { color: var(--color-text); }
+    .ft-lp-nav details { position: relative; }
+    .ft-lp-nav summary { cursor: pointer; list-style: none; }
+    .ft-lp-nav summary::-webkit-details-marker { display: none; }
+    .frame main { max-width: 520px; }
+  </style>
+</head>
+<body class="ft-public-body">
+  <p class="sample-note">変更後。釣果を残すを押したあと。一覧には戻さない。登録が終わったら、押した操作に戻る。</p>
+  <div class="frame">
+    <header class="ft-site-header ft-site-header--public is-solid">
+      <div class="ft-site-header__bar">
+        <p class="site-brand">
+          <a class="site-brand__link" href="ft-o42-lp.html" aria-label="FishTrack トップ">
+            <img class="site-brand__logo site-brand__logo--on-light" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            <span class="site-brand__text sr-only">FishTrack</span>
+          </a>
+        </p>
+        <nav class="ft-lp-nav" aria-label="公開ページ">
+          <a class="ft-lp-nav__link" href="ft-o42-browse.html#rod">タックル</a>
+          <a class="ft-lp-nav__link" href="ft-o42-browse.html#fields">フィールド</a>
+          <a class="ft-lp-nav__link" href="ft-o42-browse.html#water">水位</a>
+          <a class="ft-lp-nav__link" href="ft-o42-register.html" aria-current="page">ログイン</a>
+          <a class="ft-lp-nav__cta" href="#register-form">無料で新規登録</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="card" id="register-form">
+        <div class="card-header">
+          <div>
+            <h2>釣果を残す</h2>
+            <p class="hint">無料登録をすると、釣果を自分の記録として残せます。</p>
+          </div>
+        </div>
+        <form class="ft-form" action="#register-form">
+          <div class="form-field">
+            <label for="email">メールアドレス <span class="required">*</span></label>
+            <input class="input" id="email" type="email" autocomplete="email">
+          </div>
+          <div class="form-field">
+            <label for="password">パスワード <span class="required">*</span></label>
+            <input class="input" id="password" type="password" autocomplete="new-password">
+          </div>
+          <div class="form-field">
+            <label for="password-confirm">パスワード（確認） <span class="required">*</span></label>
+            <input class="input" id="password-confirm" type="password" autocomplete="new-password">
+          </div>
+          <div class="form-actions">
+            <button class="btn" type="submit">無料で新規登録</button>
+            <a class="btn-link" href="#register-form">ログイン</a>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

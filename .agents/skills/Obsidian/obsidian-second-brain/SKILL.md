@@ -101,7 +101,7 @@ myrules「作業ログ」（**`obsidian-cursor-log`**）に加え、ファイル
 | `Work/` 配下の編集 | **`work-folder-update`**（先に Read） |
 | `Work/課題.md` | **`work-kadai-update`** |
 | `DevProject/specifications/` | **`specification-update`** |
-| `DevProject/plans/統合作業スケジュール.md` | **`integrated-schedule-update`** |
+| `DevProject/plans/スケジュール.md` | **`integrated-schedule-update`** |
 | CursorLog | **`obsidian-cursor-log`** |
 | Markdown 体裁 | **`markdown-editing`** / **`markdownlint-fix`** |
 | Wiki リンク・タグ | **`obsidian-update-rules`** |

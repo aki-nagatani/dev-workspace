@@ -37,14 +37,16 @@ description: 開発に関わるTIPSや注意点を短く整理して提示する
 ## ローカル Docker × Python 変更（必須運用）
 
 - **`docker compose` + Gunicorn 等**でアプリを動かしているとき、**`*.py`（例: `src/`）を変えたら** bind-mount でも **プロセスは古いモジュールのまま**になりやすい
-- **対応**: **Docker が起動している場合**、プロジェクト直下で **`docker compose restart <アプリサービス名>`**（例: FishTrack は多くの場合 `app`）。**変更のたび・検証前**に実行する（**myrules.mdc**「ローカル Docker と Python ソース変更」・**`local-docker-python-restart`** SKILL）。**未起動・未導入時は省略可**（報告に 1 行）
+- **対応**: **Docker が起動している場合**、プロジェクト直下で **`docker compose restart <アプリサービス名>`**（例: FishTrack は多くの場合 `app`）。
+  **変更のたび・検証前**に実行する（**myrules.mdc**「ローカル Docker と Python ソース変更」・**`local-docker-python-restart`** SKILL）。
+  **未起動・未導入時は省略可**（報告に 1 行）
 - **イメージや依存の変更**は `build` / `up` が主。`--reload` 開発サーバのみの構成は別
 
 ## ドキュメント/レビューTIPS
 
-- 仕様書は実装と同時に更新し、実装との差分を残さない
-- ソースコードの修正時は合わせてドキュメントも更新する
-- 必ずドキュメントとソースコードが一致するようにする
+- 仕様書は、コード・テスト・`AGENTS.md` に残らない決定だけを残す（正本は `specification-update` SKILL）
+- スキーマ・API・スタックの写しを仕様へ追随させない
+- 決定文とコードが食い違うときは、コードを決定に合わせる
 - レビューは「仕様逸脱」「安全性」「可観測性」「将来の変更容易性」を優先して確認する
 - このスキルは随時更新する
 

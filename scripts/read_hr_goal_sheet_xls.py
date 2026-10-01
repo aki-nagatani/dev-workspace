@@ -4,6 +4,7 @@
 人事の目標管理シート（Excel）を読み取り、JSON またはテキストで stdout に出すだけのツール。
 
 - mokuhyo-excel-to-markdown SKILL のセル正本（BH4・BF6・枝番基準行・列オフセット）に従う。
+- 枝番ごとの本人評価（CH列）・補助評価（CJ列）も読み取る。
 - **Markdown への書き込みは行わない**（myrules の「スクリプトで .md を生成・上書き禁止」と整合）。
 
 使用例:
@@ -154,6 +155,8 @@ def extract_branch(read_cell, k: int) -> dict[str, Any]:
         "comment_as": read_cell(r, "AS"),
         "achieve_self_bd": read_cell(r, "BD"),
         "achieve_eval_bs": read_cell(r, "BS"),
+        "evaluation_self_ch": read_cell(r, "CH"),
+        "evaluation_assist_cj": read_cell(r, "CJ"),
     }
 
 
@@ -237,6 +240,8 @@ def _format_text(data: dict[str, Any]) -> str:
         lines.append(
             f"  上期/下期目標 C{b['base_row_excel'] + 2}: {_preview_line(b['goal_half_c'])}",
         )
+        lines.append(f"  本人評価 CH{b['base_row_excel']}: {b['evaluation_self_ch']}")
+        lines.append(f"  補助評価 CJ{b['base_row_excel']}: {b['evaluation_assist_cj']}")
     return "\n".join(lines)
 
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O44 案A — 登録ボタンを SP で縦に積む</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_form_fields.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: max-content;
+      background: #fff;
+    }
+    .sample-note {
+      margin: 0;
+      padding: 8px 12px;
+      font: 600 13px/1.4 "Segoe UI", sans-serif;
+      color: #334155;
+      background: #f8fafc;
+    }
+    .sample-frame {
+      width: 360px;
+      box-sizing: border-box;
+      padding: 16px 20px 20px;
+      background: #fff;
+    }
+    .sample-after .form-actions--split {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .sample-after .form-actions--split > .btn {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body class="ft-public-body">
+  <p class="sample-note">変更前（幅 360 の登録カード）</p>
+  <div class="sample-frame">
+    <div class="form-actions form-actions--split">
+      <button class="btn" type="button">登録</button>
+      <a class="btn btn--ghost" href="http://127.0.0.1:5001/auth/login">ログイン画面へ戻る</a>
+    </div>
+  </div>
+  <p class="sample-note">変更後。幅が足りないときは縦に積み、どちらも1行・同じ高さにする。</p>
+  <div class="sample-frame sample-after">
+    <div class="form-actions form-actions--split">
+      <button class="btn" type="button">登録</button>
+      <a class="btn btn--ghost" href="http://127.0.0.1:5001/auth/login">ログイン画面へ戻る</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -4,7 +4,8 @@ description: >-
   Cursor 内蔵ブラウザ（cursor-ide-browser MCP）の開き方。
   ブラウザはサイドで開かない。position: "side" 禁止。既定は position 省略（バックグラウンド）。
   ユーザーが明示で見せてほしいとき・内部ブラウザ指示・UI 監査レポート表示は position: "active"。
-  FishTrack プレビューの本家は Playwright／外部ブラウザ禁止（cursor-ide-browser のみ）。
+  実ブラウザの画面確認は cursor-ide-browser のみ。Playwright／Chrome 等の外部ブラウザは使わない。
+  FishTrack プレビューの本家も同じ。
   browser_navigate / browser_tabs の position、サイドパネル、エディタ分割時に使用。
 ---
 
@@ -32,13 +33,19 @@ description: >-
 - **誤**: 目視確認のために `position: "side"` を付ける（エディタ中央・横をブラウザが占有する）。
 - **正**: 確認は `position` 省略で進める。見せる必要が明示されたときだけ `"active"`。
 
-## プレビュー／本家確認（FishTrack AI スペック）
+## 実ブラウザ確認（全製品）
 
-本家ページを**ブラウザで開く**ときは **`cursor-ide-browser` のみ**。
+画面の目視・操作・スクショは **`cursor-ide-browser` のみ**。
 
 - **禁止**: Playwright MCP（`user-playwright`）、OS の Chrome / Edge 等の外部ブラウザ
+- **ログイン済みでも切り替えない**: Cursor 内のタブがログイン中でも、未ログイン確認を Chrome で取り直さない。対象 URL は Cursor 内ブラウザで開く。未ログイン画面に入れないときは、その事実を報告する
 - **配置**: 本 SKILL（`"side"` 禁止。既定は `position` 省略。見せるとき・「内部ブラウザ」指示時は `"active"`）
 - **静的 HTML** のテキスト取得は `WebFetch` / httpx 可（ブラウザを開かない）
+- **pytest の Playwright E2E** はテスト実行であり、本節の実ブラウザ確認ではない
+
+## プレビュー／本家確認（FishTrack AI スペック）
+
+本家ページを**ブラウザで開く**ときも、上記と同じく **`cursor-ide-browser` のみ**。
 
 手順の正本は **`ai-spec-check-preview`** / **`ai-spec-import`**。
 

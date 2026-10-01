@@ -111,7 +111,7 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
 - ✅ カバレッジレポートの確認と分析
 - ✅ **例外**: ユーザーの明示的な指示がある場合、到達不可能なコードに`# pragma: no cover`を追加することができます（詳細は「テスト除外の禁止」セクションを参照）
 - ✅ **E2E（§6）を扱う場合の追認**: アプリの `src/` 等のプロダクトコードは**変更しない**前提で、同一変更でよいのは次に限る — `tests/e2e/conftest.py`（`REQUIRED_E2E_SCENARIOS` 等）・`pyproject.toml` または `pytest.ini`（E2E マーカー説明等）・\
-  **Obsidian** の当該製品テスト節（`10_testing.md` 等。E2E 方針の同期が必要な場合）
+  **Obsidian** の当該製品の決定（FishTrack・MyPokedex は `decisions.md`。E2E 方針の同期が必要な場合）
 
 ### 3. ソースコードに不備がある場合の対応
 
@@ -174,7 +174,7 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
   1. `REQUIRED_E2E_SCENARIOS` の **追加・削除・改名**
   2. 対応する **E2E テスト**（上記マーカー）
   3. **`pyproject.toml`** または **`pytest.ini`** の **`e2e_scenario` マーカー説明**（ID の列挙が変わる場合）
-  4. **Obsidian** の当該製品テスト節（`10_testing.md` 等）で E2E 方針を書いている場合は**本文も同期**
+  4. **Obsidian** の当該製品の決定（FishTrack・MyPokedex は `decisions.md`）で E2E に含めない理由を書いている場合は**本文も同期**
 - **規約の正**: **本 SKILL §6**、各リポジトリ **`AGENTS.md`** の **「E2E 必須シナリオ ID」** 節。myrules「テスト規律」は要点のみ。
 - **充足率チェック**: **FishTrack**・**MyPokedex**・**おたよりナビ** は **`scripts/check_e2e_scenario_coverage.py`** を pre-commit（ブラウザ不要）で実行する。\
     しきい値・環境変数は **`AGENTS.md`** / **`README.md`**。あわせて **`pytest tests/e2e`** 実行時は **conftest** のフックでも不足 ID を検出する。

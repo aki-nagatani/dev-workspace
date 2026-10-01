@@ -30,6 +30,7 @@ myrules を厳守（**スクリプト一括置換禁止**・**報告前 CursorLo
 - **最新期**の**設定時コメント(補助・１次調整者)** を**一括またはメンバー単位**で作成・更新するとき
 - 上期目標提出前に**補助者コメント**を埋める依頼
 - **`/mokuhyo-hojo-setteiji-comment`** または **`@人事考課_管理シート.md`** ＋ 設定時コメント生成の依頼
+- **振り返り時**の **達成状況コメント(補助・１次評価者)** は **`mokuhyo-hojo-furikaeri-comment`**。本 SKILL では書かない
 
 ## 正本パス
 
@@ -50,6 +51,7 @@ myrules を厳守（**スクリプト一括置換禁止**・**報告前 CursorLo
 | **`mokuhyo-kanri-sheet-csv`** | **`.md` 変更後の CSV ミラー同期** |
 | **`work-kadai-update`** | **`課題.md`** の追記・更新・削除（**本 SKILL では編集しない**） |
 | **本 SKILL** | **設定時コメント(補助・１次調整者)** の生成・反映 |
+| **`mokuhyo-hojo-furikaeri-comment`** | **振り返り時**の **達成状況コメント(補助・１次評価者)** |
 
 ## 対象範囲（必須）
 
@@ -312,6 +314,7 @@ myrules を厳守（**スクリプト一括置換禁止**・**報告前 CursorLo
 
 ## 関連
 
+- **`mokuhyo-hojo-furikaeri-comment`**: 振り返り時の **達成状況コメント(補助・１次評価者)**
 - **`mokuhyo-draft`**: 本人目標（**`課題.md` を目標の参考にする**のと同趣旨。設定時コメントは本 SKILL）
 - **`work-kadai-update`**: **`課題.md`** 正本の更新
 - **`mokuhyo-proofread`**: 校閲

@@ -20,5 +20,7 @@
 - 完了後は **`obsidian-cursor-log`**。Markdown 編集後は **markdownlint**。
 - **校閲**（誤字脱字・チェックポイント・**`<改善案>`** 追記）は **`mokuhyo-proofread`** SKILL。
 - **設定時コメント(補助・１次調整者)**（長谷以外・最新期）は **`mokuhyo-hojo-setteiji-comment`** SKILL。
+- **振り返り時の達成状況コメント(補助・１次評価者)**（長谷以外・最新期）は **`mokuhyo-hojo-furikaeri-comment`** SKILL。本人の達成状況コメントは本 SKILL でも書かない。
+- **長谷本人の振り返り**（達成状況コメント(本人)）は **`mokuhyo-furikaeri`** SKILL。
 
 Always respond in Japanese when using this skill.

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FN-O1 案A</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --card: #ffffff;
+      --text: #1a1d21;
+      --muted: #5c6570;
+      --accent: #0b6e4f;
+      --accent-strong: #09583f;
+      --border: #d8dde3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      width: 390px;
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      background: #fff;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .sample-note {
+      margin: 0;
+      padding: 0.55rem 0.75rem;
+      background: #fff8e1;
+      color: #5c4a00;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .frame {
+      padding: 0.75rem;
+      background: var(--bg);
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+    }
+    h2 { margin: 0 0 0.75rem; font-size: 1.1rem; }
+    .muted { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    label {
+      display: block;
+      margin-top: 0.75rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    select, button { font: inherit; }
+    select {
+      width: 100%;
+      margin-top: 0.25rem;
+      padding: 0.55rem 0.65rem;
+      color: var(--text);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+    button {
+      margin-top: 0.9rem;
+      padding: 0.6rem 0.85rem;
+      min-height: 2.75rem;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 0.55rem;
+      font-weight: 700;
+    }
+    .button-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .secondary-button {
+      margin-top: 0;
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--border);
+    }
+    .mobile-card {
+      margin-top: 0.75rem;
+      padding: 0.85rem;
+      background: color-mix(in srgb, var(--card) 96%, var(--border));
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+    }
+    .mobile-card__head { display: flex; justify-content: space-between; font-weight: 700; }
+    .mobile-card__description { margin: 0.5rem 0; }
+    .mobile-card__meta { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.85rem; }
+    .amount { color: #c0392b; }
+  </style>
+</head>
+<body>
+  <p class="sample-note">変更前。説明・CSV・集計が明細カードより上にあり、先頭画面ではカードが見えない。</p>
+  <div class="frame">
+    <div class="panel">
+      <h2>明細一覧・月次集計</h2>
+      <p class="muted">保存済みの明細は、利用日の月ごとにここへ表示されます。初期表示は最新の利用日から過去1ヶ月分です。利用月で「すべての利用月」を選ぶと全期間を表示できます。口座・利用月・分類を選ぶと絞り込みます。操作列の「振替にする」で、相手の明細を選ぶか、相手なしで振替にできます。</p>
+      <label for="before-source">口座</label>
+      <select id="before-source"><option>すべての口座</option></select>
+      <label for="before-month">利用月</label>
+      <select id="before-month"><option>2026-09</option></select>
+      <label for="before-tag">分類</label>
+      <select id="before-tag"><option>すべての分類</option></select>
+      <button type="button">明細と集計を表示</button>
+      <div class="button-row">
+        <button class="secondary-button" type="button">明細CSV</button>
+        <button class="secondary-button" type="button">月次集計CSV</button>
+        <button class="secondary-button" type="button">分類別集計CSV</button>
+      </div>
+      <p class="muted" style="margin-top:0.75rem">支出 1,180円 / 収入 280,000円</p>
+    </div>
+  </div>
+  <p class="sample-note">変更後。説明は1行。明細と集計を表示の直後にカード。CSVは一覧の下。</p>
+  <div class="frame">
+    <div class="panel">
+      <h2>明細一覧・月次集計</h2>
+      <p class="muted">口座・利用月・分類で絞り込みます。初期表示は直近1ヶ月です。</p>
+      <label for="after-source">口座</label>
+      <select id="after-source"><option>すべての口座</option></select>
+      <label for="after-month">利用月</label>
+      <select id="after-month"><option>2026-09</option></select>
+      <label for="after-tag">分類</label>
+      <select id="after-tag"><option>すべての分類</option></select>
+      <button type="button">明細と集計を表示</button>
+      <article class="mobile-card">
+        <div class="mobile-card__head"><span>2026-09-26</span><span class="amount">-540</span></div>
+        <p class="mobile-card__description">コンビニ</p>
+        <p class="mobile-card__meta">口座: サンプルカード</p>
+        <p class="mobile-card__meta">分類: 未分類</p>
+      </article>
+      <div class="button-row">
+        <button class="secondary-button" type="button">明細CSV</button>
+        <button class="secondary-button" type="button">月次集計CSV</button>
+        <button class="secondary-button" type="button">分類別集計CSV</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

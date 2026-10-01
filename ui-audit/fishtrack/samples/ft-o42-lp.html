@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1120">
+  <title>FT-O42 LP</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/public_layout.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/landing_h8.css">
+  <style>
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    .sample-note {
+      width: 1120px; margin: 0; padding: 0.45rem 0.7rem;
+      background: #fff8e1; color: #5c4a00; font-size: 0.82rem; font-weight: 700;
+    }
+    .frame { width: 1120px; background: var(--color-bg, #f4f7fb); overflow: hidden; }
+    .frame .ft-site-header--public { position: relative; }
+    .ft-lp-nav details { position: relative; }
+    .ft-lp-nav summary { cursor: pointer; list-style: none; }
+    .ft-lp-nav summary::-webkit-details-marker { display: none; }
+    .ft-lp-nav .ft-nav-dropdown__panel {
+      display: none; position: absolute; top: calc(100% + 8px); left: 0; z-index: 5;
+      min-width: 11rem; padding: 8px; background: var(--color-surface);
+      border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    }
+    .ft-lp-nav details[open] .ft-nav-dropdown__panel { display: grid; }
+    .ft-lp-nav .ft-nav-dropdown__panel a {
+      padding: 6px 8px; color: var(--color-text); text-decoration: none; font-weight: 600;
+    }
+    a.ft-lp-bento__cell { color: inherit; text-decoration: none; }
+  </style>
+</head>
+<body class="ft-lp-body">
+  <p class="sample-note">変更後。ヘッダーとヒーローの主ボタンが一覧へ進む。写真と機能カードは今のまま。ヒーローは画面いっぱい。広告枠は置いていない。</p>
+  <div class="frame">
+    <header class="ft-site-header ft-site-header--public is-solid">
+      <div class="ft-site-header__bar">
+        <p class="site-brand">
+          <a class="site-brand__link" href="ft-o42-lp.html" aria-label="FishTrack トップ">
+            <img class="site-brand__logo site-brand__logo--on-dark" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            <img class="site-brand__logo site-brand__logo--on-light" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="">
+            <span class="site-brand__text sr-only">FishTrack</span>
+          </a>
+        </p>
+        <nav class="ft-lp-nav" aria-label="公開ページ">
+          <details>
+            <summary class="ft-lp-nav__link">タックル</summary>
+            <div class="ft-nav-dropdown__panel" role="group" aria-label="タックル">
+              <a href="ft-o42-browse.html#rod">ロッドを探す</a>
+              <a href="ft-o42-browse.html#reel">リールを探す</a>
+              <a href="ft-o42-browse.html#plug">プラグを探す</a>
+              <a href="ft-o42-browse.html#worm">ワームを探す</a>
+            </div>
+          </details>
+          <a class="ft-lp-nav__link" href="ft-o42-browse.html#fields">フィールド</a>
+          <a class="ft-lp-nav__link" href="ft-o42-browse.html#water">水位</a>
+          <a class="ft-lp-nav__link" href="ft-o42-register.html">ログイン</a>
+          <a class="ft-lp-nav__cta" href="ft-o42-register.html">無料で新規登録</a>
+        </nav>
+      </div>
+    </header>
+    <section class="ft-lp-hero" id="ft-lp-hero" aria-labelledby="ft-lp-hero-title">
+      <div class="ft-lp-hero__media">
+        <img class="ft-lp-hero__img" src="http://127.0.0.1:5001/static/img/lp/lp-f-hero.png" alt="日本の山あいの湖。桟橋にバスボートが着いている">
+      </div>
+      <div class="ft-lp-hero__overlay">
+        <div class="ft-lp-hero__copy">
+          <h1 id="ft-lp-hero-title" class="ft-lp-hero__title">バスフィッシングの記録を、次の判断に。</h1>
+          <p class="ft-lp-hero__lead">過去の釣果・ポイント・天候を、明日の釣りの判断材料に。</p>
+          <div class="ft-lp-hero__cta">
+            <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="ft-o42-browse.html#rod">タックルを探す</a>
+            <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="ft-o42-browse.html#fields">フィールドを見る</a>
+            <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="ft-o42-browse.html#water">水位を見る</a>
+            <a class="ft-lp-btn ft-lp-btn--ghost ft-lp-btn--lg" href="ft-o42-register.html">無料で新規登録</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ft-lp-moment" id="ft-lp-prep" aria-labelledby="ft-lp-prep-title">
+      <div class="ft-lp-inner">
+        <h2 id="ft-lp-prep-title" class="ft-lp-moment__title">釣行前、過去の釣果を見返す</h2>
+        <p class="ft-lp-moment__body">過去の釣行・釣果を振り返り、次の行き先や釣り方を考える材料にできます。</p>
+        <ul class="ft-lp-moment__list">
+          <li>過去の釣行・釣果をフィールドや日付で見返せる</li>
+          <li>ポイントごとの釣果も確認できる</li>
+          <li>水位データを確認できる対象フィールドは、随時拡大中</li>
+          <li>天候・水温とあわせて次を考えられる</li>
+        </ul>
+        <div class="ft-lp-moment__split">
+          <figure class="ft-lp-moment__media">
+            <img class="ft-lp-moment__img" src="http://127.0.0.1:5001/static/img/lp/prep-generated-20260325.jpg" alt="自宅で釣り道具を準備しながらFishTrackの釣行一覧を確認している風景">
+          </figure>
+          <figure class="ft-lp-moment__media">
+            <img class="ft-lp-moment__img ft-lp-moment__img--ui" src="http://127.0.0.1:5001/static/img/lp/trips-desktop.png" alt="過去の釣行と釣果を一覧で見返す画面">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="ft-lp-pair ft-lp-inner" id="ft-lp-record" aria-label="現場と帰宅後">
+      <article class="ft-lp-pair__cell">
+        <h2 class="ft-lp-pair__title">現場、その日の釣果を残す</h2>
+        <p class="ft-lp-pair__body">釣果と写真、時間と場所。スマホからでも入力しやすく、その日の記録を逃さず残せます。</p>
+        <img class="ft-lp-pair__img" src="http://127.0.0.1:5001/static/img/lp/lp-f-field.png" alt="湖上のボートからキャストしている様子">
+        <img class="ft-lp-pair__img ft-lp-pair__img--ui" src="http://127.0.0.1:5001/static/img/lp/catch-new-desktop.png" alt="釣果登録画面">
+      </article>
+      <article class="ft-lp-pair__cell ft-lp-pair__cell--tint">
+        <h2 class="ft-lp-pair__title">帰宅後、一覧で次につなげる</h2>
+        <p class="ft-lp-pair__body">その日の釣行を記録にまとめ、フィールドや日付で見返せます。</p>
+        <img class="ft-lp-pair__img" src="http://127.0.0.1:5001/static/img/lp/lp-f-close.png" alt="湖の桟橋でタックルを車に積み込んでいる">
+        <img class="ft-lp-pair__img ft-lp-pair__img--ui" src="http://127.0.0.1:5001/static/img/lp/catches-desktop.png" alt="釣果を一覧で振り返る画面">
+      </article>
+    </section>
+
+    <section class="ft-lp-bento" id="ft-lp-features" aria-labelledby="ft-lp-features-title">
+      <div class="ft-lp-inner">
+        <h2 id="ft-lp-features-title" class="ft-lp-bento__title">FishTrack の機能</h2>
+        <div class="ft-lp-bento__grid">
+          <a class="ft-lp-bento__cell ft-lp-bento__cell--tint" href="ft-o42-register.html">
+            <h3>釣果を残す</h3>
+            <p>写真・サイズ・フィールド・時刻に加え、使ったタックルやルアーも記録できる。写真から日時や場所を入れることもできる。</p>
+            <img src="http://127.0.0.1:5001/static/img/lp/lp-f-catch.png" alt="ボート上でバスのサイズを測っている手元">
+          </a>
+          <article class="ft-lp-bento__cell">
+            <h3>釣行でまとめる</h3>
+            <p>その日の釣行として記録をまとめ、フィールドや日付で見返す。</p>
+            <img class="ft-lp-bento__ui" src="http://127.0.0.1:5001/static/img/lp/trips-desktop.png" alt="釣行一覧画面">
+          </article>
+          <article class="ft-lp-bento__cell ft-lp-bento__cell--wide ft-lp-bento__cell--tint">
+            <h3>ポイントマップを作る</h3>
+            <p>よく行くフィールドに自分のポイントを残し、地図で確認できる。ポイントごとに釣果も残せる。</p>
+            <img class="ft-lp-bento__ui" src="http://127.0.0.1:5001/static/img/lp/field-areas-desktop.png" alt="高滝湖内の複数エリアをピンで確認する画面">
+          </article>
+          <article class="ft-lp-bento__cell ft-lp-bento__cell--wide">
+            <h3>タックルを記録する</h3>
+            <p>持っているロッド・リール・ルアーを記録し、釣果と結び付けられる。</p>
+            <img src="http://127.0.0.1:5001/static/img/lp/lp-f-tackle.png" alt="ボートのデッキに置いたロッドとルアーボックス">
+          </article>
+          <a class="ft-lp-bento__cell" href="ft-o42-browse.html#rod">
+            <h3>タックルを探す</h3>
+            <p>ロッド・リール・ルアーを型番から探せる。登録情報は随時更新中です。</p>
+            <p class="ft-lp-bento__count">登録件数：ロッド <strong>214件</strong>／リール <strong>39件</strong>／プラグ <strong>18件</strong>／ワーム <strong>10件</strong></p>
+            <img class="ft-lp-bento__ui" src="http://127.0.0.1:5001/static/img/lp/reels-desktop.png" alt="リールマスタを検索する画面">
+          </a>
+          <a class="ft-lp-bento__cell ft-lp-bento__cell--tint" href="ft-o42-browse.html#water">
+            <h3>水位を見る</h3>
+            <p>よく行くフィールドの水位を見て、行く前の判断に使う。</p>
+            <img class="ft-lp-bento__ui" src="http://127.0.0.1:5001/static/img/lp/water-desktop.png" alt="相模湖の水位変化をグラフで確認する画面">
+          </a>
+          <article class="ft-lp-bento__cell">
+            <h3>天候や水温も記録する</h3>
+            <p>釣果の詳細に天候が自動で反映され、水温とあわせて残る。次の判断にも使える。</p>
+            <img class="ft-lp-bento__ui" src="http://127.0.0.1:5001/static/img/lp/catch-environment-desktop.png" alt="天候や水温を確認できる釣果詳細画面">
+          </article>
+          <article class="ft-lp-bento__cell ft-lp-bento__cell--best5 ft-lp-bento__cell--tint">
+            <h3>その年のBEST5を振り返る</h3>
+            <p>その年の釣果から、サイズのBEST5を振り返れる。</p>
+            <img class="ft-lp-bento__ui" src="http://127.0.0.1:5001/static/img/lp/home-desktop.png" alt="2026年のサイズBEST5を表示するホーム画面">
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="ft-lp-future ft-lp-inner" id="ft-lp-future" aria-labelledby="ft-lp-future-title">
+      <div class="ft-lp-future__card">
+        <p class="ft-lp-future__label">今後の拡張予定</p>
+        <div>
+          <h2 id="ft-lp-future-title">AIが次の釣行プランを提案</h2>
+          <p>過去の釣果や釣行記録をもとに、AIがおすすめの釣行プランを生成する機能を公開予定です。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="ft-lp-fit ft-lp-inner" id="ft-lp-fit" aria-labelledby="ft-lp-fit-title">
+      <div class="ft-lp-fit__card">
+        <h2 id="ft-lp-fit-title">向いている使い方</h2>
+        <ul>
+          <li>釣果と使ったタックルやルアーを一緒に記録したい人</li>
+          <li>記録を自分用に残して、次の釣行の判断に使いたい</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ft-lp-start" id="ft-lp-start" aria-labelledby="ft-lp-start-title">
+      <div class="ft-lp-inner">
+        <div class="ft-lp-start__card">
+          <h2 id="ft-lp-start-title" class="ft-lp-start__title">使い始め</h2>
+          <div class="ft-lp-start__row">
+            <article class="ft-lp-start__item">
+              <h3>登録する</h3>
+              <p>無料で新規登録。</p>
+            </article>
+            <article class="ft-lp-start__item">
+              <h3>メールを確認する</h3>
+              <p>確認が完了すると、記録を残せるようになります。</p>
+            </article>
+            <article class="ft-lp-start__item">
+              <h3>釣果を1件残す</h3>
+              <p>写真を先に追加すると、日時や場所の入力がしやすいです。</p>
+            </article>
+          </div>
+          <div class="ft-lp-start__action">
+            <p class="ft-lp-start__note">メールアドレスの確認を完了すると、記録を残せるようになります。</p>
+            <div class="ft-lp-hero__cta">
+              <a class="ft-lp-btn ft-lp-btn--primary ft-lp-btn--lg" href="ft-o42-register.html">無料で新規登録</a>
+              <a class="ft-lp-btn ft-lp-btn--ghost ft-lp-btn--lg" href="ft-o42-register.html">ログイン</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

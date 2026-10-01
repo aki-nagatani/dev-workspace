@@ -3,241 +3,185 @@ alwaysApply: true
 ---
 # AI駆動開発 共通ガイドライン
 
+手順・チェックリストの正本は各 SKILL。本ファイルは全タスク横断の短い原則だけを置く。
+
 ## 本プロジェクトの開発方針
 
-**本プロジェクトは、全面的にAIを利用したAI駆動開発を実施します。**
-
-- すべての開発作業においてAIエージェントを積極的に活用
-- AIエージェントは開発プロセスの中心的な役割を担う
-- 人間は要件定義、設計判断、レビュー、最終承認を担当
-- **思考は英語で行い、途中経過・最終的な出力は必ず日本語で提供する**
+- AI エージェントが開発の中心。人間は要件、設計判断、レビュー、最終承認を担当する
+- **思考は英語で行い、途中経過と最終出力は日本語にする**
 
 ## 後方互換性方針（重要）
 
-**後方互換は不要とする。必要に応じて破壊的変更（breaking change）を行ってよい。**
+**後方互換は不要。** 必要なら破壊的変更してよい。ユーザーが明示したときだけ互換を検討する。
 
-- **API・エンドポイント**: 仕様変更時に旧形式のサポートは行わない
-- **データモデル・スキーマ**: マイグレーションで一括変更し、旧形式の互換層は持たない
-- **設定・環境変数**: 名前や形式を変更する場合、旧名称のフォールバックは実装しない
-- **例外**: ユーザーが明示的に「後方互換を維持してほしい」と指示した場合のみ、互換性を検討する
-
-**理由**: 互換維持は複雑さと技術的負債を増やす。本プロジェクトは小規模・少人数運用を前提とし、破壊的変更の影響をコントロールしやすいため、シンプルさを優先する。
+- API は旧形式を残さない
+- スキーマはマイグレーションで一括変更し、互換層を持たない
+- 設定・環境変数の旧名へはフォールバックしない
 
 ## 基本原則
 
-- 品質・保守性・安全性を常に意識
-- 問題を見つけたら放置せず、必ず対処または明示的に記録
-- **根本原因からの解決**（下記「根本原因からの解決」・全作業に適用）
-- DRY原則、意味のある名前、一貫したコーディングスタイル
-- APIキー等は環境変数で管理（ハードコード禁止）
-- **myrules 正本**: `dev-workspace/.cursor/rules/myrules.mdc` **1 箇所のみ**（他リポジトリに配置しない）
-- **Cursor 作業完了の Slack 通知は廃止**（チャット報告のみ。ユーザー明示依頼時のみ例外。製品アプリの ERROR/統計 Webhook は対象外）
+- 品質・保守性・安全性を優先する
+- 問題は放置しない。対処するか、明示して記録する
+- **根本原因からの解決**（下記。全作業）
+- DRY、意味のある名前、一貫したスタイル
+- API キー等は環境変数。ハードコード禁止
+- **myrules の正本は本ファイル 1 箇所**。他リポジトリへ置かない
+- **Cursor 作業完了の Slack 通知はしない**（チャット報告のみ。明示依頼時だけ例外。製品の ERROR／統計 Webhook は対象外）
 
 ## 根本原因からの解決（全作業・最重要）
 
-**表面上の対症療法で終わらせない。根本原因を特定し、そこを直す。エラーに限らず全作業の共通原則。**
+**対症療法で終わらせない。** エラー、テスト失敗、バグ、誤判定、UI、レポート、運用ずれ、仕様乖離を含む。
 
-- **対象**: エラー・テスト失敗・バグ・誤判定・UI 不具合・レポート／突合の誤り・運用ずれ・仕様乖離など
-- **禁止のイメージ**: 表示やログだけ隠す／例外や失敗を握りつぶす／閾値・skip で通す／レポート文言や一覧だけ直して照合・判定ロジックを放置／手動でフラグやデータだけ直して再発する原因を残す
-- **手順・禁止行為・自問チェックの正本**: **`error-handling-policy`** SKILL（`.agents/skills/error-handling-policy/SKILL.md`）。エラー以外の問題でも同 SKILL の「根本原因」節に従う
-
-## ユーザー指摘に基づくルール・SKILL の育成（重要）
-
-**ユーザーから訂正・指示・指摘を受けたとき**、内容が**一時的なものではなく今後の作業にも関係する**と判断できる場合は、**「チャットだけで収束」させず**、**既存 SKILL を更新**するか、該当ワークフローがなければ**新規 SKILL を作成**する（**同一セッション内**にドキュメントへ反映する）。
-
-- **反映の判断**: **今回限りの値・URL・単発の typo 修正**などは対象外。**運用手順・エージェントの漏れ・誤解を誘う文言・判断基準・検証順**など、**次回以降も同じ依頼で再発しうる**ものは対象。
-- **利用・更新の優先（myrules 肥大化防止）**: **手順・チェックリスト・検証順・ワークフロー**は **myrules ではなく SKILL を正本**とする。\
-  作業開始時は該当 **`dev-workspace/.agents/skills/.../SKILL.md`** を **Read して従う**。\
-  指摘の反映も **まず既存 SKILL を更新**し、該当 SKILL がなければ **新規 SKILL を作成**する。\
-  **myrules に長い手順・チェックリストを追記・複製しない**（横断で短い原則だけを myrules に残す）。
-- **更新先の切り分け**: **該当ワークフロー用 SKILL**（\
-  FishTrack AI スペック照合系・`FishTrack_pull-request`・**`FishTrack_pull-request-emergency`**・**`FishTrack_commit`**・**`site-update-announce`** は **FishTrack** `.agents/skills/`。\
-  **`MyPokedex_pull-request`**・**`MyPokedex_pull-request-emergency`**・**`MyPokedex_commit`** は **MyPokedex** `.agents/skills/`。\
-  **`otayori-navi_pull-request`** は **otayori-navi** `.agents/skills/`。\
-  **`commit-all`**・**`commit-message`**・**`github-actions-check`**・**`code-comment-guidelines`**・**`git-workflow`** は **`dev-workspace/.agents/skills/GitHub/`**。\
-  **`error-handling-policy`**・**`document-creation-policy`**・**`temp-file-management`**・**`file-size-policy`**・**`frontend-html-template`**・**`datetime-jst`**・**`cursor-ide-browser-position`** は **`dev-workspace/.agents/skills/`**（ルート）。\
-  **`obsidian-cursor-log`**・**`obsidian-cursor-monthly-report`**・**`obsidian-second-brain`**・\
-  **`obsidian-inbox-summarize`**・**`obsidian-update-rules`**・**`markdown-editing`**・**`markdownlint-fix`** は **`dev-workspace/.agents/skills/Obsidian/`**。\
-  **`mokuhyo\*`**・**`ojt-*`**・**`work-folder-update`**・**`work-todo-update`**・**`work-kadai-update`**・**`work-knowledge-deepen`**・**`quality-analysis`** は **`dev-workspace/.agents/skills/DTS/`**。\
-  **`FaiNavi_deploy`** は **`personal-tools/.agents/skills/`**。\
-  共通手順は **`ai-spec-check-report/SKILL.md`** 等）→\
-  **製品一行**は各リポ **`AGENTS.md`** → **myrules** は **全タスク横断の短い原則のみ**（例: 後方互換方針、CursorLog 必須、無断コミット禁止）。迷ったら **SKILL 側に寄せる**。
-- **書き方**: 抽象的な反省のみにせず、**いつ発火するか**・**エージェントが取るべき具体動作**が読み取れる短文・箇条書きにする。既存節と**矛盾する場合は統合して一本化**する。
-- **ドキュメント作成規律との関係**: 本節は **既存 SKILL・`myrules.mdc` の編集**を指す。**ユーザーから明示がない新規ノート・新規 README の創作**は引き続き「ドキュメント作成規律」に従う（**新規 SKILL の `SKILL.md`** は本節の対象）。
-
-## ローカル Docker と Python ソース変更（重要）
-
-**`docker compose` でアプリを動かすローカル開発**で **`src/` 等アプリ用 `*.py` を変更したら**、\
-**Docker が起動している場合に限り**検証・報告の前に **`docker compose restart <サービス名>`** を**エージェントが実行**する。\
-**Docker 未導入・未起動**のときは **restart しない**（報告に省略理由**1行**）。**FishTrack / MyPokedex / otayori-navi** では起動時は実行結果を**明記**する。
-
-- **手順の正本**: **`local-docker-python-restart`** SKILL（`.agents/skills/local-docker-python-restart/SKILL.md`）。サービス名・再ビルド境界・`dump` 前の restart 順序は同 SKILL に従う。
-
-## FaiNaviWEB 実装完了と本番デプロイ（重要）
-
-**呼称**: 金銭一連は **FaiNavi**。WEB画面は **FaiNaviWEB**（正本は仕様 `7-2`・`FaiNavi_deploy` SKILL）。
-
-**`personal-tools/src/fai_navi/`** のソース・テスト・マイグレーションを変更したセッションは、**ユーザーへの完了報告の前に** **`FaiNavi_deploy` SKILL**（`personal-tools/.agents/skills/FaiNavi_deploy/SKILL.md`）に従う。\
-**`npm test` →（必要時）`db:migrate:remote` → `npm run deploy` → 本番疎通**まで**エージェントが同一セッションで実施**する。\
-「デプロイは次回」「残作業にデプロイ未実施」で完了報告して終えない（ユーザーが「デプロイ不要」と明示した場合のみ省略し、報告に理由1行）。
-
-## ファイル修正と差分確認（重要）
-
-**Cursor 上の作業全体**（FishTrack / MyPokedex / Obsidian / Work 等すべて）に適用する。
-
-### 禁止（シェル・スクリプト経由の書き込み）
-
-**`temp/` および FishTrack `temp-spec-crawl/` 以外**へのファイル作成・更新・上書きを、シェルやスクリプトで行ってはならない。
-
-- 例: PowerShell の `Copy-Item` / `Move-Item` / `Set-Content` / リダイレクト（`>`）、`[System.IO.File]::WriteAllText`
-- 例: Python / Node 等の `open(..., "w")`・`write_text`・`shutil.copy` / `shutil.copy2`・ループ一括置換、`sed` / 正規表現のみの機械更新
-- 例: **Task サブエージェント**が上記で正本（ソース・Obsidian 等）へ書くこと（親エージェントも同様）
-- **Obsidian ボールト（厳禁）**: `D:/OneDrive/アプリ/remotely-save/Obsidian/`（およびワークスペース上の同ボールト）へ\
-  シェル／スクリプトで **コピー・生成・上書きしない**（`temp/` 下書き → `Copy-Item` / `shutil.copy*` 含む）。\
-  **件数が多い・ファイルが大きい・サブエージェント失敗**を理由に例外にしない。
-- 理由: Cursor の差分ビュー（Review）で**追跡・レビューできなくなる**（シェルコピーしたファイルは差分に出ない）
-
-### 正しい手段
-
-- **`StrReplace` / `Write` / `Delete` / `EditNotebook`**（Cursor 編集ツール）またはエディタ上の操作
-- 変更単位が追跡可能な形で行う（大きいファイルは節・ブロック単位に分割可）
-- Obsidian 正本は **1 ファイルずつ** `Write` / `StrReplace`（`temp/` 生成物は **Read** してからツールで書く）
-
-### 例外（`temp/` および FishTrack `temp-spec-crawl/`）
-
-- 各リポジトリの **`temp/`** 配下への出力は、シェル・スクリプト可（カバレッジ、調査用生成物等）
-- **FishTrack `temp-spec-crawl/`**: spec-crawl CLI 作業専用。シェル書き込み可。**汎用 `temp/` 掃除では消さない**
-- **`temp/` / `temp-spec-crawl/` から正本（ソース・Obsidian 等）へ**は **Read のみ** → 正本へ **`Write` / `StrReplace`**（`Copy-Item` / `shutil.copy*` 禁止）
-- 詳細: **`temp-file-management`** SKILL（spec-crawl は **`spec-crawl` SKILL**。Obsidian は **`obsidian-second-brain`**）
-
-### 旧文言との関係
-
-- 「スクリプトによる置換・書き換え厳禁」は **`temp/`・FishTrack `temp-spec-crawl/` 以外**を指す（上記と同義）
-- 対象が **1 ファイル**・**特定リポジトリ**に限っても同様
-
-## 残作業・次アクションの案内（重要）
-
-- **作業完了の報告時**に、会話の文脈・CursorLog・仕様書・TODO・未完了の実装・検証 等から、**残作業**や**ユーザーが次に取るべきこと**が分かる場合は、**回答の末尾で必ず案内する**（黙って終了しない）
-- 案内は箇条書きで簡潔に。**複数ある場合は多くても3件程度**に絞り、優先度が付けられるなら順序を示す。不要な列挙・推測の羅列はしない
-- CursorLogに「残作業・課題（次セッション引き継ぎ）」等を記載した場合は、**報告本文でも同趣旨を短く要約**し、ユーザーが見落とさないようにする
-- **除外（コミット／Git／デプロイ）**: コミット・プッシュ・デプロイ・PR・マージ等については、ユーザーがチャットで**明示依頼したとき以外**、**次アクション案内に一切含めない**。**チャットでの促し・提案・「次は〜がよいです」等の補足案内も行わない**（専用コマンド・別依頼で扱う）
-
-## ソースコードコメント規律（重要）
-
-- 判断基準・記載量の正本: **`code-comment-guidelines`** SKILL（`.agents/skills/GitHub/code-comment-guidelines/SKILL.md`）
+- 禁止: 表示やログだけ隠す。失敗を握りつぶす。閾値や skip で通す。文言だけ直して判定を放置する。データだけ手で直して再発原因を残す
+- 手順の正本: **`error-handling-policy`** SKILL
 
 ## エラー対応規律（最重要）
 
-**上記「根本原因からの解決」のエラー／失敗特化。発生時は根本原因の解決が必須。回避・抑制・無視は禁止。**
+エラーと失敗は根本原因を直す。回避、抑制、無視は禁止。
 
-- **手順の正本**: **`error-handling-policy`** SKILL（`.agents/skills/error-handling-policy/SKILL.md`）
-- **Python 構文・型・Lint**: **`python-code-error-fix`** SKILL（併用）
+- 手順: **`error-handling-policy`** SKILL
+- Python の構文・型・Lint: 先に **`python-code-error-fix`** SKILL を Read する
+
+## ユーザー指摘に基づくルール・SKILL の育成（重要）
+
+今後の作業にも効く訂正・指示・指摘は、チャットだけで終わらせない。**同一セッションで**既存 SKILL を更新する。無ければ新規 SKILL を作る。今回限りの値、URL、単発の typo は対象外。
+
+- 手順・チェックリスト・検証順は SKILL が正本。**myrules に長い手順を複製しない**
+- 製品の commit／PR は各リポジトリの `.agents/skills/`
+- Git 共通は `dev-workspace/.agents/skills/GitHub/`
+- Obsidian は `dev-workspace/.agents/skills/Obsidian/`
+- 本職は `dev-workspace/.agents/skills/DTS/`
+- その他の共通手順は `dev-workspace/.agents/skills/`
+- 製品の一行は各リポ `AGENTS.md`。迷ったら SKILL
+- 既存節と矛盾するときは統合して一本にする
+- ユーザー明示がない新規ノート・新規 README は作らない。新規 SKILL の `SKILL.md` は本節の対象
+
+## ローカル Docker と Python ソース変更（重要）
+
+`src/` 等のアプリ用 `*.py` を変え、Docker が起動しているときは、検証・報告の前に **`docker compose restart <サービス名>`** を実行する。未導入・未起動なら restart しない（報告に省略理由 1 行）。FishTrack／MyPokedex／おたよりナビは、起動したときの結果を書く。
+
+- サービス名・再ビルド境界は **`local-docker-python-restart`** SKILL
+
+## FaiNavi（廃止）
+
+新規開発は取りやめ。デプロイ手順とローカル画面手順は復活させない。Workers、D1、公開ホスト、Compose、論理データベースは作り直さない。共有 RDS 自体は止めない。ソースは消さない。削除前の SQL は公開リポジトリへ移さない。経緯は仕様 `FaiNavi` の `decisions.md`。
+
+## ファイル修正と差分確認（重要）
+
+FishTrack／MyPokedex／Obsidian／Work を含む、Cursor 上の作業全体に適用する。
+
+**`temp/` と FishTrack `temp-spec-crawl/` 以外**への作成・更新・上書きを、シェルやスクリプトで行わない。1 ファイルでも、特定リポジトリでも同じ。件数、大きさ、サブエージェント失敗を理由に例外にしない。
+
+- 禁止の例: `Copy-Item`、`Set-Content`、リダイレクト、`write_text`、`shutil.copy*`、`sed`、正規表現だけの一括置換
+- **Obsidian**（`D:/OneDrive/アプリ/remotely-save/Obsidian/`）へはシェルでコピー・生成・上書きしない
+- 理由: 差分ビューで追跡できなくなる
+- 正: **`StrReplace`／`Write`／`Delete`／`EditNotebook`**。Obsidian は 1 ファイルずつ。`temp/` の生成物は Read してからツールで書く
+- `temp/` と FishTrack `temp-spec-crawl/` への出力はシェル可。そこから正本へは Read のみ → **`Write`／`StrReplace`**
+- `temp-spec-crawl/` は汎用 `temp/` の掃除で消さない
+- 詳細: **`temp-file-management`** SKILL。spec-crawl は **`spec-crawl`** SKILL
+
+## 残作業・次アクションの案内（重要）
+
+- 残作業がある応答の末尾に **`## 次のアクション` を 1 件**。無いときは節を付けない。3 件に揃えない
+- **`next-action` SKILL は `/next-action` 等の明示時だけ Read する。** 通常応答では読まない
+- 残作業と着手中を、未着手の新規より先にする。閉じた残作業は出さない。深夜警告より前に置く
+- CursorLog に残作業を書いたときは、報告本文にも短く書く
+- **コミット、プッシュ、デプロイ、PR、マージは、明示依頼がない限り次アクションに書かない。** 促しもしない
 
 ## 作業ログ（最重要・必須実行）
 
-🚨 **ワークスペース内のファイルを変更した作業**では、**ユーザー報告の前に必ず** Obsidian CursorLog を更新する。**手順・チェックリスト・前ゲート・Q0〜Q5**の正本は **`obsidian-cursor-log`** SKILL（`.agents/skills/Obsidian/obsidian-cursor-log/SKILL.md`）。\
-**月次日報**（`CursorLog/YYYY-MM/YYYY-MM 日報.md`）は **`obsidian-cursor-monthly-report`** SKILL が正本。Q0・「日報作成」依頼時は同 SKILL を Read してから着手する。
+ワークスペース内のファイルを変えたら、**ユーザーへ成果を述べる前に** CursorLog を追記する。手順は **`obsidian-cursor-log`** SKILL。月次日報は **`obsidian-cursor-monthly-report`** SKILL。
 
-- **報告文に「CursorLogは更新しました」を必ず含める**
-- **取り扱い終了文の前ゲート**: ファイル変更が1件でもあれば、**成果報告の本文を述べる前に** CursorLog 追記を**同一ターン内で完了**する（詳細は SKILL「作業フローと報告前ゲート」）
-- **ファイル変更**の定義: **`StrReplace` / `Write` / `Delete` / `EditNotebook`** またはシェル経由の書き込み。CursorLog のみ追記で他に変更がなければ追加エントリ不要
-- **複数エージェント同時作業**: 既存の日次 CursorLog を **`Write` で全文置換しない**（他エージェントのエントリ消失の主因）。追記は直前再 Read＋`StrReplace`＋保全検証。詳細は同 SKILL「同時書き込み対策」
+- 報告に **「CursorLogは更新しました」** を含める
+- ファイル変更は **`StrReplace`／`Write`／`Delete`／`EditNotebook`** またはシェル書き込み。CursorLog だけの追記なら追加エントリは不要
+- 既存の日次ログを **`Write` で全文置換しない**。追記直前に再 Read し、`StrReplace` する
 
 ## テスト規律（重要）
 
-- **実装とテストは同時**。**`--cov-fail-under` を 99 未満に下げることは禁止**（不足は**テスト追加**のみ。閾値引き下げ差分は規約違反）
-- **手順の正本**: **`test-code-generator`** SKILL（`.agents/skills/test-code-generator/SKILL.md`）。カバレッジ・diff-cover・E2E 必須シナリオ ID は同 SKILL §1・§6。閾値・実行コマンドは各 **`AGENTS.md`**
-- **テストファイル行数**: **`file-size-policy`** SKILL
+- 実装とテストは同時。**`--cov-fail-under` を 99 未満に下げない**（不足はテスト追加）
+- 手順は **`test-code-generator`** SKILL。閾値とコマンドは各 **`AGENTS.md`**
+- テストの行数は **`file-size-policy`** SKILL
 
 ## ドキュメント配置方針（重要）
 
-- **ドキュメントは各プロジェクト配下ではなく、Obsidian に集約する**
-- 仕様書・設計メモ・運用メモなどは Obsidian のボールト内で管理し、プロジェクトごとの `docs/` は設けない
-- **FishTrack AI スペック照合**（`ai_spec_check_report.md`・突合ノート）: **`ai-spec-check-report`** / **`spec-import-notes`** SKILL（FishTrack `.agents/skills/`）が正本
+- 仕様・設計・運用メモは Obsidian に集約する。プロジェクトの `docs/` は作らない
+- FishTrack の AI スペック照合は **`ai-spec-check-report`**／**`spec-import-notes`** SKILL
 
 ## Obsidian（第二の脳・重要）
 
-**Obsidian はユーザーの第二の脳。** AI チャット・調査・実装で得た**持続的な情報**は、InBox 処理に限らず**すべての Cursor 利用時**に適切な正本へ集約する（チャットだけで終わらせない）。
+チャットや実装で得た持続的な情報は、適切な正本へ残す。チャットだけで終わらせない。
 
-- **手順の正本**: **`obsidian-second-brain`** SKILL（`dev-workspace/.agents/skills/Obsidian/obsidian-second-brain/SKILL.md`）
-- **CursorLog** は作業証跡。第二の脳の**すべてではない**（仕様・Knowledge・Work・釣行メモ等の正本更新と併用）
-- **InBox 取り込み**: **`obsidian-inbox-summarize`** SKILL
+- 手順は **`obsidian-second-brain`** SKILL。InBox は **`obsidian-inbox-summarize`** SKILL
+- CursorLog は作業証跡であり、仕様・Knowledge・Work・釣行メモの代わりではない
 
 ## タスク番号の正本（DevProject）
 
-- **計画用タスク番号**（**Fxx** / **Pxx** / **Oxx** / **Mxx** / **Ixx**）は **`Obsidian/DevProject/plans/統合作業スケジュール.md`** **以外の `DevProject/` 配下**には**記載しない**。\
-    （仕様・設計・ナレッジ・**`plans/` 内の他ファイル** 等。**`[[統合作業スケジュール]]`** への参照に留める。）
-- **`plans/completed/`** 等の**履歴ファイル**に既存のタスク番号がある場合は**そのまま**とし、**新規追記・新規ファイル**ではタスク番号を**書かない**（一覧の正本は統合作業スケジュールのみ）。
-- **`DevProject` 外**（例: **CursorLog**）の作業ログに**参照**としてタスク番号を含めてよい（**一覧の正本**は統合作業スケジュールのみ）。
-- **リポジトリのソースコード**（`src/`・`tests/` 等）の**コメント**にも**計画用タスク番号**（**Fxx** / **Pxx** / **Oxx** / **Mxx** / **Ixx**）を**書かない**。\
-    経緯・理由は**仕様・コミットメッセージ・Obsidian**で管理する（**`code-comment-guidelines` SKILL** と整合）。
+計画用タスク番号（Fxx／Pxx／Oxx／Mxx／Ixx）を書いてよい `DevProject/` は **`plans/スケジュール.md` だけ**。仕様・設計・ナレッジ・`plans/` の他ファイルには書かず、**`[[スケジュール]]`** への参照に留める。
+
+- `plans/completed/` 等の既存番号は残す。新規追記では書かない
+- CursorLog には参照として書いてよい。一覧の正本はスケジュールだけ
+- `src/`・`tests/` のコメントにも書かない。経緯は仕様・コミットメッセージ・Obsidian
 
 ## 仕様書探索の既定パス（重要）
 
-- AI は、各プロジェクトの仕様書をまず Obsidian 側で探すこと
-- 既定の探索先は `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/`
-- 主要プロジェクトの仕様書パスは以下の通り
-  - `FishTrack`:
-    `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/FishTrack`
-  - `MyPokedex`:
-    `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/MyPokedex`
-  - `otayori-navi`:
-    `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/おたよりナビ仕様書.md`
-- 実装・調査・レビュー開始時は、対象プロジェクトの `AGENTS.md` と上記仕様書を最初に確認する
-- フォルダ型の仕様書は `INDEX.md` を起点に参照する
+仕様は Obsidian を先に探す。起点は `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/`。製品ごとのフォルダは FishTrack、MyPokedex、おたよりナビ、FaiNavi。
+
+- 見るのは、コードと `AGENTS.md` に残らない決定と禁止。スキーマ・API・スタックの写しは追わない
+- フォルダ型は `INDEX.md` から、決定がありそうな節だけ読む
 
 ## ドキュメント更新規律（重要）
 
-- **ソース変更時は仕様を同時更新**（後回し禁止）。**リファクタリングのみ**で機能変更がなければ仕様更新は任意（重要な設計変更がある場合は更新推奨）
-- **仕様書**: **`specification-update`** SKILL（`.agents/skills/specification-update/SKILL.md`）
-- **統合作業スケジュール**: **`integrated-schedule-update`** SKILL（`.agents/skills/integrated-schedule-update/SKILL.md`）
-- **探索パス・Obsidian 集約**: 下記「仕様書探索の既定パス」「ドキュメント配置方針」。**タスク ID を仕様本文に書かない**（「タスク番号の正本」参照）
+- 仕様は、コード・テスト・`AGENTS.md` に残らない決定だけ。決定が変わったときだけ同じ作業で更新する
+- 手順は **`specification-update`** SKILL。スケジュールは **`integrated-schedule-update`** SKILL
+- 仕様本文にタスク ID を書かない
+
+## 計画書の進捗状況の反映
+
+実装完了で計画の進捗を載せるときは **`integrated-schedule-update`** SKILL に従う。手順は SKILL に書き、本ファイルへ複製しない。
 
 ## ドキュメント作成規律（最重要）
 
-**ユーザー明示指示がない限り、新規ドキュメント（`.md` / `.txt` / `.rst` 等）を作成しない。**
+**ユーザーの明示がない限り、新規の `.md`／`.txt`／`.rst` 等を作らない。**
 
-- **チェックリスト・例外・違反時対応**: **`document-creation-policy`** SKILL（`.agents/skills/document-creation-policy/SKILL.md`）
-- **既存仕様・CursorLog・SKILL 正本の更新**: 「ドキュメント更新規律」および各 SKILL（本規律の対象外）
+- 例外と違反時は **`document-creation-policy`** SKILL
+- 既存の仕様、CursorLog、SKILL 正本の更新は本規律の対象外
+
+## ソースコードコメント規律（重要）
+
+判断基準と記載量は **`code-comment-guidelines`** SKILL。
 
 ## Markdownlint修正
 
-- **発火時は `markdownlint-fix` SKILL**（`.agents/skills/Obsidian/markdownlint-fix/SKILL.md`）。**修正前に Read 必須**（要約のみで手を動かさない）
+発火時は **`markdownlint-fix`** SKILL を Read してから直す。
 
 ## Python コードエラー修正
 
-- **発火時は `python-code-error-fix` SKILL**（`.agents/skills/python-code-error-fix/SKILL.md`）。**修正前に Read 必須**。回避禁止の一般原則は **`error-handling-policy`** 併用
+発火時は **`python-code-error-fix`** SKILL を Read してから直す。回避は **`error-handling-policy`** に従う。
 
 ## ファイルサイズ規律（重要）
 
-- **閾値・超過時対応**: **`file-size-policy`** SKILL（`.agents/skills/file-size-policy/SKILL.md`）
+閾値と超過時の対応は **`file-size-policy`** SKILL。
 
 ## HTMLテンプレート規律（重要）
 
-- **FishTrack / MyPokedex / otayori-navi** の Jinja/HTML: **`frontend-html-template`** SKILL（`.agents/skills/frontend-html-template/SKILL.md`）
+FishTrack／MyPokedex／おたよりナビの Jinja／HTML は **`frontend-html-template`** SKILL。
 
 ## Cursor ブラウザ配置（重要）
 
-**ブラウザはサイドで開かないこと。** `browser_navigate` / `browser_tabs` に **`position: "side"` を付けない**（エディタをサイドパネルで割らない）。
-
-- **手順の正本**: **`cursor-ide-browser-position`** SKILL（`.agents/skills/cursor-ide-browser-position/SKILL.md`）。既定は `position` 省略。見せるときだけ `"active"`
+**ブラウザはサイドで開かない。** `browser_navigate`／`browser_tabs` に **`position: "side"` を付けない**。既定は `position` を省略。見せるときだけ `"active"`。詳細は **`cursor-ide-browser-position`** SKILL。
 
 ## Git運用（重要）
 
-**無断コミット・プッシュ禁止。** ブランチ方針・自問チェック・LF 改行の正本: **`git-workflow`** SKILL（`.agents/skills/GitHub/git-workflow/SKILL.md`）
+**無断コミット・プッシュ禁止。** ブランチ、自問チェック、LF は **`git-workflow`** SKILL。
 
 ## 日付・時刻記載（重要）
 
-**プレースホルダー・仮の日付は禁止。記載時は JST の実日時を取得する。**
-
-- **手順の正本**: **`datetime-jst`** SKILL（`.agents/skills/datetime-jst/SKILL.md`）
-- **CursorLog 追記**: **`obsidian-cursor-log`** SKILL「日時の必須手順」（Log 専用）
+**仮の日付は禁止。** 記載時は JST の実日時を取る。手順は **`datetime-jst`** SKILL。CursorLog は **`obsidian-cursor-log`** SKILL。
 
 ## 一時ファイル管理（重要）
 
-**一時ファイルは `temp/` 配下のみ。プロジェクト直下への作成禁止。**\
-**1 チャットの作業完了時は `temp/` を空にする（理想状態）。次回も使うものは `scripts/` 等へ。**\
-**例外**: pytest の **`coverage.xml`**（gitignore）はリポ直下に**残す**（完了時に消さない。次の diff-cover でフル pytest を省略するため）。再利用条件は SKILL。\
-**例外（FishTrack）**: **`temp-spec-crawl/`** は汎用 `temp/` と別。他チャットの `temp/` 掃除では消さない。空にするのは当該 `/spec-crawl` セッションの正本反映検証後のみ（SKILL 正）。
+**一時ファイルは `temp/` だけ。** プロジェクト直下へは作らない。チャット完了時に `temp/` を空にする。次回も使うものは `scripts/` 等へ置く。
 
-- **手順の正本**: **`temp-file-management`** SKILL（`.agents/skills/temp-file-management/SKILL.md`）
+- **`coverage.xml`** は残す（次の diff-cover でフル pytest を省くため）
+- FishTrack の **`temp-spec-crawl/`** は汎用 `temp/` と別。他チャットの掃除では消さない
+- 再利用条件は **`temp-file-management`** SKILL

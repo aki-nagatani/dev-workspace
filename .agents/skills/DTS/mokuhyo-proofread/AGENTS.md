@@ -11,5 +11,7 @@
 - **CSV 同期**: `.md` 更新後は同一セッションで **`人事考課_管理シート.csv`** を必ず更新（**`mokuhyo-kanri-sheet-csv`** SKILL）
 - 完了後は **`obsidian-cursor-log`**。管理シート編集後は **`markdownlint-fix`**
 - **設定時コメント(補助・１次調整者)** の生成は **`mokuhyo-hojo-setteiji-comment`** SKILL（本 SKILL は `<改善案>` 校閲のみ）
+- **振り返り時の達成状況コメント(補助・１次評価者)** の生成は **`mokuhyo-hojo-furikaeri-comment`** SKILL
+- **長谷本人の振り返り**は **`mokuhyo-furikaeri`** SKILL
 
 Always respond in Japanese when using this skill.

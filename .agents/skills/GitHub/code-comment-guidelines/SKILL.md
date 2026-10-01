@@ -113,10 +113,10 @@ description: ソースコードのコメントを必要十分な量で記載す�
 - **行数だけを根拠にした機械的な見出し**（例: 10 行ごとに必ず 1 行コメント）。\
   **40 行超関数内の論理ブロック見出し**（上記「長い関数内の見出し」）は対象外
 - **計画用タスク番号**（**Fxx** / **Pxx** / **Oxx** / **Mxx** / **Ixx**）。進捗・割り当ての ID は\
-  **`Obsidian/DevProject/plans/統合作業スケジュール.md`** のみで管理し、コメントは**意図・制約（Why）**に留める（myrules「タスク番号の正本」）
+  **`Obsidian/DevProject/plans/スケジュール.md`** のみで管理し、コメントは**意図・制約（Why）**に留める（myrules「タスク番号の正本」）
 - **AI 補助スペック取り込み照合レポートの「対策 N」**（例:**対策 14**・**対策 22**）。番号付きの是正履歴は **Obsidian**\
   **`DevProject/FishTrack/ai-spec-notes/.../<系列名>_ai_report.md`** の **§4／§5／§6** にのみ書き、**FishTrack `src/`・`tests/` のコメント／docstring**、および **FishTrack 仕様書**（\
-  **`Obsidian/DevProject/specifications/FishTrack/`**・典型 **`05_ai_spec_import.md`**）の本文には**書かない**（経緯はレポート・コミットメッセージへ。仕様は**振る舞い・関数参照・ルール**のみ同期。**エージェント向け**: **`ai-spec-check-report`** SKILL §8.1「ソース・仕様書・対策番号」）。
+  **`Obsidian/DevProject/specifications/FishTrack/`**・典型 **`ai_spec_import.md`**）の本文には**書かない**（経緯はレポート・コミットメッセージへ。仕様は**振る舞い・関数参照・ルール**のみ同期。**エージェント向け**: **`ai-spec-check-report`** SKILL §8.1「ソース・仕様書・対策番号」）。
 - **機械検査**: **FishTrack** は **`scripts/check_source_task_ids.py`** を **`.githooks/pre-commit`** から実行し、\
   `src/`・`tests/`・`migrations/versions/` の Python に上記 ID が混入していないか検出する。SKILL の参照だけでは漏れるため、\
   **コミット前に必ず通る状態**を正とする。

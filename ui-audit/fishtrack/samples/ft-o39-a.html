@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O39 案A お知らせの文字を折り返す</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_dashboard.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #eef2f7;
+    }
+    .sample-note {
+      width: 375px;
+      margin: 0;
+      padding: 0.45rem 0.7rem;
+      background: #fff8e1;
+      color: #5c4a00;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .frame {
+      width: 375px;
+      background: #eef2f7;
+    }
+    .frame main {
+      overflow-x: clip;
+      max-width: 100%;
+      padding: 16px 18px 20px;
+    }
+    .frame--before .card {
+      overflow: hidden;
+    }
+    .frame--after .home-site-updates__day {
+      width: 100%;
+      grid-template-columns: minmax(0, 1fr) max-content;
+    }
+    .frame--after .home-site-updates__list,
+    .frame--after .home-site-updates__message {
+      min-width: 0;
+      max-width: 100%;
+    }
+    .frame--after .home-site-updates__message {
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+  </style>
+</head>
+<body class="ft-app-body">
+  <p class="sample-note">変更前。本文と「表示しない」が右端で切れる。</p>
+  <div class="frame frame--before">
+    <main>
+      <section class="card home-dashboard__section home-site-updates" aria-label="FishTrackからのお知らせ">
+        <div class="home-dashboard__section-header">
+          <h2>FishTrackからのお知らせ</h2>
+          <form class="home-site-updates__hide-form home-site-updates__hide-form--all">
+            <button type="button" class="btn-link home-site-updates__hide">表示中をすべて非表示</button>
+          </form>
+        </div>
+        <ol class="home-site-updates__days">
+          <li class="home-site-updates__day home-site-updates__day--single">
+            <h3 class="home-site-updates__date">2026-09-29</h3>
+            <ul class="home-site-updates__list">
+              <li class="home-site-updates__item">
+                <p class="home-site-updates__message"><a class="home-site-updates__link" href="#">ワーム 1件</a>、<a class="home-site-updates__link" href="#">プラグ 3件</a>をマスタに追加しました</p>
+              </li>
+            </ul>
+            <form class="home-site-updates__hide-form">
+              <button type="button" class="btn-link home-site-updates__hide">表示しない</button>
+            </form>
+          </li>
+          <li class="home-site-updates__day home-site-updates__day--single">
+            <h3 class="home-site-updates__date">2026-09-28</h3>
+            <ul class="home-site-updates__list">
+              <li class="home-site-updates__item">
+                <p class="home-site-updates__message"><a class="home-site-updates__link" href="#">ワーム 5件</a>、<a class="home-site-updates__link" href="#">プラグ 20件</a>をマスタに追加しました</p>
+              </li>
+            </ul>
+            <form class="home-site-updates__hide-form">
+              <button type="button" class="btn-link home-site-updates__hide">表示しない</button>
+            </form>
+          </li>
+        </ol>
+      </section>
+    </main>
+  </div>
+  <p class="sample-note">変更後。カード幅で折り返し、「表示しない」は最後まで見える。</p>
+  <div class="frame frame--after">
+    <main>
+      <section class="card home-dashboard__section home-site-updates" aria-label="FishTrackからのお知らせ">
+        <div class="home-dashboard__section-header">
+          <h2>FishTrackからのお知らせ</h2>
+          <form class="home-site-updates__hide-form home-site-updates__hide-form--all">
+            <button type="button" class="btn-link home-site-updates__hide">表示中をすべて非表示</button>
+          </form>
+        </div>
+        <ol class="home-site-updates__days">
+          <li class="home-site-updates__day home-site-updates__day--single">
+            <h3 class="home-site-updates__date">2026-09-29</h3>
+            <ul class="home-site-updates__list">
+              <li class="home-site-updates__item">
+                <p class="home-site-updates__message"><a class="home-site-updates__link" href="#">ワーム 1件</a>、<a class="home-site-updates__link" href="#">プラグ 3件</a>をマスタに追加しました</p>
+              </li>
+            </ul>
+            <form class="home-site-updates__hide-form">
+              <button type="button" class="btn-link home-site-updates__hide">表示しない</button>
+            </form>
+          </li>
+          <li class="home-site-updates__day home-site-updates__day--single">
+            <h3 class="home-site-updates__date">2026-09-28</h3>
+            <ul class="home-site-updates__list">
+              <li class="home-site-updates__item">
+                <p class="home-site-updates__message"><a class="home-site-updates__link" href="#">ワーム 5件</a>、<a class="home-site-updates__link" href="#">プラグ 20件</a>をマスタに追加しました</p>
+              </li>
+            </ul>
+            <form class="home-site-updates__hide-form">
+              <button type="button" class="btn-link home-site-updates__hide">表示しない</button>
+            </form>
+          </li>
+        </ol>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

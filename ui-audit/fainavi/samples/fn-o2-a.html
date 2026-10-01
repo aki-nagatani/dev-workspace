@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FN-O2 案A</title>
+  <style>
+    :root {
+      --card: #ffffff;
+      --text: #1a1d21;
+      --muted: #5c6570;
+      --accent: #0b6e4f;
+      --border: #d8dde3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      width: 390px;
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      background: #fff;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .sample-note {
+      margin: 0;
+      padding: 0.55rem 0.75rem;
+      background: #fff8e1;
+      color: #5c4a00;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .frame { padding: 0.75rem; background: #f6f7f9; }
+    .mobile-card {
+      padding: 0.85rem;
+      background: color-mix(in srgb, var(--card) 96%, var(--border));
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+    }
+    .mobile-card__head { display: flex; justify-content: space-between; font-weight: 700; }
+    .mobile-card__description { margin: 0.5rem 0; }
+    .mobile-card__meta { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.85rem; }
+    .amount { color: #c0392b; }
+    .mobile-card__actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    button {
+      width: 100%;
+      margin: 0;
+      padding: 0.6rem 0.85rem;
+      min-height: 2.75rem;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 0.55rem;
+      font: inherit;
+      font-weight: 700;
+    }
+    .secondary-button {
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--border);
+    }
+    .mobile-card__actions--after { grid-template-columns: 1fr 1fr; }
+    .mobile-card__actions--after .primary-action { grid-column: 1 / -1; }
+  </style>
+</head>
+<body>
+  <p class="sample-note">変更前。集計除外・振替にする・分類追加が同じ緑の主ボタン。</p>
+  <div class="frame">
+    <article class="mobile-card">
+      <div class="mobile-card__head"><span>2026-09-26</span><span class="amount">-540</span></div>
+      <p class="mobile-card__description">コンビニ</p>
+      <p class="mobile-card__meta">口座: サンプルカード / 分類: 未分類</p>
+      <div class="mobile-card__actions">
+        <button type="button">集計除外</button>
+        <button type="button">振替にする</button>
+        <button type="button">分類追加</button>
+      </div>
+    </article>
+  </div>
+  <p class="sample-note">変更後。分類追加だけ主ボタン。集計除外と振替にするは枠線の副ボタン。</p>
+  <div class="frame">
+    <article class="mobile-card">
+      <div class="mobile-card__head"><span>2026-09-26</span><span class="amount">-540</span></div>
+      <p class="mobile-card__description">コンビニ</p>
+      <p class="mobile-card__meta">口座: サンプルカード / 分類: 未分類</p>
+      <div class="mobile-card__actions mobile-card__actions--after">
+        <button class="primary-action" type="button">分類追加</button>
+        <button class="secondary-button" type="button">集計除外</button>
+        <button class="secondary-button" type="button">振替にする</button>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

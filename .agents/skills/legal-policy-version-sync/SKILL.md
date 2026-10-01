@@ -44,8 +44,7 @@ description: >-
 2. **プライバシーポリシーの本文を変えたら**  
    - 同様に **`MYPDEX_PRIVACY_VERSION`** と `config.py` のデフォルト、および必要なら `_DEFAULT_VERSION_KEY` の扱いを確認する。\
      規約のみ変更なら **PP 版キーは据え置き**でよい。
-3. **Obsidian 仕様**（`DevProject/specifications/MyPokedex`、**`09_non_functional.md`** の GA4・法務節など）に**最終更新日・版キー運用**の記述があるなら、\
-   **`specification-update` SKILL** に従い同期する。
+3. **Obsidian 仕様**（`DevProject/specifications/MyPokedex/decisions.md`）に計測・同意の決定がある。版キーの写しは仕様へ残さない。
 4. **テスト**: 版キー不一致で再同意に進む経路を触ったら、`tests/blueprints/auth/test_legal_acceptance.py` 等の期待値を更新する。
 
 ### 環境変数の参照先（デプロイ時）
@@ -61,7 +60,7 @@ description: >-
 改定時:
 
 1. **本文を変えた側の定数だけ**を同じリリースで更新する。規約本文を変えていなければ `LEGAL_POLICY_TERMS_VERSION` は据え置く。
-2. **Obsidian 仕様**（`08_development.md`・`09_non_functional.md` 9-4）を同期する。
+2. **Obsidian 仕様**に版キーの写しは残さない。決定が変わるときだけ `decisions.md` を同じリリースで更新する。
 3. **テスト**: 再同意経路を触ったら期待値を更新する。
 4. **ホームお知らせには載せない**（`site-update-announce`）。
    全ユーザーがログイン後の再同意画面で目にする。
@@ -85,4 +84,4 @@ description: >-
 - MyPokedex: `MyPokedex/src/mypokedex/config.py`（`MYPDEX_TERMS_VERSION` / `MYPDEX_PRIVACY_VERSION`）
 - FishTrack: `FishTrack/src/fishtrack/utils/legal_policy.py`（`LEGAL_POLICY_TERMS_VERSION` / `LEGAL_POLICY_PRIVACY_VERSION`）
 - FishTrack: `FishTrack/src/fishtrack/config.py`（環境変数は読まない）
-- 仕様・計画: Obsidian `DevProject/specifications/`、**`統合作業スケジュール.md`**
+- 仕様・計画: Obsidian `DevProject/specifications/`、**`スケジュール.md`**

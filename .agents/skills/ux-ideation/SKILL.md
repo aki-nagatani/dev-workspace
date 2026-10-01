@@ -68,8 +68,8 @@ myrules を厳守して作業してください。
 | | `INDEX.md` | |
 | **MyPokedex** | `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/MyPokedex/` | `D:/OneDrive/git_work/MyPokedex/AGENTS.md` |
 | | `INDEX.md` | |
-| **おたよりナビ** | `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/` | `D:/OneDrive/git_work/otayori-navi/AGENTS.md` |
-| | `おたよりナビ仕様書.md` | |
+| **おたよりナビ** | `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/おたよりナビ/` | `D:/OneDrive/git_work/otayori-navi/AGENTS.md` |
+| | `INDEX.md` | |
 
 - **検討対象が一つに絞られていても**、他 2 つから **転用できる UX・獲得・収益・信頼・運用の示唆**を返信に含める（無理な横並びはしない）。\
     上表の **収益モデル** に合わせて言い換える。
@@ -91,7 +91,7 @@ myrules を厳守して作業してください。
 
 本ワークフローで挙げた **各アイデア**は、**具体案として起こしたうえで**、次のファイルに **タスクとして追記する**。
 
-- **正本**: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/plans/統合作業スケジュール.md`
+- **正本**: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/plans/スケジュール.md`
 
 **単一情報源の原則（重要）**:
 
@@ -162,7 +162,7 @@ myrules を厳守して作業してください。
 
 4. **統合作業スケジュールを更新する**\
    上記 **「§2. 統合作業スケジュールへのタスク記載（既定は必須・例外あり）」** で起票を省略する場合は本手順をスキップする。\
-   それ以外では、上記の **各具体アイデア**について、**「採用要否の検討」タスク**を `統合作業スケジュール.md` に追加する（**三本柱**・**SKILL** 準拠）。\
+   それ以外では、上記の **各具体アイデア**について、**「採用要否の検討」タスク**を `スケジュール.md` に追加する（**三本柱**・**SKILL** 準拠）。\
    追加時は **一覧・詳細・週次の末尾に機械的に足すだけ**にせず、**`integrated-schedule-update` SKILL** の **「新規追加時の順序（優先度・影響）」** に従い、優先度・影響・依存を踏まえて **週次・ガント・詳細補足の位置**を検討する。\
    **同一編集**で **[[#タスク一覧]]** に加え、**[[#タスク詳細]]** の **タスク一覧補足** に **上表の必須記載**を満たす本文を書く（**一覧のみで終了禁止**）。\
    チャット本文に、**付与したタスク ID**・**一覧行**・**詳細補足を書いた節**を簡潔に示す。
@@ -174,6 +174,6 @@ myrules を厳守して作業してください。
 
 ## Cursorログ更新（必須）
 
-**Obsidian の `統合作業スケジュール.md` を更新した場合**は **`obsidian-cursor-log` SKILL** で記録する。
+**Obsidian の `スケジュール.md` を更新した場合**は **`obsidian-cursor-log` SKILL** で記録する。
 
 **dev-workspace の本 SKILL 定義**を変更した場合も CursorLog を更新する（タグ例: `#ux-ideation` `#dev-workspace`）。

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1120">
+  <title>FT-O42 公開の水位</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/water_level.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/public_layout.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/landing_h8.css">
+  <style>
+    html, body { margin: 0; padding: 0; width: max-content; background: #fff; }
+    .sample-note {
+      width: 1120px; margin: 0; padding: 0.45rem 0.7rem;
+      background: #fff8e1; color: #5c4a00; font-size: 0.82rem; font-weight: 700;
+    }
+    .frame { width: 1120px; background: #eef2f7; overflow: hidden; }
+    .frame .ft-site-header--public { position: relative; background: #fff; }
+    .frame .is-solid .ft-lp-nav__link { color: var(--color-text); }
+    .frame main { padding: 16px 24px 32px; }
+    .ft-lp-nav details { position: relative; }
+    .ft-lp-nav summary { cursor: pointer; list-style: none; }
+    .ft-lp-nav summary::-webkit-details-marker { display: none; }
+    .ft-lp-nav .ft-nav-dropdown__panel { display: none; }
+    body.ft-public-body main { max-width: none; margin: 0; padding: 16px 24px 32px; justify-content: flex-start; }
+  </style>
+</head>
+<body class="ft-public-body">
+  <p class="sample-note">変更後。未ログインでも水位の一覧を開く。ヘッダーは LP と同じ。数値は形を見るための例。記録の操作はこのページには置かない。</p>
+  <div class="frame" id="water">
+    <header class="ft-site-header ft-site-header--public is-solid">
+      <div class="ft-site-header__bar">
+        <p class="site-brand">
+          <a class="site-brand__link" href="ft-o42-lp.html" aria-label="FishTrack トップ">
+            <img class="site-brand__logo site-brand__logo--on-light" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack ロゴ">
+            <span class="site-brand__text sr-only">FishTrack</span>
+          </a>
+        </p>
+        <nav class="ft-lp-nav" aria-label="公開ページ">
+          <details id="rod">
+            <summary class="ft-lp-nav__link">タックル</summary>
+            <div class="ft-nav-dropdown__panel">
+              <a href="#rod">ロッドを探す</a>
+              <a id="reel" href="#reel">リールを探す</a>
+              <a id="plug" href="#plug">プラグを探す</a>
+              <a id="worm" href="#worm">ワームを探す</a>
+            </div>
+          </details>
+          <a class="ft-lp-nav__link" id="fields" href="#fields">フィールド</a>
+          <a class="ft-lp-nav__link" href="#water" aria-current="page">水位</a>
+          <a class="ft-lp-nav__link" href="ft-o42-register.html">ログイン</a>
+          <a class="ft-lp-nav__cta" href="ft-o42-register.html">無料で新規登録</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="card" data-page="water-level-list">
+        <div class="water-level-list__header">
+          <h2>水位データ</h2>
+        </div>
+        <p>リザーバー（ダム湖）の水位データを確認できます。各リザーバーをクリックすると詳細とグラフを表示します。</p>
+        <h3 class="page-title--spaced">水位一覧の絞り込み</h3>
+        <form class="filter-form" action="#water">
+          <div class="filter-grid">
+            <div>
+              <label for="water-level-prefecture">都道府県</label>
+              <select id="water-level-prefecture" name="prefecture">
+                <option value="">すべて</option>
+                <option>神奈川県</option>
+                <option>千葉県</option>
+              </select>
+            </div>
+          </div>
+        </form>
+        <div class="water-level-cards">
+          <article class="water-level-card" aria-label="相模湖 の水位詳細を開く">
+            <h3 class="water-level-card__name">相模湖</h3>
+            <p class="water-level-card__location">神奈川県</p>
+            <div class="water-level-card__meta">
+              <span class="water-level-card__level">+0.3m</span>
+              <span class="water-level-card__date">2026-09-29</span>
+            </div>
+          </article>
+          <article class="water-level-card" aria-label="高滝湖 の水位詳細を開く">
+            <h3 class="water-level-card__name">高滝湖</h3>
+            <p class="water-level-card__location">千葉県</p>
+            <div class="water-level-card__meta">
+              <span class="water-level-card__level">満水</span>
+              <span class="water-level-card__date">2026-09-29</span>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

@@ -10,12 +10,12 @@ RDS へは **PC から直接接続しない**。接続情報は本番 EC2 の `.
 
 | 用途 | 正 | 使わない |
 | --- | --- | --- |
-| **繰り返し自動化**（spec-crawl タックル全件取得） | **用途固定の読取 HTTP API**（トークン。`07_api_routing.md` **7-10**） | 自動化の本命を SSM にしない |
+| **繰り返し自動化**（spec-crawl タックル全件取得） | **用途固定の読取 HTTP API**（トークン。`GET /fishtrack/api/agent/production-models`） | 自動化の本命を SSM にしない |
 | **現行フラグ同期・preview-json commit** | **SSH** → `docker compose exec app` → ORM | ローカル Docker DB を本番のつもりで使わない |
 | **単発調査** | **SSH**（短いコマンドは SSM `send-command` でも可） | 都度エンドポイントを増やさない |
 | **大きな標準出力**（タックル全件 JSON 等） | 読取 API | SSM `send-command`（出力が約 24KB で切れる） |
 
-詳細は FishTrack 仕様 `11_future.md` **11-4-H**（書込 HTTP は見送り）。読取契約は `07_api_routing.md` **7-10**。
+書込 HTTP、任意 SQL、汎用の内部 API は作らない。読取契約の正本はコード。
 
 ## 重要: 正しいEC2インスタンスの確認
 

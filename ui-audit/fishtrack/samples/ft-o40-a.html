@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=390">
+  <title>FT-O40 案A トーストを見出しの上に置く</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_dashboard.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_overlays.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/site_header_drawer.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #eef2f7;
+    }
+    .sample-note {
+      width: 390px;
+      margin: 0;
+      padding: 0.45rem 0.7rem;
+      background: #fff8e1;
+      color: #5c4a00;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .frame {
+      position: relative;
+      width: 390px;
+      background: #eef2f7;
+      overflow: hidden;
+    }
+    .frame header.ft-site-header {
+      position: relative;
+      min-height: 0;
+      padding: 0;
+    }
+    .frame .ft-site-header__bar {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      width: auto !important;
+    }
+    .frame main {
+      padding: 12px 12px 16px;
+    }
+    .frame .toast-sim {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .frame .toast-sim .ft-toast {
+      animation: none;
+      text-align: center;
+      width: 100%;
+    }
+    .frame--before .toast-sim {
+      top: 78px;
+    }
+    .frame--after .toast-sim {
+      top: 72px;
+    }
+    .frame--after main {
+      padding-top: 76px;
+    }
+  </style>
+</head>
+<body class="ft-app-body">
+  <p class="sample-note">変更前。トーストが見出しに重なる。</p>
+  <div class="frame frame--before">
+    <header class="ft-site-header">
+      <div class="ft-site-header__bar">
+        <button type="button" class="ft-nav-toggle" aria-label="メニュー">☰</button>
+        <a class="site-brand" href="#">
+          <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack">
+        </a>
+      </div>
+    </header>
+    <main>
+      <section class="card home-dashboard__section home-site-updates" aria-label="FishTrackからのお知らせ">
+        <div class="home-dashboard__section-header">
+          <h2>FishTrackからのお知らせ</h2>
+        </div>
+        <p class="home-site-updates__message"><a class="home-site-updates__link" href="#">表示中をすべて非表示</a></p>
+      </section>
+    </main>
+    <div class="toast-sim">
+      <div class="ft-toast ft-toast--success" role="status">ログインしました。</div>
+    </div>
+  </div>
+  <p class="sample-note">変更後。トーストの高さだけ本文を下げ、見出しは重ならない。</p>
+  <div class="frame frame--after">
+    <header class="ft-site-header">
+      <div class="ft-site-header__bar">
+        <button type="button" class="ft-nav-toggle" aria-label="メニュー">☰</button>
+        <a class="site-brand" href="#">
+          <img class="site-brand__logo" src="http://127.0.0.1:5001/static/images/fishtrack-logo.png" alt="FishTrack">
+        </a>
+      </div>
+    </header>
+    <main>
+      <section class="card home-dashboard__section home-site-updates" aria-label="FishTrackからのお知らせ">
+        <div class="home-dashboard__section-header">
+          <h2>FishTrackからのお知らせ</h2>
+        </div>
+        <p class="home-site-updates__message"><a class="home-site-updates__link" href="#">表示中をすべて非表示</a></p>
+      </section>
+    </main>
+    <div class="toast-sim">
+      <div class="ft-toast ft-toast--success" role="status">ログインしました。</div>
+    </div>
+  </div>
+</body>
+</html>
