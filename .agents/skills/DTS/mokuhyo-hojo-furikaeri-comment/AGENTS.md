@@ -10,7 +10,7 @@
 - **字数**: 設定時の100字目安は使わない。N−1 期の同欄に合わせ、署名込みおおむね **150〜250字**・2〜3文
 - **設定時コメント**は **`mokuhyo-hojo-setteiji-comment`**（混同しない）
 - **長谷本人の振り返り**は **`mokuhyo-furikaeri`**
-- **CSV 同期**: `.md` 更新後は同一セッションで **`人事考課_管理シート.csv`** を更新（**`mokuhyo-kanri-sheet-csv`**）
+- **管理シートの正本**: Markdownのみ。CSVミラーは廃止し、作成・更新しない
 - 完了後 **`obsidian-cursor-log`**。Markdown 編集後 **`markdownlint-fix`**
 
 Always respond in Japanese when using this skill.

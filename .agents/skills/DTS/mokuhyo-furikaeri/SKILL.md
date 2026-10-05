@@ -46,7 +46,7 @@ myrules を厳守（**スクリプト一括置換禁止**・**報告前 CursorLo
 | 用途 | パス |
 | --- | --- |
 | 管理シート | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.md` |
-| CSV ミラー | 同ディレクトリの `人事考課_管理シート.csv`（**`.md` 反映後に同期**。**`mokuhyo-kanri-sheet-csv`**） |
+| 管理シート | Markdown正本のみ。CSVミラーは廃止し、作成・更新しない |
 | 当期が上期か下期か | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/評価の流れ.md` |
 | 業務課題（任意・**Read のみ**） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/課題.md` |
 
@@ -175,9 +175,9 @@ Work 配下なので反映前に **`work-folder-update` SKILL を全文 Read** �
 
 対象期、半期、書いた枝番、本人評価欄を更新した枝番、空欄のままにした枝番（足りない実績）を出す。
 
-### 6. CSV と CursorLog
+### 6. CursorLog
 
-**`.md` を更新した同一セッション**で **`mokuhyo-kanri-sheet-csv`** に従い CSV を更新する。続けて **`obsidian-cursor-log`**。
+**`.md` を更新した作業では、報告前に `obsidian-cursor-log` を更新する。**
 
 ## 禁止事項
 
@@ -195,4 +195,4 @@ Work 配下なので反映前に **`work-folder-update` SKILL を全文 Read** �
 - **`mokuhyo-hojo-furikaeri-comment`**: 配下の達成状況コメント(補助・１次評価者)
 - **`mokuhyo-draft`**: 目標の 12 項目。達成状況コメントは書かない
 - **`mokuhyo-hojo-setteiji-comment`**: 設定時の補助コメント
-- **`mokuhyo-kanri-sheet-csv`**: `.md` 更新後の CSV 同期
+- 管理シートのCSVミラーは廃止し、Markdownのみを正本とする。

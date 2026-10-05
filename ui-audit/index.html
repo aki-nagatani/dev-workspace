@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FishTrack / MyPokedex / FaiNavi UI 問題点レポート（2026-10-01）</title>
+  <title>FishTrack / MyPokedex / FaiNavi UI 問題点レポート（2026-10-02）</title>
   <style>
     :root {
       --bg: #f5f6f8;
@@ -321,7 +321,7 @@
   <header>
     <h1>FishTrack / MyPokedex / FaiNavi UI 問題点レポート</h1>
     <p>共有レポート（dev-workspace/ui-audit）。MyPokedex :5002 · FishTrack :5001 · FaiNavi ローカル :8787</p>
-    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 診断日: 2026-10-02（JST・OPEN は 2 件）</p>
+    <p>ビューポート: SP 390×844 · Tablet 768/1024 · PC 1280/1440 · 診断日: 2026-10-02（JST・OPEN は 0 件）</p>
     <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。解決済みはアコーディオン（既定クローズ）。解決から1ヶ月経過した課題はレポートから削除する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
     <p>改善サンプルはローカル製品（CSS・ロゴ・コンポーネント）をそのまま使い、改善箇所だけを差分修正したものである。</p>
   </header>
@@ -330,11 +330,6 @@
     <a href="#summary">サマリー</a>
     <a href="#open-issues">未解決</a>
     <a href="#resolved-issues">解決済み</a>
-    <span class="toc-group">未解決 FishTrack</span>
-    <div class="toc-row">
-      <a href="#ft-o43">FT-O43</a>
-      <a href="#ft-o44">FT-O44</a>
-    </div>
     <span class="toc-group">解決済み FaiNavi</span>
     <div class="toc-row">
       <a href="#fn-o4">FN-O4</a>
@@ -351,6 +346,10 @@
     </div>
     <span class="toc-group">解決済み FishTrack</span>
     <div class="toc-row">
+      <a href="#ft-o45">FT-O45</a>
+      <a href="#ft-o46">FT-O46</a>
+      <a href="#ft-o43">FT-O43</a>
+      <a href="#ft-o44">FT-O44</a>
       <a href="#ft-o42">FT-O42</a>
       <a href="#ft-o41">FT-O41</a>
       <a href="#ft-o40">FT-O40</a>
@@ -391,10 +390,11 @@
 <main>
     <section id="summary" class="meta">
       <div><strong>対象</strong>: FishTrack と MyPokedex の全画面（未ログイン LP、ログイン後、管理者を含む。SP／PC）。
-        2026-10-02 は直近の公開ヘッダーとプラグ一覧フィルタ、登録画面を先に確認し、未ログイン LP、水位一覧、MyPokedex の未ログイン LP とパーティ画面へ広げた。</div>
-      <div><strong>範囲</strong>: FishTrack の SP 公開ヘッダー（LP 以外）と登録ボタンの高さが今回の OPEN。
-        プラグ一覧の適用とクリアは重ならない。未ログインのプラグ一覧に登録・保有・編集は出ていない。
-        MyPokedex の SP ヘッダーはログインと新規登録が同一行。管理者画面の再操作は今回の残作業。
+        2026-10-02 は直近の公開ヘッダーと登録画面を先に確認し、管理者画面、ホーム、釣果、水位、MyPokedex のパーティへ広げた。</div>
+      <div><strong>範囲</strong>: FishTrack の SP 公開ヘッダー、登録ボタン、管理者の空グラフ（FT-O45）、操作列の右端固定（FT-O46）は再診断して解決済み。OPEN はありません。
+        シリーズの適用とクリア、マスタ投稿、お知らせの削除、水位のカバレッジ（閉じたまま）、ホームと釣果の追加ボタンは、幅 1280 で新たな指摘なし。
+        MyPokedex のユーザー管理は検索・並べ替え・削除が幅 1280 の初期表示に収まる。パーティは空状態から図鑑へ進める。はじめに案内は閉じられる。
+        今回未確認: FishTrack の釣行、フィールド一覧、タックル、設定、テクノロジー、OpenAI 利用量、フィールド依頼、おすすめ。MyPokedex の図鑑とゲーム設定。未ログイン LP は同日の直前診断で確認済み。
         FaiNavi はローカル Worker（本番は Cloudflare Access の先で、この環境からは見ていない）。</div>
       <div><strong>スクショ例（抜粋）</strong>: FT — <code>/trip/?view=all</code>（SP）</div>
       <div><strong>観点</strong>: 中核は操作性・視認性・初回ユーザー（迷わないか）・管理者の管理しやすさ。
@@ -408,99 +408,161 @@
 
     <section id="open-issues" aria-labelledby="open-issues-title">
       <h2 id="open-issues-title" class="section-title">未解決の課題</h2>
-      <p class="section-lead">現時点の OPEN は 2 件（FT-O43、FT-O44）。</p>
-
-    <article class="issue" id="ft-o43">
-      <h2>
-        <span class="badge sev-med">MED</span>
-        <span class="badge status-open">OPEN</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-O43 — SP の公開ヘッダーでログインと新規登録が離れる
-      </h2>
-      <p class="label">画面: 未ログインの公開ページ。観点: 視認性・初回ユーザー・同類画面の一貫性。</p>
-      <h3>事象</h3>
-      <p>幅 390 のプラグ一覧で、公開ヘッダーのナビが縦に折れ、「無料で新規登録」がフィールドと水位の横に浮く。「ログイン」はその下の段に一人で残る。ヘッダーの高さは約 180px。</p>
-      <div class="where">
-        <ul>
-          <li><strong>URL／画面:</strong> 未ログインの公開ページ（例: <code>/lure-masters/plug</code>、<code>/auth/register</code>、<code>/water-level/</code>）</li>
-          <li><strong>位置:</strong> ページ最上部の公開ヘッダー</li>
-          <li><strong>部品:</strong> <code>.ft-site-header--public .ft-site-header__bar</code>、<code>.ft-lp-nav</code>、<code>.ft-lp-nav__login</code>、<code>.ft-lp-nav__cta</code>（<code>site_header_public.html</code> / <code>public_layout.css</code>）</li>
-          <li><strong>対象外:</strong> 未ログイン LP（<code>/</code>）は <code>landing_h8.css</code> で2行に折り返す。MyPokedex の SP ヘッダーはログインと新規登録が同一行。PC 幅 1280 以上では FishTrack も同一行。</li>
-        </ul>
-      </div>
-      <div class="shots">
-        <figure>
-          <img src="fishtrack/sp-public-header.png" alt="SP のプラグ一覧。新規登録がナビの横に浮き、ログインが下に残る">
-          <figcaption>sp-public-header.png — ▲ このヘッダー。「無料で新規登録」が水位の横、「ログイン」が下段。</figcaption>
-        </figure>
-      </div>
-      <h3>何が問題か</h3>
-      <p>初めて開いた人は、ログインと新規登録が対の操作だと分かりにくい。主 CTA がナビの途中に割り込み、ヘッダーが縦に伸びて一覧の見出しが下がる。LP だけ折り返しがあるので、一覧へ進むとヘッダーの形が変わる。</p>
-      <h3>改善策</h3>
-      <p>案A（推奨）。LP と同じ折り返しを公開ヘッダーへ足す。上段はロゴと「無料で新規登録」、下段はタックル・フィールド・水位・ログイン。DOM は現行のまま、767px 以下の CSS だけを足す。</p>
-      <ul>
-        <li>変更前: ナビが内部で縦に折れ、新規登録は帯の縦中央に残る</li>
-        <li>変更後: 帯を折り返し、新規登録はロゴと同じ段、ログインは下段のナビと揃う</li>
-      </ul>
-      <p class="sample-link">改善サンプル:
-        <a href="fishtrack/samples/ft-o43-a.html">fishtrack/samples/ft-o43-a.html</a>
-        （案A。上のブロックが変更前、下のブロックが変更後）</p>
-      <div class="shots">
-        <figure>
-          <img src="fishtrack/sample-ft-o43-a.png" alt="案A。上が現行の折れ、下が2行に揃えたヘッダー">
-          <figcaption>sample-ft-o43-a.png — ▲ 上の変更前、下の変更後。下段のログインはナビと同じ行。</figcaption>
-        </figure>
-      </div>
-    </article>
-
-    <article class="issue" id="ft-o44">
-      <h2>
-        <span class="badge sev-med">MED</span>
-        <span class="badge status-open">OPEN</span>
-        <span class="badge badge-prod-ft">FishTrack</span>
-        FT-O44 — SP の登録ボタンだけ高さが揃わない
-      </h2>
-      <p class="label">画面: ユーザー登録。観点: 視認性・操作性。PC 幅 1280 では両方 197×41 で揃う。</p>
-      <h3>事象</h3>
-      <p>幅 390 の登録画面で、「登録」は 152×41、「ログイン画面へ戻る」は同じ幅 152 で高さ 61。長いラベルが2行になり、戻る側だけ縦に伸びる。</p>
-      <div class="where">
-        <ul>
-          <li><strong>URL／画面:</strong> <code>/auth/register</code>（ユーザー登録）</li>
-          <li><strong>位置:</strong> パスワード確認の直下、フォーム末尾の操作列</li>
-          <li><strong>部品:</strong> <code>.form-actions.form-actions--split</code> の <code>button.btn</code>（登録）と <code>a.btn.btn--ghost</code>（ログイン画面へ戻る）</li>
-          <li><strong>対象外:</strong> ログイン画面の操作列（<code>form-actions--split</code> ではない）。PC 幅 1280 では高さが揃っている。ヘッダーの並びは <a href="#ft-o43">FT-O43</a>。</li>
-        </ul>
-      </div>
-      <div class="shots">
-        <figure>
-          <img src="fishtrack/sp-register-actions.png" alt="登録は1行、ログイン画面へ戻るは2行で高い">
-          <figcaption>sp-register-actions.png — ▲ この2つのボタン。右の「ログイン画面へ戻る」だけ折り返す。</figcaption>
-        </figure>
-      </div>
-      <h3>何が問題か</h3>
-      <p>横並びの主操作なのに高さが違い、戻るラベルの途中で改行される。押せる範囲と見た目の重さが左右で揃わず、登録の主ボタンが相対的に小さく見える。</p>
-      <h3>改善策</h3>
-      <p>案A（推奨）。767px 以下では <code>.form-actions--split</code> を縦積みにし、どちらも幅いっぱい・1行・同じ高さにする。PC の横並びは変えない。</p>
-      <ul>
-        <li>変更前: 横並び。戻るラベルが2行で高さ 61、登録は高さ 41</li>
-        <li>変更後: 縦積み。両方とも1行で高さ 41、幅はカードいっぱい</li>
-      </ul>
-      <p class="sample-link">改善サンプル:
-        <a href="fishtrack/samples/ft-o44-a.html">fishtrack/samples/ft-o44-a.html</a>
-        （案A。上のブロックが変更前、下のブロックが変更後）</p>
-      <div class="shots">
-        <figure>
-          <img src="fishtrack/sample-ft-o44-a.png" alt="案A。上が折り返した横並び、下が同じ高さの縦積み">
-          <figcaption>sample-ft-o44-a.png — ▲ 上の変更前、下の変更後。下はどちらも1行。</figcaption>
-        </figure>
-      </div>
-    </article>
+      <p class="section-lead">現時点の OPEN はありません。</p>
 
     </section>
 
 <section id="resolved-issues" aria-labelledby="resolved-issues-title">
       <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
       <p class="section-lead">再診断済み。各課題はアコーディオン（既定クローズ）。解決日から1ヶ月経過した課題は削除する。</p>
+
+    <article class="issue" id="ft-o45" data-resolved-on="2026-10-02">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-O45 — 統計が無いのに空のグラフ枠が一覧を押し下げる
+          </h2>
+        </summary>
+        <p class="label">画面: ユーザー管理。観点: 視認性・管理者の管理しやすさ。2026-10-02 に案Aを採用し、幅 1280 と幅 390 で再診断して解決。</p>
+        <h3>改善前の事象</h3>
+        <p>統計データが無いとき、「統計データがまだありません」と出たまま、日次と週次の空グラフ枠が2枚残る。ユーザー一覧はその下に始まる。幅 1280 では一覧見出しが上端 726px、幅 390 では 929px。</p>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> <code>/admin/users</code>（ユーザー管理）</li>
+            <li><strong>位置:</strong> 「統計情報」の直下〜「ユーザー一覧」の直前</li>
+            <li><strong>部品:</strong> <code>#adminCharts</code>、<code>.stat-chart-container</code>（<code>admin/user_list.html</code>）。空データ文は <code>p.text-muted</code></li>
+            <li><strong>対象外:</strong> 統計データがあるときのグラフ（同じ2枚を出す）。一覧の列と検索。操作列は <a href="#ft-o46">FT-O46</a>。MyPokedex の統計は別画面。</li>
+          </ul>
+        </div>
+        <figure>
+          <img src="fishtrack/pc-admin-users-stats.png" alt="改善前。統計が無い文の下に、空の日次グラフと週次グラフが並ぶ">
+          <figcaption>改善前。▲ 幅 1280。「統計データがまだありません」の下に空のグラフ枠が2枚ある。</figcaption>
+        </figure>
+        <h3>実施した改善</h3>
+        <p>案Aを採用した。日次と週次のラベルがどちらも空のときは説明の1行だけを残し、<code>#adminCharts</code> と Chart.js は出さない。どちらかにデータがあるときは、今までと同じ2枚を出す。検索と一覧の列はそのまま。</p>
+        <h3>再診断</h3>
+        <p>ローカルの統計は空だった。幅 1280 では説明の直下にユーザー一覧があり、見出しの上端は 447px（改善前 726px）。<code>#adminCharts</code> は無い。幅 390 でもグラフ枠は無く、一覧見出しの上端は 346px（改善前 929px）。統計行があるときの2枚表示はテンプレートのテストで確認した。</p>
+        <figure>
+          <img src="fishtrack/pc-admin-users-stats-after.png" alt="改善後。説明の直下にユーザー一覧があり、空のグラフ枠はない">
+          <figcaption>改善後。▲ 幅 1280。説明の1行の直下がユーザー一覧。</figcaption>
+        </figure>
+        <figure>
+          <img src="fishtrack/sp-admin-users-stats-after.png" alt="改善後の狭い画面。説明の直下にユーザー一覧と閲覧・削除がある">
+          <figcaption>改善後。▲ 幅 390。空のグラフ枠はなく、閲覧と削除は右端に残る。</figcaption>
+        </figure>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o46" data-resolved-on="2026-10-02">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-high">HIGH</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-O46 — 管理者の表で編集と削除が初期表示の外にある
+          </h2>
+        </summary>
+        <p class="label">画面: メーカー一覧、ユーザー管理。観点: 操作性・管理者の管理しやすさ・表の密度。2026-10-02 に案Aを採用し、幅 1280 と幅 390 で再診断して解決。</p>
+        <h3>改善前の事象</h3>
+        <p>管理者の表は <code>.table-scroll</code> の中にあり、操作列が最後である。幅 1280 のメーカー一覧では、見えている列がロッドマスタまでで、リール・プラグ・ワーム・最終更新・操作は横スクロールの先にある。表の幅は 1757px、表示幅は 1135px。編集と削除は初期表示に入らない。ユーザー管理でも、閲覧と削除の右端が表示幅の外に出る。</p>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> <code>/admin/manufacturers</code>（メーカー一覧）。同じ隠れ方は <code>/admin/users</code></li>
+            <li><strong>位置:</strong> 一覧表の右端。メーカーはロッドマスタ列の右。ユーザーは最終列の「操作」</li>
+            <li><strong>部品:</strong> <code>.table-scroll</code> 内の操作列（<code>ft-table__cell--scroll-actions</code>）</li>
+            <li><strong>対象外:</strong> シリーズ一覧、マスタ投稿、お知らせは幅 1280 で操作ボタンが初期表示に収まる。表をカードにしない。空グラフは <a href="#ft-o45">FT-O45</a>。</li>
+          </ul>
+        </div>
+        <figure>
+          <img src="fishtrack/pc-admin-manufacturers-actions.png" alt="改善前。メーカー一覧の右端がロッドマスタで切れ、編集と削除が見えない">
+          <figcaption>改善前。▲ 幅 1280 のメーカー一覧。見えている右端はロッドマスタ。編集と削除は横スクロールの先。</figcaption>
+        </figure>
+        <h3>実施した改善</h3>
+        <p>案Aを採用した。表はそのまま残し、ユーザー管理とメーカー一覧の操作列だけ <code>position: sticky; right: 0</code> で右端に固定した。背景は白（見出しは <code>#f1f4f9</code>）にして、横スクロールした列が透けないようにした。カード化はしていない。</p>
+        <h3>再診断</h3>
+        <p>幅 1280 のメーカー一覧は表幅 1757px、表示幅 1135px のまま。編集の右端は 1121px、削除の右端は 1187px、表示の右端は 1200px。18行とも操作セルは表示内。横スクロールを右端まで進めても操作列は 1047〜1199px に残り、最終更新列がその左に並ぶ。ユーザー管理の閲覧と削除の右端は 1187px。幅 390 でも閲覧と削除は表示幅の中（右端 339px、表示右端 351px）。</p>
+        <figure>
+          <img src="fishtrack/pc-admin-manufacturers-actions-after.png" alt="改善後。最終更新までスクロールしても編集と削除が右端に残る">
+          <figcaption>改善後。▲ 幅 1280。表を右へ送っても、編集と削除は右端に残る。</figcaption>
+        </figure>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o43" data-resolved-on="2026-10-02">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-O43 — SP の公開ヘッダーでログインと新規登録が離れる
+          </h2>
+        </summary>
+        <p class="label">画面: 未ログインの公開ページ。観点: 視認性・初回ユーザー・同類画面の一貫性。2026-10-02 に案Aを採用し、幅 390 で再診断して解決。</p>
+        <h3>改善前の事象</h3>
+        <p>幅 390 のプラグ一覧で、公開ヘッダーのナビが縦に折れ、「無料で新規登録」がフィールドと水位の横に浮く。「ログイン」はその下の段に一人で残る。ヘッダーの高さは約 180px。</p>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> 未ログインの公開ページ（例: <code>/lure-masters/plug</code>、<code>/auth/register</code>、<code>/water-level/</code>）</li>
+            <li><strong>位置:</strong> ページ最上部の公開ヘッダー</li>
+            <li><strong>部品:</strong> <code>.ft-site-header--public .ft-site-header__bar</code>、<code>.ft-lp-nav</code>、<code>.ft-lp-nav__login</code>、<code>.ft-lp-nav__cta</code>（<code>site_header_public.html</code> / <code>public_layout.css</code>）</li>
+            <li><strong>対象外:</strong> 未ログイン LP（<code>/</code>）は <code>landing_h8.css</code> で2行に折り返す。MyPokedex の SP ヘッダーはログインと新規登録が同一行。PC 幅 1280 以上では FishTrack も同一行。</li>
+          </ul>
+        </div>
+        <figure>
+          <img src="fishtrack/sp-public-header.png" alt="改善前。新規登録がナビの横に浮き、ログインが下に残る">
+          <figcaption>改善前。▲ 「無料で新規登録」が水位の横、「ログイン」が下段。</figcaption>
+        </figure>
+        <h3>実施した改善</h3>
+        <p>案Aを採用した。767px 以下の公開ヘッダーだけ、帯を折り返す。上段はロゴと「無料で新規登録」、下段はタックル・フィールド・水位・ログイン。DOM は現行のまま。LP と PC の横並びは変えていない。</p>
+        <h3>再診断</h3>
+        <p>幅 390 のプラグ一覧で、ロゴ（116×42）と「無料で新規登録」が同じ段（上端 8px）、タックル・フィールド・水位・ログインが次の段（ログイン上端 58px）。ヘッダー高さは 103px。横スクロールはない。未ログイン LP は従来の2行（ヘッダー高さ 130px）。幅 1280 の登録画面ではナビと新規登録が1行のまま。</p>
+        <figure>
+          <img src="fishtrack/sp-public-header-after.png" alt="改善後。ロゴと新規登録が上段、ログインは下段のナビと揃う">
+          <figcaption>改善後。▲ 幅 390 のプラグ一覧。上段はロゴと「無料で新規登録」、下段はナビとログイン。</figcaption>
+        </figure>
+      </details>
+    </article>
+
+    <article class="issue" id="ft-o44" data-resolved-on="2026-10-02">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge sev-med">MED</span>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge badge-prod-ft">FishTrack</span>
+            FT-O44 — SP の登録ボタンだけ高さが揃わない
+          </h2>
+        </summary>
+        <p class="label">画面: ユーザー登録。観点: 視認性・操作性。2026-10-02 に案Aを採用し、幅 390 と幅 1280 で再診断して解決。</p>
+        <h3>改善前の事象</h3>
+        <p>幅 390 の登録画面で、「登録」は 152×41、「ログイン画面へ戻る」は同じ幅 152 で高さ 61。長いラベルが2行になり、戻る側だけ縦に伸びる。</p>
+        <div class="where">
+          <ul>
+            <li><strong>URL／画面:</strong> <code>/auth/register</code>（ユーザー登録）</li>
+            <li><strong>位置:</strong> パスワード確認の直下、フォーム末尾の操作列</li>
+            <li><strong>部品:</strong> <code>.form-actions.form-actions--split</code> の <code>button.btn</code>（登録）と <code>a.btn.btn--ghost</code>（ログイン画面へ戻る）</li>
+            <li><strong>対象外:</strong> ログイン画面の操作列（<code>form-actions--split</code> ではない）。PC 幅 1280 では高さが揃っている。ヘッダーの並びは <a href="#ft-o43">FT-O43</a>。</li>
+          </ul>
+        </div>
+        <figure>
+          <img src="fishtrack/sp-register-actions.png" alt="改善前。登録は1行、ログイン画面へ戻るは2行で高い">
+          <figcaption>改善前。▲ 右の「ログイン画面へ戻る」だけ折り返す。</figcaption>
+        </figure>
+        <h3>実施した改善</h3>
+        <p>案Aを採用した。767px 以下では <code>.form-actions--split</code> を縦積みにし、どちらも幅いっぱい・1行・同じ高さにする。PC の横並びは変えていない。</p>
+        <h3>再診断</h3>
+        <p>幅 390 では「登録」と「ログイン画面へ戻る」がどちらも 317×41 で、同じ左端から縦に並ぶ。幅 1280 ではどちらも 197×41 で、同じ上端の横並びのまま。</p>
+        <figure>
+          <img src="fishtrack/sp-register-actions-after.png" alt="改善後。登録とログイン画面へ戻るが同じ高さで縦に並ぶ">
+          <figcaption>改善後。▲ 幅 390。どちらも1行で、高さは同じ。</figcaption>
+        </figure>
+      </details>
+    </article>
 
     <article class="issue" id="ft-o42" data-resolved-on="2026-10-01">
       <details>

@@ -9,7 +9,7 @@
 - **口調**: N−1 期の本人コメント。一人称。**`（補助・長谷）` は付けない**
 - **既存本文**: 空欄は実績が揃えば反映する。実績未提示時は「要確認」と分かるマーカー付き仮案も可。確定済み本文は、差し替え指示まで上書きしない
 - **配下の補助**は **`mokuhyo-hojo-furikaeri-comment`**。目標下書きは **`mokuhyo-draft`**
-- **CSV 同期**: `.md` 更新後は同一セッションで **`人事考課_管理シート.csv`** を更新（**`mokuhyo-kanri-sheet-csv`**）
+- **管理シートの正本**: Markdownのみ。CSVミラーは廃止し、作成・更新しない
 - 完了後 **`obsidian-cursor-log`**。Markdown 編集後 **`markdownlint-fix`**
 
 Always respond in Japanese when using this skill.

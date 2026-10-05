@@ -14,7 +14,8 @@ description: >-
 
 統合作業スケジュール **`I3`**（UI・機能改善の定期探索仕組み）で画面・操作性を洗い出すときの\
 **診断成果物の正**は本 SKILL（**HTML＋画面スクショ**。Canvas 禁止）。\
-改善案の具体化・採用要否の起票は **`ux-ideation`** と分担する（本 SKILL は診断レポート側。**改善の見た目案は本レポート内のサンプル HTML で提示**）。
+改善案の具体化・採用要否の起票は **`ux-ideation`** と分担する（本 SKILL は診断レポート側。**改善の見た目案は本レポート内のサンプル HTML で提示**）。\
+月次の Slack 案内文は、画面の見た目を本 SKILL 名 `ui-audit-html-report`、機能の提起を `ux-ideation` と書く。計画のタスク番号は案内文に書かない。本 SKILL は機能自体の新規提起をしない。機能の記録は `DevProject/plans/機能検討.md`（Markdown。`ux-ideation`）。
 
 ## 発火条件
 

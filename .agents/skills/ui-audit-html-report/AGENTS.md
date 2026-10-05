@@ -6,6 +6,7 @@ Always respond in Japanese when applying this skill.
 
 - UI 問題点・画面診断・レイアウト／操作性レビューの依頼時
 - 統合作業スケジュール **`I3`** で画面を洗い出すとき
+- 月次の Slack 案内文は、画面は本 SKILL 名、機能の提起は `ux-ideation`。本 SKILL は機能自体の新規提起をしない
 - **採用改善の製品実装完了時**（再診断し、解決なら HTML を RESOLVED 更新）
 
 ## 診断観点（必須・詳細は SKILL）

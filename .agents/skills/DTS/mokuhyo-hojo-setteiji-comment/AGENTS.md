@@ -17,7 +17,7 @@
 - **`課題.md`**: **Read 推奨**（組織・PL 文脈の参考。**編集は `work-kadai-update`**。本文・打ち手の復唱は禁止）
 - **本人 12 項目**は **`mokuhyo-draft`**、校閲は **`mokuhyo-proofread`**
 - **振り返り時**の達成状況コメント(補助・１次評価者)は **`mokuhyo-hojo-furikaeri-comment`**（本 SKILL では書かない）
-- **CSV 同期**: `.md` 更新後は同一セッションで **`人事考課_管理シート.csv`** を必ず更新（**`mokuhyo-kanri-sheet-csv`** SKILL）
+- **管理シートの正本**: Markdownのみ。CSVミラーは廃止し、作成・更新しない
 - 完了後 **`obsidian-cursor-log`**。Markdown 編集後 **`markdownlint-fix`**
 
 Always respond in Japanese when using this skill.

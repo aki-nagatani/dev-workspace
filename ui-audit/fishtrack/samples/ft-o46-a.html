@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1280, initial-scale=1">
+  <title>FT-O46 案A — 操作列を横スクロール中も残す</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 720px; padding: 16px; background: #eef2f7; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 8px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 12px 0 6px; }
+    .sample-frame .table-scroll { max-width: 520px; }
+    .sample-frame td:nth-child(3),
+    .sample-frame th:nth-child(3) { min-width: 220px; }
+    .sample-frame td:nth-child(5),
+    .sample-frame th:nth-child(5) { min-width: 120px; }
+    .sample-after th.ft-o46-op,
+    .sample-after td.ft-o46-op {
+      position: sticky;
+      right: 0;
+      background: #fff;
+      box-shadow: -8px 0 8px rgba(15, 23, 42, 0.06);
+    }
+  </style>
+</head>
+<body>
+  <p class="sample-note">上のブロックが変更前、下のブロックが変更後。表は残し、操作列だけ横スクロール中も右端に固定する。</p>
+  <p class="sample-block-label">変更前</p>
+  <div class="sample-frame">
+    <div class="table-scroll">
+      <table class="ft-table ft-table--striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">メーカー名</th>
+            <th scope="col">公式サイト URL</th>
+            <th scope="col">ロッドマスタ</th>
+            <th scope="col">リールマスタ</th>
+            <th scope="col">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>DAIWA</td>
+            <td>https://www.daiwa.com/jp</td>
+            <td>157</td>
+            <td>39</td>
+            <td><button type="button" class="btn btn--sm">編集</button> <button type="button" class="btn btn--sm" disabled>削除</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="sample-block-label">変更後</p>
+  <div class="sample-frame sample-after">
+    <div class="table-scroll">
+      <table class="ft-table ft-table--striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">メーカー名</th>
+            <th scope="col">公式サイト URL</th>
+            <th scope="col">ロッドマスタ</th>
+            <th scope="col">リールマスタ</th>
+            <th scope="col" class="ft-o46-op">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>DAIWA</td>
+            <td>https://www.daiwa.com/jp</td>
+            <td>157</td>
+            <td>39</td>
+            <td class="ft-o46-op"><button type="button" class="btn btn--sm">編集</button> <button type="button" class="btn btn--sm" disabled>削除</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

@@ -41,7 +41,7 @@ Work は**第2の脳**—移す価値が少しでもあれば正本を更新す�
 
 - 課題ブロック: **`work-kadai-update`**
 - Todo: **`work-todo-update`**
-- 管理シート・CSV: **`mokuhyo-kanri-sheet-csv`** 等
+- 管理シート: **`mokuhyo-*`** 各SKILL
 - OJT月報コメント: **`ojt-monthly-report-manager-comment`**
 - OJT育成計画の四半期上長コメント: **`ojt-development-plan-manager-comment`**
   （正本 `Work/社内業務/2026新人OJT/2026_古川_育成計画.md`。Excel ではない）
