@@ -62,9 +62,9 @@ alwaysApply: true
 
 - サービス名・再ビルド境界は **`local-docker-python-restart`** SKILL
 
-## FaiNavi（廃止）
+## FaiNavi
 
-新規開発は取りやめ。デプロイ手順とローカル画面手順は復活させない。Workers、D1、公開ホスト、Compose、論理データベースは作り直さない。共有 RDS 自体は止めない。ソースは消さない。削除前の SQL は公開リポジトリへ移さない。経緯は仕様 `FaiNavi` の `decisions.md`。
+家計は再開しない。デプロイ手順とローカル画面手順は復活させない。公開ホスト、Workers、D1、Compose、論理データベースは、指示があるまで作り直さない。共有 RDS 自体は止めない。家計の SQL は公開リポジトリへ移さない。決定は仕様 `FaiNavi` の `decisions.md`。
 
 ## ファイル修正と差分確認（重要）
 
