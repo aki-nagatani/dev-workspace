@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1100">
+  <title>FT-O47 案A タックルを探すフィルタ</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail_filters.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/tackle_models_list.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 16px;
+      width: max-content;
+      background: #fff;
+    }
+    .sample-frame { width: 1100px; background: #fff; }
+    .sample-note { font: 14px/1.5 sans-serif; margin: 0 0 8px; }
+    /* 幅1100px以下の2列指定を外し、内容幅で横に流す */
+    .holding-list-toolbar.master-list-toolbar .filter-grid.filter-grid--primary {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 10px 12px;
+    }
+    .holding-list-toolbar.master-list-toolbar .filter-grid.filter-grid--primary > div:not(.filter-actions),
+    .holding-list-toolbar.master-list-toolbar .filter-grid.filter-grid--primary > .filter-actions {
+      width: max-content;
+      max-width: 100%;
+      flex: 0 0 auto;
+      grid-column: auto;
+      margin-left: 0;
+    }
+    .master-list-toolbar { align-items: flex-end; }
+    .master-list-toolbar .list-results-meta { margin-left: 0; }
+  </style>
+</head>
+<body>
+  <p class="sample-note">幅1100px。主要フィルタは内容幅のまま横に流れ、現行のみと適用は同じ行に揃う。</p>
+  <div class="sample-frame">
+    <section class="card">
+      <div class="holding-list-toolbar master-list-toolbar">
+        <form class="filter-form" action="#">
+          <details class="ft-filter-collapse" open>
+            <summary class="ft-filter-collapse__summary">
+              <span class="ft-filter-collapse__label">フィルタ</span>
+              <span class="ft-filter-collapse__caret" aria-hidden="true">▾</span>
+            </summary>
+            <div class="ft-filter-collapse__panel">
+              <div class="filter-grid filter-grid--primary">
+                <div>
+                  <label for="manufacturerId">メーカー</label>
+                  <select id="manufacturerId"><option>すべて</option></select>
+                </div>
+                <div>
+                  <label for="seriesId">シリーズ</label>
+                  <select id="seriesId"><option>すべて</option></select>
+                </div>
+                <div>
+                  <label for="genre">ジャンル</label>
+                  <select id="genre"><option>すべて</option></select>
+                </div>
+                <div>
+                  <label for="q">キーワード</label>
+                  <input id="q" type="search" placeholder="製品名・型番">
+                </div>
+                <div>
+                  <label for="currentOnly"><input id="currentOnly" type="checkbox"> 現行のみ</label>
+                </div>
+                <div class="filter-actions">
+                  <button type="button" class="btn btn--sm">適用</button>
+                  <a class="btn btn--ghost btn--sm" href="#">クリア</a>
+                  <button type="button" class="filter-details-toggle">詳細フィルタを表示 ▼</button>
+                </div>
+              </div>
+            </div>
+          </details>
+        </form>
+        <div class="list-results-meta">
+          <label for="master-sort-preset">項目</label>
+          <select id="master-sort-preset"><option>標準</option></select>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
