@@ -12,6 +12,8 @@ Always respond in Japanese when applying this skill.
 
 手順の正本は **`SKILL.md`**。
 
+**報告の末尾（Q7）**: 残作業がある応答は **`## 次のアクション` を 1 件**。本文や「残作業・課題」だけでは欠落。残作業が無いときだけ節を付けない。
+
 **Lint（追記時）**: URL は `<https://...>`。追記後 **markdownlint**（**MD034 必須**・同一ファイル `Summary: 0`）。
 
 **同時書き込み**: 複数エージェントが同じ日次ログを触るときは、既存 `YYYY-MM-DD.md` の **`Write` 全文置換禁止**・追記直前の再 Read・保全検証・失敗時は `.parts` 退避（詳細は **`SKILL.md`「🚨 同時書き込み対策」**）。

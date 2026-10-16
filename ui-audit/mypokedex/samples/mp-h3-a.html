@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=640">
+  <title>MP-H3 案A 初回の案内</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: max-content;
+      background: #fff;
+    }
+    body { padding-top: 0 !important; }
+    .fixed-header { position: relative !important; }
+    .sample-frame { width: 640px; overflow: hidden; background: #fff; }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <header class="site-header fixed-header">
+      <nav class="site-nav">
+        <div class="left">
+          <button type="button" class="hamburger" aria-label="メニューを開く">
+            <span class="hamburger-icon" aria-hidden="true">☰</span>
+          </button>
+          <a href="#" class="site-logo-link" aria-label="MyPokedex トップ">
+            <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+          </a>
+          <span class="site-current-game" aria-label="選択中のゲーム: スカーレット・バイオレット">スカーレット・バイオレット</span>
+          <a href="#">パーティ＆ボックス</a>
+          <a href="#" class="tab-gap">図鑑</a>
+        </div>
+      </nav>
+    </header>
+    <main class="container">
+      <h1>図鑑</h1>
+      <section class="pkOnboarding" aria-label="図鑑の登録先">
+        <div class="pkOnboarding__head">
+          <h2 class="pkOnboarding__title">登録先のちがい</h2>
+          <button type="button" class="btn--xs btn--quiet pkOnboarding__dismiss" aria-label="この案内を閉じる">閉じる</button>
+        </div>
+        <p class="pkOnboarding__intro">「登録＋追加」は、今開いている作品の図鑑とボックスに入ります。「HOME登録」は Pokémon HOME の全国図鑑に入ります。片方を押しても、もう片方は変わりません。</p>
+      </section>
+      <table class="pkTable">
+        <thead>
+          <tr>
+            <th class="pk-col pk-col--name">名称</th>
+            <th class="pk-col pk-col--actions">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pk-col pk-col--name">ニャオハ</td>
+            <td class="pk-col pk-col--actions">
+              <div class="actionStack">
+                <button type="button" class="btn btn--primary btn--xs">登録＋追加</button>
+                <button type="button" class="btn btn--quiet btn--xs">HOME登録</button>
+                <span class="pk-action-more__summary">その他</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+</body>
+</html>

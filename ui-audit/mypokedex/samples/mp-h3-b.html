@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=640">
+  <title>MP-H3 案B ボタン横の常時説明</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: max-content;
+      background: #fff;
+    }
+    body { padding-top: 0 !important; }
+    .fixed-header { position: relative !important; }
+    .sample-frame { width: 640px; overflow: hidden; background: #fff; }
+    .dex-action-hint {
+      margin: 4px 0 0;
+      color: #475569;
+      font-size: 12px;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <header class="site-header fixed-header">
+      <nav class="site-nav">
+        <div class="left">
+          <button type="button" class="hamburger" aria-label="メニューを開く">
+            <span class="hamburger-icon" aria-hidden="true">☰</span>
+          </button>
+          <a href="#" class="site-logo-link" aria-label="MyPokedex トップ">
+            <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+          </a>
+          <span class="site-current-game" aria-label="選択中のゲーム: スカーレット・バイオレット">スカーレット・バイオレット</span>
+          <a href="#">パーティ＆ボックス</a>
+          <a href="#" class="tab-gap">図鑑</a>
+        </div>
+      </nav>
+    </header>
+    <main class="container">
+      <h1>図鑑</h1>
+      <table class="pkTable">
+        <thead>
+          <tr>
+            <th class="pk-col pk-col--name">名称</th>
+            <th class="pk-col pk-col--actions">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="pk-col pk-col--name">ニャオハ</td>
+            <td class="pk-col pk-col--actions">
+              <div class="actionStack">
+                <button type="button" class="btn btn--primary btn--xs">登録＋追加</button>
+                <button type="button" class="btn btn--quiet btn--xs">HOME登録</button>
+                <span class="pk-action-more__summary">その他</span>
+              </div>
+              <p class="dex-action-hint">この作品の図鑑と、HOME の全国図鑑は別です。</p>
+            </td>
+          </tr>
+          <tr>
+            <td class="pk-col pk-col--name">ピカチュウ</td>
+            <td class="pk-col pk-col--actions">
+              <div class="actionStack">
+                <button type="button" class="btn btn--primary btn--xs">登録＋追加</button>
+                <button type="button" class="btn btn--quiet btn--xs">HOME登録</button>
+                <span class="pk-action-more__summary">その他</span>
+              </div>
+              <p class="dex-action-hint">この作品の図鑑と、HOME の全国図鑑は別です。</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+</body>
+</html>

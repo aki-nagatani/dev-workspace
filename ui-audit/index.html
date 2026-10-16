@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FishTrack / MyPokedex / FaiNavi UI 問題点レポート（2026-10-14）</title>
+  <title>FishTrack / MyPokedex / FaiNavi UI 問題点レポート（2026-10-16）</title>
   <style>
     :root {
       --bg: #f5f6f8;
@@ -321,7 +321,7 @@
   <header>
     <h1>FishTrack / MyPokedex / FaiNavi UI 問題点レポート</h1>
     <p>共有レポート（dev-workspace/ui-audit）。MyPokedex :5002 · FishTrack :5001 · FaiNavi ローカル :8787</p>
-    <p>ビューポート: SP 390×844 · 幅 1100 · PC 1280 · 診断日: 2026-10-14（JST・OPEN はなし）</p>
+    <p>ビューポート: 型番詳細は幅 814 · 診断日: 2026-10-16（JST）</p>
     <p>課題は<strong>未解決</strong>と<strong>解決済み</strong>に分けて記載する。解決済みはアコーディオン（既定クローズ）。解決から1ヶ月経過した課題はレポートから削除する。各 OPEN は「事象／何が問題か／改善策（サンプルHTML＋スクショ）」を記載。</p>
     <p>改善サンプルはローカル製品（CSS・ロゴ・コンポーネント）をそのまま使い、改善箇所だけを差分修正したものである。</p>
   </header>
@@ -329,6 +329,10 @@
     <nav class="toc" aria-label="目次">
     <a href="#summary">サマリー</a>
     <a href="#open-issues">未解決</a>
+    <span class="toc-group">未解決 FishTrack</span>
+    <div class="toc-row">
+      <a href="#ft-h28">FT-H28</a>
+    </div>
     <a href="#resolved-issues">解決済み</a>
     <span class="toc-group">解決済み FaiNavi</span>
     <div class="toc-row">
@@ -340,6 +344,7 @@
     </div>
     <span class="toc-group">解決済み MyPokedex</span>
     <div class="toc-row">
+      <a href="#mp-h3">MP-H3</a>
       <a href="#mp-o2">MP-O2</a>
       <a href="#mp-o1">MP-O1</a>
     </div>
@@ -368,12 +373,9 @@
   </nav>
 <main>
     <section id="summary" class="meta">
-      <div><strong>対象</strong>: 今回はフィルタがある画面に限定（ユーザー指定）。FishTrack と MyPokedex。未ログイン LP にフィルタは無い。</div>
-      <div><strong>範囲</strong>: 幅 1100 でフィルタの並びを横比較した。探す画面の2列の穴は FT-O47 として直し、再診断で解決。
-        釣果・釣行・保有一覧・フィールド・水位は格子か内容幅の横並びで、同じ穴は無い。
-        MyPokedex のボックスと図鑑も行が揃う。管理者のシリーズ一覧は別の格子で、今回の2列指定は当たらない。
-        未ログイン LP・ログイン・規約はフィルタが無く対象外。</div>
-      <div><strong>スクショ例（抜粋）</strong>: FT — <code>/lure-masters/plug</code>、<code>/tackle/rod-models/</code>、<code>/catch/</code>（幅 1100）</div>
+      <div><strong>対象</strong>: 今回は FishTrack のロッド・リール・ルアー型番詳細にある製品写真の置き方に限定（ユーザー指定）。MyPokedex にロッド・リール・ルアーは無いので対象外。</div>
+      <div><strong>範囲</strong>: <code>/tackle/rod-model/1</code> と <code>/lure-plug/21/detail</code>。リール型番詳細はロッドと同じ画面。一覧のサムネ、釣果写真、未ログイン LP、管理者の別画面は対象外。</div>
+      <div><strong>スクショ例（抜粋）</strong>: FT — ロッド型番詳細、プラグマスタ詳細（幅 814）</div>
       <div><strong>観点</strong>: 中核は操作性・視認性・初回ユーザー（迷わないか）・管理者の管理しやすさ。
         併せて導線・主CTA・空状態・必須／任意・表密度・フィルタ・誤アフォーダンス・一貫性・危険操作・フィードバック・SP/PC・a11y。
         正本は <code>ui-audit-html-report</code> SKILL「診断観点」。</div>
@@ -385,12 +387,109 @@
 
     <section id="open-issues" aria-labelledby="open-issues-title">
       <h2 id="open-issues-title" class="section-title">未解決の課題</h2>
-      <p class="section-lead">現時点の OPEN はありません。</p>
+      <p class="section-lead">現時点の OPEN は 1 件（FT-H28）。</p>
+
+    <article class="issue" id="ft-h28">
+      <h2>
+        <span class="badge status-open">OPEN</span>
+        <span class="badge sev-med">MED</span>
+        <span class="badge badge-prod-ft">FishTrack</span>
+        FT-H28 ロッド・リール・ルアーの型番詳細に、製品写真が無い
+      </h2>
+      <p class="label">2026-10-16 に案Aを採用。詳細の登録ボタンは入れない。写真の登録・差替・削除はスペック取込。枠は実装済み。既存型番の写真はこれからなので OPEN。</p>
+      <h3>事象</h3>
+      <p>ロッドとリールの型番詳細は、見出しとスペックだけである。プラグとワームはカラーごとの写真がカラー一覧にある。型番に1枚の製品写真を置く場所は、どのカテゴリにも無い。</p>
+      <figure class="wide">
+        <img src="fishtrack/pc-rod-detail-current.png" alt="ロッド型番詳細。見出しとスペックだけで、製品写真は無い">
+        <figcaption>▲ 変更前。ロッド型番詳細。この見出しとスペックのあいだに製品写真が無い。リールも同じ。</figcaption>
+      </figure>
+      <figure class="wide">
+        <img src="fishtrack/pc-lure-detail-current.png" alt="プラグマスタ詳細。スペックの下はカラー一覧で、型番の製品写真は無い">
+        <figcaption>▲ 変更前。プラグ詳細。写真はカラー一覧の行だけ。型番そのものの写真は無い。</figcaption>
+      </figure>
+      <h3>対象箇所</h3>
+      <ul>
+        <li>URL: <code>/tackle/rod-model/&lt;id&gt;</code>、<code>/tackle/reel-model/&lt;id&gt;</code>（同じ型番詳細）、<code>/lure-plug/&lt;id&gt;/detail</code>、<code>/lure-worm/&lt;id&gt;/detail</code></li>
+        <li>位置: 見出し（<code>.card-header</code>）の直下、スペック（ロッド・リールは <code>.card--nested</code>、ルアーは <code>.details-list</code>）の手前。ルアーは続けて <code>h3.lure-color-section__title</code></li>
+        <li>部品: ルアーのカラー写真（<code>.lure-color-photo</code>）は残す。製品写真とは別</li>
+        <li>対象外: 一覧カードのサムネ、釣果写真、マイタックルの所持写真。MyPokedex。未ログイン LP。SP の撮影はしていない（案Aは狭い幅では写真をスペックの上に積む）</li>
+      </ul>
+      <h3>何が問題か</h3>
+      <p>型番を開いても、既存モデルには製品の見た目がまだ無い。ルアーはカラー写真があるので、型番の写真と色違いの写真が同じものに見える。登録・差替・削除は詳細のボタンにせず、スペック取込で行う。一般の閲覧は写真か「製品写真なし」だけ。</p>
+      <h3>改善策</h3>
+      <p>案Aを採用した。見出しの下で、左が製品写真、右がスペック。未登録は「製品写真なし」。ルアーのカラー一覧はそのまま下に残す。案Bは不採用。詳細に「写真を登録」「公式サイトから取得」「写真を削除」は置かない。取込行の productImageUrl があるときだけ登録・差替し、空なら削除する。キーが無い再取込は既存の写真を残す。</p>
+      <div class="option recommended">
+        <h4>案A スペックの左に製品写真 <span class="rec-tag">採用</span></h4>
+        <p>見出しの下で、左が製品写真、右がスペック。幅が足りないときは写真をスペックの上に積む。ルアーはカラー一覧をそのまま下に残す。開いたときに製品が先に見え、カラー表の小さい画像と大きさが違う。</p>
+        <ul>
+          <li>メリット: 製品と色違いが分かれる。ロッド・リール・ルアーで同じブロック</li>
+          <li>デメリット: スペックの横幅が狭くなる</li>
+        </ul>
+        <figure class="wide">
+          <img src="fishtrack/sample-ft-h28-a.png" alt="案A。ロッド型番詳細で、スペックの左に未登録の製品写真">
+          <figcaption>検討時の画像。スペックの左が製品写真。画像内の登録ボタンは採用していない。ローカルの型番詳細は「製品写真なし」だけで、ボタンは無い。</figcaption>
+        </figure>
+        <figure class="wide">
+          <img src="fishtrack/sample-ft-h28-a-lure.png" alt="案A。プラグ詳細で、スペックの左に製品写真、下にカラー一覧">
+          <figcaption>検討時の画像。製品写真はカラー一覧の上。画像内の登録ボタンは採用していない。カラーの画像は表に残る。</figcaption>
+        </figure>
+      </div>
+      <div class="option">
+        <h4>案B スペック先頭の1行 <span class="rec-tag">不採用</span></h4>
+        <p>スペックの幅はそのまま。先頭に小さい製品写真と操作を1行置く。カラー一覧は案Aと同じ。</p>
+        <ul>
+          <li>メリット: スペックの読みやすさは現状のまま</li>
+          <li>デメリット: 製品写真がスペックの1項目に見え、カラー表の画像と大きさが近い</li>
+        </ul>
+        <figure class="wide">
+          <img src="fishtrack/sample-ft-h28-b.png" alt="案B。ロッドのスペック先頭に小さい製品写真">
+          <figcaption>変更後。ロッド。スペックの幅はそのまま。未登録は先頭の1行。</figcaption>
+        </figure>
+        <figure class="wide">
+          <img src="fishtrack/sample-ft-h28-b-lure.png" alt="案B。プラグのスペック先頭に小さい製品写真、下にカラー一覧">
+          <figcaption>変更後。プラグ。製品写真はカラー一覧より小さい1行。カラーの画像は表に残る。</figcaption>
+        </figure>
+      </div>
+    </article>
     </section>
 
 <section id="resolved-issues" aria-labelledby="resolved-issues-title">
       <h2 id="resolved-issues-title" class="section-title">解決済みの課題</h2>
       <p class="section-lead">再診断済み。各課題はアコーディオン（既定クローズ）。解決日から1ヶ月経過した課題は削除する。</p>
+
+    <article class="issue" id="mp-h3" data-resolved-on="2026-10-16">
+      <details>
+        <summary>
+          <h2>
+            <span class="badge status-resolved">RESOLVED</span>
+            <span class="badge sev-med">MED</span>
+            <span class="badge" style="background:#e8eaf6;color:#283593">MyPokedex</span>
+            MP-H3 地方図鑑の「登録＋追加」と「HOME登録」のちがいが、押す場所に残らない
+          </h2>
+        </summary>
+        <p class="label">2026-10-16 再診断で解決。案Aを採用。案Bは不採用。</p>
+        <h3>事象</h3>
+        <p>改善前。パルデア図鑑の各行に「登録＋追加」と「HOME登録」が並ぶ。表の上の案内「図鑑ページについて」は、メニューで HOME と地方図鑑を切り替えられることだけを書いていて、2つのボタンが別の図鑑を変えることは書いていなかった。</p>
+        <figure class="wide">
+          <img src="mypokedex/pc-dex-actions-current.png" alt="改善前。案内は図鑑の切り替えだけで、登録＋追加と HOME登録のちがいは無い">
+          <figcaption>▲ 改善前。上の案内は図鑑の切り替えだけ。</figcaption>
+        </figure>
+        <h3>対象箇所</h3>
+        <ul>
+          <li>URL: <code>/SV/dex/paldea</code>（地方図鑑。他作品の地方図鑑も同じ案内）</li>
+          <li>位置: 図鑑表の上の <code>section.pkOnboarding</code></li>
+          <li>対象外: HOME の全国図鑑（切り替えの案内のまま）。管理者画面。FishTrack</li>
+        </ul>
+        <h3>何が問題か</h3>
+        <p>初めて開いた人が、今の作品の図鑑を変えたいのか、Pokémon HOME の全国図鑑を変えたいのかを、押す直前に判断できなかった。</p>
+        <h3>実施した改善</h3>
+        <p>案A。地方図鑑の案内を「登録先のちがい」に差し替えた。閉じると、そのブラウザでは再表示しない。設定の使い方ガイドから再度出せる。案B（ボタン直下の常時1行）は不採用。全国図鑑の案内は切り替えの説明のまま。</p>
+        <figure class="wide">
+          <img src="mypokedex/pc-dex-actions-after.png" alt="採用後。登録先のちがいという閉じられる案内">
+          <figcaption>再診断（2026-10-16）。パルデア図鑑の表の上。閉じるボタンあり。</figcaption>
+        </figure>
+      </details>
+    </article>
 
     <article class="issue" id="ft-o47" data-resolved-on="2026-10-14">
       <details>

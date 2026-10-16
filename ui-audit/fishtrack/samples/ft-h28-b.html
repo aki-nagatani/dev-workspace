@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=760">
+  <title>FT-H28 案B — スペック先頭の1行</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_fonts.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/fishtrack_tail.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5001/static/css/lure_masters.css">
+  <style>
+    html, body { margin: 0; padding: 0; background: #fff; width: max-content; }
+    .sample-frame { width: 760px; padding: 12px; background: #ebeff5; box-sizing: border-box; }
+    .sample-note {
+      font-size: 0.8rem; color: #475569; margin: 0 0 10px;
+      padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+    }
+    .sample-block-label { font-size: 0.75rem; font-weight: 700; color: #64748b; margin: 14px 0 6px; }
+    .sample-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .sample-header img { height: 28px; width: auto; }
+    .product-photo-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin: 0 0 0.85rem;
+    }
+    .product-photo-line .lure-color-photo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin: 0;
+      max-width: none;
+    }
+    .product-photo-line .lure-color-photo__preview {
+      width: 4.5rem;
+      height: 3.4rem;
+      background: #fff;
+    }
+    .product-photo-line .lure-color-photo__preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .product-photo-line .lure-color-photo__actions { margin: 0; }
+    .product-photo__label {
+      margin: 0;
+      font-size: 0.75rem;
+      color: var(--color-text-muted, #64748b);
+      min-width: 4.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="sample-frame">
+    <p class="sample-note">
+      採用後の想定。現状の製品には無い。製品写真はスペックの先頭1行。スペック表の幅は変えない。
+      リールはロッドと同じ。画像は配置確認用に、既存のカラー写真を流用している。
+    </p>
+    <div class="sample-header">
+      <img src="http://127.0.0.1:5001/static/img/fishtrack-logo.png" alt="FishTrack">
+    </div>
+
+    <p class="sample-block-label">ロッド（未登録）</p>
+    <section class="card master-model-detail">
+      <div class="card-header">
+        <h2>DAIWA - STEEZ STZ 641LXB-ST ハーミット</h2>
+        <div class="header-actions">
+          <a class="btn-link" href="#rod-list">一覧に戻る</a>
+          <a class="btn" href="#holding">保有に追加</a>
+        </div>
+      </div>
+      <section class="card card--nested">
+        <h3>スペック</h3>
+        <div class="product-photo-line">
+          <p class="product-photo__label">製品写真</p>
+          <div class="lure-color-photo">
+            <div class="lure-color-photo__preview">
+              <div class="lure-color-photo__placeholder">なし</div>
+            </div>
+            <div class="lure-color-photo__actions">
+              <label class="btn btn--sm lure-color-photo__upload-label">
+                写真を登録
+                <input type="file" accept="image/jpeg,image/png" hidden>
+              </label>
+              <button type="button" class="btn btn--sm btn--secondary">公式サイトから取得</button>
+            </div>
+          </div>
+        </div>
+        <dl class="details-list">
+          <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+          <div><dt>シリーズ</dt><dd>STEEZ</dd></div>
+          <div><dt>ジャンル</dt><dd>ベイト</dd></div>
+          <div><dt>全長</dt><dd>6'4"</dd></div>
+          <div><dt>パワー</dt><dd>L</dd></div>
+          <div><dt>アクション</dt><dd>XF</dd></div>
+        </dl>
+      </section>
+    </section>
+
+    <p class="sample-block-label">プラグ（登録済み。カラー写真は表のまま）</p>
+    <section class="card">
+      <div class="card-header">
+        <h2>DAIWA - HMKLミノーSTEEZカスタム 137F</h2>
+        <div class="header-actions">
+          <a class="btn-link" href="#plug-list">一覧へ</a>
+        </div>
+      </div>
+      <div class="product-photo-line">
+        <p class="product-photo__label">製品写真</p>
+        <div class="lure-color-photo">
+          <div class="lure-color-photo__preview">
+            <img src="ft-h28-product.jpg" alt="HMKLミノーSTEEZカスタム 137F の製品写真">
+          </div>
+          <div class="lure-color-photo__actions">
+            <label class="btn btn--sm lure-color-photo__upload-label">
+              写真を登録
+              <input type="file" accept="image/jpeg,image/png" hidden>
+            </label>
+            <button type="button" class="btn btn--sm btn--secondary">公式サイトから取得</button>
+            <button type="button" class="btn btn--sm btn-link">写真を削除</button>
+          </div>
+        </div>
+      </div>
+      <dl class="details-list">
+        <div><dt>メーカー</dt><dd>DAIWA</dd></div>
+        <div><dt>種別</dt><dd>ミノー</dd></div>
+        <div><dt>全長</dt><dd>137 mm</dd></div>
+        <div><dt>重量</dt><dd>14.5 g</dd></div>
+        <div><dt>定価（税抜）</dt><dd>¥2,500</dd></div>
+        <div><dt>タイプ／アクション</dt><dd>フローティング</dd></div>
+        <div><dt>潜行深度</dt><dd>2.0 m</dd></div>
+        <div><dt>フックサイズ</dt><dd>#4</dd></div>
+      </dl>
+      <h3 class="lure-color-section__title">カラー一覧</h3>
+      <div class="lure-color-table-wrap">
+        <table class="lure-color-table">
+          <colgroup>
+            <col class="lure-color-table__col--photo">
+            <col class="lure-color-table__col--name">
+            <col class="lure-color-table__col--action">
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col" class="lure-color-table__th--photo">画像</th>
+              <th scope="col" class="lure-color-table__th--name">カラー</th>
+              <th scope="col" class="lure-color-table__th--action">保有</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="lure-color-table__cell--photo">
+                <div class="lure-color-photo">
+                  <div class="lure-color-photo__preview">
+                    <img src="ft-h28-product.jpg" alt="アデルワカサギ の写真">
+                  </div>
+                </div>
+              </td>
+              <td class="lure-color-table__cell--name">アデルワカサギ</td>
+              <td class="lure-color-table__cell--action">
+                <div class="lure-color-table__action">
+                  <span class="lure-color-table__owned">保有中</span>
+                  <button type="button" class="btn-link btn-link--sm">追加</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
