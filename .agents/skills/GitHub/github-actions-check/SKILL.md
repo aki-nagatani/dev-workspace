@@ -14,7 +14,7 @@ description: GitHub Actionsの完了を待って結果を確認するSKILL。ota
 以下の場合にこのSKILLを使用します：
 
 - otayori-naviのプッシュ後
-- FishTrack/MyPokedexのmainブランチへのマージ後（**lint / test**。**deploy は skipped が正常**）
+- FishTrack/MyPokedexのmainブランチへのマージ後（**publish-artifact**。**lint / test は pull_request**。push では skipped が正常）
 - 緊急デプロイの待機は `*_pull-request-emergency` 内の **`workflow_dispatch`**（本 SKILL の push 待ちは使わない）
 - その他、GitHub Actionsが実行される操作の後
 
@@ -103,9 +103,10 @@ try {
 
 - **必ず結果を確認する**:
   - `conclusion: "success"`の場合: 対象ジョブが成功したことを確認する。\
-    **FishTrack / MyPokedex の main push** では **lint / test / publish-artifact**
-    （EC2 反映の `apply-now` は skipped が正常）。
-    緊急デプロイでは **apply-now 成功**まで見る。03:00 定時は GitHub Actions ではなく
+    **FishTrack / MyPokedex の main push** では **publish-artifact**
+    （**lint / test は skipped が正常**。検査は `pull_request`。EC2 反映の `apply-now` は skipped が正常）。
+    緊急デプロイの `workflow_dispatch` では **apply-now 成功**まで見る（publish-artifact は skipped が正常）。
+    03:00 定時は GitHub Actions ではなく
     EventBridge Scheduler → SSM。
     **定時デプロイの Slack は 03:00 には来ない**（失敗でも。毎日 07:30 JST の
     EventBridge Scheduler → Lambda。GitHub Actions `schedule` は使わない）。
@@ -136,7 +137,7 @@ try {
 
 ### FishTrack
 
-- **確認対象**: lint、test、publish-artifact（**push では apply-now しない**。
+- **確認対象**: push は **publish-artifact**（**lint / test は skipped が正常**。検査は `pull_request`。**push では apply-now しない**。
   本番は毎日 03:00 JST の EventBridge → SSM。07:30 Slack は EventBridge → Lambda
   （未実行・スキップは送らない。Lambda zip は `publish-artifact` で更新）。
   即時本番は `FishTrack_pull-request-emergency`）
@@ -145,12 +146,20 @@ try {
 
 ### MyPokedex
 
-- **確認対象**: lint、test、publish-artifact（**push では apply-now しない**。
+- **確認対象**: push は **publish-artifact**（**lint / test / e2e は skipped が正常**。検査は `pull_request`。**push では apply-now しない**。
   本番は毎日 03:00 JST の EventBridge → SSM。07:30 Slack は EventBridge → Lambda
   （未実行・スキップは送らない。Lambda zip は `publish-artifact` で更新）。
   即時本番は `MyPokedex_pull-request-emergency`）
 - **通常の実行時間**: 3-8分
 - **確認URL**: <https://github.com/aki-nagatani/MyPokedex/actions>
+
+## main の必須チェック
+
+FishTrack と MyPokedex はプライベートリポジトリで、ブランチ保護と ruleset の API は HTTP 403
+（GitHub Pro、または public が必要）。`main` の必須ステータスチェックは設定できない。
+マージ前のゲートは各 `*_pull-request` SKILL が、`pull_request` の lint と test
+（MyPokedex は e2e も）の success を待ってからマージすること。
+Pro か public になるまで、保護 API は再実行しない。
 
 ## エラーハンドリング
 

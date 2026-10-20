@@ -101,7 +101,7 @@ description: >-
 
 ## coverage.xml（残す・再利用・必須）
 
-**目的**: フル pytest は重い。有効な `coverage.xml` があれば **diff-cover のために再実行しない**。
+**目的**: フル pytest は重い。実装の報告前には diff-cover を走らせない。有効な `coverage.xml` は pre-commit が使えたとき再生成を省く。
 
 - **置き場**: 各製品リポ直下の **`coverage.xml`**（pytest `--cov-report=xml` の既定。`.gitignore` 済み。**Git に入れない**）
 - **完了時**: **削除しない**。`temp/` へ移さない。報告で「消した」と書かない
@@ -109,7 +109,7 @@ description: >-
 - **再利用してよい（有効）**: 直下に `coverage.xml` があり、計測対象の **`src/**/*.py`・`tests/**/*.py`** とカバレッジ設定（`pyproject.toml` / `pytest.ini`）の更新時刻が **xml と同じかより古い**
 - **作り直す（無効・欠落）**: ファイルが無い／上記より新しいソース・テスト・設定がある／このセッションで `src/` または `tests/` を変えた直後で xml 未再生成／ユーザーが再計測を指示
 - **無効な xml で `diff_cover_gate.sh` だけ走らせるのは禁止**（通る／落ちるが嘘になる）
-- 再利用時はフル pytest を省略し、**`bash scripts/diff_cover_gate.sh WORKTREE`**（またはコミット時のフック）だけ実行してよい
+- 実装の報告前にゲートは実行しない。明示してゲートを走らせるとき、有効な xml ならフル pytest を省略してよい
 - 手順の併用: **`test-code-generator` SKILL**（変更行 100%）
 
 ## 注意事項
