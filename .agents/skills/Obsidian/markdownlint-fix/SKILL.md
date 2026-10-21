@@ -1,6 +1,6 @@
 ---
 name: markdownlint-fix
-description: Fix markdownlint errors (MD013, MD032, MD036, MD040, MD060, etc.) in Markdown files. Use when user shows "For the code present, we get this error" with a markdownlint error (MD0xx), requests "Fix it verify", or specifies file/line with a markdownlint violation. Follows markdown-editing SKILL for correction rules. 同ファイルのエラーをすべて修正する。
+description: markdownlint エラー（MD0xx）を修正する。「For the code present, we get this error」「Fix it verify」の依頼文、またはファイルと行の指定での依頼時に使用。同一ファイルのエラーはまとめて直す。
 ---
 
 # マークダウンリント修正作業

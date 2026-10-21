@@ -1,16 +1,7 @@
 ---
 name: next-action
 description: >-
-  CursorLog・統合作業スケジュール・Work（本職）・チャット履歴・AGENTS/仕様から「次の一手」を整理する。
-  情報源は平等（チャット履歴を優先しない）。残作業と着手中を新規より先、多くても3候補、
-  コミット/PR/デプロイはデフォルト除外。
-  実行可能な期限超過タスクは、当日・今週・未来期限のタスクより先に扱う。
-  JST 22:00〜9:00、および土日・祝日・会社指定休日・本人の休暇などの非営業日の
-  `/next-action` では本職を対象外にする（期限超過も含む。`/next-action-work` は対象外にしない）。
-  専用 Cursor Command（旧 next_action.md）は廃止し本 SKILL が正本。
-  ユーザーが `/next-action` 等で明示したときだけ使う。`/next-action-nowork` は本 SKILL を開かない。
-  通常応答の末尾案内では本 SKILL を読まない。
-  読まないことは `## 次のアクション` を省く理由にしない。残作業は見出し 1 件で書く。
+  CursorLog・統合作業スケジュール・Work・チャット履歴から次の一手を最大 3 候補で整理する。/next-action など明示時のみ。/next-action-nowork では開かない。
 ---
 
 # 次のアクション（next-action）

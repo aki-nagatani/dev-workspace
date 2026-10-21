@@ -1,11 +1,7 @@
 ---
 name: local-docker-db-migrate
 description: >-
-  ローカル Docker Compose の app サービス内から MyPokedex / FishTrack 向けに
-  Alembic で DB マイグレーションを実行する。dev-workspace の shared-db、論理DB名、
-  docker compose run/exec の手順。エージェントはターミナルで実行し手順の提示だけで終えない。
-  専用 Cursor Command（旧 local_docker_db_migrate.md）は廃止し本 SKILL が正本。ローカル DB マイグレ、
-  alembic upgrade の依頼時に使用する。**おたよりナビは対象外**。
+  ローカル Docker の app 内で MyPokedex・FishTrack の Alembic マイグレーションをターミナル実行する（論理 DB 名は SKILL 参照）。手順の提示だけで終えない。ローカル DB マイグレ・alembic upgrade の依頼時に使用。おたよりナビは対象外。
 ---
 
 # ローカル Docker DB マイグレーション（local-docker-db-migrate）

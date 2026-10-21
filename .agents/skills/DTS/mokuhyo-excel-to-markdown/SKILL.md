@@ -1,11 +1,7 @@
 ---
 name: mokuhyo-excel-to-markdown
 description: >-
-  人事の目標管理シート（Excel）を Obsidian の人事考課_管理シート形式 Markdown へ反映する正本
-  （旧 hr-goal-sheet-excel-to-markdown を本 SKILL に統合）。A1 記法（BH4・C18 等）・枝番・
-  目標ジャンルに従う。Excel 未提供時は実作業に入らない。myrules 手編集のみ（スクリプト一括変換禁止）。
-  完了後は obsidian-cursor-log。旧 mokuhyo コマンド・分離した hr-goal SKILL は廃止。
-  mokuhyo、目標管理シート、BH4、人事考課、Excel 取り込み、目標-◯期の依頼時に使用する。
+  人事の目標管理シート（Excel）を人事考課_管理シートの Markdown へ反映する。Excel 未提供時は実作業に入らない。Markdown は手編集のみ（スクリプトで一括変換しない）。Excel 取り込み・目標管理シートの依頼時に使用。
 ---
 
 # mokuhyo-excel-to-markdown

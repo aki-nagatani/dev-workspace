@@ -1,8 +1,13 @@
-# 本番EC2接続・DB操作スキル（MyPokedex / FishTrack 共通）
+---
+name: production-db-access
+description: 本番 AWS（MyPokedex・FishTrack・おたよりナビ）の EC2・RDS への AI 接続と本番 DB 操作の正。FishTrack の RDS は PC から直接接続せず EC2 経由。おたよりナビ EC2 は起動を明示指示時のみ。EC2・RDS 接続、本番 DB 確認、SSM の依頼時に使用。
+---
+
+# 本番EC2・RDS接続・DB操作SKILL（MyPokedex / FishTrack / おたよりナビ）
 
 ## 概要
 
-MyPokedexおよびFishTrackの本番EC2インスタンスへの接続方法と、本番データベース（AWS RDS）へのアクセス方法を提供します。
+MyPokedex・FishTrack・おたよりナビの本番EC2インスタンスへの接続方法と、本番データベース（AWS RDS）へのアクセス方法を提供します。インスタンス ID・IP の正は下記「重要: 正しいEC2インスタンスの確認」節です。人間向けの詳細手順は Obsidian `DevProject/guidelines/EC2_SSH接続手順.md` です。
 
 ## FishTrack 本番 DB アクセスの正（2026-08-26 採用）
 
@@ -11,6 +16,9 @@ RDS へは **PC から直接接続しない**。接続情報は本番 EC2 の `.
 | 用途 | 正 | 使わない |
 | --- | --- | --- |
 | **繰り返し自動化**（spec-crawl タックル全件取得） | **用途固定の読取 HTTP API**（トークン。`GET /fishtrack/api/agent/production-models`） | 自動化の本命を SSM にしない |
+| **トークン無しの全件退避** | **SSH** → `spec-import-worker` の `run --rm --no-deps`。`create_app` は使わずページ取得と同じ DB だけを開く。`flock` で同時 1 本（`fetch_models_from_production`） | 公開 `app` への `docker compose exec` |
+| **突合1ページの既存行** | **SSH** → `spec-import-worker` の `run --rm --no-deps` でその URL の行だけ。`create_app` は使わず DB だけを開く。 | 公開 `app` への `docker compose exec` と全件ダンプ |
+| | `flock` で同時 1 本（`fetch_page_models_from_production`） | |
 | **現行フラグ同期・preview-json commit** | **SSH** → `docker compose exec app` → ORM | ローカル Docker DB を本番のつもりで使わない |
 | **単発調査** | **SSH**（短いコマンドは SSM `send-command` でも可） | 都度エンドポイントを増やさない |
 | **大きな標準出力**（タックル全件 JSON 等） | 読取 API | SSM `send-command`（出力が約 24KB で切れる） |
@@ -31,6 +39,7 @@ RDS へは **PC から直接接続しない**。接続情報は本番 EC2 の `.
 | --- | --- | --- |
 | **本番インスタンスID** | `i-0b2e6876c16609083` | **現在稼働中** |
 | **本番IPアドレス** | `13.158.196.131` | **デプロイ先** |
+| プライベートIP | `10.1.1.230` | |
 | EC2上のアプリパス | `/home/ec2-user/MyPokedex` | |
 | Dockerコンテナ名 | `mypokedex-app-1` | |
 | アプリモジュール | `mypokedex` | |
@@ -42,10 +51,26 @@ RDS へは **PC から直接接続しない**。接続情報は本番 EC2 の `.
 | --- | --- | --- |
 | **本番インスタンスID** | `i-05e573f245ca9e2d1` | **現在稼働中** |
 | **本番IPアドレス** | `52.197.69.195` | **デプロイ先** |
+| プライベートIP | `10.0.1.248` | |
 | EC2上のアプリパス | `/home/ec2-user/FishTrack` | |
 | Dockerコンテナ名 | `fishtrack-app-1` | |
 | アプリモジュール | `fishtrack` | |
 | ファクトリ関数 | `create_app` | |
+
+#### おたよりナビ EC2（停止中）
+
+| 項目 | 値 | 備考 |
+| --- | --- | --- |
+| **インスタンスID** | `i-001cd3b0db58d9f78` | **停止中**（2026-04-28 凍結のため `aws ec2 stop-instances`。起動は明示指示時のみ） |
+| IPアドレス | `18.178.163.222` | 停止中の記録値。再開時は再確認 |
+| プライベートIP | `10.0.2.151` | |
+| EC2上のアプリパス | `/home/ec2-user/otayori-navi` | Amazon Linux 2 |
+| 接続方式 | Session Manager のみ | SSH 鍵なし |
+
+#### 使わないインスタンス・IP（過去の記載）
+
+- `i-023a1623e48cabf1d`: 存在しない（describe で NotFound）。旧 MyPokedex の記載
+- `54.249.50.253`: 現在どのインスタンスにも割り当てなし。旧 MyPokedex の記載
 
 ### インスタンス情報の確認方法
 
@@ -84,7 +109,9 @@ FishTrack の **全件ダンプや現行フラグ同期の自動化には使わ�
 
 - AWS CLIがインストール済み
 - Session Managerプラグインがインストール済み
-- 適切なIAM権限を持つプロファイルが設定済み
+- 適切なIAM権限を持つプロファイルが設定済み（`ssm:StartSession`・`ssm:SendCommand` 等）
+- Session Manager プラグインは `session-manager-plugin --version` で確認
+- リージョンは `ap-northeast-1`（各コマンドで `--region ap-northeast-1` を付けてよい）
 
 #### 対話型セッション（推奨）
 
@@ -117,7 +144,7 @@ docker compose --env-file .env down && docker compose --env-file .env up -d
 
 #### コマンド実行（SSM Run Command）
 
-単発のコマンド実行に便利です。
+単発のコマンド実行に便利です。出力は `StandardOutputContent`／`StandardErrorContent`、成否は `Status` で判定します（大きい出力は切れるため、タックル全件 JSON 等は読取 API を使う）。
 
 ```powershell
 # MyPokedex - コマンド送信
@@ -137,6 +164,12 @@ aws ssm send-command `
 # 結果取得（CommandIdを指定）
 aws ssm get-command-invocation --command-id <CommandId> --instance-id <InstanceId> --output json
 ```
+
+#### RDS へのアクセス（EC2 経由のみ）
+
+- RDS は SSH 不可。EC2 上で `psql` を実行する（`send-command` の `commands` に `psql -h <RDSエンドポイント> -U <user> -d <db> -c "SELECT ..."` を指定）
+- パスワードは EC2 の `.env` または Secrets Manager から取得する。平文でスクリプトやチャットに書かない
+- ポートフォワーディング（`AWS-StartPortForwardingSessionToRemoteHost` で 5432 をローカルへ）は単発調査に限る。FishTrack の本番 DB 操作は上記「FishTrack 本番 DB アクセスの正」の表に従う
 
 ### 方法2: SSH接続（書込・フォールバック・単発調査）
 
@@ -335,15 +368,24 @@ git log --oneline HEAD..origin/main
 5. **スクリプトの削除** - 一時的なスクリプトは実行後に削除すること
 6. **ローカルDBとの混同注意** - docker-compose.ymlの設定により、ローカル環境は共有DBに接続している場合がある
 7. **アプリ名の違い** - MyPokedexは`createApp`、FishTrackは`create_app`（スネークケース）
+8. **リージョン** - `ap-northeast-1`
+9. **おたよりナビ EC2は停止中** - 凍結方針により、起動は明示指示時のみ。指示なしに `aws ec2 start-instances` を実行しない
 
 ## 関連ドキュメント
 
+以下は Obsidian（`D:/OneDrive/アプリ/remotely-save/Obsidian/`）配下のパスです。
+
 ### MyPokedex の関連ドキュメント
 
-- `MyPokedex/docs/deployment/DEPLOYMENT_AWS.md` - AWSデプロイ手順
-- `MyPokedex/docs/deployment/PRODUCTION_DATA_IMPORT.md` - 本番データインポート手順
-- `MyPokedex/docs/deployment/ROLLBACK_PLAN.md` - ロールバック手順
+- `DevProject/deployment/MyPokedex/DEPLOYMENT_AWS.md` - AWSデプロイ手順
+- `DevProject/deployment/MyPokedex/PRODUCTION_DATA_IMPORT.md` - 本番データインポート手順
+- `DevProject/deployment/MyPokedex/ROLLBACK_PLAN.md` - ロールバック手順
 
 ### FishTrack の関連ドキュメント
 
-- `FishTrack/docs/deployment/DEPLOYMENT_AWS.md` - AWSデプロイ手順
+- `DevProject/deployment/FishTrack/DEPLOYMENT_AWS.md` - AWSデプロイ手順
+
+### おたよりナビ の関連ドキュメント
+
+- `DevProject/deployment/OtayoriNavi/DEPLOYMENT.md` - デプロイ手順（凍結中のため参照のみ）
+- `DevProject/deployment/OtayoriNavi/INFRA_SETUP.md` - インフラ構成

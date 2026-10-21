@@ -1,11 +1,7 @@
 ---
 name: ux-ideation
 description: >-
-  FishTrack と MyPokedex の仕様と AGENTS を踏まえた
-  プロダクト改善・UX・信頼性・運用案を具体化し、機能検討へ残す。
-  スケジュールへのタスク追加は、ユーザーの明示指示のあとだけ。
-  integrated-schedule-update・obsidian-cursor-log 連携。専用 Cursor Command（旧 ux_ideation.md）は廃止し本 SKILL が正本。
-  ux-ideation、ux_ideation、@ux_ideation、プロダクト改善、起票、統合作業スケジュール依頼時に使用する。
+  FishTrack・MyPokedex のプロダクト改善・UX・信頼性・運用案を具体化し、機能検討として残す。スケジュールへのタスク追加はユーザーの明示指示の後だけ。ux-ideation・プロダクト改善の依頼時に使用。
 ---
 
 # プロダクト改善アイデア検討（UX を含む）

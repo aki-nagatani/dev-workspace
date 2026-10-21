@@ -1,6 +1,6 @@
 ---
 name: full-output-enforcement
-description: Overrides default LLM truncation behavior. Enforces complete code generation, bans placeholder patterns, and handles token-limit splits cleanly. Apply to any task requiring exhaustive, unabridged output.
+description: 省略せず完全な出力を強制する（コード全文、プレースホルダー禁止、トークン上限時の分割）。網羅的で省略のない出力が必要な依頼時に使用。
 ---
 
 # Full-Output Enforcement

@@ -1,10 +1,7 @@
 ---
 name: local-docker-python-restart
 description: >-
-  docker compose でアプリ（Gunicorn / uWSGI 等）をローカル起動しているとき、
-  アプリ用 Python（例: src/ 配下の *.py）を変更したら検証・報告前に該当サービスを再起動する。
-  **Docker が起動している場合に限る**（未導入・デーモン未起動では restart しない）。
-  FishTrack / MyPokedex / otayori-navi に限らずワークスペース共通。サービス名の決め方・例外・再ビルド境界の正本。
+  Docker Compose で起動中のアプリ（Gunicorn 等）の Python ソースを変えたら、報告前に該当サービスを再起動する。Docker 未起動時は実行しない。Python 変更後の検証時に使用。
 ---
 
 # ローカル Docker：Python 変更後のアプリ再起動（local-docker-python-restart）

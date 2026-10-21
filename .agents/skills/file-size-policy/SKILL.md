@@ -27,6 +27,7 @@ description: >-
 | **`static/` アプリ管理 CSS** | 同上 | 同上 | 同上 | `vendor` 配下は対象外 |
 | **`src/`・`tests/` JS** | 500行 | 1,000行 | 2,000行 | |
 | **`static/` アプリ管理 JS** | 同上 | 同上 | 同上 | `vendor` 配下は対象外 |
+| **SKILL.md・AGENTS.md**（dev-workspace・各製品の `.agents/`） | 300行 | 450行 | 600行 | 超えたら製品別・段階別の `references/` へ分ける。例・違反事例・経緯は SKILL に置かない。`description` は 250 字目安。AGENTS は正本への案内だけにし、SKILL と同じ内容を複写しない |
 
 ## 検査
 

@@ -1,10 +1,7 @@
 ---
 name: error-handling-policy
 description: >-
-  問題対応全般で「表面上の回避」ではなく根本原因を修正する手順（エラー・バグ・誤判定・UI・レポート等）。
-  try/except 握りつぶし・閾値引き下げ・skip・type ignore・表示だけ直す等の禁止、必須フロー・自問チェック。
-  「エラーを直して」「テストが落ちる」「回避しないで」「根本から」等の依頼時、または修正方針に迷うときに使用。
-  Python 構文・型の詳細は python-code-error-fix SKILL と併用。
+  エラー・バグ・誤判定の修正で、回避（握りつぶし・閾値引き下げ・skip・type ignore・表示だけ直す）をせず根本原因を直す。「エラーを直して」「テストが落ちる」「根本から」の依頼時に使用。Python 詳細は python-code-error-fix。
 ---
 
 # エラー対応規律（error-handling-policy）

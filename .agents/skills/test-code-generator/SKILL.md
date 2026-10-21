@@ -1,7 +1,7 @@
 ---
 name: test-code-generator
 description: |
-  Generate comprehensive test code for Python (pytest) and JavaScript (Jest). The numeric coverage target follows each repository's pyproject.toml, package.json, and team policy, defaulting to 99% for branches, functions, lines, and statements when unspecified. MANDATORY: keep generating until that effective threshold is met; never ask the user to continue when below it. For Playwright E2E, SKILL section 6 applies only to FishTrack, MyPokedex, and otayori-navi; other repos follow their AGENTS.md. In those three repos, E2E changes follow dev-workspace myrules and AGENTS: REQUIRED_E2E_SCENARIOS, e2e_scenario markers, and same-change updates to tests/e2e conftest, pyproject.toml/pytest.ini marker docs, and Obsidian test specs. Does not modify application product code (e.g. src/); the E2E same-change files above are exceptions. If source issues are found, propose fixes but do not change application code without permission.
+  pytest・Jest のテストを閾値（未指定は 99%）に届くまで生成する。途中で継続を求めない。テスト追加・カバレッジ不足の依頼時に使用。src は変更せず、不具合は修正案の提示まで。
 ---
 
 # Test Code Generator
@@ -558,53 +558,7 @@ npm run test:coverage
 
 ## ソースコードに不備がある場合の対応例
 
-### 例1: 未実装のプレースホルダー関数
-
-**発見した問題**:
-
-```python
-def process_data(data):
-    # TODO: 実装予定
-    pass
-```
-
-**対応**:
-
-1. 問題点を記録: "`process_data`関数が未実装のプレースホルダーです"
-2. 修正案を提案: "この関数を実装するか、使用されていない場合は削除することを推奨します"
-3. テストは生成: 可能な範囲でテストコードを生成（`pass`の実行をテスト）
-
-### 例2: エラーハンドリングの不備
-
-**発見した問題**:
-
-```python
-def divide(a, b):
-    return a / b  # ゼロ除算のエラーハンドリングなし
-```
-
-**対応**:
-
-1. 問題点を記録: "`divide`関数にゼロ除算のエラーハンドリングがありません"
-2. 修正案を提案: "`if b == 0: raise ValueError('Division by zero')` を追加することを推奨します"
-3. テストは生成: ゼロ除算時の動作をテスト（現在の実装に基づいて）
-
-### 例3: 型チェックの不備
-
-**発見した問題**:
-
-```javascript
-function calculateTotal(items) {
-    return items.reduce((sum, item) => sum + item.price, 0);
-    // itemsがnull/undefinedの場合のチェックなし
-}
-```
-
-**対応**:
-
-1. 問題点を記録: "`calculateTotal`関数にnull/undefinedチェックがありません"
-2. 修正案を提案: "`if (!items) return 0;` を追加することを推奨します"
-3. テストは生成: null/undefinedの場合の動作をテスト（現在の実装に基づいて）
+具体例（例1: 未実装のプレースホルダー、例2: ゼロ除算などエラーハンドリングの不備、例3: null/undefined の型チェック不備）は [references/defect_examples.md](references/defect_examples.md) を参照する。
 
 ## Resources
 
@@ -617,5 +571,6 @@ function calculateTotal(items) {
 - **古典派 vs ロンドン派・AIの落とし穴**: 二重保証の回避、振る舞い検証の優先、ロンドン派への偏り防止は同上。参考: [AIのテストコードは信用するな - Zenn](https://zenn.dev/tko_kasai/articles/3f5863e3407891)
 - **python_patterns.md**: pytest固有のパターン、fixture、モック方法
 - **javascript_patterns.md**: Jest固有のパターン、モック、非同期処理
+- **defect_examples.md**: ソースコードに不備がある場合の対応の具体例（例1〜3）
 
 これらのファイルは、特定のテストタイプやパターンが必要な場合に参照してください。

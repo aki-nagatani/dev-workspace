@@ -1,12 +1,7 @@
 ---
 name: cursor-ide-browser-position
 description: >-
-  Cursor 内蔵ブラウザ（cursor-ide-browser MCP）の開き方。
-  ブラウザはサイドで開かない。position: "side" 禁止。既定は position 省略（バックグラウンド）。
-  ユーザーが明示で見せてほしいとき・内部ブラウザ指示・UI 監査レポート表示は position: "active"。
-  実ブラウザの画面確認は cursor-ide-browser のみ。Playwright／Chrome 等の外部ブラウザは使わない。
-  FishTrack プレビューの本家も同じ。
-  browser_navigate / browser_tabs の position、サイドパネル、エディタ分割時に使用。
+  Cursor 内蔵ブラウザを開く際の position 指定。サイドで開かない（"side" 禁止）。既定は省略、見せるときは "active"。browser_navigate・browser_tabs の指定時に使用。
 ---
 
 # Cursor ブラウザはサイドで開かない

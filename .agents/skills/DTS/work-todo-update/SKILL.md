@@ -1,10 +1,7 @@
 ---
 name: work-todo-update
 description: >-
-  Obsidian Work の次アクション（単発 Todo.md / 繰り返し Todo-定例作業.md）の追加・完了・期限変更・
-  未完了／完了セクション運用。正本ノート更新で生じたタスクの同一セッション反映、
-  単発と繰り返しの振り分け（週次・月次・3ヶ月次・年次等）、YYYY-MM-DD 期限。
-  Todo更新・タスク追加・タスク完了・Work Todo・繰り返しTodo・定例作業 の依頼時に使用する。
+  Work の Todo（単発 Todo.md・繰り返し Todo-定例作業.md）の追加・完了・期限変更を行う。単発と繰り返しを振り分け、期限は YYYY-MM-DD で確定させる。Todo更新・タスク追加・定例作業の依頼時に使用。
 ---
 
 # work-todo-update（Work Todo 更新・運用）

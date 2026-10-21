@@ -1,11 +1,8 @@
 ---
 name: integrated-schedule-update
 description: >-
-  Updates Obsidian unified work schedule (スケジュール.md): task list, weekly tables,
-  dual-pillar sync, completion status, markdownlint.
-  Use when editing スケジュール.md, weekly tasks per product, or when myrules asks to reflect
-  plan progress; use with obsidian-cursor-log after file changes. Plan file keeps minimal
-  rules—this SKILL holds the full procedure. Gantt chart section is abolished (2026-07-06).
+  Obsidian `DevProject/plans/スケジュール.md` の更新（タスク一覧・週次・二本柱・完了移動・着手不可・保留・リスケ・markdownlint）。
+  計画の進捗反映、タスクの追加・完了、リスケ依頼時に使用。ファイル変更後は obsidian-cursor-log と併用。ガントチャートは 2026-07-06 に廃止済み。
 ---
 
 # 統合作業スケジュールの更新

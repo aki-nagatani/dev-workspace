@@ -1,13 +1,7 @@
 ---
 name: commit-all
 description: >-
-  ワークスペース内の複数リポジトリ（FishTrack、MyPokedex、otayori-navi、personal-tools、dev-workspace 等）で、
-  差分のあるものをまとめてコミット＆プッシュする。
-  1チャット1回限りの依頼、
-  pre-commit 必須・--no-verify 禁止、develop/main のブランチ方針、カバレッジ・E2E・
-  test-code-generator 連携、完了後の CursorLog 追記（JST 実時刻）まで含む。コミットメッセージは
-  commit-message SKILL。専用 Cursor Command（旧 commit_all.md）は廃止し本 SKILL が正本。
-  commit_all、全リポコミット、一括コミット、マルチリポ push の依頼時に使用する。
+  複数リポジトリの差分をまとめてコミット・プッシュする（1 チャット 1 回限り）。全リポコミット・一括コミット・マルチリポ push の依頼時に使用。--no-verify は禁止。
 ---
 
 # 全リポジトリコミット（commit-all）

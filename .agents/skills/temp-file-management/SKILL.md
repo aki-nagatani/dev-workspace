@@ -1,11 +1,8 @@
 ---
 name: temp-file-management
 description: >-
-  一時ファイルは各リポジトリの temp/ 配下のみ。プロジェクト直下禁止（coverage.xml は例外）。
-  FishTrack temp-spec-crawl/ は汎用 temp/ と別（他チャットの temp 掃除では消さない）。
-  チャット作業完了時に temp/ を空にする。coverage.xml は消さずリポ直下に残す（次の diff-cover でフル pytest 省略）。
-  commit_msg・調査用 check_*.py 等の例、.gitignore 確認。
-  一時ファイル作成・作業完了・セッション終了・coverage.xml の残置／再利用時に使用。
+  一時ファイルは各リポジトリの temp/ 配下のみ（プロジェクト直下禁止。coverage.xml は例外で残す）。FishTrack の temp-spec-crawl/ は汎用 temp/ と別物で、他チャットの掃除で消さない。
+  チャット作業完了時に temp/ を空にし、次回も使うスクリプトは scripts/ へ置く。一時ファイル作成・作業完了・coverage.xml の再利用時に使用。
 ---
 
 # 一時ファイル管理（temp-file-management）
@@ -21,7 +18,8 @@ description: >-
 
 ## 絶対ルール
 
-1. **一時ファイルは必ず `temp/` 配下に作成する**（プロジェクト直下禁止）。**例外**: pytest が出す **`coverage.xml`**（および同位置の **`.coverage`**）はリポ直下に置く（下記「coverage.xml」）。**例外（FishTrack spec-crawl）**: CLI 生成物は **`temp-spec-crawl/`**（下記「FishTrack `temp-spec-crawl/`」）
+1. **一時ファイルは必ず `temp/` 配下に作成する**（プロジェクト直下禁止）。**例外**: pytest が出す **`coverage.xml`**（および同位置の **`.coverage`**）はリポ直下に置く（下記「coverage.xml」）。
+   **例外（FishTrack spec-crawl）**: CLI 生成物は **`temp-spec-crawl/`**（下記「FishTrack `temp-spec-crawl/`」）
 2. **次回以降も使う可能性があるものは `temp/` に置かない**（下記「再利用するものの置き場」）。**`coverage.xml` は `temp/` へ移さない**（`diff_cover_gate.sh` の既定パスは直下）
 3. **作業完了時に `temp/` を空にする**（削除。移動先が必要なら先に `scripts/` 等へ昇格）。**`coverage.xml` は消さない**。**`temp-spec-crawl/` は汎用掃除の対象外**
 4. **`temp/` および FishTrack `temp-spec-crawl/` への書き込み**はシェル・スクリプト可。**そこから正本（ソース・Obsidian 等）へ**は **Read のみ** → 正本は **`Write` / `StrReplace`**（**myrules**「ファイル修正と差分確認」）。\

@@ -1,11 +1,7 @@
 ---
 name: obsidian-cursor-monthly-report
 description: >-
-  CursorLog 日次記録を月次ファイル `CursorLog/YYYY-MM/YYYY-MM 日報.md` にジャンル別要約する正本。
-  発火: ユーザーが「日報」「昨日の日報」「月次日報」「日報作成」を依頼したとき。
-  当日初めて CursorLog に追記する直前の Q0 ゲート（前日分の未日報化を先に処理）。
-  最初のアクションは本 SKILL を Read。対象日の YYYY-MM-DD.md を全文 Read してから要約（チャット要約禁止）。
-  markdownlint 検証必須。完了報告に `## YYYY-MM-DD` 追記済みを明記。
+  CursorLog の日次記録を月次の日報（YYYY-MM 日報.md）へジャンル別に要約する。日次ログは全文 Read してから要約し、markdownlint を通す。「日報」「月次日報」の依頼時、当日初回の CursorLog 追記前の Q0 で使用。
 ---
 
 # CursorLog 月次日報
