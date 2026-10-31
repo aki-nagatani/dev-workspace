@@ -1,12 +1,18 @@
-# 全ワークスペースの Markdown 一括チェック・修正
-# Usage: .\scripts\markdownlint-all.ps1 [-Fix]
-#   -Fix を付けると --fix で自動修正を試行
+# 全ワークスペースの Markdown 一括チェック（書き込みなし）
+# Usage: .\scripts\markdownlint-all.ps1
+#   -Fix は廃止。--fix はシェルで直接書き換えるため Cursor の Review（差分）に載らない。
+#   修正は StrReplace で行う（myrules「ファイル修正と差分確認」）。
 
 param(
     [switch]$Fix
 )
 
 $ErrorActionPreference = "Stop"
+
+if ($Fix) {
+    Write-Error "-Fix は廃止しました。修正は StrReplace で行い、本スクリプトはチェックのみ実行します。"
+    exit 2
+}
 $configPath = "$PSScriptRoot\..\.markdownlint.json"
 $tempDir = "$PSScriptRoot\..\temp"
 $reportPath = "$tempDir\markdownlint-report.txt"
@@ -49,12 +55,6 @@ if (-not (Test-Path $tempDir)) {
     New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
 }
 
-$fixArg = @()
-if ($Fix) {
-    $fixArg = @("--fix")
-    Write-Host "Fix mode"
-}
-
 # カレントを dev-workspace に
 $originalCwd = Get-Location
 Set-Location "$PSScriptRoot\.."
@@ -63,7 +63,7 @@ Set-Location "$PSScriptRoot\.."
 $dirs = $dirs | Where-Object { Test-Path $_ }
 
 try {
-    & npx markdownlint-cli -c $configPath -o $reportPath @fixArg @dirs 2>$null
+    & npx markdownlint-cli -c $configPath -o $reportPath @dirs 2>$null
     $exitCode = $LASTEXITCODE
 }
 finally {

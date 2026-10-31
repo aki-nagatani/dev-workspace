@@ -2,12 +2,15 @@
 name: temp-file-management
 description: >-
   一時ファイルは各リポジトリの temp/ 配下のみ（プロジェクト直下禁止。coverage.xml は例外で残す）。FishTrack の temp-spec-crawl/ は汎用 temp/ と別物で、他チャットの掃除で消さない。
-  チャット作業完了時に temp/ を空にし、次回も使うスクリプトは scripts/ へ置く。一時ファイル作成・作業完了・coverage.xml の再利用時に使用。
+  チャット作業完了時に temp/ を空にし、次回も使うスクリプトは scripts/ へ置く。
+  全 SKILL 共通: 足りない処理は temp に使い捨て .py を作らず scripts/ へ常設化する。
+  一時ファイル作成・作業完了・coverage.xml の再利用・常設化判断時に使用。
 ---
 
 # 一時ファイル管理（temp-file-management）
 
-**myrules**「一時ファイル管理」と同一趣旨。**配置・再利用先・クリーンアップの正本は本 SKILL**。
+**myrules**「一時ファイル管理」と同一趣旨。**配置・再利用先・クリーンアップ・常設化の正本は本 SKILL**。\
+本規律は **すべての SKILL 実行に共通**（特定製品・特定 SKILL に限定しない）。
 
 ## 理想状態
 
@@ -24,10 +27,17 @@ description: >-
 3. **作業完了時に `temp/` を空にする**（削除。移動先が必要なら先に `scripts/` 等へ昇格）。**`coverage.xml` は消さない**。**`temp-spec-crawl/` は汎用掃除の対象外**
 4. **`temp/` および FishTrack `temp-spec-crawl/` への書き込み**はシェル・スクリプト可。**そこから正本（ソース・Obsidian 等）へ**は **Read のみ** → 正本は **`Write` / `StrReplace`**（**myrules**「ファイル修正と差分確認」）。\
    **Obsidian への `Copy-Item` / `shutil.copy*` は禁止**（件数・サイズ・サブエージェント失敗を理由にしない。Review に差分が出ない）。
+5. **不足処理の常設化（全 SKILL 共通・再発防止）**: SKILL 実行中に既存 CLI／ヘルパが足りないとき、
+   **`temp/**/*.py` や `temp-spec-crawl/**/*.py` に使い捨てスクリプトを新規しない**。
+   同じ作業単位で **`scripts/`**（製品なら当該リポ、横断なら `dev-workspace/scripts/`）へ常設し、
+   **呼び出し元 SKILL（`SKILL.md`／必要なら `AGENTS.md`・`references/`）へ使用方法を同じ作業で追記する**
+   （次回実行が迷わず常設 CLI を使えること。コードだけ置いて SKILL 未更新は禁止）。
+   急ぐから・今回限り・サブエージェント失敗を理由に例外にしない。
 
 ## 発火条件
 
 - カバレッジ JSON/XML、コミットメッセージ用テキスト、調査用 `check_*.py` / `debug_*.py` 等を**新規作成**するとき
+- **いずれかの SKILL 実行中に、処理用の `.py`／CLI を新規したくなるとき**（常設化ゲート）
 - プロジェクトルートに `coverage.json` 等が残っているのを見つけたとき
 - **コミット・push 完了後**（`commit_msg.txt` 等の削除）
 - **チャット内の作業を完了し、ユーザーへ報告するとき**（**temp クリーンアップ必須**）
@@ -37,22 +47,40 @@ description: >-
 
 | 種別 | 置き場 |
 | --- | --- |
-| **その場限りの一時** | 当該リポジトリの **`temp/`** |
-| **FishTrack spec-crawl CLI** | **`temp-spec-crawl/`**（`temp/` の子ではない。下記例外節） |
+| **その場限りの一時データ** | 当該リポジトリの **`temp/`**（入出力のみ。ロジック用 `.py` 禁止） |
+| **FishTrack spec-crawl CLI 生成物** | **`temp-spec-crawl/`**（データのみ。ロジック用 `.py` 禁止。下記例外節） |
 | **禁止** | リポジトリ直下（`commit_msg.txt`、`coverage.json` 等）。**例外: `coverage.xml` / `.coverage`** |
-| **次回も使う調査・ユーティリティ** | **`scripts/`**（リポに無ければ作成可・Git 管理の意図あるスクリプト） |
+| **再利用・不足補完のスクリプト** | **`scripts/`**（リポに無ければ作成可・Git 管理） |
 | **dev-workspace 横断ツール** | **`dev-workspace/scripts/`** |
 | **永続ナレッジ・仕様** | Obsidian **`DevProject/`** 等（**temp 禁止**） |
 
 - `temp/` ディレクトリが無ければ作成（**`.gitignore` に `temp/` があるか確認**）
 - **`temp/` に「とりあえず置いて後で整理」はしない**。再利用見込みがある時点で **`scripts/` 等へ最初から置く**
 
+### 不足時の常設化（全 SKILL 共通・正）
+
+どの SKILL（FishTrack／MyPokedex／おたよりナビ／dev-workspace／Work 等）でも、実行中に次を守る。
+
+1. **先に既存の常設 CLI／`scripts/` を探す**（製品 SKILL に列挙があるならそれを正とする）
+2. **足りる処理を temp に包み直さない**（ラッパの使い捨て `.py` 禁止）
+3. **足りない処理は、その場で `scripts/` へ常設追加**してから使う。メーカー固有パーサ等は実績が固まった単位で追加してよいが、共通の extract→preview→比較・巡回ラッパ等は最初から常設
+4. **常設化と SKILL 更新はセット（必須）**: `scripts/` に置いただけでは完了にしない。
+   同じ作業単位で、当該処理を使う SKILL の **`SKILL.md`（必要なら `AGENTS.md`・`references/`）を随時更新**し、
+   少なくとも次を残す。次回の SKILL 実行が迷いなく常設 CLI を呼べること。
+   - **いつ使うか**（発火・段階・前提）
+   - **コマンド例**（引数・入出力パス。`temp/` はデータのみであることの明示）
+   - **既存常設との順序**（例: prepare → fetch → build → preview）
+   - 製品横断なら本 SKILL への参照、製品固有なら製品 SKILL 側が正
+5. **`temp/` / `temp-spec-crawl/` に置いてよいのはデータだけ**（HTML・JSON・ログ・下書き Markdown・マニフェスト等）
+6. 製品例（限定ではない）: FishTrack 取込は `scripts/spec_import/`、巡回は `scripts/spec_crawl/`。
+   取込データは `temp/cursor_import/`。成功 preview JSON は `spec_import_previews/`（temp に置かない）
+
 ## 一時ファイルの例（`temp/` のみ・作業後削除）
 
 - カバレッジ（消す）: `coverage_*.json`、`coverage_temp.json`（`temp/` のみ。**完了後削除**）。**`coverage.xml` は対象外**（消さない）
 - コミットメッセージ: `commit_msg.txt`、`commit_msg_*.txt`（**コミット完了後必ず削除**）
-- 調査・検証: `debug_*.py`、`check_*.py`（一時）、`test_*.py`（一時）、`compare_*.py`、`fix_*.py`（一時）
-- 中間データ: 実データを含まない `*.db`、`*.sql`、ダミー `*.json`、`*_schema.json` / `*_schema.py`
+- 中間データ: 実データを含まない `*.db`、`*.sql`、ダミー `*.json`、`*_schema.json`
+- **禁止（常設へ）**: `debug_*.py`、`check_*.py`、`compare_*.py`、`fix_*.py`、`build_*.py`、`run_*.py` 等の**処理ロジック**を temp に新規すること。必要なら `scripts/` へ置く
 
 ## チャット完了時の temp クリーンアップ（必須）
 

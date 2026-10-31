@@ -61,6 +61,7 @@ description: markdownlint エラー（MD0xx）を修正する。「For the code 
 - **別パターンのエラーも修正すること**（MD013 と MD060 が同時に存在する場合など）
 - 既存の Markdown 構造・見出し階層・箇条書きは維持する
 - 文脈を壊さない最小限の編集で完結させる
+- **修正はツールで行う**: `StrReplace` で直す。`markdownlint-cli2 --fix`・`markdownlint-cli --fix`・`markdownlint-all.ps1 -Fix` は使わない（シェルで書き換えると Cursor の Review に差分が載らない。`beforeShellExecution` フックで `--fix` は拒否される）
 
 ## CursorLog の更新について
 

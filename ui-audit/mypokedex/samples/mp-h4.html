@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MP-H4 公開図鑑の説明</title>
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-mobile.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app_typography.css">
+  <link rel="stylesheet" href="http://127.0.0.1:5002/static/css/app-extra.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: max-content;
+      background: #fff;
+    }
+    body { padding-top: 0 !important; }
+    .fixed-header { position: relative !important; }
+    .sample-note {
+      font-family: "Segoe UI", sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0;
+      padding: 10px 16px;
+      background: #f3f4f6;
+      color: #111;
+      border-top: 1px solid #d1d5db;
+    }
+    .sample-frame {
+      width: 880px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .sample-frame .pkTable {
+      width: 880px;
+    }
+    .dexPublicExplain {
+      margin: 0 0 16px;
+      padding: 12px 16px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+    }
+    .dexPublicExplain h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+    }
+    .dexPublicExplain p,
+    .dexGuide p,
+    .dexGuide li {
+      margin: 0 0 8px;
+      line-height: 1.6;
+      text-wrap: pretty;
+    }
+    .dexPublicExplain p:last-child,
+    .dexGuide li:last-child {
+      margin-bottom: 0;
+    }
+    .dexGuide {
+      max-width: 40rem;
+    }
+    .dexGuide h1 {
+      margin: 0 0 12px;
+    }
+    .dexGuide h2 {
+      margin: 16px 0 8px;
+      font-size: 1.05rem;
+    }
+    .dexGuide ol,
+    .dexGuide ul {
+      margin: 0 0 8px;
+      padding-left: 1.4rem;
+    }
+  </style>
+</head>
+<body>
+  <p class="sample-note">変更前。地方図鑑。表の列は現行のまま。進化先より右は、説明の位置が分かるように切っている。</p>
+  <div class="sample-frame" id="before-regional">
+    <header class="site-header fixed-header">
+      <nav class="site-nav">
+        <div class="left">
+          <a href="http://127.0.0.1:5002/" class="site-logo-link" aria-label="MyPokedex トップ">
+            <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+          </a>
+          <span class="site-current-game" data-current-game-key="RGBP" aria-label="選択中のゲーム: 赤・緑・青・ピカチュウ">赤・緑・青・ピカチュウ</span>
+          <a href="http://127.0.0.1:5002/RGBP/partyBox" data-nav-party-box>パーティ＆ボックス</a>
+          <a href="http://127.0.0.1:5002/RGBP/dex/rgbp" class="tab-gap" data-nav-dex>図鑑</a>
+        </div>
+        <div class="right">
+          <a href="http://127.0.0.1:5002/auth/login">ログイン</a>
+          <a href="http://127.0.0.1:5002/auth/register" class="tab-gap">新規登録</a>
+        </div>
+      </nav>
+    </header>
+    <main id="main-content" class="container">
+      <h1>図鑑</h1>
+      <p class="dexGuestNote">一覧はログインなしで見られます。図鑑への登録とパーティへの追加は、<a href="http://127.0.0.1:5002/auth/login">ログイン</a>してからできます。</p>
+      <nav class="regionaldex-switch regionaldex-switch--wrap" aria-label="作品の図鑑">
+        <span class="seg is-active" aria-current="page">赤・緑・青・ピカチュウ</span>
+        <a class="seg" href="http://127.0.0.1:5002/GSC/dex">金・銀・クリスタル</a>
+        <a class="seg" href="http://127.0.0.1:5002/national-dex">Pokémon HOME</a>
+      </nav>
+      <section class="tab-panel dex-tab-regional active" role="tabpanel" aria-hidden="false">
+        <div class="pkFilterBar mb-8">
+          <span class="regionaldex-single-label">カントー図鑑</span>
+        </div>
+        <div class="dex-progress" aria-label="赤・緑・青・ピカチュウ図鑑進捗">
+          <div class="dex-progress__item">
+            <span class="dex-progress__label">進捗：</span>
+            <span class="dex-progress__value">0/151（0%）</span>
+          </div>
+        </div>
+        <details class="pkFilterCollapse">
+          <summary>未登録フィルタ</summary>
+        </details>
+        <div class="table-wrap">
+          <table class="pkTable pkTable-sticky">
+            <thead>
+              <tr>
+                <th class="pk-col pk-col--regional-dex" aria-sort="none"><span class="th-label">カントー図鑑No</span></th>
+                <th class="pk-col pk-col--national-dex" aria-sort="none"><span class="th-label">全国図鑑No</span></th>
+                <th class="pk-col pk-col--name" aria-sort="none"><span class="th-label">名称</span></th>
+                <th class="pk-col pk-col--type">タイプ</th>
+                <th class="pk-col pk-col--stats">種族値 (HP/攻/防/特攻/特防/速)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="is-odd">
+                <td class="pk-col pk-col--regional-dex">001</td>
+                <td class="pk-col pk-col--national-dex">001</td>
+                <td class="pk-col pk-col--name">フシギダネ</td>
+                <td class="pk-col pk-col--type">くさ / どく</td>
+                <td class="pk-col pk-col--stats">45 / 49 / 49 / 65 / 65 / 45</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <p class="sample-note">変更後。地方図鑑。足すのは「カントー図鑑」の上の説明だけ。表、作品の切り替え、フィルタ、ヘッダーは変えない。</p>
+  <div class="sample-frame" id="after-regional">
+    <header class="site-header fixed-header">
+      <nav class="site-nav">
+        <div class="left">
+          <a href="http://127.0.0.1:5002/" class="site-logo-link" aria-label="MyPokedex トップ">
+            <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+          </a>
+          <span class="site-current-game" data-current-game-key="RGBP" aria-label="選択中のゲーム: 赤・緑・青・ピカチュウ">赤・緑・青・ピカチュウ</span>
+          <a href="http://127.0.0.1:5002/RGBP/partyBox" data-nav-party-box>パーティ＆ボックス</a>
+          <a href="http://127.0.0.1:5002/RGBP/dex/rgbp" class="tab-gap" data-nav-dex>図鑑</a>
+        </div>
+        <div class="right">
+          <a href="http://127.0.0.1:5002/auth/login">ログイン</a>
+          <a href="http://127.0.0.1:5002/auth/register" class="tab-gap">新規登録</a>
+        </div>
+      </nav>
+    </header>
+    <main id="main-content" class="container">
+      <h1>図鑑</h1>
+      <nav class="regionaldex-switch regionaldex-switch--wrap" aria-label="作品の図鑑">
+        <span class="seg is-active" aria-current="page">赤・緑・青・ピカチュウ</span>
+        <a class="seg" href="http://127.0.0.1:5002/GSC/dex">金・銀・クリスタル</a>
+        <a class="seg" href="http://127.0.0.1:5002/national-dex">Pokémon HOME</a>
+      </nav>
+      <section class="dexPublicExplain" aria-label="この地方図鑑の見方">
+        <h2>カントー図鑑の見方</h2>
+        <p>この表は、赤・緑・青・ピカチュウのカントー図鑑です。上の作品名を押すと、別の地方図鑑や Pokémon HOME の全国図鑑に切り替わります。番号、名前、タイプ、種族値、進化先は、ログインなしで比べられます。</p>
+        <p>「未登録のみ」は、ログインしたあとの自分の登録に対する絞り込みです。図鑑への登録とボックスへの追加は、ログインしてから行います。</p>
+        <p><a href="#guide-page">カントー図鑑で、次に集める相手を決める</a></p>
+      </section>
+      <section class="tab-panel dex-tab-regional active" role="tabpanel" aria-hidden="false">
+        <div class="pkFilterBar mb-8">
+          <span class="regionaldex-single-label">カントー図鑑</span>
+        </div>
+        <div class="dex-progress" aria-label="赤・緑・青・ピカチュウ図鑑進捗">
+          <div class="dex-progress__item">
+            <span class="dex-progress__label">進捗：</span>
+            <span class="dex-progress__value">0/151（0%）</span>
+          </div>
+        </div>
+        <details class="pkFilterCollapse">
+          <summary>未登録フィルタ</summary>
+        </details>
+        <div class="table-wrap">
+          <table class="pkTable pkTable-sticky">
+            <thead>
+              <tr>
+                <th class="pk-col pk-col--regional-dex" aria-sort="none"><span class="th-label">カントー図鑑No</span></th>
+                <th class="pk-col pk-col--national-dex" aria-sort="none"><span class="th-label">全国図鑑No</span></th>
+                <th class="pk-col pk-col--name" aria-sort="none"><span class="th-label">名称</span></th>
+                <th class="pk-col pk-col--type">タイプ</th>
+                <th class="pk-col pk-col--stats">種族値 (HP/攻/防/特攻/特防/速)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="is-odd">
+                <td class="pk-col pk-col--regional-dex">001</td>
+                <td class="pk-col pk-col--national-dex">001</td>
+                <td class="pk-col pk-col--name">フシギダネ</td>
+                <td class="pk-col pk-col--type">くさ / どく</td>
+                <td class="pk-col pk-col--stats">45 / 49 / 49 / 65 / 65 / 45</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <p class="sample-note">変更後。全国図鑑。変更前は地方図鑑と同じ一行だけなので、ここでは足す説明だけを示す。表は現行のまま。</p>
+  <div class="sample-frame" id="after-national">
+    <header class="site-header fixed-header">
+      <nav class="site-nav">
+        <div class="left">
+          <a href="http://127.0.0.1:5002/" class="site-logo-link" aria-label="MyPokedex トップ">
+            <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+          </a>
+          <span class="site-current-game site-current-game--home" data-current-game-key="HOME" aria-label="選択中: Pokémon HOME">Pokémon HOME</span>
+          <a href="http://127.0.0.1:5002/national-dex" data-nav-national-dex>図鑑</a>
+        </div>
+        <div class="right">
+          <a href="http://127.0.0.1:5002/auth/login">ログイン</a>
+          <a href="http://127.0.0.1:5002/auth/register" class="tab-gap">新規登録</a>
+        </div>
+      </nav>
+    </header>
+    <main id="main-content" class="container">
+      <h1>図鑑</h1>
+      <nav class="regionaldex-switch regionaldex-switch--wrap" aria-label="作品の図鑑">
+        <a class="seg" href="http://127.0.0.1:5002/RGBP/dex/rgbp">赤・緑・青・ピカチュウ</a>
+        <span class="seg is-active" aria-current="page">Pokémon HOME</span>
+      </nav>
+      <section class="dexPublicExplain" aria-label="全国図鑑の見方">
+        <h2>全国図鑑の見方</h2>
+        <p>この表は Pokémon HOME の全国図鑑です。番号、名前、タイプ、種族値、進化条件は、ログインなしで見られます。作品の地方図鑑とは別の一覧です。</p>
+        <p>「未登録のみ」は、ログインしたあとの HOME 登録に対する絞り込みです。登録を変える操作は、ログインしてから行います。</p>
+      </section>
+    </main>
+  </div>
+
+  <p class="sample-note">追加する手順ページ。現状の製品には無い。地方図鑑の説明と、紹介ページの質問から開く。</p>
+  <div class="sample-frame" id="guide-page">
+    <header class="site-header fixed-header">
+      <nav class="site-nav">
+        <div class="left">
+          <a href="http://127.0.0.1:5002/" class="site-logo-link" aria-label="MyPokedex トップ">
+            <img src="http://127.0.0.1:5002/static/img/branding/logo.png" alt="MyPokedex" class="site-logo">
+          </a>
+          <a href="http://127.0.0.1:5002/RGBP/dex/rgbp" class="tab-gap" data-nav-dex>図鑑</a>
+        </div>
+        <div class="right">
+          <a href="http://127.0.0.1:5002/auth/login">ログイン</a>
+          <a href="http://127.0.0.1:5002/auth/register" class="tab-gap">新規登録</a>
+        </div>
+      </nav>
+    </header>
+    <main id="main-content" class="container">
+      <article class="dexGuide">
+        <h1>カントー図鑑で、次に集める相手を決める</h1>
+        <p>赤・緑・青・ピカチュウのカントー図鑑を開き、まだ登録していない相手を残して、次に集めるものを選びます。</p>
+        <h2>ログインなしでできること</h2>
+        <ul>
+          <li>カントーの図鑑を開き、番号、名前、タイプ、種族値、進化先を見る</li>
+          <li>上の作品名を押して、別の地方図鑑や全国図鑑へ切り替える</li>
+        </ul>
+        <h2>ログインしてからできること</h2>
+        <ul>
+          <li>「未登録のみ」で、自分のカントー図鑑にまだ無い相手だけを残す</li>
+          <li>行の操作から、図鑑へ登録するか、ボックスへ追加する</li>
+        </ul>
+        <h2>手順</h2>
+        <ol>
+          <li>カントーの図鑑を開く</li>
+          <li>ログインする</li>
+          <li>「未登録フィルタ」を開き、「未登録のみ」にチェックして適用する</li>
+          <li>残った相手から、次に集めるものを選ぶ</li>
+        </ol>
+      </article>
+    </main>
+  </div>
+</body>
+</html>

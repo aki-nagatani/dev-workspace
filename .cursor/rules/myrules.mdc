@@ -9,6 +9,7 @@ alwaysApply: true
 
 - AI エージェントが開発の中心。人間は要件、設計判断、レビュー、最終承認を担当する
 - **思考は英語で行い、途中経過と最終出力は日本語にする**
+- **日本語出力は絶対のルール（例外なし）**: ユーザー向けの途中経過・最終報告・確認質問・選択肢・ツール実行前後の説明文は、すべて日本語で書く。英語のみの文・英語の見出し・英語の進捗説明は禁止（コード、コマンド、パス、識別子、ログ原文の引用は除く）。英語で書きかけたら日本語へ直してから出力する
 
 ## 後方互換性方針（重要）
 
@@ -74,7 +75,9 @@ FishTrack／MyPokedex／Obsidian／Work を含む、Cursor 上の作業全体に
 
 - 禁止の例: `Copy-Item`、`Set-Content`、リダイレクト、`write_text`、`shutil.copy*`、`sed`、正規表現だけの一括置換
 - **Obsidian**（`D:/OneDrive/アプリ/remotely-save/Obsidian/`）へはシェルでコピー・生成・上書きしない
-- 理由: 差分ビューで追跡できなくなる
+- 理由: 差分ビューで追跡できなくなる（Obsidian は git 管理外のため、シェルの書き換えは Review に載らない）
+- 機械的な拒否: temp/（FishTrack の temp-spec-crawl/ を含む）以外へのシェル書き込み（書き込みの意図があるコマンド）と `markdownlint --fix` は、
+    `beforeShellExecution` フック（`dev-workspace/scripts/cursor_hooks/guard_obsidian_shell_write.py`、ユーザー全体の `~/.cursor/hooks.json`）で拒否される。`markdownlint-all.ps1 -Fix` は廃止
 - 正: **`StrReplace`／`Write`／`Delete`／`EditNotebook`**。Obsidian は 1 ファイルずつ。`temp/` の生成物は Read してからツールで書く
 - `temp/` と FishTrack `temp-spec-crawl/` への出力はシェル可。そこから正本へは Read のみ → **`Write`／`StrReplace`**
 - `temp-spec-crawl/` は汎用 `temp/` の掃除で消さない
@@ -185,6 +188,7 @@ FishTrack／MyPokedex／おたよりナビの Jinja／HTML は **`frontend-html-
 
 **一時ファイルは `temp/` だけ。** プロジェクト直下へは作らない。チャット完了時に `temp/` を空にする。次回も使うものは `scripts/` 等へ置く。
 
+- **全 SKILL 共通**: 実行中に足りない処理があっても **`temp/**/*.py` に使い捨てを作らない**。同じ作業で **`scripts/` へ常設化**し、**呼び出し元 SKILL に使用方法も追記**する（正本は **`temp-file-management`**）
 - **`coverage.xml`** は残す（次の diff-cover でフル pytest を省くため）
 - FishTrack の **`temp-spec-crawl/`** は汎用 `temp/` と別。他チャットの掃除では消さない
-- 再利用条件は **`temp-file-management`** SKILL
+- 詳細は **`temp-file-management`** SKILL

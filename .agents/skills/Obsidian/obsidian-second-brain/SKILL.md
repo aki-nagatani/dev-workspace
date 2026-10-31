@@ -80,6 +80,12 @@ AI チャット・調査・レビュー・設計判断・ユーザー訂正・�
 - **禁止**: シェル／スクリプトでのコピー・生成・上書き（`Copy-Item`・`shutil.copy` / `copy2`・`write_text`・`Set-Content` 等）
 - **禁止の典型**: `temp/` にノートを生成したあと **シェルで Obsidian へコピー**する（件数・サイズ・サブエージェント失敗を理由にしない）
 - **理由**: シェル経由だと Cursor の Review／差分に載らず、レビュー不能になる（ユーザー明示の禁止）
+- **原因（2026-10-22 調査）**: Vault は git 管理外。Review に出るのは編集ツール（`StrReplace`・`Write`・`Delete`）で行った変更だけ。ルール文言だけでは再発したため、以下で機械的に止める
+  - **フック**: ユーザー全体の `~/.cursor/hooks.json`（`beforeShellExecution`）→ `dev-workspace/scripts/cursor_hooks/guard_obsidian_shell_write.py`。
+  - **拒否対象**: temp/（`temp-spec-crawl/` 含む）以外への書き込み系シェル（`Set-Content`・`Copy-Item`・`WriteAllText`・リダイレクト先・`--fix` 等）と `markdownlint --fix`。終了コード 2 で拒否する。Vault に限らず全ファイルが対象
+  - **拒否されたら**: シェルを諦めて `StrReplace`／`Write`／`Delete` で同じ変更を行う
+  - **`markdownlint-all.ps1`**: `-Fix` は廃止（全対象に `--fix` を当てていた。チェックのみ）
+  - **検証**: `python dev-workspace/scripts/cursor_hooks/guard_obsidian_shell_write.py --self-test`（25 ケース）
 - **正しい流れ**: `temp/` 生成物は **Read** → 正本パスへ **`Write` / `StrReplace`**（1 ファイルずつ）
 - **横断正本**: myrules「ファイル修正と差分確認」・**`temp-file-management`** SKILL
 
