@@ -10,7 +10,7 @@ Always respond in Japanese when using this skill.
 
 ## 必須の最初アクション
 
-**`SKILL.md` と `template.md` を Read ツールで全文読む**。Work 配下を編集する前に **`work-folder-update` SKILL** も Read する。
+**`SKILL.md` と `template.md` を Read ツールで全文読む**。Excelファイルを扱うときは、先に **`xlsx` SKILL** をReadする。Work 配下を編集する前に **`work-folder-update` SKILL** も Read する。
 
 ## 要点
 

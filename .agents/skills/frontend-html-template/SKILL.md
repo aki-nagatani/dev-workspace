@@ -72,6 +72,7 @@ description: >-
 | FishTrack | **`local-browser-verify`** SKILL（`FishTrack/.agents/skills/`）。AI 用アカウント・Cursor ブラウザ表示 |
 | MyPokedex | **`local-browser-verify`** SKILL（`MyPokedex/.agents/skills/`）。AI 用アカウント・Cursor ブラウザ表示 |
 
+- **操作確認のブラウザ**: **`cursor-ide-browser-position`** の「実装変更の画面操作確認」。専用プロファイルの MCP 設定が終わるまでは内蔵ブラウザ
 - **ブラウザ配置**: **サイドで開かない**（**`cursor-ide-browser-position`** SKILL。`position: "side"` 禁止）
 - **確認観点**（代表）: ヘッダー・ナビ・表／フォーム配置・sticky・横スクロール・空状態・モーダル／パネル・主要ボタン
 - **報告**: 確認した URL と気づいた点を短く記載する
@@ -83,7 +84,7 @@ description: >-
   - ページ内の非同期操作（AJAX）の結果通知
   - リダイレクト後のサーバー `flash()`（`partials/_ft_flash_to_toast.html` → `hydrateFlashes`）
 - **配置**: 画面上部中央の固定トースト（既定 `placement: 'top'`）。スクロール位置に依存しない。\
-  **ヘッダー下**にオフセット（`ft_toast.js` が表示時に `header.ft-site-header` を実測して `top` を設定。CSS は `--ft-toast-clearance` をフォールバック。モバイル固定バーは `--ft-mobile-header-bar-height`）。ヘッダーと重ねない。
+  **ヘッダー下**にオフセット（`ft_toast.js` が表示時とスクロール／resize／hashchange のたびに、画面内に残っている `header.ft-site-header` 下端だけを実測して `top` を設定。画面外にスクロールしたヘッダー分は余白にしない。CSS は `--ft-toast-clearance` をフォールバック。モバイル固定バーは `--ft-mobile-header-bar-height`）。ヘッダーと重ねない。**本文・ヘッダーの位置は動かさない。** 上部トーストは種別色のまま半透明（成功は緑系。白で覆わない。背後が読める）。右上トーストは不透明のまま。
 - **種別**: `success` / `error` / `warning` / `info`。スタイルは `fishtrack_tail.css` の `.ft-toast*`。HTML 付き flash（リンク等）は `html` オプション。
 - **禁止**: 画面ごとにトースト DOM 生成ロジックを複製しない。ページ先頭の `.flash-container` バナー表示に戻さない（カード内インライン `flash--*` は例外）。
 - **テスト**: `tests/js/common/test.fishtrack.ft_toast.js` を参照。利用側 JS のテストでは `ft_toast.js` を先に `require` する。
