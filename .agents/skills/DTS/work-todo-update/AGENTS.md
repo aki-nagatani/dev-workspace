@@ -6,8 +6,8 @@
 **追加・完了・期限変更・未完了／完了セクション運用**。手順は **`SKILL.md`**。混ぜない。
 `/next-action-work` は両方と Asana MCP を見る（Asana 手順は `next-action-work` SKILL）。
 
-- **正本（単発）**: `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/Todo.md`
-- **正本（繰り返し）**: `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/Todo-定例作業.md`
+- **正本（単発）**: `OneDrive/git_work/Obsidian/Work/Todo.md`
+- **正本（繰り返し）**: `OneDrive/git_work/Obsidian/Work/Todo-定例作業.md`
 - **構成**: **`## 未完了` 上部**・**`## 完了` 下部**。テーマは `###`。
   **単発**は同じ `###` に `[ ]` と `[x]` を混在させない。
   **繰り返し**は親の下で対象月の `[ ]` と `[x]` が混在してよい

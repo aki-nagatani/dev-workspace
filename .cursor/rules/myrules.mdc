@@ -74,7 +74,7 @@ FishTrack／MyPokedex／Obsidian／Work を含む、Cursor 上の作業全体に
 **`temp/` と FishTrack `temp-spec-crawl/` 以外**への作成・更新・上書きを、シェルやスクリプトで行わない。1 ファイルでも、特定リポジトリでも同じ。件数、大きさ、サブエージェント失敗を理由に例外にしない。
 
 - 禁止の例: `Copy-Item`、`Set-Content`、リダイレクト、`write_text`、`shutil.copy*`、`sed`、正規表現だけの一括置換
-- **Obsidian**（`D:/OneDrive/アプリ/remotely-save/Obsidian/`）へはシェルでコピー・生成・上書きしない
+- **Obsidian**（`OneDrive/git_work/Obsidian/`）へはシェルでコピー・生成・上書きしない
 - 理由: 差分ビューで追跡できなくなる（Obsidian は git 管理外のため、シェルの書き換えは Review に載らない）
 - 機械的な拒否: temp/（FishTrack の temp-spec-crawl/ を含む）以外へのシェル書き込み（書き込みの意図があるコマンド）と `markdownlint --fix` は、
     `beforeShellExecution` フック（`dev-workspace/scripts/cursor_hooks/guard_obsidian_shell_write.py`、ユーザー全体の `~/.cursor/hooks.json`）で拒否される。`markdownlint-all.ps1 -Fix` は廃止
@@ -130,7 +130,7 @@ FishTrack／MyPokedex／Obsidian／Work を含む、Cursor 上の作業全体に
 
 ## 仕様書探索の既定パス（重要）
 
-仕様は Obsidian を先に探す。起点は `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/`。製品ごとのフォルダは FishTrack、MyPokedex、おたよりナビ、FaiNavi。
+仕様は Obsidian を先に探す。起点は `OneDrive/git_work/Obsidian/DevProject/specifications/`。製品ごとのフォルダは FishTrack、MyPokedex、おたよりナビ、FaiNavi。
 
 - 見るのは、コードと `AGENTS.md` に残らない決定と禁止。スキーマ・API・スタックの写しは追わない
 - フォルダ型は `INDEX.md` から、決定がありそうな節だけ読む

@@ -90,7 +90,7 @@ description: >-
 
 ## 仕様書の探索
 
-- 既定: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/`
+- 既定: `OneDrive/git_work/Obsidian/DevProject/specifications/`
 - 各製品はフォルダの `INDEX.md` から、決定が書いてありそうな節だけを読む。スキーマ・API・スタックの確認に仕様を使わない。MiteneKeeper は `MiteneKeeper仕様書.md`
 - 実装・調査の開始時は各リポジトリの **`AGENTS.md`** と、上記の決定確認を行う
 

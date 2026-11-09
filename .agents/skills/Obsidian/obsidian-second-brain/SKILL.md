@@ -16,7 +16,7 @@ dev-workspace・FishTrack・MyPokedex・おたよりナビ・personal-tools 等�
 
 ## 原則
 
-Obsidian ボールト（`D:/OneDrive/アプリ/remotely-save/Obsidian/`）はユーザーの**第二の脳**である。
+Obsidian ボールト（`OneDrive/git_work/Obsidian/`）はユーザーの**第二の脳**である。
 
 AI チャット・調査・レビュー・設計判断・ユーザー訂正・外部資料の読解で**確定した情報**は、**チャット内だけに閉じず**、あとから辿れるよう **Obsidian の正本へ集約**する。
 
@@ -75,7 +75,7 @@ AI チャット・調査・レビュー・設計判断・ユーザー訂正・�
 
 ## Obsidian への書き込み手段（厳禁・再発防止）
 
-ボールト（`D:/OneDrive/アプリ/remotely-save/Obsidian/`）への更新は **Cursor の `Write` / `StrReplace` / `Delete` のみ**。
+ボールト（`OneDrive/git_work/Obsidian/`）への更新は **Cursor の `Write` / `StrReplace` / `Delete` のみ**。
 
 - **禁止**: シェル／スクリプトでのコピー・生成・上書き（`Copy-Item`・`shutil.copy` / `copy2`・`write_text`・`Set-Content` 等）
 - **禁止の典型**: `temp/` にノートを生成したあと **シェルで Obsidian へコピー**する（件数・サイズ・サブエージェント失敗を理由にしない）

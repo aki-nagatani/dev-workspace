@@ -373,7 +373,7 @@ git log --oneline HEAD..origin/main
 
 ## 関連ドキュメント
 
-以下は Obsidian（`D:/OneDrive/アプリ/remotely-save/Obsidian/`）配下のパスです。
+以下は Obsidian（`OneDrive/git_work/Obsidian/`）配下のパスです。
 
 ### MyPokedex の関連ドキュメント
 

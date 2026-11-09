@@ -34,11 +34,11 @@ InBox 1 件の処理で **Articles ＋ Knowledge だけで完了してはなら�
 
 ### 既定の入出力パス
 
-- **InBox ディレクトリ**: `D:\OneDrive\アプリ\remotely-save\Obsidian\InBox\`
-- **原文全文の保存先（Articles）**: `D:\OneDrive\アプリ\remotely-save\Obsidian\Notes\Knowledge\Articles\`（無ければ作成する）
-- **Knowledge 保存先**: `D:\OneDrive\アプリ\remotely-save\Obsidian\Notes\Knowledge\`  
+- **InBox ディレクトリ**: `OneDrive/git_work/Obsidian/InBox/`
+- **原文全文の保存先（Articles）**: `OneDrive/git_work/Obsidian/Notes/Knowledge/Articles/`（無ければ作成する）
+- **Knowledge 保存先**: `OneDrive/git_work/Obsidian/Notes/Knowledge/`
   依頼で上記と異なるパスが明示されていれば、それに従う（下記「適用条件」）。
-- **釣行メモ（釣り関連ボイスメモ）**: `D:\OneDrive\アプリ\remotely-save\Obsidian\Fishing\釣行メモ.md`
+- **釣行メモ（釣り関連ボイスメモ）**: `OneDrive/git_work/Obsidian/Fishing/釣行メモ.md`
 
 **重要**: **1 回の実行では 1 件だけ**処理し、完了後に作業を中断する。次のノートは、**同じ依頼を再度出す**（チャット上で本 SKILL を再適用）ことで処理する。
 
@@ -68,7 +68,7 @@ InBox 1 件の処理で **Articles ＋ Knowledge だけで完了してはなら�
   - InBoxディレクトリ配下のMarkdownファイル、PDFファイル、**音声ファイル**
   - ユーザーが直接指定したMarkdownファイル、PDFファイル、**音声ファイル**（Cursorから直接渡される場合も含む）
 - 上記「既定の入出力パス」または、依頼で明示された InBox ディレクトリ、**原文全文保存先（Articles）**、Knowledge 保存先を使用する
-  - **原文全文保存先の既定**: `D:/OneDrive/アプリ/remotely-save/Obsidian/Notes/Knowledge/Articles/`（依頼で別パスが指定されていればそれに従う）
+  - **原文全文保存先の既定**: `OneDrive/git_work/Obsidian/Notes/Knowledge/Articles/`（依頼で別パスが指定されていればそれに従う）
 - 直接ファイルが指定された場合は、そのファイルを処理対象とする
 
 ### InBox の棚卸し（エージェント必須・Glob だけ禁止）
@@ -79,7 +79,7 @@ InBox 1 件の処理で **Articles ＋ Knowledge だけで完了してはなら�
 - **正本コマンド**（PowerShell）:
 
   ```powershell
-  Get-ChildItem -Path "D:\OneDrive\アプリ\remotely-save\Obsidian\InBox" -File -Recurse |
+  Get-ChildItem -Path "$env:OneDrive\git_work\Obsidian\InBox" -File -Recurse |
     Sort-Object Name |
     Select-Object Name, Length, LastWriteTime
   ```
@@ -556,7 +556,7 @@ source: InBox/YYYY-MM-DD.md
 
 3. **Cursorログの更新（必須）**
    - **処理完了後、必ずCursorログを更新する**
-   - `obsidian-cursor-log` SKILLを使用して、当日のCursorLog（`D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM-DD.md`）に作業内容を記録する
+   - `obsidian-cursor-log` SKILLを使用して、当日のCursorLog（`OneDrive/git_work/Obsidian/CursorLog/YYYY-MM-DD.md`）に作業内容を記録する
    - **記録内容**:
      - 作業名: InBoxノート処理（処理したノートのファイル名、ジャンル名を含める）
      - プロジェクト名: dev-workspace、Obsidian

@@ -91,7 +91,7 @@ SKILL.md「1.4.1」の詳細。文字起こしテキストが確定した後に�
 
   ```powershell
   python d:\OneDrive\git_work\dev-workspace\scripts\check_trip_memo_lure_sections.py `
-    "D:\OneDrive\アプリ\remotely-save\Obsidian\Fishing\釣行メモ.md" `
+    "$env:OneDrive\git_work\Obsidian\Fishing\釣行メモ.md" `
     --min-line <今回追記した使用ルアー節の先頭行> `
     --max-line <同節の末尾行>
   ```

@@ -106,7 +106,7 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
 - **Markdown編集時**: CursorLog（.md）を編集する際は、`markdown-editing` SKILLのルールに従う
 - **URL（MD034・必須）**: エントリに URL を書くときは**最初から** `<https://...>`（または `[表示](url)`）。\
   生の `https://...` を本文に置かない。追記後の lint で **MD034 を必ず確認**する（下記 Lint 検証）
-- 保存先は `D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM/YYYY-MM-DD.md`（JST）。月ごとのフォルダ（YYYY-MM）に日付ファイルを格納する。フォルダが存在しない場合は作成する。
+- 保存先は `OneDrive/git_work/Obsidian/CursorLog/YYYY-MM/YYYY-MM-DD.md`（JST）。月ごとのフォルダ（YYYY-MM）に日付ファイルを格納する。フォルダが存在しない場合は作成する。
 - **ログファイルの日付（YYYY-MM-DD）は、追記直前にターミナルで取得した「現在の日付（JST）」を使う。**\
     **会話要約の `Today's date`・IDE で開いているファイル名・前回追記したパスをそのまま使わない**（日付跨ぎで前日ファイルに誤追記しやすい）。\
     0時を過ぎている場合は**当日**のファイルに追記し、誤って前日のファイルに書かないこと。
@@ -154,8 +154,8 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
 
    ```bash
    python -c "
-   import pathlib
-   p = pathlib.Path(r'D:\OneDrive\アプリ\remotely-save\Obsidian\CursorLog\YYYY-MM\YYYY-MM-DD.md')
+   import os, pathlib
+   p = pathlib.Path(os.environ["OneDrive"]) / "git_work" / "Obsidian" / "CursorLog" / "YYYY-MM" / "YYYY-MM-DD.md"
    data = p.read_bytes()
    if not data.endswith(b'\n'):
        p.write_bytes(data + b'\n')
@@ -195,8 +195,8 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
      datetime.now(timezone(timedelta(hours=9))).strftime('%Y-%m-%d %H:%M:%S')
      ```
 
-2. **取得した日付で追記先ファイルを決める**  
-   - パス: `D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM/YYYY-MM-DD.md`（`YYYY-MM` は取得日付の年月）  
+2. **取得した日付で追記先ファイルを決める**
+   - パス: `OneDrive/git_work/Obsidian/CursorLog/YYYY-MM/YYYY-MM-DD.md`（`YYYY-MM` は取得日付の年月）
    - **編集対象のファイル名・先頭 `# YYYY-MM-DD` が、取得した日付と一致しているか確認する**。不一致なら**正しい当日ファイルに切り替えてから**追記する（前日ファイルへの追記は禁止）。
 3. **取得した時刻をエントリ見出し `## HH:mm:ss` にそのまま記載する**。推測・仮の値は使わない。
 4. **禁止**:

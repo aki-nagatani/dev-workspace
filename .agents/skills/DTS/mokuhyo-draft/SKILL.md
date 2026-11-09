@@ -53,12 +53,12 @@ myrules を厳守して作業する。
 
 | 用途 | パス |
 | --- | --- |
-| 管理シート（Markdown 正本） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.md` |
+| 管理シート（Markdown 正本） | `OneDrive/git_work/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.md` |
 | 管理シート | Markdown正本のみ。CSVミラーは廃止し、作成・更新しない |
-| 目標ジャンル候補 | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート_目標ジャンルリスト.md` |
-| **参考資料**（評価サイクル・面談） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/評価の流れ.md` |
-| **参考資料**（目標設定の品質・セルフチェック） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/目標設定チェックポイント.md` |
-| **課題管理（正本）** | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/課題.md` |
+| 目標ジャンル候補 | `OneDrive/git_work/Obsidian/Work/社内業務/人事考課/人事考課_管理シート_目標ジャンルリスト.md` |
+| **参考資料**（評価サイクル・面談） | `OneDrive/git_work/Obsidian/Work/社内業務/人事考課/評価の流れ.md` |
+| **参考資料**（目標設定の品質・セルフチェック） | `OneDrive/git_work/Obsidian/Work/社内業務/人事考課/目標設定チェックポイント.md` |
+| **課題管理（正本）** | `OneDrive/git_work/Obsidian/Work/課題.md` |
 | 期の計算（参考） | 西暦年 → **期番号 = 西暦年 − 1971**（`mokuhyo-excel-to-markdown` と同式） |
 
 **正本と参考の区別**:

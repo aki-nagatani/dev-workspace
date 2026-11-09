@@ -53,7 +53,7 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
 
 **目的**: ユーザーが「なぜ途中で止まったのか」を理解できるようにする。SKILL違反による中断ではなく、システム制約による事象であることを明示する。
 
-**重要**: テストカバレッジ方針の正本は Obsidian ボールト内 **`DevProject/guidelines/テストカバレッジ方針.md`**（例: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/guidelines/テストカバレッジ方針.md`）の1本とする。リポ内の他パスに複製しない。
+**重要**: テストカバレッジ方針の正本は Obsidian ボールト内 **`DevProject/guidelines/テストカバレッジ方針.md`**（例: `OneDrive/git_work/Obsidian/DevProject/guidelines/テストカバレッジ方針.md`）の1本とする。リポ内の他パスに複製しない。
 
 ## 基本原則
 

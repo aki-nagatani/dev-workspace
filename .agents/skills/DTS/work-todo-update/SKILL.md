@@ -44,9 +44,9 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 
 | 用途 | パス |
 | --- | --- |
-| **単発（正本）** | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/Todo.md` |
-| **繰り返し（正本）** | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/Todo-定例作業.md` |
-| **繰り返しの型・写し方** | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内手続き/PL作業TODO.md` |
+| **単発（正本）** | `OneDrive/git_work/Obsidian/Work/Todo.md` |
+| **繰り返し（正本）** | `OneDrive/git_work/Obsidian/Work/Todo-定例作業.md` |
+| **繰り返しの型・写し方** | `OneDrive/git_work/Obsidian/Work/社内手続き/PL作業TODO.md` |
 
 各ノート冒頭の「更新ルール」は利用者向け要約。**手順の正本は本 SKILL**（変更時はノートと整合させる）。
 

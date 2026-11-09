@@ -61,9 +61,9 @@ myrules を厳守して作業してください。
 
 | プロダクト | 仕様（Obsidian） | 実装リポジトリの `AGENTS.md` |
 | --- | --- | --- |
-| **FishTrack** | `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/FishTrack/` | `D:/OneDrive/git_work/FishTrack/AGENTS.md` |
+| **FishTrack** | `OneDrive/git_work/Obsidian/DevProject/specifications/FishTrack/` | `D:/OneDrive/git_work/FishTrack/AGENTS.md` |
 | | `INDEX.md` | |
-| **MyPokedex** | `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/specifications/MyPokedex/` | `D:/OneDrive/git_work/MyPokedex/AGENTS.md` |
+| **MyPokedex** | `OneDrive/git_work/Obsidian/DevProject/specifications/MyPokedex/` | `D:/OneDrive/git_work/MyPokedex/AGENTS.md` |
 | | `INDEX.md` | |
 
 **おたよりナビは廃止済み。** 仕様・`AGENTS.md`・コードは読まない。案、転用、起票の対象にしない。
@@ -79,7 +79,7 @@ myrules を厳守して作業してください。
 
 **チャットの返信だけでは終えない。** 機能・体験の提起は、次の Markdown に残す。HTML にはしない。
 
-- **正本**: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/plans/機能検討.md`
+- **正本**: `OneDrive/git_work/Obsidian/DevProject/plans/機能検討.md`
 - **追記**: 当該回の見出しは `## YYYY-MM-DD`（JST）。月ごとに新規ファイルを作らない
 - **各案**: プロダクト、ねらい、具体案、論点、根拠、判断（既定は未判断）
 - **タスク番号は書かない**
@@ -102,7 +102,7 @@ CursorLog は、機能検討または本 SKILL を更新した回に付ける。
 
 ユーザーがスケジュールへの追加を指示した **その案だけ**を、次のファイルに **タスクとして追記する**。指示が無い案は足さない。追記できた案は `機能検討.md` から削除する。
 
-- **正本**: `D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/plans/スケジュール.md`
+- **正本**: `OneDrive/git_work/Obsidian/DevProject/plans/スケジュール.md`
 
 **単一情報源の原則（重要）**:
 

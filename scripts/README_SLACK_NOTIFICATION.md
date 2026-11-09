@@ -170,7 +170,8 @@ python scripts/send_slack_notification.py --help
 
 **Cursor 作業完了通知からは呼び出さない。** エージェントは最終報告前に本スクリプトを自動実行しない。
 
-手動・運用監視（例: `aws-cost-monitoring` の専用 Webhook）で使う場合のみ、明示的に本スクリプトを実行する。
+手動で Slack へ送る必要があるときだけ、明示的に本スクリプトを実行する。
+（旧コスト監視専用 Webhook 運用は 2026-11-09 に廃止。監視は Grok Bot 側）
 
 ## トラブルシューティング
 

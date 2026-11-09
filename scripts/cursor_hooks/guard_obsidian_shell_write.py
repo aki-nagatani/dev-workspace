@@ -65,6 +65,11 @@ ABSOLUTE_PATH_RE = re.compile(r"^(?:[A-Za-z]:[\\/]|[\\/])")
 NULL_TARGETS = frozenset({"$null", "nul", "/dev/null", "&1", "&2"})
 TOKEN_RE = re.compile(r"'([^']*)'|\"([^\"]*)\"|([^\s'\"|;()]+)")
 PATH_EXTENSION_RE = re.compile(r"\.[A-Za-z0-9]{1,5}$")
+OPENCLAW_CRON_RM_RE = re.compile(
+    r"""^\s*ssh\s+(?:-[^\s]+\s+\S+\s+)*pi@192\.168\.68\.71\s+["']openclaw\s+cron\s+rm\s+
+    [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\s*["']\s*$""",
+    re.IGNORECASE | re.VERBOSE,
+)
 
 DENY_MESSAGE = (
     "temp/ 以外のファイルへのシェル書き込みを検出したため、コマンドを拒否しました。"
@@ -121,6 +126,11 @@ def write_path_tokens(command: str) -> list[str]:
     return paths
 
 
+def is_allowed_remote_openclaw_cron_rm(command: str) -> bool:
+    """指定ラズパイ上の OpenClaw cron 削除だけを許可する。"""
+    return bool(OPENCLAW_CRON_RM_RE.fullmatch(command))
+
+
 def _is_temp_target(target: str, *, cwd_is_temp: bool) -> bool:
     if target.lower() in NULL_TARGETS:
         return True
@@ -132,6 +142,8 @@ def _is_temp_target(target: str, *, cwd_is_temp: bool) -> bool:
 def should_deny(command: str, cwd: str) -> bool:
     """temp 以外へのシェル書き込み（および markdownlint --fix）なら True を返す。"""
     text = command or ""
+    if is_allowed_remote_openclaw_cron_rm(text):
+        return False
     if MARKDOWNLINT_FIX_RE.search(text):
         return True
     cwd_is_temp = is_temp_path(cwd or "")
@@ -208,6 +220,31 @@ SELF_TEST_CASES: tuple[tuple[str, str, bool], ...] = (
     ("python scripts/x.py > $null 2>&1", "d:\\OneDrive\\git_work\\FishTrack", False),
     ("python scripts/x.py 2>&1", "d:\\OneDrive\\git_work\\FishTrack", False),
     # 読み取り・検証・git・docker は許可
+    (
+        'ssh pi@192.168.68.71 "openclaw cron rm '
+        "303bd249-730f-49fb-ae67-dea44bed9cf2"
+        '"',
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        False,
+    ),
+    (
+        'ssh -o BatchMode=yes -o ConnectTimeout=10 pi@192.168.68.71 '
+        '"openclaw cron rm c863a9dc-d355-4c0b-bf1b-54ee01ab595f"',
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        False,
+    ),
+    (
+        'ssh pi@192.168.68.72 "openclaw cron rm '
+        "303bd249-730f-49fb-ae67-dea44bed9cf2"
+        '"',
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        True,
+    ),
+    (
+        "openclaw cron rm 303bd249-730f-49fb-ae67-dea44bed9cf2",
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        True,
+    ),
     ("Get-Content -Raw 'd:\\OneDrive\\アプリ\\remotely-save\\Obsidian\\x.md'", "", False),
     ("npx markdownlint-cli2 CursorLog/2026-10/2026-10-22.md", "d:\\OneDrive\\アプリ\\remotely-save\\Obsidian", False),
     ("git status --short", "d:\\OneDrive\\git_work\\FishTrack", False),

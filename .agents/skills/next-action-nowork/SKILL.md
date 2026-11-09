@@ -33,8 +33,8 @@ myrules を厳守して作業してください。
 根拠のない一般論だけの提案はしない。次を同列に読む。番号は読む順であり、優先度ではない。
 
 1. **本チャットの履歴** — 製品・個人開発の未完了の合意と進行中の作業。本職の発言は候補にしない。
-2. **`D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/`** — 当日または直近の **「残作業・課題」**。本職の残作業は読んでも候補にしない。
-3. **`D:/OneDrive/アプリ/remotely-save/Obsidian/DevProject/plans/スケジュール.md`**
+2. **`OneDrive/git_work/Obsidian/CursorLog/`** — 当日または直近の **「残作業・課題」**。本職の残作業は読んでも候補にしない。
+3. **`OneDrive/git_work/Obsidian/DevProject/plans/スケジュール.md`**
    - 未完了タスク・週次を読む。**今週まで（過去週を含む）の未完了を優先**。
    - **次週以降**を先に進めると判断したときは、着手内容より先に当該ファイルの変更案を示す。
 4. ユーザーが **対象プロジェクト** を指定していれば、その **`AGENTS.md`** と Obsidian 側 **仕様**

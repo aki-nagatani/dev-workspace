@@ -28,9 +28,9 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 
 | 用途 | パス |
 | --- | --- |
-| **課題一覧（正本）** | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/課題.md` |
-| 達成状況の抽出元（Read のみ・対象期より前は編集禁止） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.md` |
-| 目標ジャンル候補（下書き時の参考） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート_目標ジャンルリスト.md` |
+| **課題一覧（正本）** | `OneDrive/git_work/Obsidian/Work/課題.md` |
+| 達成状況の抽出元（Read のみ・対象期より前は編集禁止） | `OneDrive/git_work/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.md` |
+| 目標ジャンル候補（下書き時の参考） | `OneDrive/git_work/Obsidian/Work/社内業務/人事考課/人事考課_管理シート_目標ジャンルリスト.md` |
 
 **`課題.md` 冒頭の「使い方」**は**利用者向けの要約**。**手順の正本は本 SKILL**（変更時は**両方**を整合させる）。
 

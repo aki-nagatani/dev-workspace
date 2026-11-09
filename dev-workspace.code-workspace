@@ -21,8 +21,7 @@
       "path": "../personal-tools"
     },
     {
-      "name": "Obsidian",
-      "path": "../../アプリ/remotely-save/Obsidian"
+      "path": "../Obsidian"
     }
   ],
   "settings": {

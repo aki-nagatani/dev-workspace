@@ -21,7 +21,7 @@ description: >-
 ## 保存形式
 
 - 日報は**日単位のファイルにしない**。月ごとに 1 ファイルだけ。
-- 保存先: `D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/YYYY-MM/YYYY-MM 日報.md`\
+- 保存先: `OneDrive/git_work/Obsidian/CursorLog/YYYY-MM/YYYY-MM 日報.md`\
   例: 2026 年 7 月 → `CursorLog/2026-07/2026-07 日報.md`
 - H1 は `# YYYY-MM 日報`、各日分は `## YYYY-MM-DD` 見出しで追記。
 - 同じ日付の見出しが既にある場合は**重複作成しない**。不足があれば既存節を更新。
@@ -57,7 +57,7 @@ description: >-
 ## 完了前の自己確認
 
 ```powershell
-Select-String -Path "D:/OneDrive/アプリ/remotely-save/Obsidian/CursorLog/2026-07/2026-07 日報.md" -Pattern '^## 2026-07-17$'
+Select-String -Path "$env:OneDrive\git_work\Obsidian\CursorLog\2026-07\2026-07 日報.md" -Pattern '^## 2026-07-17$'
 ```
 
 （パス・日付は対象に合わせて置換。ヒットしなければ未作成）

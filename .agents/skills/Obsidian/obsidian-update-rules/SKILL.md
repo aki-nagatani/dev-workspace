@@ -1,13 +1,13 @@
 ---
 name: obsidian-update-rules
-description: ObsidianのMarkdown更新ルールを適用し、主に D:/OneDrive/アプリ/remotely-save/Obsidian 配下の編集時にタグやリンクを適切に付与する。ユーザーがObsidianフォルダやノート編集を指示したときに使用する。
+description: ObsidianのMarkdown更新ルールを適用し、主に OneDrive/git_work/Obsidian 配下の編集時にタグやリンクを適切に付与する。ユーザーがObsidianフォルダやノート編集を指示したときに使用する。
 ---
 
 # Obsidian Update Rules
 
 ## 適用条件
 
-- **主な対象**: `D:/OneDrive/アプリ/remotely-save/Obsidian` 配下（myrules の CursorLog・仕様書パスと同じボールト）
+- **主な対象**: `OneDrive/git_work/Obsidian` 配下（myrules の CursorLog・仕様書パスと同じボールト）
 - **別ボールト**: ユーザーが編集対象として**別フォルダの絶対パスを明示**した場合のみ、そのパスに限定して適用する（存在しないパスを推測・例示しない）
 - 上記いずれにも該当しないパスではこの SKILL を適用しない
 

@@ -10,7 +10,7 @@ Usage:
     python send_slack_notification.py --channel "#general" "メッセージ本文"
     python send_slack_notification.py --channel "@username" "メッセージ本文"
     python send_slack_notification.py --message-file temp/message.txt \\
-        --webhook-env-key CURSOR_COST_MONITORING_SLACK_WEBHOOK_URL
+        --webhook-env-key COST_MONITORING_SLACK_WEBHOOK_URL
 """
 
 from __future__ import annotations

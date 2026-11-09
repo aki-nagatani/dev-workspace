@@ -50,7 +50,7 @@ AI がこの配下を修正するときは、**チャットだけで収束させ
 
 ## Work フォルダ構成（記録先の地図）
 
-正本パス: **`D:/OneDrive/アプリ/remotely-save/Obsidian/Work/`**。下表は**現行の主要フォルダ**。詳細ファイルは編集前に **Glob / Read** で既存ノートを確認する。
+正本パス: **`OneDrive/git_work/Obsidian/Work/`**。下表は**現行の主要フォルダ**。詳細ファイルは編集前に **Glob / Read** で既存ノートを確認する。
 
 | フォルダ／ファイル | 主な記録内容 |
 | --- | --- |
@@ -116,7 +116,7 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 
 次のいずれかに当てはまるとき、**上記「必須の最初アクション」**（**`SKILL.md` を Read → 作業フロー）を実行する。
 
-- **`D:/OneDrive/アプリ/remotely-save/Obsidian/Work/`** 配下の **`.md` / `.csv`** を **作成・更新・削除**する
+- **`OneDrive/git_work/Obsidian/Work/`** 配下の **`.md` / `.csv`** を **作成・更新・削除**する
 - ユーザーが **`@Obsidian/Work`** または Work 内のパスを指定して依頼した
 - **`work-kadai-update`**・**`work-todo-update`**・**`mokuhyo-*`**・**`ojt-*`**・**`work-knowledge-deepen`**・**`quality-analysis`** のいずれかが発火し、Work 配下を変更する
 

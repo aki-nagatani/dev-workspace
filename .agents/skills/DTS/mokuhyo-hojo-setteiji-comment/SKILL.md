@@ -32,10 +32,10 @@ myrules を厳守（**スクリプト一括置換禁止**・**報告前 CursorLo
 
 | 用途 | パス |
 | --- | --- |
-| 管理シート（Markdown 正本） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.md` |
+| 管理シート（Markdown 正本） | `OneDrive/git_work/Obsidian/Work/社内業務/人事考課/人事考課_管理シート.md` |
 | 管理シート | Markdown正本のみ。CSVミラーは廃止し、作成・更新しない |
-| 目標の書き方（任意・本人目標の理解用） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/社内業務/人事考課/目標設定チェックポイント.md` |
-| **現時点の業務課題**（任意・**Read のみ**・組織・PL 文脈の把握用） | `D:/OneDrive/アプリ/remotely-save/Obsidian/Work/課題.md` |
+| 目標の書き方（任意・本人目標の理解用） | `OneDrive/git_work/Obsidian/Work/社内業務/人事考課/目標設定チェックポイント.md` |
+| **現時点の業務課題**（任意・**Read のみ**・組織・PL 文脈の把握用） | `OneDrive/git_work/Obsidian/Work/課題.md` |
 
 **関連 SKILL**:
 

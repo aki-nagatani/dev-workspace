@@ -44,57 +44,20 @@ python extract_pdf_text.py <PDFファイルパス>
 - otayori-navi がローカル Docker で `http://localhost:5003` に稼働していること
 - otayori-navi の config で `ocr.api_enabled: true` が設定されていること
 
-## 定期コスト監視
+## 定期コスト監視（廃止）
 
-`.github/workflows/cost_monitoring.yml` が毎月1日・10日・20日 22:00 JSTに実行する。
-AWS と OpenAI API の集計は別ジョブで並列に動作し、Slack `#コスト監視` へ投稿する。
+**2026-11-09 廃止。** AWS・OpenAI API・Cursor Usage のコスト監視は **Grok Bot** へ引き継いだ。
 
-運用フロー:
+削除済み:
 
-1. 月3回 Slack にレポートが届く（先頭行が作業指示）
-2. `【貼るだけ】`（判定 `要注意` / `要確認`）なら本文全文をそのまま Cursor に貼る
-   （考えなくてよい・追記不要。末尾の `#cost-monitoring-handoff` が依頼の正本）
-3. `【対応不要】`（判定 `正常`）なら閲覧のみ
+- `aws-cost-monitoring` SKILL
+- `cursor-cost-monitoring` SKILL
+- `.github/workflows/cost_monitoring.yml`
+- `.github/workflows/cursor_usage_reminder.yml`
+- `scripts/report_aws_cost_to_slack.py` / `report_openai_cost_to_slack.py` /
+  `cost_monitoring.py` / `persist_cost_monitoring_history.py` と対応テスト
 
-通知内容の要点:
-
-- 先頭行: `【貼るだけ】` または `【対応不要】`
-- 判定: 正常／要注意／要確認
-- 毎月1日: 前月の完了月確定レビュー（上位・意味のある増減・直近3完了月推移）。当月予測は出さない
-- 毎月10日・20日: 当月累計・月末予測中心（正常時は詳細を省略）
-- 共通: 同期間前月比、前月完了月合計、日次異常（異常時のみ詳細）
-- AWS: サービス上位（構成比）。増減は閾値超えのみ
-- AWSの日次異常判定は、TaxとRoute 53のHostedZone（月次固定計上）を運用費から分離する。
-  固定費は総額には含め、通知本文にも「日次固定費（異常判定から除外）」として表示する。
-- 異常時: Cursor依頼ブロック（SKILL・対象・調査観点・成果物）を本文に含める
-
-GitHub リポジトリ Secrets には、次を設定する。
-
-- `COST_MONITORING_SLACK_WEBHOOK_URL`: `#コスト監視` 向け Incoming Webhook URL
-- `AWS_ACCESS_KEY_ID`: Cost Explorer を読み取れる IAM アクセスキー ID
-- `AWS_SECRET_ACCESS_KEY`: 上記 IAM アクセスキーのシークレット
-- `OPENAI_ADMIN_API_KEY`: Organization Costs API を読める OpenAI 管理者 API キー
-
-`report_aws_cost_to_slack.py` と `report_openai_cost_to_slack.py` は、Slack に送る本文を
-標準出力へ書き出す。送信は `send_slack_notification.py` が担当する。
-
-`.github/workflows/cost_monitoring.yml` は、各ジョブのレポート本文と実行メタデータを
-`persist_cost_monitoring_history.py`でJSON化し、Artifact経由で
-`cost-monitoring-history/{service}/YYYY/MM/DD/`へ統合する。
-Artifact自体はジョブ間の受け渡し用で、期限なし保存の正本ではない。
-履歴統合ジョブは新しい履歴をGitへ自動コミット・プッシュする。
-同じ実行IDと試行回数の履歴は上書きされるため、再実行しても重複しない。
-
-履歴にはSlack本文の原文、判定、期間、合計、月末予測または日次平均、
-日次異常などの抽出値を保存する。AWS／OpenAIのAPIキーやSlack Webhookは
-保存しない。
-
-OpenAI Costs API は、429・一時的な5xxに対して `Retry-After` 優先の指数バックオフを行う。
-月中のレポートでは未使用の直近完了月推移を取得せず、API呼出しを最小限にする。
-
-Cursor個人契約のUsage監視はGHAで実額を取得せず、
-`cursor-cost-monitoring` SKILLをCursor内ブラウザから明示的に呼び出す。
-GHAの `cursor_usage_reminder.yml` は、約10日ごと（毎月1・11・21・31日 22:00 JST）に
-SKILL呼び出しをSlackへ促すだけである。
-確認結果はObsidianの `Notes/コスト監視履歴.md`へ追記し、Cursorの認証情報や
-Cookieは保存しない。
+過去の JSON 履歴は `cost-monitoring-history/` に残る（新規追記しない）。
+Cursor 側の過去確認は Obsidian `Notes/コスト監視履歴.md`。
+GitHub Secrets（`COST_MONITORING_SLACK_WEBHOOK_URL` 等）とラズパイ上の定期実行は、
+不要ならユーザー側で削除・停止してよい。
