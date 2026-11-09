@@ -70,6 +70,12 @@ OPENCLAW_CRON_RM_RE = re.compile(
     [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\s*["']\s*$""",
     re.IGNORECASE | re.VERBOSE,
 )
+FISHTRACK_TRIP_MEMO_CP_RE = re.compile(
+    r'^ssh -i "[^"]*fishtrack_ec2_key" -o StrictHostKeyChecking=no '
+    r'ec2-user@52\.197\.69\.195 "cd /home/ec2-user/FishTrack && '
+    r'docker cp temp/trip_memo\.md fishtrack-app-1:/app/temp/trip_memo\.md"$',
+    re.IGNORECASE,
+)
 
 DENY_MESSAGE = (
     "temp/ 以外のファイルへのシェル書き込みを検出したため、コマンドを拒否しました。"
@@ -131,6 +137,11 @@ def is_allowed_remote_openclaw_cron_rm(command: str) -> bool:
     return bool(OPENCLAW_CRON_RM_RE.fullmatch(command))
 
 
+def is_allowed_fishtrack_trip_memo_cp(command: str) -> bool:
+    """FishTrack 本番EC2の一時Tripメモをアプリコンテナへ渡す操作だけを許可する。"""
+    return bool(FISHTRACK_TRIP_MEMO_CP_RE.fullmatch(command))
+
+
 def _is_temp_target(target: str, *, cwd_is_temp: bool) -> bool:
     if target.lower() in NULL_TARGETS:
         return True
@@ -142,7 +153,7 @@ def _is_temp_target(target: str, *, cwd_is_temp: bool) -> bool:
 def should_deny(command: str, cwd: str) -> bool:
     """temp 以外へのシェル書き込み（および markdownlint --fix）なら True を返す。"""
     text = command or ""
-    if is_allowed_remote_openclaw_cron_rm(text):
+    if is_allowed_remote_openclaw_cron_rm(text) or is_allowed_fishtrack_trip_memo_cp(text):
         return False
     if MARKDOWNLINT_FIX_RE.search(text):
         return True
@@ -242,6 +253,22 @@ SELF_TEST_CASES: tuple[tuple[str, str, bool], ...] = (
     ),
     (
         "openclaw cron rm 303bd249-730f-49fb-ae67-dea44bed9cf2",
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        True,
+    ),
+    (
+        'ssh -i "C:\\Users\\Akihide\\.ssh\\fishtrack_ec2_key" '
+        '-o StrictHostKeyChecking=no ec2-user@52.197.69.195 '
+        '"cd /home/ec2-user/FishTrack && docker cp temp/trip_memo.md '
+        'fishtrack-app-1:/app/temp/trip_memo.md"',
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        False,
+    ),
+    (
+        'ssh -i "C:\\Users\\Akihide\\.ssh\\fishtrack_ec2_key" '
+        '-o StrictHostKeyChecking=no ec2-user@52.197.69.196 '
+        '"cd /home/ec2-user/FishTrack && docker cp temp/trip_memo.md '
+        'fishtrack-app-1:/app/temp/trip_memo.md"',
         "d:\\OneDrive\\git_work\\dev-workspace",
         True,
     ),
