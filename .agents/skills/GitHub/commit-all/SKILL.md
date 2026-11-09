@@ -19,7 +19,11 @@ myrules を厳守して作業してください。
 - **対象リポジトリごとに `git commit` が少なくとも 1 回成功した後**は、**同じ依頼での追加コミットは禁止**。本文の push は**同一フロー内**で続けてよい。
 - 本文の一連作業が**完了した後**は、**新たな明示がない限り** `git commit` / `git push` を行わない（**無断コミット禁止**に戻る）。
 
-**スコープ**: **`otayori-navi` を含む**、下記ブランチ方針に従うリポジトリへコミット・プッシュする（**`FishTrack_commit` / `MyPokedex_commit` SKILL** は **当該リポ単体**のコミット正本。**`*_pull-request` SKILL** は **PR 作成・マージ・CI 追跡**の正本で、本 SKILL の「一括コミット」とは併存する）。
+**スコープ**: **`dev-workspace`、`Obsidian`、`FishTrack`、`MyPokedex`、`personal-tools`**
+の差分をコミット・プッシュする。**`otayori-navi` は対象外**とする。
+（**`FishTrack_commit` / `MyPokedex_commit` SKILL** は **当該リポ単体**のコミット正本。
+**`*_pull-request` SKILL** は **PR 作成・マージ・CI 追跡**の正本で、
+本 SKILL の「一括コミット」とは併存する）。
 
 対象内リポジトリのファイルをコミット＆プッシュしてください。
 
@@ -29,7 +33,7 @@ myrules を厳守して作業してください。
 
 ただし、差分がないプロジェクトへのコミットはスキップしても構わない。
 
-FishTrack / MyPokedex / otayori-navi / personal-tools のコミット前に必ず、`.githooks/pre-commit` を実行し、テストをスキップしないでください。
+FishTrack / MyPokedex / personal-tools のコミット前に必ず、`.githooks/pre-commit` を実行し、テストをスキップしないでください。
 
 また、カバレッジ要件の無断での緩和も禁止とします。
 
@@ -54,11 +58,11 @@ E2E テストでアプリの起動が求められた場合は、Docker を起動
 - カバレッジ不足やテストエラーがある場合は、それらを解決してからコミットしてください
 - 一時的な回避策として `--no-verify` を使用することは許可されません
 
-FishTrack、MyPokedex、**otayori-navi** のコミット先は **「develop」ブランチ**です（**myrules**「Git 運用」・各 **AGENTS.md** と整合）。
+FishTrack、MyPokedex のコミット先は **「develop」ブランチ**です（**myrules**「Git 運用」・各 **AGENTS.md** と整合）。
 
-**上記 3 リポジトリでは「main」へ直接コミット・プッシュしないでください。**
+**上記 2 リポジトリでは「main」へ直接コミット・プッシュしないでください。**
 
-その他のプロジェクト（例: **dev-workspace**、**personal-tools**）は、当該リポジトリの **main**（または既定ブランチ）へコミットしてください。
+その他のプロジェクト（**dev-workspace**、**Obsidian**、**personal-tools**）は、当該リポジトリの **main**（または既定ブランチ）へコミットしてください。
 
 コミット時にコメント用の一時ファイルを作成した場合は削除してください。
 
