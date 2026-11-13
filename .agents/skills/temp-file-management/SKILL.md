@@ -59,7 +59,7 @@ description: >-
 
 ### 不足時の常設化（全 SKILL 共通・正）
 
-どの SKILL（FishTrack／MyPokedex／おたよりナビ／dev-workspace／Work 等）でも、実行中に次を守る。
+どの SKILL（FishTrack／MyPokedex／dev-workspace／Work 等）でも、実行中に次を守る。
 
 1. **先に既存の常設 CLI／`scripts/` を探す**（製品 SKILL に列挙があるならそれを正とする）
 2. **足りる処理を temp に包み直さない**（ラッパの使い捨て `.py` 禁止）

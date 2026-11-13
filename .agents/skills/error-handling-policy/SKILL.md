@@ -83,8 +83,6 @@ description: >-
 | --- | --- | --- |
 | FishTrack | `src/fishtrack/utils/exception_logging.py` | `scripts/check_caught_exception_logging.py` |
 | MyPokedex | `src/mypokedex/utils/exception_logging.py` | 同上 |
-| おたよりナビ | **開発凍結中** — 横展開・機械検査の導入は**対象外**（再開時は FishTrack を雛形） | — |
-
 ### 記録形式（必須）
 
 - **`log_caught_exception(logger, context, exc)`** → 例外の `__traceback__`（なければ `sys.exc_info()`）を `exc_info=(type, exc, tb)` で記録する。トレースバックが無い合成例外は `exc_info=True` を使わず、呼び出しスタックを本文へ付ける（Slack に `NoneType: None` を出さない）
@@ -108,9 +106,7 @@ description: >-
 - **allowlist**: 正本 `exception_logging.py`・グローバル 500 ハンドラ・WARNING 運用ログ等のみ。**追加はレビュー必須**（安易に広げない）
 - **逸脱の一時許可**: 行末 **`# noqa: caught-exception-log`**（最小限・理由が説明できる場合のみ。恒久利用は禁止）
 
-### 新規製品への導入手順（開発再開時）
-
-**おたよりナビは開発凍結中のため、現時点では本手順の対象外。** 凍結解除後に他製品へ展開するときは FishTrack を雛形とする。
+### 新規製品への導入手順
 
 1. `exception_logging.py`（`log_caught_exception` / `run_background_job`）を追加
 2. 既存の `logger.exception`・手書き `exc_info=True` を一括 `log_caught_exception` へ移行

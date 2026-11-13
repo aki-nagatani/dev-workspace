@@ -52,7 +52,7 @@ myrules を厳守する（**スクリプト一括置換禁止**・**報告前 Cu
 
 ## 対象外
 
-- FishTrack / MyPokedex / otayori-navi / FaiNavi 等の**副職・趣味**タスク
+- FishTrack / MyPokedex / FaiNavi 等の**副職・趣味**タスク
 - **`DevProject/plans/スケジュール.md`** の計画用タスク（Fxx / Pxx 等）
 - **`Work/課題.md`** の課題ブロック本体（→ **`work-kadai-update`**）。課題から生じる**実施一手**だけ Todo へ載せる
 - コミット・プッシュ・PR・デプロイの案内

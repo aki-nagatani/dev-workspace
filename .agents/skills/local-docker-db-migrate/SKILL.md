@@ -1,7 +1,7 @@
 ---
 name: local-docker-db-migrate
 description: >-
-  ローカル Docker の app 内で MyPokedex・FishTrack の Alembic マイグレーションをターミナル実行する（論理 DB 名は SKILL 参照）。手順の提示だけで終えない。ローカル DB マイグレ・alembic upgrade の依頼時に使用。おたよりナビは対象外。
+  ローカル Docker の app 内で MyPokedex・FishTrack の Alembic マイグレーションをターミナル実行する（論理 DB 名は SKILL 参照）。手順の提示だけで終えない。ローカル DB マイグレ・alembic upgrade の依頼時に使用。
 ---
 
 # ローカル Docker DB マイグレーション（local-docker-db-migrate）
@@ -16,13 +16,7 @@ myrules を厳守して作業してください。
 | --- | --- |
 | **FishTrack** | **本 SKILL の対象**（`alembic upgrade head`） |
 | **MyPokedex** | **本 SKILL の対象**（`alembic upgrade head`） |
-| **おたよりナビ（otayori-navi）** | **対象外** — 本 SKILL では **実行・一括報告しない** |
-
-**おたよりナビを対象外とする理由**: ローカル Docker では `scripts/run_migrations.py` が **`load_config()` 経由で AWS Secrets Manager**（例: `otayori/web-secret`）を参照し、共有 `shared-db` 前提の **FishTrack / MyPokedex と同じ手順に載せない**。\
-マイグレが必要なときは **おたよりナビリポジトリの README・運用手順**を正とし、**ユーザー明示時のみ**別途案内する（**本 SKILL の「3製品まとめて」フローに含めない**）。
-
-**`/local-docker-db-migrate` 等の依頼時**: **FishTrack と MyPokedex の 2 リポのみ**を実行・報告する。**おたよりナビは試行しない**（失敗報告の列挙も不要）。
-
+**`/local-docker-db-migrate` 等の依頼時**: **FishTrack と MyPokedex の 2 リポのみ**を実行・報告する。
 対象アプリのリポジトリルートで **Docker Compose** の **`app`** サービス内から **Alembic** を実行する（**エージェントがターミナルで実行**する。手順の提示だけで終わらない）。
 
 ## 0. ローカル Docker・DB の早見（名称で迷わない）
@@ -61,7 +55,7 @@ myrules を厳守して作業してください。
 
 ## 1. 対象リポジトリの特定
 
-次のいずれかで **`MyPokedex` / `FishTrack` のルート** を決める（**おたよりナビは本 SKILL の対象外**）。
+次のいずれかで **`MyPokedex` / `FishTrack` のルート** を決める。
 
 - ユーザーメッセージ・チャット文脈
 - 開いているワークスペース・カレントファイルのパス
@@ -116,8 +110,7 @@ docker compose run --rm app alembic upgrade head
 
 ## 4. 結果の報告
 
-標準出力・終了コードを踏まえ、**FishTrack / MyPokedex** それぞれの成功／失敗をユーザーに報告する。**おたよりナビは報告表に含めない**（対象外）。
-
+標準出力・終了コードを踏まえ、**FishTrack / MyPokedex** それぞれの成功／失敗をユーザーに報告する。
 ## 使用タイミング
 
 - ローカル Docker 上の **DB スキーマを最新にしたい**、**`alembic upgrade head` を Docker 経由で**（**FishTrack / MyPokedex**）の依頼があったとき

@@ -502,7 +502,7 @@ source: InBox/YYYY-MM-DD.md
       ## 適用可能性
 
       ### 開発プロジェクト
-      （FishTrack / MyPokedex / otayori-navi / personal-tools / dev-workspace。該当なしなら「該当なし」。反映した場合は `DevProject/...` 等のパスを記載）
+      （FishTrack / MyPokedex / personal-tools / dev-workspace。該当なしなら「該当なし」。反映した場合は `DevProject/...` 等のパスを記載）
 
       ### 仕事（本職）
       （Obsidian `Work/` 等。該当なしなら「該当なし」。反映した場合は更新した Work ノートのパスを記載）
@@ -510,7 +510,7 @@ source: InBox/YYYY-MM-DD.md
 
       **開発プロジェクト**（報告見出し `### 開発プロジェクト`）:
 
-      - **対象**: FishTrack、MyPokedex、otayori-navi、personal-tools、dev-workspace
+      - **対象**: FishTrack、MyPokedex、personal-tools、dev-workspace
       - **正本への反映**: 仕様・設計判断は **`specification-update` SKILL** で `DevProject/specifications/` へ。計画変更は **`integrated-schedule-update`**。SKILL・実装方針は dev-workspace `.agents/skills/` 等
       - **検討観点**（該当するものだけ簡潔に。該当時は**反映まで**）:
         1. **技術スタックの一致**（Docker、AWS、Python、PostgreSQL 等）

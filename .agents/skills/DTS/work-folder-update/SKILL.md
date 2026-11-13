@@ -83,9 +83,9 @@ AI がこの配下を修正するときは、**チャットだけで収束させ
 | 区分 | 内容 | 本 SKILL |
 | --- | --- | --- |
 | **本職** | **株式会社DTS** の業務（PL としての体制・メンバー・顧客案件・人事考課・社内手続き等） | **対象**（`Obsidian/Work/`） |
-| **副職・趣味** | **FishTrack**・**MyPokedex**・**おたよりナビ** 等の個人プロダクト開発 | **対象外** |
+| **副職・趣味** | **FishTrack**・**MyPokedex** 等の個人プロダクト開発 | **対象外** |
 | **副職・趣味** | **`Obsidian/DevProject/`**（仕様書・計画・ai_spec_check_report 等） | **対象外** |
-| **副職・趣味** | 各プロダクトの **git リポジトリ**（`FishTrack/`・`MyPokedex/`・`otayori-navi/` 等） | **対象外** |
+| **副職・趣味** | 各プロダクトの **git リポジトリ**（`FishTrack/`・`MyPokedex/` 等） | **対象外** |
 
 副職・趣味側の編集は、各リポの **`AGENTS.md`**・**`specification-update`**・製品別 SKILL を正とする。**本 SKILL は Read しない**（Work 配下に触れない限り）。
 

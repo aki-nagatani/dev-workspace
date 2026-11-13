@@ -6,7 +6,7 @@ description: >-
 
 # Cursor ブラウザはサイドで開かない
 
-**ブラウザはサイドで開かないこと。** 全作業共通。FishTrack / MyPokedex / おたよりナビ / UI 監査 / その他を問わない。
+**ブラウザはサイドで開かないこと。** 全作業共通。FishTrack / MyPokedex / UI 監査 / その他を問わない。
 
 ## 発火条件
 

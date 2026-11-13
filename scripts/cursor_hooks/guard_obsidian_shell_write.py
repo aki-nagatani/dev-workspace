@@ -51,6 +51,11 @@ WRITE_TOKEN_PATTERNS = (
 )
 WRITE_TOKEN_RE = re.compile("|".join(WRITE_TOKEN_PATTERNS), re.IGNORECASE)
 
+# 区切り（&& || ; | 改行）。引用符の外だけで分割し、区切りごとに判定する。
+SEGMENT_SEPARATOR_RE = re.compile(r"&&|\|\||;|\||\r?\n")
+# git の操作（区切りの先頭が git）は対象外。docstring の「git・docker の操作は対象外」に従う。
+GIT_SEGMENT_RE = re.compile(r"^\s*git\s", re.IGNORECASE)
+
 # 2>&1 のような fd 複製（&）は除外する。
 REDIRECT_TARGET_RE = re.compile(r"(?<![\d&])>>?(?!&)\s*(\"[^\"]+\"|'[^']+'|[^\s|;&]+)")
 
@@ -69,6 +74,12 @@ OPENCLAW_CRON_RM_RE = re.compile(
     r"""^\s*ssh\s+(?:-[^\s]+\s+\S+\s+)*pi@192\.168\.68\.71\s+["']openclaw\s+cron\s+rm\s+
     [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\s*["']\s*$""",
     re.IGNORECASE | re.VERBOSE,
+)
+# 空の .md の新規作成だけを許可する。-Force（既存ファイルを空にする）・内容指定・リダイレクト・後続コマンドは不可。
+EMPTY_MARKDOWN_CREATE_RE = re.compile(
+    r"^\s*New-Item\s+-ItemType\s+File\s+-Path\s+(?P<quote>['\"]?)"
+    r"(?P<path>[^'\"|;&<>]+?\.md)(?P=quote)\s*(?:\|\s*Out-Null\s*)?$",
+    re.IGNORECASE,
 )
 FISHTRACK_TRIP_MEMO_CP_RE = re.compile(
     r'^ssh -i "[^"]*fishtrack_ec2_key" -o StrictHostKeyChecking=no '
@@ -142,6 +153,12 @@ def is_allowed_fishtrack_trip_memo_cp(command: str) -> bool:
     return bool(FISHTRACK_TRIP_MEMO_CP_RE.fullmatch(command))
 
 
+def is_allowed_empty_markdown_create(command: str) -> bool:
+    """空の .md を新規作成するだけのコマンドを許可する（既存ファイルは New-Item が失敗する）。"""
+    match = EMPTY_MARKDOWN_CREATE_RE.fullmatch(command)
+    return bool(match) and ".." not in match.group("path")
+
+
 def _is_temp_target(target: str, *, cwd_is_temp: bool) -> bool:
     if target.lower() in NULL_TARGETS:
         return True
@@ -153,16 +170,47 @@ def _is_temp_target(target: str, *, cwd_is_temp: bool) -> bool:
 def should_deny(command: str, cwd: str) -> bool:
     """temp 以外へのシェル書き込み（および markdownlint --fix）なら True を返す。"""
     text = command or ""
-    if is_allowed_remote_openclaw_cron_rm(text) or is_allowed_fishtrack_trip_memo_cp(text):
+    if (
+        is_allowed_remote_openclaw_cron_rm(text)
+        or is_allowed_fishtrack_trip_memo_cp(text)
+        or is_allowed_empty_markdown_create(text)
+    ):
         return False
     if MARKDOWNLINT_FIX_RE.search(text):
         return True
     cwd_is_temp = is_temp_path(cwd or "")
-    if any(not _is_temp_target(target, cwd_is_temp=cwd_is_temp) for target in redirect_targets(text)):
+    return any(
+        _segment_denied(segment, cwd_is_temp=cwd_is_temp)
+        for segment in command_segments(text)
+        if not is_exempt_git_segment(segment)
+    )
+
+
+def command_segments(command: str) -> list[str]:
+    """引用符の外にある区切り（; && || | 改行）でコマンドを分割する。"""
+    quoted = _quoted_mask(command)
+    segments: list[str] = []
+    start = 0
+    for match in SEGMENT_SEPARATOR_RE.finditer(command):
+        if quoted[match.start()]:
+            continue
+        segments.append(command[start : match.start()])
+        start = match.end()
+    segments.append(command[start:])
+    return segments
+
+
+def is_exempt_git_segment(segment: str) -> bool:
+    """git の操作は対象外。リダイレクトを含む git 行は通常どおり判定する。"""
+    return bool(GIT_SEGMENT_RE.match(segment)) and not redirect_targets(segment)
+
+
+def _segment_denied(segment: str, *, cwd_is_temp: bool) -> bool:
+    if any(not _is_temp_target(target, cwd_is_temp=cwd_is_temp) for target in redirect_targets(segment)):
         return True
-    if not WRITE_TOKEN_RE.search(text):
+    if not WRITE_TOKEN_RE.search(segment):
         return False
-    paths = write_path_tokens(text)
+    paths = write_path_tokens(segment)
     if not paths:
         return not cwd_is_temp
     return any(not _is_temp_target(path, cwd_is_temp=cwd_is_temp) for path in paths)
@@ -280,6 +328,34 @@ SELF_TEST_CASES: tuple[tuple[str, str, bool], ...] = (
     ("git commit --trailer \"Co-authored-by: Cursor <cursoragent@cursor.com>\" -F temp\\commit_msg.txt", "d:\\OneDrive\\git_work\\FishTrack", False),
     ("npx markdownlint-cli2 docs/a.md", "d:\\OneDrive\\git_work\\FishTrack", False),
     ("docker compose -f docker-compose.yml restart app", "d:\\OneDrive\\git_work\\FishTrack", False),
+    # 空の .md の新規作成は許可（-Force・内容指定・リダイレクト・後続コマンドは拒否）
+    (
+        "New-Item -ItemType File -Path 'd:\\OneDrive\\git_work\\Obsidian\\DevProject\\FishTrack\\spec-crawl\\manufacturers\\deps-rod.md'",
+        "d:\\OneDrive\\git_work\\Obsidian",
+        False,
+    ),
+    ("New-Item -ItemType File -Path x.md | Out-Null", "d:\\OneDrive\\git_work\\Obsidian", False),
+    ("New-Item -ItemType File -Path x.md -Force", "d:\\OneDrive\\git_work\\Obsidian", True),
+    ("New-Item -ItemType File -Path x.md -Value a", "d:\\OneDrive\\git_work\\Obsidian", True),
+    ("New-Item -ItemType File -Path x.txt", "d:\\OneDrive\\git_work\\Obsidian", True),
+    ("New-Item -ItemType File -Path ..\\..\\x.md", "d:\\OneDrive\\git_work\\Obsidian", True),
+    ("New-Item -ItemType File -Path a.md; Set-Content -Path b.md -Value x", "d:\\OneDrive\\git_work\\Obsidian", True),
+    ("New-Item -ItemType File -Path a.md > out.txt", "d:\\OneDrive\\git_work\\Obsidian", True),
+    # git の操作は対象外（区切りごとに判定。git 行はリダイレクトがなければ除外）
+    (
+        "cd d:\\OneDrive\\git_work\\dev-workspace; git add -A; git commit -F temp/commit_msg.txt; git push origin main",
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        False,
+    ),
+    (
+        "cd d:\\OneDrive\\git_work\\dev-workspace; New-Item -ItemType Directory -Force -Path temp/ | Out-Null; git commit -F temp/commit_msg.txt",
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        False,
+    ),
+    ("git -C d:\\OneDrive\\git_work\\Obsidian commit -F temp\\x.txt", "d:\\OneDrive\\git_work\\dev-workspace", False),
+    ("git status > d:\\OneDrive\\アプリ\\remotely-save\\Obsidian\\x.md", "", True),
+    ("git status; Set-Content -Path d:\\OneDrive\\git_work\\Obsidian\\a.md -Value x", "", True),
+    ("Set-Content -Value \"x;git status\" d:\\OneDrive\\git_work\\Obsidian\\a.md", "", True),
 )
 
 

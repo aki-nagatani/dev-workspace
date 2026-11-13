@@ -72,12 +72,12 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
 
 - **全体 99.02%** と **変更行 100%（diff-cover）** は **pre-commit** と **CI** でまとめて確認する。実装中・報告前にはフル pytest、`coverage.xml` の再生成、`diff_cover_gate.sh` を走らせない。
 - 動作を見る必要があるときだけ、関連テストを **`python -m pytest … --no-cov`** で実行してよい。必須ではない。\
-  既定 `addopts` に `--cov` があるリポジトリ（おたよりナビ、personal-tools）も **`--no-cov`** を付ける。サブセット計測は閾値で落ちる。
+  既定 `addopts` に `--cov` があるリポジトリ（personal-tools）も **`--no-cov`** を付ける。サブセット計測は閾値で落ちる。
 - **恒久対応として閾値を 99 未満に下げることは禁止**（各 **`AGENTS.md`**）。
 
 #### `src/` 変更時（開発中）
 
-**FishTrack**・**MyPokedex**・**おたよりナビ**・**personal-tools** で **`src/` 配下を変更するとき**は、次を守る。
+**FishTrack**・**MyPokedex**・**personal-tools** で **`src/` 配下を変更するとき**は、次を守る。
 
 1. **想定テストの網羅**: 追加・変更した振る舞いについて、**その時点で想定できる必要なテスト**を **実装と同時に** 書く（正常系・主要な分岐・境界・既知の回帰）。実行は次項。
 2. **計測はコミット時**: 変更行にテストがあるかは pre-commit の diff-cover が見る。報告前にゲートを通したこと確認しない。
@@ -155,13 +155,13 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
 - **自問**: 追加後に `python scripts/check_file_size.py tests/...` を実行し、**1,000行超**なら同一セッション内で分割を完了するか、分割先を決めてからコミットする
 - **Task 委譲**: テスト分割をサブエージェントに渡すときは **`file-size-policy` SKILL「委譲時」**に従う。**分割本体は親が `StrReplace`/`Write` で実施**が原則。`shell` サブエージェントに `.py` 分割させない
 
-### 6. Playwright E2E と必須シナリオ ID（FishTrack / MyPokedex / おたよりナビ）
+### 6. Playwright E2E と必須シナリオ ID（FishTrack / MyPokedex）
 
-**適用範囲**: 本節は **FishTrack** / **MyPokedex** / **おたよりナビ** かつ **ブラウザ E2E**（`tests/e2e/` 等）を扱うときのみ従うこと。**それ以外のリポジトリ**は当該リポの **`AGENTS.md`** に準拠し、本節の E2E 手続きに必ずしも縛られない。
+**適用範囲**: 本節は **FishTrack** / **MyPokedex** かつ **ブラウザ E2E**（`tests/e2e/` 等）を扱うときのみ従うこと。**それ以外のリポジトリ**は当該リポの **`AGENTS.md`** に準拠し、本節の E2E 手続きに必ずしも縛られない。
 
 **ブラウザ E2E**（`tests/e2e/`・pytest-playwright）を追加・変更するときは、**行カバレッジ**（`src/` 向け pytest-cov。閾値は §1 および当リポ設定）は **E2E 必須シナリオ ID の充足**とは別のゲートとして、両方を満たす。
 
-- **機能追加と必須 ID**: **FishTrack**・**MyPokedex**・**おたよりナビ** で **ユーザー向け機能**（画面・主要フロー・ログイン後のクリティカル経路に触れる変更）を入れる場合は、\
+- **機能追加と必須 ID**: **FishTrack**・**MyPokedex** で **ユーザー向け機能**（画面・主要フロー・ログイン後のクリティカル経路に触れる変更）を入れる場合は、\
   **原則** **`REQUIRED_E2E_SCENARIOS` に ID を追加**する（**myrules**・各 **AGENTS.md**）。\
   増やさない場合は**対象外理由**を仕様等に残す。
 - **正本**: 各リポジトリの **`tests/e2e/conftest.py`** 内 **`REQUIRED_E2E_SCENARIOS`**（文字列 ID のリスト）。**母数・必須 ID の定義はここだけ**とする。
@@ -172,7 +172,7 @@ Cursorの会話が長くなると、**文脈制約により会話がサマリー
   3. **`pyproject.toml`** または **`pytest.ini`** の **`e2e_scenario` マーカー説明**（ID の列挙が変わる場合）
   4. **Obsidian** の当該製品の決定（FishTrack・MyPokedex は `decisions.md`）で E2E に含めない理由を書いている場合は**本文も同期**
 - **規約の正**: **本 SKILL §6**、各リポジトリ **`AGENTS.md`** の **「E2E 必須シナリオ ID」** 節。myrules「テスト規律」は要点のみ。
-- **充足率チェック**: **FishTrack**・**MyPokedex**・**おたよりナビ** は **`scripts/check_e2e_scenario_coverage.py`** を pre-commit（ブラウザ不要）で実行する。\
+- **充足率チェック**: **FishTrack**・**MyPokedex** は **`scripts/check_e2e_scenario_coverage.py`** を pre-commit（ブラウザ不要）で実行する。\
     しきい値・環境変数は **`AGENTS.md`** / **`README.md`**。あわせて **`pytest tests/e2e`** 実行時は **conftest** のフックでも不足 ID を検出する。
 - **実行の分離**: 通常の `pytest` は `tests/e2e` を **収集しない**設定（`collect_ignore`）のリポジトリがある。E2E は **`pytest tests/e2e --base-url … --no-cov`** で別実行。
 

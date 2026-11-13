@@ -15,7 +15,7 @@ SKILL.md「1.4.1」の詳細。文字起こしテキストが確定した後に�
 
 **副業開発の判定（いずれかで DevProject 正本へ）**:
 
-- FishTrack / MyPokedex / おたよりナビ / FaiNavi / dev-workspace の機能・設計・バグ・運用・仕様判断 等が**主題**
+- FishTrack / MyPokedex / FaiNavi / dev-workspace の機能・設計・バグ・運用・仕様判断 等が**主題**
 
 | 分類 | 後続処理 |
 | --- | --- |

@@ -3,12 +3,12 @@ name: frontend-html-template
 description: >-
   Jinja/HTML テンプレートのフロント規律。インライン script/style 禁止、
   static/js・static/css への分離、CDN と1行初期化の例外。
-  FishTrack / MyPokedex / otayori-navi のテンプレ・静的ファイル編集時に使用。
+  FishTrack / MyPokedex のテンプレ・静的ファイル編集時に使用。
 ---
 
 # HTML テンプレート規律（frontend-html-template）
 
-**myrules**「HTMLテンプレート規律」と同一趣旨。**FishTrack / MyPokedex / otayori-navi** の Jinja テンプレート向け。
+**myrules**「HTMLテンプレート規律」と同一趣旨。**FishTrack / MyPokedex** の Jinja テンプレート向け。
 
 ## 発火条件
 

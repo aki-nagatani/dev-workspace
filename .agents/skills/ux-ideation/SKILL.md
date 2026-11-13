@@ -66,8 +66,6 @@ myrules を厳守して作業してください。
 | **MyPokedex** | `OneDrive/git_work/Obsidian/DevProject/specifications/MyPokedex/` | `D:/OneDrive/git_work/MyPokedex/AGENTS.md` |
 | | `INDEX.md` | |
 
-**おたよりナビは廃止済み。** 仕様・`AGENTS.md`・コードは読まない。案、転用、起票の対象にしない。
-
 - **検討対象が一つに絞られていても**、もう一方から **転用できる UX・獲得・収益・信頼・運用の示唆**を返信に含める（無理な横並びはしない）。\
     上表の **収益モデル** に合わせて言い換える。
 - ユーザーが **特定プロダクトのみ**と明示した場合は **主軸をそこ**に置き、もう一方は **簡潔に参考**として触れる。

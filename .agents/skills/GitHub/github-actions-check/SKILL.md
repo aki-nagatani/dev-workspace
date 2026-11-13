@@ -1,6 +1,6 @@
 ---
 name: github-actions-check
-description: GitHub Actionsの完了を待って結果を確認するSKILL。otayori-navi、FishTrack、MyPokedexなどのリポジトリでプッシュやマージ後にGitHub Actionsの実行完了を待機し、成功/失敗を確認する。プッシュやマージ後のCI/CD確認に使用する。
+description: GitHub Actionsの完了を待って結果を確認するSKILL。FishTrack、MyPokedexなどのリポジトリでプッシュやマージ後にGitHub Actionsの実行完了を待機し、成功/失敗を確認する。プッシュやマージ後のCI/CD確認に使用する。
 ---
 
 # GitHub Actions確認SKILL
@@ -13,7 +13,6 @@ description: GitHub Actionsの完了を待って結果を確認するSKILL。ota
 
 以下の場合にこのSKILLを使用します：
 
-- otayori-naviのプッシュ後
 - FishTrack/MyPokedexのmainブランチへのマージ後（**publish-artifact**。**lint / test は pull_request**。push では skipped が正常）
 - 緊急デプロイの待機は `*_pull-request-emergency` 内の **`workflow_dispatch`**（本 SKILL の push 待ちは使わない）
 - その他、GitHub Actionsが実行される操作の後
@@ -24,7 +23,6 @@ description: GitHub Actionsの完了を待って結果を確認するSKILL。ota
 
 確認対象のリポジトリとブランチを特定します：
 
-- **otayori-navi**: `aki-nagatani/otayori-navi`、通常は`main`ブランチ
 - **FishTrack**: `aki-nagatani/FishTrack`、通常は`main`ブランチ
 - **MyPokedex**: `aki-nagatani/MyPokedex`、通常は`main`ブランチ
 
@@ -41,8 +39,8 @@ description: GitHub Actionsの完了を待って結果を確認するSKILL。ota
 GitHub CLI（`gh`）がインストールされている場合、最も簡単に確認できます：
 
 ```powershell
-# リポジトリディレクトリに移動（例: otayori-navi）
-cd d:\OneDrive\git_work\otayori-navi
+# リポジトリディレクトリに移動（例: FishTrack）
+cd d:\OneDrive\git_work\FishTrack
 
 # マージ済みmainのコミットに紐づくpush実行だけを特定する
 git fetch origin main
@@ -70,7 +68,7 @@ gh run view $runId
 GitHub CLIが使用できない場合：
 
 ```powershell
-$repo = "aki-nagatani/otayori-navi"  # 対象リポジトリに変更
+$repo = "aki-nagatani/FishTrack"  # 対象リポジトリに変更
 $headers = @{'Accept'='application/vnd.github.v3+json'}
 try {
     $response = Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/actions/runs?per_page=1" -Headers $headers
@@ -128,12 +126,6 @@ try {
 - **確認が完了するまで、作業を終了しないこと**
 
 ## リポジトリ別の確認ポイント
-
-### otayori-navi
-
-- **確認対象**: lint、test、deployジョブ
-- **通常の実行時間**: 5-10分
-- **確認URL**: <https://github.com/aki-nagatani/otayori-navi/actions>
 
 ### FishTrack
 

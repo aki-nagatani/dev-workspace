@@ -5,6 +5,7 @@ Always respond in Japanese when applying this skill.
 ## 発火条件（いずれかで **SKILL.md を Read してから**着手）
 
 - ワークスペース内ファイル変更後のユーザー報告前（CursorLog 必須）
+- **新規パスへの `Write` が UTF-16LE**（先頭 `23 00` または `FF FE`）のとき。手順は **`SKILL.md`「新規ファイルの文字コード」**
 - **当日初めて** `CursorLog/YYYY-MM/YYYY-MM-DD.md` に追記するとき（**Q0: `obsidian-cursor-monthly-report` を先に**）
 - 製品 `*_pull-request` / `*_commit` が CursorLog を要求するとき
 

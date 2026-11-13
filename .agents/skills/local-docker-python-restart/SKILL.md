@@ -11,7 +11,7 @@ description: >-
 ## 発火条件（いずれか）
 
 - **`src/`・`tests/` 以外を含む**、アプリランタイムが読み込む **`*.py`** を **`StrReplace` / `Write` 等で変更**した（またはシェルで当該リポの Python を書き換えた）。
-- **FishTrack / MyPokedex / otayori-navi** で上記に該当し、**ユーザー向けの完了報告・検証結果の提示**をする直前まで来たとき（**下記「Docker の利用可否」**を満たす場合のみ **restart**）。
+- **FishTrack / MyPokedex** で上記に該当し、**ユーザー向けの完了報告・検証結果の提示**をする直前まで来たとき（**下記「Docker の利用可否」**を満たす場合のみ **restart**）。
 
 ## Docker の利用可否（前提）
 
@@ -56,7 +56,7 @@ description: >-
 
 - **正本は各リポジトリの `docker-compose.yml`** の `services:`。`build` / `command` がアプリ（Flask/Gunicorn 等）になっているサービスを選ぶ。
 - **不明なとき**: リポの **README** または **AGENTS.md** のローカル Docker 記述を優先する。
-- **FishTrack / MyPokedex / otayori-navi** の多くのローカル手順では **`app`** がアプリサービス（**`docker compose restart app`** が典型）。
+- **FishTrack / MyPokedex** の多くのローカル手順では **`app`** がアプリサービス（**`docker compose restart app`** が典型）。
 
 ## 再ビルドが主なとき（restart だけでは足りない）
 

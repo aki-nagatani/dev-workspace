@@ -25,7 +25,7 @@ description: >-
 
 ### 対象外
 
-- FishTrack、FaiNavi、MyPokedex、おたよりナビ等の副業・趣味・個人開発
+- FishTrack、FaiNavi、MyPokedex等の副業・趣味・個人開発
 - `/next-action-nowork`（本 SKILL は開かない。正本は `next-action-nowork`）
 - `DevProject/` の計画・仕様・タスク
 - コミット、プッシュ、デプロイ、PR、マージ

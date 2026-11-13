@@ -12,7 +12,7 @@ description: >-
 
 **`obsidian-inbox-summarize` 実行時だけではない。**
 
-dev-workspace・FishTrack・MyPokedex・おたよりナビ・personal-tools 等、**すべての Cursor チャット・エージェント作業**で本原則を常に意識する。
+dev-workspace・FishTrack・MyPokedex・personal-tools 等、**すべての Cursor チャット・エージェント作業**で本原則を常に意識する。
 
 ## 原則
 

@@ -22,7 +22,7 @@ Always respond in Japanese when applying this skill.
 
 ## 適用範囲
 
-dev-workspace および連携リポジトリ（MyPokedex、FishTrack、otayori-navi 等）の **Python コード**。
+dev-workspace および連携リポジトリ（MyPokedex、FishTrack 等）の **Python コード**。
 
 ## Cursor エディタ側（正本の取り込み）
 

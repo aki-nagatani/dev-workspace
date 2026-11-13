@@ -2,7 +2,7 @@
 name: git-workflow
 description: >-
   ブランチ運用（develop/main）、無断コミット禁止、コミット・PR 前の自問チェック、
-  単発 SKILL 依頼の扱い、LF 改行。FishTrack/MyPokedex/otayori-navi の develop 運用。
+  単発 SKILL 依頼の扱い、LF 改行。FishTrack/MyPokedex の develop 運用。
   コミット・push・PR・マージの依頼時、または git 操作の可否判断時に使用。
 ---
 
@@ -18,7 +18,7 @@ description: >-
 
 ## ブランチ運用方針
 
-**MyPokedex、FishTrack、otayori-navi の3リポジトリに限り**、`develop` を作業用とし、リリース時のみ `main` へマージする。（`dev-workspace`・`personal-tools` 等は対象外。）
+**MyPokedex、FishTrack の2リポジトリに限り**、`develop` を作業用とし、リリース時のみ `main` へマージする。（`dev-workspace`・`personal-tools` 等は対象外。）
 
 - **`main`**: 本番コードの正。**直接プッシュ禁止**。本番コンテナ差し替えは **毎日 03:00 JST**（緊急は各リポ `*_pull-request-emergency`）
 - **`develop`**: 日常のコミット・プッシュ先
@@ -31,7 +31,6 @@ description: >-
 | --- | --- | --- |
 | FishTrack | `FishTrack_commit` | `FishTrack_pull-request`（定時本番）／`FishTrack_pull-request-emergency`（即時本番） |
 | MyPokedex | `MyPokedex_commit` | `MyPokedex_pull-request`（定時本番）／`MyPokedex_pull-request-emergency`（即時本番） |
-| otayori-navi | （`otayori-navi_pull-request` 内） | `otayori-navi_pull-request` |
 | 複数リポ | — | `commit-all` |
 
 **フィーチャーブランチは新規作成しない**（ユーザー明示時のみ例外）。製品 SKILL は **`develop` 上でコミット・push** を前提とする。

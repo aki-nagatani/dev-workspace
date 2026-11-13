@@ -95,10 +95,12 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
 - [ ] 触ったリポの **`temp/` が空**（`temp-file-management` SKILL。次回も使うものは `scripts/` 等へ昇格済み。**FishTrack `temp-spec-crawl/` は消さない**）
 - [ ] **当日初回追記時**: Q0 — **`obsidian-cursor-monthly-report`** で前日分を `YYYY-MM 日報.md` に追記済み
 - [ ] CursorLog 更新（本 SKILL の記録手順・日時取得・**同時書き込み対策**）
+- [ ] 新規日次ログを作った場合、先頭バイトが UTF-8（`23 20` 等）で UTF-16LE（`FF FE`・`23 00`）でないことを確認した
 - [ ] 追記先が JST 取得日付の `YYYY-MM-DD.md` か、時刻が実時刻か
 - [ ] 既存日次を `Write` 全文置換していない／保全検証済み（または `.parts` 退避を報告済み）
 - [ ] **URL は `<https://...>`**（MD034）。追記後 **markdownlint `Summary: 0`**（**MD034 を含む**）
 - [ ] 報告文に「CursorLogは更新しました」
+- [ ] 日次ファイルの `##` は**時刻エントリだけ**（`## 次のアクション` 等の並列見出しなし。`Grep` で行頭の見出し記号を確認）
 - [ ] **Q7**: 残作業があるなら報告末尾の **`## 次のアクション` が 1 件**。本文や「残作業・課題」行だけでは不可。残作業が無いときだけ節なし
 
 ## 基本ルール
@@ -130,6 +132,7 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
   - **後から記録する場合**（複数作業をまとめて記録するなど）、時刻順になるよう**正しい位置に挿入**する。単純に末尾追加で時系列が崩れる場合は挿入位置を調整する
   - 追記後に時系列が乱れていないか確認する
 - **エントリ見出し形式（必須）**: 各エントリの先頭は **`## HH:mm:ss [作業名]`** の見出し形式で統一する。リスト形式（`- HH:mm:ss`）は使用しない。
+- **時刻エントリ以外の `##` を置かない（必須）**: 日次ファイル内の `##` は `## HH:mm:ss [作業名]` のエントリだけにする。`## 次のアクション`・`## 残作業` など**時刻エントリと並列の見出しを作らない**（エントリ境界の誤認・時系列の乱れの原因）。**次のアクションはユーザー向け報告の末尾（Q7）にだけ書く**。CursorLog には残作業を各エントリの「残作業・課題」箇条書きとして残す。
 
 **月次日報**（`CursorLog/YYYY-MM/YYYY-MM 日報.md` への要約）は **`obsidian-cursor-monthly-report`** SKILL が正本。Q0・手順 0 で先に実行する。
 
@@ -171,6 +174,26 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
 **Obsidian vault は git 管理外のため OneDrive のバージョン履歴から復元**する（`.md` を右クリック → 「バージョン履歴」）。
 
 **過去事故（2026-04-20）**: `[System.IO.File]::WriteAllText($path, (Get-Content -Raw $path) + "\`n", …)` で `2026-04-20.md` 全文を破壊。git なし・OneDrive 復元が必要になった。
+
+### 🚨 新規ファイルの文字コード（UTF-16LE・2026-11-13）
+
+CursorLog に限らない。存在しないパスへの `Write` が UTF-16LE になったときは、この節に戻る。
+
+**原因**（`files.encoding` は参照しない）:
+
+- ワークスペースが複数で親ディレクトリが同じとき、新規パスへの `Write` はその親を先頭から最大 100 件たどる。同じ文字コードが 3 件揃うと、その文字コードで書く。ドットで始まるフォルダは対象外（`.gitignore` は対象）。
+- この環境の親は `d:\OneDrive\git_work`。先頭の `dev-workspace\backups` の SQL ダンプが UTF-16LE（BOM `FF FE`・CRLF）で 3 件揃い、新規 `Write` は BOM なし UTF-16LE・CRLF になる。拡張子は `.md` に限らない。
+- 既存ファイルはそのファイル自身の文字コードを使う。0 バイトの既存ファイルは UTF-8 として扱われる。UTF-8 の既存ファイルへの `StrReplace` は UTF-8 のまま。`Write` が作った UTF-16LE への再 `Write` は UTF-16LE のまま。
+
+**見分け**: 先頭 `23 00` または `FF FE` は UTF-16LE（markdownlint は文字化けし、UTF-8 前提の読み取りは失敗する）。`23 20` や `EF BB BF` は UTF-8。
+
+**必須**:
+
+1. 存在しないパスへ `Write` しない。ユーザーが Cursor で作った UTF-8 へ書く。空ファイルなら `Write`、1 文字以上なら `StrReplace`（空ファイルは `StrReplace` 不可）。
+2. `Write` の直後に先頭バイトを確認する（`[IO.File]::ReadAllBytes` の先頭 2〜4 バイト。書き戻さない）。UTF-16LE なら止め、`Delete` して手順 1 から。UTF-16LE へ `StrReplace` を重ねない。
+3. `files.encoding` を変えても新規 `Write` は変わらない。ダンプを `.backups` へ移すと走査から外れ、新規 `Write` は UTF-8 に戻る見込み。
+   `Move-Item` はシェルガードが拒否する。回避せずユーザーの許可を取る。
+   移すときは `.gitignore` の `backups/` は `.backups/` に一致しないので追記し、`scripts/close_pi_env.ps1` の `..\backups\` も合わせる。
 
 ### 🚨 日時（実日付・実時刻）の必須手順（失敗防止）
 
@@ -219,7 +242,7 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
 3. **新規追加候補と逐一突合する**。既出のものは**捨てる**（別の行に再掲も禁止）。\
    大文字小文字・全角半角は同一タグとみなし、表記を揃える。
 4. **特に注意**するタグ（重複頻度が高い）:
-   - **プロジェクト名タグ**: `#MyPokedex` / `#FishTrack` / `#otayori-navi` / `#dev-workspace` / `#MyHobbySite` / `#personal-tools`
+   - **プロジェクト名タグ**: `#MyPokedex` / `#FishTrack` / `#dev-workspace` / `#MyHobbySite` / `#personal-tools`
    - **汎用カテゴリタグ**: `#bugfix` / `#refactoring` / `#pull-request` / `#CursorLog` / `#housekeeping` / `#仕様書` / `#テスト`
 5. **完了条件**: 追記後、先頭ブロックのタグを再度抽出し、**完全一致の重複が 0 件**であることを確認してから完了とする（上記抽出コマンドの結果行数と、ソート前の全出現回数が一致すれば重複なし）。
 
@@ -317,7 +340,7 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
 #### 製品 PR フローとの関係
 
 - **`FishTrack_pull-request` / `FishTrack_pull-request-emergency` / `MyPokedex_pull-request` /
-  `MyPokedex_pull-request-emergency` / `otayori-navi_pull-request`** 実行時:
+  `MyPokedex_pull-request-emergency`** 実行時:
   CursorLog は**フロー全体完了後に 1 エントリ**（コミット・PR 番号・マージ・CI 結果をまとめる。緊急版は deploy 成否も含む）。
 - 当該フロー内で **`FishTrack_commit` 等を Read して実行する場合**、commit SKILL の CursorLog 節は**適用しない**（親 SKILL の 1 エントリに委譲）。詳細は各 `*_pull-request` SKILL の「Cursorログ更新」。
 
@@ -451,7 +474,7 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
   - [ ] **`StrReplace` 直前に再 Read**し、追記後に**先行末尾 `##` が残存**しているか？（保全検証）
   - [ ] 未マージの **`YYYY-MM-DD.parts/`** を確認し、可能なら正本へ取り込んだか？
   - [ ] 新規追加したタグ行は、先頭ブロックの**他のどの行ともタグ重複していないか？**
-  - [ ] プロジェクト名タグ（`#MyPokedex` / `#FishTrack` / `#otayori-navi` 等）を**二重に書いていないか？**
+  - [ ] プロジェクト名タグ（`#MyPokedex` / `#FishTrack` 等）を**二重に書いていないか？**
   - [ ] エントリ内の URL はすべて `<https://...>` または `[text](url)` か？（**MD034**）
   - [ ] 完了条件として、先頭ブロックの**タグ重複ゼロ**・**`- 作業名:` の完全一致重複ゼロ**と **markdownlint `Summary: 0 error(s)`**（**MD034 含む**）を満たしているか？
   - [ ] 編集後に **`Get-Content -Raw` + `Set-Content` / `WriteAllText`** で**全文書き戻し**をしていないか？（禁止。した場合はバイト列先頭を確認し、`繧`・`縺`・`\uf8f0` が出ていれば **OneDrive バージョン履歴から復元**する）

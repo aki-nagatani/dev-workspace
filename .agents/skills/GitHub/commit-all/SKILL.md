@@ -20,7 +20,7 @@ myrules を厳守して作業してください。
 - 本文の一連作業が**完了した後**は、**新たな明示がない限り** `git commit` / `git push` を行わない（**無断コミット禁止**に戻る）。
 
 **スコープ**: **`dev-workspace`、`Obsidian`、`FishTrack`、`MyPokedex`、`personal-tools`**
-の差分をコミット・プッシュする。**`otayori-navi` は対象外**とする。
+の差分をコミット・プッシュする。
 （**`FishTrack_commit` / `MyPokedex_commit` SKILL** は **当該リポ単体**のコミット正本。
 **`*_pull-request` SKILL** は **PR 作成・マージ・CI 追跡**の正本で、
 本 SKILL の「一括コミット」とは併存する）。

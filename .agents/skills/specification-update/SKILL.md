@@ -13,7 +13,7 @@ description: >-
 
 仕様書は、**コード・テスト・各リポジトリの `AGENTS.md` を読んでも再現できない決定**の正本。実装の写しではない。読者はユーザーではなく、次の実装をするエージェント。
 
-対象は `DevProject/specifications/` 全体（FishTrack、MyPokedex、FaiNavi、おたよりナビを含む）。
+対象は `DevProject/specifications/` 全体（FishTrack、MyPokedex、FaiNavi を含む）。
 
 ## 適用タイミング
 
