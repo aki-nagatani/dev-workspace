@@ -18,6 +18,7 @@ myrules を厳守して作業してください。
 - **いずれかの `git commit` が失敗した場合**は、原因を修正し**成功するまで**再試行してよい（未成功の間だけ当該依頼は有効）。
 - **対象リポジトリごとに `git commit` が少なくとも 1 回成功した後**は、**同じ依頼での追加コミットは禁止**。本文の push は**同一フロー内**で続けてよい。
 - 本文の一連作業が**完了した後**は、**新たな明示がない限り** `git commit` / `git push` を行わない（**無断コミット禁止**に戻る）。
+- **例外（CursorLog のみ・ユーザー指示 2026-11-13）**: 完了後に追記した CursorLog（`CursorLog/YYYY-MM/YYYY-MM-DD.md`）だけは、**追加コミット・push してよい**。CursorLog 以外の差分は混ぜない（Obsidian の `git status` で CursorLog のみであることを確認してから行う）。
 
 **スコープ**: **`dev-workspace`、`Obsidian`、`FishTrack`、`MyPokedex`、`personal-tools`**
 の差分をコミット・プッシュする。

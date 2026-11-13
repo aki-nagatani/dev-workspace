@@ -87,6 +87,14 @@ FISHTRACK_TRIP_MEMO_CP_RE = re.compile(
     r'docker cp temp/trip_memo\.md fishtrack-app-1:/app/temp/trip_memo\.md"$',
     re.IGNORECASE,
 )
+# UTF-16LE の SQL ダンプを走査対象外へ移す、この1組だけ（ユーザー承認 2026-11-13）。
+BACKUPS_TO_DOT_RE = re.compile(
+    r"^\s*Move-Item\s+-LiteralPath\s+(?P<q1>['\"])"
+    r"d:\\OneDrive\\git_work\\dev-workspace\\backups(?P=q1)\s+"
+    r"-Destination\s+(?P<q2>['\"])"
+    r"d:\\OneDrive\\git_work\\dev-workspace\\.backups(?P=q2)\s*$",
+    re.IGNORECASE,
+)
 
 DENY_MESSAGE = (
     "temp/ 以外のファイルへのシェル書き込みを検出したため、コマンドを拒否しました。"
@@ -159,6 +167,11 @@ def is_allowed_empty_markdown_create(command: str) -> bool:
     return bool(match) and ".." not in match.group("path")
 
 
+def is_allowed_backups_to_dot(command: str) -> bool:
+    """dev-workspace の backups を .backups へ移すコマンドだけを許可する。"""
+    return bool(BACKUPS_TO_DOT_RE.fullmatch(command))
+
+
 def _is_temp_target(target: str, *, cwd_is_temp: bool) -> bool:
     if target.lower() in NULL_TARGETS:
         return True
@@ -174,6 +187,7 @@ def should_deny(command: str, cwd: str) -> bool:
         is_allowed_remote_openclaw_cron_rm(text)
         or is_allowed_fishtrack_trip_memo_cp(text)
         or is_allowed_empty_markdown_create(text)
+        or is_allowed_backups_to_dot(text)
     ):
         return False
     if MARKDOWNLINT_FIX_RE.search(text):
@@ -341,6 +355,21 @@ SELF_TEST_CASES: tuple[tuple[str, str, bool], ...] = (
     ("New-Item -ItemType File -Path ..\\..\\x.md", "d:\\OneDrive\\git_work\\Obsidian", True),
     ("New-Item -ItemType File -Path a.md; Set-Content -Path b.md -Value x", "d:\\OneDrive\\git_work\\Obsidian", True),
     ("New-Item -ItemType File -Path a.md > out.txt", "d:\\OneDrive\\git_work\\Obsidian", True),
+    (
+        "Move-Item -LiteralPath 'd:\\OneDrive\\git_work\\dev-workspace\\backups' -Destination 'd:\\OneDrive\\git_work\\dev-workspace\\.backups'",
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        False,
+    ),
+    (
+        "Move-Item -LiteralPath 'd:\\OneDrive\\git_work\\dev-workspace\\backups' -Destination 'd:\\OneDrive\\git_work\\dev-workspace\\backups-old'",
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        True,
+    ),
+    (
+        "Move-Item -LiteralPath 'd:\\OneDrive\\git_work\\dev-workspace\\backups' -Destination 'd:\\OneDrive\\git_work\\dev-workspace\\.backups'; Remove-Item x",
+        "d:\\OneDrive\\git_work\\dev-workspace",
+        True,
+    ),
     # git の操作は対象外（区切りごとに判定。git 行はリダイレクトがなければ除外）
     (
         "cd d:\\OneDrive\\git_work\\dev-workspace; git add -A; git commit -F temp/commit_msg.txt; git push origin main",

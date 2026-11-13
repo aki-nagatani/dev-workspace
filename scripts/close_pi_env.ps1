@@ -5,7 +5,7 @@ param (
 
 $ErrorActionPreference = "Stop"
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$BackupDir = Join-Path $ScriptDir "..\backups\pi_archive_$(Get-Date -Format 'yyyyMMdd')"
+$BackupDir = Join-Path $ScriptDir "..\.backups\pi_archive_$(Get-Date -Format 'yyyyMMdd')"
 
 # Create backup directory
 if (!(Test-Path $BackupDir)) { New-Item -ItemType Directory -Force -Path $BackupDir | Out-Null }

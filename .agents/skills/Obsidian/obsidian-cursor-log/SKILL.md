@@ -126,6 +126,7 @@ myrules「作業ログ」から移管した手順の正本。報告前チェッ�
 - 粒度は実施内容・結果・影響が分かる要約にする（チャット報告と同程度。Slack 完了通知は廃止）
 - **エントリの長さ**: **`## HH:mm:ss [作業名]` 1件あたり、本文を含め概ね30行以内**に収める（長いコマンド・パス列は `\` 改行や代表ファイル名への省略で短縮）。超える場合は**エントリを分割**（別時刻で続き）するか、**詳細はリポジトリ・Issue・仕様への参照**に任せ、ログでは要約のみにする。
 - **ファイルを変更しない場合は、ログの更新は不要**
+- **コミット後に追記した CursorLog（ユーザー指示 2026-11-13）**: `*_commit`・`commit-all` 等のコミット完了後に追記した CursorLog は、**CursorLog だけを追加コミット・push** する（`git-workflow` SKILL の例外。他の差分は混ぜない）。
 - **時系列順を厳守する**（HH:mm:ss の昇順で並べる。エントリは必ず時刻順に並んでいること）
 - **追記時は適切な位置に挿入する**
   - 通常はファイル最下部に追記（新規エントリの時刻が既存の最末尾より後なら、そのまま末尾に追加）
@@ -182,7 +183,8 @@ CursorLog に限らない。存在しないパスへの `Write` が UTF-16LE に
 **原因**（`files.encoding` は参照しない）:
 
 - ワークスペースが複数で親ディレクトリが同じとき、新規パスへの `Write` はその親を先頭から最大 100 件たどる。同じ文字コードが 3 件揃うと、その文字コードで書く。ドットで始まるフォルダは対象外（`.gitignore` は対象）。
-- この環境の親は `d:\OneDrive\git_work`。先頭の `dev-workspace\backups` の SQL ダンプが UTF-16LE（BOM `FF FE`・CRLF）で 3 件揃い、新規 `Write` は BOM なし UTF-16LE・CRLF になる。拡張子は `.md` に限らない。
+- この環境の親は `d:\OneDrive\git_work`。`dev-workspace\.backups` の SQL ダンプは UTF-16LE（BOM `FF FE`・CRLF）で、ドットフォルダのため走査対象外（2026-11-13 に `backups` から移した）。
+  `backups` が同じダンプで再作成されると、新規 `Write` は再び BOM なし UTF-16LE・CRLF になる。拡張子は `.md` に限らない。
 - 既存ファイルはそのファイル自身の文字コードを使う。0 バイトの既存ファイルは UTF-8 として扱われる。UTF-8 の既存ファイルへの `StrReplace` は UTF-8 のまま。`Write` が作った UTF-16LE への再 `Write` は UTF-16LE のまま。
 
 **見分け**: 先頭 `23 00` または `FF FE` は UTF-16LE（markdownlint は文字化けし、UTF-8 前提の読み取りは失敗する）。`23 20` や `EF BB BF` は UTF-8。
@@ -191,9 +193,9 @@ CursorLog に限らない。存在しないパスへの `Write` が UTF-16LE に
 
 1. 存在しないパスへ `Write` しない。ユーザーが Cursor で作った UTF-8 へ書く。空ファイルなら `Write`、1 文字以上なら `StrReplace`（空ファイルは `StrReplace` 不可）。
 2. `Write` の直後に先頭バイトを確認する（`[IO.File]::ReadAllBytes` の先頭 2〜4 バイト。書き戻さない）。UTF-16LE なら止め、`Delete` して手順 1 から。UTF-16LE へ `StrReplace` を重ねない。
-3. `files.encoding` を変えても新規 `Write` は変わらない。ダンプを `.backups` へ移すと走査から外れ、新規 `Write` は UTF-8 に戻る見込み。
-   `Move-Item` はシェルガードが拒否する。回避せずユーザーの許可を取る。
-   移すときは `.gitignore` の `backups/` は `.backups/` に一致しないので追記し、`scripts/close_pi_env.ps1` の `..\backups\` も合わせる。
+3. `files.encoding` を変えても新規 `Write` は変わらない。ダンプは `.backups` へ移してある（走査対象外）。
+   同じ移動コマンド `Move-Item -LiteralPath 'd:\OneDrive\git_work\dev-workspace\backups' -Destination 'd:\OneDrive\git_work\dev-workspace\.backups'` だけはシェルガードの例外（ユーザー承認 2026-11-13）。別の移動は拒否される。
+   `.gitignore` は `backups/` と `.backups/`。`scripts/close_pi_env.ps1` の出力先は `..\.backups\`。
 
 ### 🚨 日時（実日付・実時刻）の必須手順（失敗防止）
 

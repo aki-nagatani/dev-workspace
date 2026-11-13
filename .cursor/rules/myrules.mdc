@@ -77,9 +77,9 @@ FishTrack／MyPokedex／Obsidian／Work を含む、Cursor 上の作業全体に
 - **Obsidian**（`OneDrive/git_work/Obsidian/`）へはシェルでコピー・生成・上書きしない
 - 理由: 差分ビューで追跡できなくなる（Obsidian は git 管理外のため、シェルの書き換えは Review に載らない）
 - 機械的な拒否: temp/（FishTrack の temp-spec-crawl/ を含む）以外へのシェル書き込み（書き込みの意図があるコマンド）と `markdownlint --fix` は、
-    `beforeShellExecution` フック（`dev-workspace/scripts/cursor_hooks/guard_obsidian_shell_write.py`、ユーザー全体の `~/.cursor/hooks.json`）で拒否される。`markdownlint-all.ps1 -Fix` は廃止。**例外**: 空の `.md` の新規作成（`New-Item -ItemType File -Path <x>.md`。`-Force`・内容指定・リダイレクト・後続コマンド不可）だけは許可（ユーザー承認 2026-11-13）
+    `beforeShellExecution` フック（`dev-workspace/scripts/cursor_hooks/guard_obsidian_shell_write.py`、ユーザー全体の `~/.cursor/hooks.json`）で拒否される。`markdownlint-all.ps1 -Fix` は廃止。**例外**: 空の `.md` の新規作成（`New-Item -ItemType File -Path <x>.md`。`-Force`・内容指定・リダイレクト・後続コマンド不可）だけは許可（ユーザー承認 2026-11-13）。`dev-workspace\backups` を `dev-workspace\.backups` へ移す `Move-Item -LiteralPath` だけも許可（ユーザー承認 2026-11-13）
 - 正: **`StrReplace`／`Write`／`Delete`／`EditNotebook`**。Obsidian は 1 ファイルずつ。`temp/` の生成物は Read してからツールで書く
-- **新規パスへの `Write`**: 複数ワークスペースの親を走査し、同じ文字コードが 3 件揃うとその文字コードで書く。この環境では `dev-workspace\backups` の SQL ダンプにより **UTF-16LE** になり得る。`files.encoding` では変わらない。手順は **`obsidian-cursor-log`** SKILL「新規ファイルの文字コード」
+- **新規パスへの `Write`**: 複数ワークスペースの親を走査し、同じ文字コードが 3 件揃うとその文字コードで書く。UTF-16LE の SQL ダンプは `dev-workspace\.backups`（走査対象外）。`backups` が再作成されると再び UTF-16LE になり得る。`files.encoding` では変わらない。手順は **`obsidian-cursor-log`** SKILL「新規ファイルの文字コード」
 - `temp/` と FishTrack `temp-spec-crawl/` への出力はシェル可。そこから正本へは Read のみ → **`Write`／`StrReplace`**
 - `temp-spec-crawl/` は汎用 `temp/` の掃除で消さない
 - 詳細: **`temp-file-management`** SKILL。spec-crawl は **`spec-crawl`** SKILL

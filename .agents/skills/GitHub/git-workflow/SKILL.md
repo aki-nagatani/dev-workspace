@@ -43,6 +43,7 @@ description: >-
   - **`git commit` 失敗時**: 原因を直し**成功まで**再試行可（未成功の間のみ継続有効）
   - **`git commit` が 1 回成功した時点**で、当該依頼内の**追加の新規コミット**は不可（同一フロー内の push / PR / マージは可）
   - フロー**完了後**は、新たな明示がない限り `git commit` / `git push` しない
+  - **例外（CursorLog のみ・ユーザー指示 2026-11-13）**: フロー完了後に追記した `CursorLog/YYYY-MM/YYYY-MM-DD.md` だけは、**追加コミット・push してよい**。CursorLog 以外の差分は混ぜない。
 - **コンベンショナルコミット**（feat:, fix:, docs:, test:, refactor:, chore:）
 - **コミットメッセージは日本語**（PowerShell 文字化け防止は **`commit-message`** SKILL）
 - **`commit_msg.txt` 等**はコミット・プッシュ完了後に**必ず削除**
